@@ -180,8 +180,8 @@ public class TalonMotor extends TalonFX {
 	}
 	  
 	public void setVelocityWithFeedForward(double velocity) {
-    	setVelocity(velocity,velocityFeedForward(velocity));
-  	}
+    setVelocity(velocity, velocityFeedForward(velocity));
+  }
 
 	public void setMotionMagicWithFeedForward(double velocity) {
 		setVelocity(velocity, positionFeedForward(velocity));
