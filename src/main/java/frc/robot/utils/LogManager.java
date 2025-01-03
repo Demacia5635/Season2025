@@ -21,14 +21,13 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-/** Add your docs here. */
 public class LogManager extends SubsystemBase {
 
     public static LogManager logManager; // singelton reference
 
-    private DataLog log; //
+    private DataLog log;
     private NetworkTableInstance ntInst = NetworkTableInstance.getDefault();
-    private NetworkTable table = ntInst.getTable("log");
+    private NetworkTable table = ntInst.getTable("Log");
 
     /*
      * class for a single data entry
