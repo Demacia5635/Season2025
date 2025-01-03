@@ -44,8 +44,8 @@ public class TalonMotor extends TalonFX {
   private void configMotor() {
 		cfg = new TalonFXConfiguration();
 		cfg.CurrentLimits.SupplyCurrentLimit = config.maxCurrent;
-		cfg.CurrentLimits.SupplyCurrentThreshold = config.maxCurrentTriggerTime;
-		cfg.CurrentLimits.SupplyTimeThreshold = config.maxCurrentTriggerTime;
+    cfg.CurrentLimits.SupplyCurrentLowerLimit = config.maxCurrentTriggerTime;
+    cfg.CurrentLimits.SupplyCurrentLowerTime = config.maxCurrentTriggerTime;
 		cfg.CurrentLimits.SupplyCurrentLimitEnable = true;
 
 		cfg.ClosedLoopRamps.VoltageClosedLoopRampPeriod = config.rampUpTime;
