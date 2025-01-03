@@ -19,8 +19,10 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import static frc.robot.utils.UtilsContants.*;
 
 public class LogManager extends SubsystemBase {
 
@@ -30,6 +32,7 @@ public class LogManager extends SubsystemBase {
   private NetworkTableInstance ntInst = NetworkTableInstance.getDefault();
   private NetworkTable table = ntInst.getTable("Log");
 
+  private static ArrayList<ConsoleAlert> activeConsole;
 
   /*
    * class for a single data entry
@@ -129,6 +132,8 @@ public class LogManager extends SubsystemBase {
     log = DataLogManager.getLog();
     DriverStation.startDataLog(log);
     
+    activeConsole = new ArrayList<>();
+    log("log manager is ready");
   }
 
   /*
@@ -222,11 +227,37 @@ public class LogManager extends SubsystemBase {
     return logManager.get(name, true);
   }
 
+  /*
+   * Log text message - also will be sent System.out
+   */
+  public static ConsoleAlert log(String message, AlertType alertType) {
+    DataLogManager.log(message);
+    
+    ConsoleAlert alert = new ConsoleAlert(message, alertType);
+    alert.set(true);
+    if (activeConsole.size() > ConsoleConstants.CONSOLE_LIMIT) {
+      activeConsole.get(0).close();
+      activeConsole.remove(0);
     }
+    activeConsole.add(alert);
+    return alert;
+  }
 
+  public static ConsoleAlert log(String meesage) {
+    return log(meesage, AlertType.kInfo);
+  }
+
+  @Override
+  public void periodic() {
+    for (int i = 0; i < activeConsole.size(); i++) {
+      if (activeConsole.get(i).isTimerOver()) {
+        activeConsole.get(i).close();
+        activeConsole.remove(i);
+      }
     }
 
     for (LogEntry e : logEntries) {
       e.log();
     }
+  }
 }
