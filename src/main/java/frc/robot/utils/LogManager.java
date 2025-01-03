@@ -35,7 +35,8 @@ public class LogManager extends SubsystemBase {
      */
     public class LogEntry {
         DoubleLogEntry entry;  // wpilib log entry
-        StatusSignal<Double> phoenix6Status; // supplier of phoenix 6 status signal
+        @SuppressWarnings("rawtypes")
+        StatusSignal phoenix6Status; // supplier of phoenix 6 status signal
         DoubleSupplier getterDouble; // supplier for double data - if no status signal provider
         BiConsumer<Double, Long> consumer = null; // optional consumer when data changed - data value and time
         String name;
@@ -45,7 +46,8 @@ public class LogManager extends SubsystemBase {
         /*
          * Constructor with the suppliers and boolean if add to network table
          */
-        LogEntry(String name, StatusSignal<Double> phoenix6Status, DoubleSupplier getterDouble,
+        @SuppressWarnings("rawtypes")
+        LogEntry(String name, StatusSignal phoenix6Status, DoubleSupplier getterDouble,
                 boolean addToNT) {
 
             this.entry = new DoubleLogEntry(log, name);
@@ -71,7 +73,7 @@ public class LogManager extends SubsystemBase {
             if (phoenix6Status != null) {
                 var st = phoenix6Status.refresh();
                 if (st.getStatus() == StatusCode.OK) {
-                    v = st.getValue();
+                    v = st.getValueAsDouble();
                     time = (long) (st.getTimestamp().getTime() * 1000);
                 } else {
                     v = 1000000 + st.getStatus().value;
@@ -129,7 +131,8 @@ public class LogManager extends SubsystemBase {
     /*
      * add a log entry with all data
      */
-    private LogEntry add(String name, StatusSignal<Double> phoenix6Status, DoubleSupplier getterDouble,
+    @SuppressWarnings("rawtypes")
+    private LogEntry add(String name, StatusSignal phoenix6Status, DoubleSupplier getterDouble,
             boolean addToNT) {
         LogEntry entry = new LogEntry(name, phoenix6Status, getterDouble, addToNT);
         logEntries.add(entry);
@@ -162,14 +165,16 @@ public class LogManager extends SubsystemBase {
     /*
      * Static function - add log entry with all data
      */
-    public static LogEntry addEntry(String name, StatusSignal<Double> phoenixStatus,
+    @SuppressWarnings("rawtypes")
+    public static LogEntry addEntry(String name, StatusSignal phoenixStatus,
             DoubleSupplier getterDouble, boolean addToNT) {
         return logManager.add(name, phoenixStatus, getterDouble, addToNT);
     }
     /*
      * Static function - add log entry for status signal with option to add to network table
      */
-    public static LogEntry addEntry(String name, StatusSignal<Double> phoenixStatus, boolean addToNT) {
+    @SuppressWarnings("rawtypes")
+    public static LogEntry addEntry(String name, StatusSignal phoenixStatus, boolean addToNT) {
         return logManager.add(name, phoenixStatus, null, addToNT);
     }
     /*
@@ -181,7 +186,8 @@ public class LogManager extends SubsystemBase {
     /*
      * Static function - add log entry for status signal with network table
      */
-    public static LogEntry addEntry(String name, StatusSignal<Double> phoenix6Status) {
+    @SuppressWarnings("rawtypes")
+    public static LogEntry addEntry(String name, StatusSignal phoenix6Status) {
         return logManager.add(name, phoenix6Status, null, true);
     }
     /*
