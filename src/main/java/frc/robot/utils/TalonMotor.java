@@ -114,9 +114,9 @@ public class TalonMotor extends TalonFX {
   }
 
   private void addLog() {    
-    LogManager.addEntry(name + "/Position", getPosition());// rotation
-    LogManager.addEntry(name + "/Velocity", getVelocity());// rotation per seconds
-    LogManager.addEntry(name + "/Acceleration", getAcceleration());// rotation per seconds^2
+    LogManager.addEntry(name + "/Position", getPosition());
+    LogManager.addEntry(name + "/Velocity", getVelocity());
+    LogManager.addEntry(name + "/Acceleration", getAcceleration());
     LogManager.addEntry(name + "/Voltage", getMotorVoltage());
     LogManager.addEntry(name + "/Current", getStatorCurrent());
     LogManager.addEntry(name + "/CloseLoopError", getClosedLoopError());
