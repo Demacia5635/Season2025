@@ -1,12 +1,14 @@
 package frc.robot.utils;
 
+import com.ctre.phoenix6.CANBus;
+
 /** 
  * Class to hold all Talon FX/SRX configuration
  * Applicable to Phoenix 6
  *  */
 public class TalonConfig {
     public int id;                  // Canbus ID
-    public String canbus;           // Canbus name
+    public CANBus canbus;           // Canbus 
     public String name;             // Name of the motor - used to logging
     public double maxVolt = 12;     // Max Volt allowed
     public double minVolt = -12;    // Min Vols allowed
@@ -57,7 +59,7 @@ public class TalonConfig {
      * @param canbus - Name of canbus
      * @param name - name of motor for logging
      */
-    public TalonConfig(int id, String canbus, String name) {
+    public TalonConfig(int id, CANBus canbus, String name) {
         this.id = id;
         this.canbus = canbus;
         this.name = name;
@@ -121,7 +123,7 @@ public class TalonConfig {
      * @return TalonConfig
      */
     public TalonConfig withMotorRatio(double ratio) {
-        this.motorRatio = ratio;
+        this.motorRatio *= ratio;
         return this;
     }
 

@@ -3,11 +3,13 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot.utils;
- 
+
+import com.ctre.phoenix6.CANBus;
+
 /** Add your docs here. */
 public class CancoderConfig {
     public int id;                  // Canbus ID
-    public String canbus;           // Canbus name
+    public CANBus canbus;           // Canbus name
     public String name; 
     public double offset = 0;
     public boolean inverted = false; // if to invert cancoderr
@@ -17,7 +19,7 @@ public class CancoderConfig {
      * @param canbus - Name of canbus
      * @param name - name of Cancoder for logging
      */
-    public CancoderConfig(int id, String canbus, String name) {
+    public CancoderConfig(int id, CANBus canbus, String name) {
         this.id = id;
         this.canbus = canbus;
         this.name = name;
