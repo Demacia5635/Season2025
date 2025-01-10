@@ -76,7 +76,8 @@ public class SwerveModule {
     }
 
     public void setSteerPosition(double positionRadians) {
-        steerMotor.setMotionMagic(positionRadians);
+        steerMotor.setPositionVoltage(positionRadians);
+        // steerMotor.setMotionMagic(positionRadians);
     }
 
     public Rotation2d getSteerAngle() {
