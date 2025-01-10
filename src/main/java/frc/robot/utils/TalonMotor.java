@@ -31,11 +31,13 @@ public class TalonMotor extends TalonFX {
 	TalonConfig config;
   String name;
   TalonFXConfiguration cfg;
-  VelocityVoltage velocityVoltage = new VelocityVoltage(0).withSlot(0);
-  VoltageOut voltageOut = new VoltageOut(0);
 
   DutyCycleOut dutyCycle = new DutyCycleOut(0);
+  VoltageOut voltageOut = new VoltageOut(0);
+  VelocityVoltage velocityVoltage = new VelocityVoltage(0).withSlot(0);
   MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
+  PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
+
   LogManager.LogEntry dutyCycleEntry;
   LogManager.LogEntry velocityEntry;
   LogManager.LogEntry positionEntry;
@@ -117,17 +119,17 @@ public class TalonMotor extends TalonFX {
 		cfg.MotionMagic.MotionMagicCruiseVelocity = config.motionMagicVelocity;
 		cfg.MotionMagic.MotionMagicJerk = config.motionMagicJerk;
 
-		velocityVoltage.UpdateFreqHz = 200;
 		dutyCycle.UpdateFreqHz = 200;
+    voltageOut.UpdateFreqHz = 200;
+		velocityVoltage.UpdateFreqHz = 200;
 		motionMagicVoltage.UpdateFreqHz = 200;
-		
+    positionVoltage.UpdateFreqHz = 200;
 
 		getConfigurator().apply(cfg);
 		getPosition().setUpdateFrequency(200);
 		getVelocity().setUpdateFrequency(200);
 		getAcceleration().setUpdateFrequency(200);
 		getMotorVoltage().setUpdateFrequency(200);
-
   }
 
   private void setSignals() {
@@ -209,6 +211,11 @@ public class TalonMotor extends TalonFX {
     dutyCycleEntry.log(power);
   }
 
+  public void setVoltage(double voltage) {
+    setControl(voltageOut.withOutput(voltage));
+    dutyCycleEntry.log(voltage / 12.0);
+  }
+
 	/**
    * set volocity to motor with PID and FF
    * @param velocity the wanted velocity in meter per second or radians per seconds depending on the config
@@ -239,6 +246,14 @@ public class TalonMotor extends TalonFX {
 		setMotionMagic(position, 0);
 	}
 
+  public void setPositionVoltage(double position, double feedForward) {
+    setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
+    positionEntry.log(position);
+  }
+
+  public void setPositionVoltage(double position) {
+    setPositionVoltage(position, 0);
+  }
 
 	public void setVelocityWithFeedForward(double velocity) {
     setVelocity(velocity, velocityFeedForward(velocity));
