@@ -1,18 +1,27 @@
 package frc.robot.utils;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.ControlModeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularAcceleration;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -31,12 +40,29 @@ public class TalonMotor extends TalonFX {
   LogManager.LogEntry velocityEntry;
   LogManager.LogEntry positionEntry;
 
+  StatusSignal<ControlModeValue> controlModeSignal;
+  StatusSignal<Double> closedLoopSPSignal;
+  StatusSignal<Double> closedLoopErrorSignal;
+  StatusSignal<Angle> positionSignal;
+  StatusSignal<AngularVelocity> velocitySignal;
+  StatusSignal<AngularAcceleration> accelerationSignal;
+  StatusSignal<Voltage> voltageSignal;
+
+  String lastControlMode;
+  double lastClosedLoopSP;
+  double lastClosedLoopError;
+  double lastPosition;
+  double lastVelocity;
+  double lastAcceleration;
+  double lastVoltage;
+
 
   public TalonMotor(TalonConfig config) {
 		super(config.id, config.canbus);
 		this.config = config;
 		name = config.name;
 		configMotor();
+    setSignals();
 		addLog();
 		LogManager.log(name + " motor initialized");
   }
@@ -104,32 +130,74 @@ public class TalonMotor extends TalonFX {
 
   }
 
-  /*
-   * set motor to brake or coast
-   */
-  public void setBrake(boolean brake) {
-		this.getConfigurator().refresh(cfg.MotorOutput);
-		cfg.MotorOutput.NeutralMode = config.brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
-		getConfigurator().apply(cfg.MotorOutput);
+  private void setSignals() {
+    controlModeSignal = getControlMode();
+    closedLoopSPSignal = getClosedLoopReference();
+    closedLoopErrorSignal = getClosedLoopError();
+    positionSignal = getPosition();
+    velocitySignal = getVelocity();
+    accelerationSignal = getAcceleration();
+    voltageSignal = getMotorVoltage();
+    
+    lastControlMode = controlModeSignal.getValue().toString();
+    lastClosedLoopSP = closedLoopSPSignal.getValueAsDouble();
+    lastClosedLoopError = closedLoopErrorSignal.getValueAsDouble();
+    lastPosition = positionSignal.getValueAsDouble();
+    lastVelocity = velocitySignal.getValueAsDouble();
+    lastAcceleration = accelerationSignal.getValueAsDouble();
   }
 
   private void addLog() {    
-    LogManager.addEntry(name + "/Position", getPosition());
-    LogManager.addEntry(name + "/Velocity", getVelocity());
-    LogManager.addEntry(name + "/Acceleration", getAcceleration());
-    LogManager.addEntry(name + "/Voltage", getMotorVoltage());
+    LogManager.addEntry(name + "/Position", positionSignal);
+    LogManager.addEntry(name + "/Velocity", velocitySignal);
+    LogManager.addEntry(name + "/Acceleration", accelerationSignal);
+    LogManager.addEntry(name + "/Voltage", voltageSignal);
     LogManager.addEntry(name + "/Current", getStatorCurrent());
-    LogManager.addEntry(name + "/CloseLoopError", getClosedLoopError());
+    LogManager.addEntry(name + "/CloseLoopError", closedLoopErrorSignal);
     LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput());
     LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput());
     LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput());
     LogManager.addEntry(name + "/CloseLoopD", getClosedLoopDerivativeOutput());
     LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward());
-    LogManager.addEntry(name + "/CloseLoopSP", getClosedLoopReference());
+    LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal);
 
     dutyCycleEntry = LogManager.getEntry(name + "/SetDutyCycle");
     velocityEntry = LogManager.getEntry(name + "/SetVelocity");
     positionEntry = LogManager.getEntry(name + "/SetPosition");
+  }
+
+  /**
+   * change the slot of the pid and feed forward.
+   * will not work if the slot is null
+   * @param slot the wanted slot between 0 and 2
+   */
+  public void changeSlot(int slot) {    
+    if (slot < 0 || slot > 2) {
+      LogManager.log("slot is not between 0 and 2", AlertType.kError); 
+      return;
+    }
+    if (slot == 0 && config.pid == null) {
+      LogManager.log("slot is null, add config for slot 0", AlertType.kError);
+      return;
+    }
+    if (slot == 1 && config.pid1 == null) {
+      LogManager.log("slot is null, add config for slot 1", AlertType.kError);
+      return;
+    }
+    if (slot == 2 && config.pid2 == null) {
+      LogManager.log("slot is null, add config for slot 2", AlertType.kError);
+      return;
+    }
+    velocityVoltage.withSlot(slot);
+    motionMagicVoltage.withSlot(slot);
+  }
+
+  /*
+   * set motor to brake or coast
+   */
+  public void setBrake(boolean brake) {
+		cfg.MotorOutput.NeutralMode = config.brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+		getConfigurator().apply(cfg.MotorOutput);
   }
 
 	/**
@@ -171,14 +239,7 @@ public class TalonMotor extends TalonFX {
 		setMotionMagic(position, 0);
 	}
 
-	public double getCurrentPosition() {
-		return getPosition().getValueAsDouble();
-	}
 
-	public double getCurrentVelocity() {
-		return getVelocity().getValueAsDouble();
-	}
-	  
 	public void setVelocityWithFeedForward(double velocity) {
     setVelocity(velocity, velocityFeedForward(velocity));
   }
@@ -190,35 +251,52 @@ public class TalonMotor extends TalonFX {
   private double velocityFeedForward(double velocity) {
     return velocity * velocity * Math.signum(velocity) * config.kv2;
   }
+  
   private double positionFeedForward(double positin) {
     return Math.sin(positin*config.posToRad)*config.kSin;
   }
 
-  /**
-   * change the slot of the pid and feed forward.
-   * will not work if the slot is null
-   * @param slot the wanted slot between 0 and 2
-   */
-  public void changeSlot(int slot) {    
-    if (slot < 0 || slot > 2) {
-      LogManager.log("slot is not between 0 and 2"); 
-      return;
+  @SuppressWarnings("rawtypes")
+  private double getStatusSignal(StatusSignal statusSignal, double lastValue) {
+    statusSignal.refresh();
+    if (statusSignal.getStatus() == StatusCode.OK) {
+      lastValue = statusSignal.getValueAsDouble();
     }
-
-    if (slot == 1 && config.pid1 == null) {
-      LogManager.log("slot is null, add config for slot 1");
-      return;
-    }
-
-    if (slot == 2 && config.pid2 == null) {
-      LogManager.log("slot is null, add config for slot 2");
-      return;
-    }
-
-    velocityVoltage.withSlot(slot);
-    motionMagicVoltage.withSlot(slot);
+    return lastValue;
   }
 
+  public String getCurrentControlMode() {
+    controlModeSignal.refresh();
+    if (controlModeSignal.getStatus() == StatusCode.OK) {
+      lastControlMode = controlModeSignal.getValue().toString();
+    }
+    return lastControlMode;
+  }
+
+  public double getCurrentClosedLoopSP() {
+    return getStatusSignal(closedLoopSPSignal, lastClosedLoopSP);
+  }
+
+  public double getCurrentClosedLoopError() {
+    return getStatusSignal(closedLoopErrorSignal, lastClosedLoopError);
+  }
+
+	public double getCurrentPosition() {
+    return getStatusSignal(positionSignal, lastPosition);
+	}
+
+	public double getCurrentVelocity() {
+    return getStatusSignal(velocitySignal, lastVelocity);
+	}
+  
+  public double getCurrentAcceleration() {
+    return getStatusSignal(accelerationSignal, lastAcceleration);
+  }
+
+  public double getCurrentVoltage() {
+    return getStatusSignal(voltageSignal, lastVoltage);
+  }
+	  
   /**
    * creates a widget in elastic of the pid and ff for hot reload
    * @param slot the slot of the close loop perams (from 0 to 2)
@@ -384,14 +462,13 @@ public class TalonMotor extends TalonFX {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("TalonMotor");
-
-    builder.addStringProperty("ControlMode", ()-> getControlMode().getValue().toString(), null);
+    builder.addStringProperty("ControlMode", this::getCurrentControlMode, null);
     builder.addBooleanProperty("IsInverted", ()-> config.inverted, null);
-    builder.addDoubleProperty("CloseLoopSP", ()-> getClosedLoopReference().getValueAsDouble(), null);
-    builder.addDoubleProperty("CloseLoopError", ()-> getClosedLoopError().getValueAsDouble(), null);
-    builder.addDoubleProperty("Position", ()-> getPosition().getValueAsDouble(), null);
-    builder.addDoubleProperty("Velocity", ()-> getVelocity().getValueAsDouble(), null);
-    builder.addDoubleProperty("Acceleration", ()-> getAcceleration().getValueAsDouble(), null);
-    builder.addDoubleProperty("Voltage", ()-> getMotorVoltage().getValueAsDouble(), null);
+    builder.addDoubleProperty("CloseLoopSP", this::getCurrentClosedLoopSP, null);
+    builder.addDoubleProperty("CloseLoopError", this::getCurrentClosedLoopError,null);
+    builder.addDoubleProperty("Position", this::getCurrentPosition, null);
+    builder.addDoubleProperty("Velocity", this::getCurrentVelocity,null);
+    builder.addDoubleProperty("Acceleration", this::getCurrentAcceleration,null);
+    builder.addDoubleProperty("Voltage", this::getCurrentVoltage, null);
   }
 }
