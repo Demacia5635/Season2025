@@ -16,22 +16,6 @@ public class ChassisConstants {
     public static final double STEER_GEAR_RATIO = 151.0/7.0;
     public static final double DRIVE_GEAR_RATIO = 8.14;
     
-    public static class SwerveModuleConfigs {
-        public final TalonConfig STEER_CONFIG;
-        public final TalonConfig DRIVE_CONFIG;
-        public final CancoderConfig CANCODER_CONFIG;
-        public final Translation2d POSITION;
-        public final double STEER_OFFSET;
-
-        public SwerveModuleConfigs(TalonConfig steerConfig, TalonConfig driveConfig, CancoderConfig cancoderConfig, Translation2d position, double steerOffset) {
-            STEER_CONFIG = steerConfig;
-            DRIVE_CONFIG = driveConfig;
-            CANCODER_CONFIG = cancoderConfig;
-            POSITION = position;
-            STEER_OFFSET = steerOffset;
-        }
-    }
-    
     public static final double STEER_KP = 2;
     public static final double STEER_KI = 0;
     public static final double STEER_KD = 0;
@@ -51,65 +35,79 @@ public class ChassisConstants {
     public static final double MOTION_MAGIC_JERK = 160 * 2 * Math.PI;
 
     public static final double RAMP_TIME_STEER = 0.25;
+    
+    public static class SwerveModuleConfigs {
+        public final TalonConfig STEER_CONFIG;
+        public final TalonConfig DRIVE_CONFIG;
+        public final CancoderConfig CANCODER_CONFIG;
+        public final Translation2d POSITION;
+        public final double STEER_OFFSET;
+
+        public SwerveModuleConfigs(TalonConfig steerConfig, TalonConfig driveConfig, CancoderConfig cancoderConfig, Translation2d position, double steerOffset) {
+            STEER_CONFIG = steerConfig;
+            DRIVE_CONFIG = driveConfig;
+            CANCODER_CONFIG = cancoderConfig;
+            POSITION = position;
+            STEER_OFFSET = steerOffset;
+        }
+        
+        public SwerveModuleConfigs(int swerveId, double steerOffset) {
+            String name;
+            switch (swerveId) {
+                case 0:
+                    name = "Front Left";
+                    break;
+                case 1:
+                    name = "Front Right";
+                    break;
+                case 2:
+                    name = "Back Left";
+                    break;
+                case 3:
+                    name = "Back Right";
+                    break;
+            
+                default:
+                    name = "";
+                    break;
+            }
+            STEER_CONFIG = new TalonConfig(swerveId * 3 + 2, CANBus, name + " Steer")
+                .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
+                .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
+                .withBrake(true)
+                .withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
+                .withRampTime(RAMP_TIME_STEER);
+            DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CANBus, name + " Drive")
+                .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, STEER_KS, STEER_KV, STEER_KA, 0)
+                .withBrake(true)
+                .withInvert(true)
+                .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE);
+            CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CANBus, name + " Cancoder");
+            POSITION = new Translation2d(
+                swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
+                swerveId == 0 || swerveId == 3 ? 0.29 : -0.29
+            );
+            STEER_OFFSET = steerOffset;
+        }
+    }
 
     public static final SwerveModuleConfigs FRONT_LEFT = new SwerveModuleConfigs(
-        new TalonConfig(2, CANBus, "Front Left Steer")
-            .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
-            .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
-            .withBrake(true).withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
-            .withRampTime(RAMP_TIME_STEER),
-        new TalonConfig(1, CANBus, "Front Left Drive")
-            .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
-            .withBrake(true)
-            .withInvert(true)
-            .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE),
-        new CancoderConfig(3, CANBus, "Front Left Cancoder"),
-        new Translation2d(0.34, 0.29),
+        0,
         -0.54380968833639320957788356964568
     );
+
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
-        new TalonConfig(5, CANBus, "Front Right Steer")
-            .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
-            .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
-            .withBrake(true).withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
-            .withRampTime(RAMP_TIME_STEER),
-        new TalonConfig(4, CANBus, "Front Right Drive")
-            .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
-            .withBrake(true)
-            .withInvert(true)
-            .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE),
-        new CancoderConfig(6, CANBus, "Front Right Cancoder"),
-        new Translation2d(0.34, -0.29),
+        1,
         0.05906194188748811288309769560565
     );
+
     public static final SwerveModuleConfigs BACK_LEFT = new SwerveModuleConfigs(
-        new TalonConfig(8, CANBus, "Back Left Steer")
-            .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
-            .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
-            .withBrake(true).withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
-            .withRampTime(RAMP_TIME_STEER),
-        new TalonConfig(7, CANBus, "Back Left Drive")
-            .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
-            .withBrake(true)
-            .withInvert(true)
-            .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE),
-        new CancoderConfig(9, CANBus, "Back Left Cancoder"),
-        new Translation2d(-0.34, 0.29),
+        2,
         2.7909909134491723130502123817055
     );
+
     public static final SwerveModuleConfigs BACK_RIGHT = new SwerveModuleConfigs(
-        new TalonConfig(11, CANBus, "Back Right Steer")
-            .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
-            .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
-            .withBrake(true).withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
-            .withRampTime(RAMP_TIME_STEER),
-        new TalonConfig(10, CANBus, "Back Right Drive")
-            .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
-            .withBrake(true)
-            .withInvert(true)
-            .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE),
-        new CancoderConfig(12, CANBus, "Back Right Cancoder"),
-        new Translation2d(-0.34, -0.29),
+        3,
         -0.70563312592280345929109433031841
     );
 }
