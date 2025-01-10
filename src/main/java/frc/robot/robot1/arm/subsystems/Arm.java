@@ -2,12 +2,12 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Arm.Subsystems;
+package frc.robot.robot1.arm.subsystems;
+
+import static frc.robot.robot1.arm.ArmConstants.MOTORS_CONFIGS.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import static frc.robot.Arm.ArmConstants.MOTORS_CONFIGS.*;
-
-import frc.robot.Arm.ArmConstants.STATE;
+import frc.robot.robot1.arm.ArmConstants.STATE;
 import frc.robot.utils.*;
 
 public class Arm extends SubsystemBase {

@@ -2,12 +2,13 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.Arm.Commands;
+package frc.robot.robot1.arm.commands;
+
+import static frc.robot.robot1.arm.ArmConstants.ANGLES.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Arm.ArmConstants.STATE;
-import frc.robot.Arm.Subsystems.Arm;
-import static frc.robot.Arm.ArmConstants.ANGLES.*;
+import frc.robot.robot1.arm.ArmConstants.STATE;
+import frc.robot.robot1.arm.subsystems.Arm;
 
 public class ArmCommand extends Command {
   private Arm arm;

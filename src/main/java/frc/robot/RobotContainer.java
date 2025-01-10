@@ -4,10 +4,10 @@
 
 package frc.robot;
 
-import frc.robot.Arm.ArmConstants.STATE;
-import frc.robot.Arm.Commands.ArmCommand;
-import frc.robot.Arm.Subsystems.Arm;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.robot1.arm.ArmConstants.STATE;
+import frc.robot.robot1.arm.commands.ArmCommand;
+import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.utils.LogManager;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
