@@ -6,7 +6,6 @@ package frc.robot.Arm.Commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Arm.ArmConstants.STATE;
-import frc.robot.Arm.ArmUtils.functions;
 import frc.robot.Arm.Subsystems.Arm;
 import static frc.robot.Arm.ArmConstants.ANGLES.*;
 import static frc.robot.Arm.ArmUtils.functions.*;
@@ -17,12 +16,18 @@ public class ArmCommand extends Command {
   private double angle2;
   private double distance;
   public STATE state;
+  private boolean isAngle1Finished;
+  private boolean isAngle2Finished;
+  private boolean isFinished;
   /** Creates a new ArmCommand. */
   public ArmCommand(Arm arm) {
     this.arm = arm;
     angle1 = DEFULT_ANGLE1;
     angle2 = DEFULT_ANGLE2;
     state = arm.state;
+    isAngle1Finished = false;
+    isAngle2Finished = false;
+    isFinished = false;
   }
 
   // Called when the command is initially scheduled.
@@ -59,6 +64,9 @@ public class ArmCommand extends Command {
     }
     arm.setMotor1Position(angle1);
     arm.setMotor2Position(angle2);
+    isAngle1Finished = Math.abs(arm.getMotor1Angle()-angle1)<ANGLE1_RANGE;
+    isAngle2Finished = Math.abs(arm.getMotor2Angle()-angle2)<ANGLE2_RANGE;
+    isFinished = isAngle1Finished && isAngle2Finished;
   }
 
   // Called once the command ends or is interrupted.
@@ -71,6 +79,6 @@ public class ArmCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return Math.abs(arm.getMotor1Angle()-angle1)<ANGLE1_RANGE && Math.abs(arm.getMotor2Angle()-angle2)<ANGLE2_RANGE;
+    return isFinished;
   }
 }
