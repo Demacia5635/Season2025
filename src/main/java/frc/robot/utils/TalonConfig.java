@@ -10,21 +10,25 @@ public class TalonConfig {
     public int id;                  // Canbus ID
     public CANBus canbus;           // Canbus 
     public String name;             // Name of the motor - used to logging
+
     public double maxVolt = 12;     // Max Volt allowed
     public double minVolt = -12;    // Min Vols allowed
     public double maxCurrent = 40;  // Max current allowed
     public double maxCurrentTreshold = 42; // Current limit will be applied once the current reach this level
     public double maxCurrentTriggerTime = 0.2; // Current limit will be applied once the current reach the limit current for at least this time
     public double rampUpTime = 0.3;   // max power change time from 0 to full. 
+
     public boolean brake = true;    // brake/coast
     public double motorRatio = 1;   // motor to mechanism ratio
     public boolean inverted = false; // if to invert motor
+
     public closeLoopParam pid = new closeLoopParam(0, 0, 0, 0, 0, 0, 0); // close loop argument - PID + FF
     public closeLoopParam pid1 = null; // pid for slot 1
     public closeLoopParam pid2 = null; // pid for slot 2
     public double motionMagicAccel = 1; // maximum motion magic (position) acceleration
     public double motionMagicVelocity = 1; // maximum motition magic velocity
     public double motionMagicJerk = 0;    // maximum motion magic jerk
+
     public double kv2 = 0;
     public double kSin = 0;
     public double posToRad = 0;
@@ -132,7 +136,7 @@ public class TalonConfig {
         return this;
     }
 
-    public TalonConfig withRadiansMotor() {// 12.8 = 1 = 360, 360/2*PI = 2*PI*Rad
+    public TalonConfig withRadiansMotor() {
         this.motorRatio *= 1 / (Math.PI * 2);
         return this;
     }
@@ -203,6 +207,5 @@ public class TalonConfig {
         motionMagicJerk = jerk;
         return this;
     }
-
 
 }
