@@ -18,7 +18,8 @@ public class ArmCommand extends Command {
   public STATE state;
   private boolean isAngle1Finished;
   private boolean isAngle2Finished;
-  private boolean isFinished;
+  public boolean isFinished;
+
   /** Creates a new ArmCommand. */
   public ArmCommand(Arm arm) {
     this.arm = arm;
@@ -52,12 +53,17 @@ public class ArmCommand extends Command {
         //angle2 = getAnglesL3(distance)[1];
         break;
 
+      case PICK:
+        angle1 = PICK_ANGLE1;
+        angle2 = PICK_ANGLE2;
+        break;
+
       case TESTING:
         angle1 = TESTING_ANGLE1;
         angle2 = TESTING_ANGLE2;
         break;
 
-      case DEFULT:
+      case DEFAULT:
         angle1 = DEFULT_ANGLE1;
         angle2 = DEFULT_ANGLE2;
         break;
@@ -66,7 +72,7 @@ public class ArmCommand extends Command {
     arm.setMotor2Position(angle2);
     isAngle1Finished = Math.abs(arm.getMotor1Angle()-angle1)<ANGLE1_RANGE;
     isAngle2Finished = Math.abs(arm.getMotor2Angle()-angle2)<ANGLE2_RANGE;
-    isFinished = isAngle1Finished && isAngle2Finished;
+    isFinished = isAngle1Finished && isAngle2Finished;//לפקודה של לשים קורל
   }
 
   // Called once the command ends or is interrupted.
@@ -79,6 +85,6 @@ public class ArmCommand extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return isFinished;
+    return false;
   }
 }

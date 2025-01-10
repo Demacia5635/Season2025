@@ -31,6 +31,7 @@ public class RobotContainer {
     logManager = new LogManager();
     arm = new Arm();
     armCommand = new ArmCommand(arm);
+    arm.setDefaultCommand(new ArmCommand(arm));
     // Configure the trigger bindings
     configureBindings();
   }
@@ -45,19 +46,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    controller.rightTrigger().onTrue(armCommand);
-    controller.a().onTrue(new InstantCommand(() -> {
-      arm.state = STATE.DEFULT;
-    }, arm));
-    controller.b().onTrue(new InstantCommand(() -> {
-      arm.state = STATE.L2;
-    }, arm));
-    controller.x().onTrue(new InstantCommand(() -> {
-      arm.state = STATE.L3;
-    }, arm));
-    controller.y().onTrue(new InstantCommand(() -> {
-      arm.state = STATE.TESTING;
-    }, arm));
   }
 
   /**

@@ -14,6 +14,7 @@ public class Arm extends SubsystemBase {
   private TalonMotor motor1;
   private TalonMotor motor2;
   public STATE state;
+  public boolean isL2Default;
   public Arm() {
     motor1 = new TalonMotor(new TalonConfig(
       MOTOR1_ID, CANBUS, MOTOR1_NAME)
@@ -31,7 +32,8 @@ public class Arm extends SubsystemBase {
       .withInvert(IS_MOTOR2_INVERT)
       .withRadiansMotor()
       .withMotorRatio(MOTOR2_GEAR_RATIO));
-      state = STATE.DEFULT;
+      state = STATE.DEFAULT;
+      isL2Default = true;
   }
 
   @Override
@@ -61,5 +63,10 @@ public class Arm extends SubsystemBase {
 
   public double getMotor2Angle(){
     return motor2.getCurrentPosition();
+  }
+
+  public void setAngle(){
+    motor1.setPosition(0);
+    motor2.setPosition(0);
   }
 }
