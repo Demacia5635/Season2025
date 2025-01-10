@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Arm.ArmConstants.STATE;
 import frc.robot.Arm.Subsystems.Arm;
 import static frc.robot.Arm.ArmConstants.ANGLES.*;
-import static frc.robot.Arm.ArmUtils.functions.*;
 
 public class ArmCommand extends Command {
   private Arm arm;
@@ -42,15 +41,11 @@ public class ArmCommand extends Command {
       case L2:
         angle1 = L2_ANGLE1;
         angle2 = L2_ANGLE2;
-        //angle1 = getAnglesL2(distance)[0];
-        //angle2 = getAnglesL2(distance)[1];
         break;
 
       case L3:
         angle1 = L3_ANGLE1;
         angle2 = L3_ANGLE2;
-        //angle1 = getAnglesL3(distance)[0];
-        //angle2 = getAnglesL3(distance)[1];
         break;
 
       case PICK:
