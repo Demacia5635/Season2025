@@ -4,9 +4,13 @@
 
 package frc.robot;
 
+import frc.robot.Arm.ArmConstants.STATE;
+import frc.robot.Arm.Commands.ArmCommand;
+import frc.robot.Arm.Subsystems.Arm;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.utils.LogManager;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -18,10 +22,15 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   LogManager logManager;
+  public static Arm arm;
+  private ArmCommand armCommand;
+  private final CommandXboxController controller = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     logManager = new LogManager();
+    arm = new Arm();
+    armCommand = new ArmCommand(arm);
     // Configure the trigger bindings
     configureBindings();
   }
@@ -36,6 +45,19 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    controller.rightTrigger().onTrue(armCommand);
+    controller.a().onTrue(new InstantCommand(() -> {
+      arm.state = STATE.DEFULT;
+    }, arm));
+    controller.b().onTrue(new InstantCommand(() -> {
+      arm.state = STATE.L2;
+    }, arm));
+    controller.x().onTrue(new InstantCommand(() -> {
+      arm.state = STATE.L3;
+    }, arm));
+    controller.y().onTrue(new InstantCommand(() -> {
+      arm.state = STATE.TESTING;
+    }, arm));
   }
 
   /**
