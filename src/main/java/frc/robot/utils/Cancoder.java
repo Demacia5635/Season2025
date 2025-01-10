@@ -84,5 +84,12 @@ public class Cancoder extends CANcoder {
     public double getCurrentVelocity(){
         return getStatusSignal(velocitySignal, lastVelocity);
     }
+
+    public double getCurrentAcceleration() {
+        velocitySignal.refresh();
+        if (velocitySignal.getStatus() == StatusCode.OK) {
+            return (velocitySignal.getValueAsDouble() * 2 * Math.PI) - lastVelocity;
+        }
+        return 0;
     }
 }
