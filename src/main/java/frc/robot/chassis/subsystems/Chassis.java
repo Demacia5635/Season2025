@@ -111,7 +111,7 @@ public class Chassis extends SubsystemBase {
         return arr;
     }
 
-    private void setModuleStates(SwerveModuleState[] states) {
+    public void setModuleStates(SwerveModuleState[] states) {
         for (int i = 0; i < states.length; i++) {
             modules[i].setState(states[i]);
         }
