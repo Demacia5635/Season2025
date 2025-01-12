@@ -4,7 +4,9 @@
 
 package frc.robot.chassis.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.chassis.subsystems.Chassis;
@@ -35,7 +37,8 @@ public class KeepSpinning extends Command {
   public void execute() {
     if (timer.hasElapsed(2)) {
       timer.reset();
-      chassis.setSteerPositions(angle);
+      SwerveModuleState s = new SwerveModuleState(0, new Rotation2d(angle));
+      chassis.setModuleStates(new SwerveModuleState[] {s, s, s, s});
       if (angle == 0.5 * Math.PI) {
         angle = 0;
       } else {
