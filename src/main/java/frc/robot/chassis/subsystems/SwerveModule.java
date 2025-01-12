@@ -1,5 +1,6 @@
 package frc.robot.chassis.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -7,6 +8,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.chassis.ChassisConstants.SwerveModuleConfigs;
 import frc.robot.utils.Cancoder;
 import frc.robot.utils.TalonMotor;
+import static frc.robot.utils.Utils.*;
+
+import java.util.logging.LogManager;
 
 public class SwerveModule {
     private TalonMotor steerMotor;
@@ -51,8 +55,8 @@ public class SwerveModule {
         // steerMotor.setMotionMagic(positionRadians);
     }
 
-    public Rotation2d getSteerAngle() {
-        return Rotation2d.fromRadians(steerMotor.getCurrentPosition());
+    public double getSteerAngle() {
+        return steerMotor.getCurrentPosition();
     }
     public double getSteerVel() {
         return steerMotor.getCurrentVelocity();
@@ -62,7 +66,11 @@ public class SwerveModule {
     }
 
     public void setState(SwerveModuleState state) {
-        state.optimize(getSteerAngle());
+        state.angle = new Rotation2d(MathUtil.angleModulus(state.angle.getRadians()));
+        if(Math.abs(state.angle.minus(Rotation2d.fromRadians(getSteerAngle())).getDegrees()) > 90) {
+            state.angle = Rotation2d.fromDegrees(180).minus(state.angle);
+            state.speedMetersPerSecond = -state.speedMetersPerSecond;
+        }
         setDriveVelocity(state.speedMetersPerSecond);
         setSteerPosition(state.angle.getRadians());
     }

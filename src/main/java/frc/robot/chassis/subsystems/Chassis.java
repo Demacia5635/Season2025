@@ -37,7 +37,7 @@ public class Chassis extends SubsystemBase {
             new SwerveModule(ChassisConstants.BACK_RIGHT),
         };
         gyro = new Pigeon2(ChassisConstants.GYRO_ID, ChassisConstants.CANBus);
-
+        addStatus();
         kinematics = new SwerveDriveKinematics(
             ChassisConstants.FRONT_LEFT.POSITION,
             ChassisConstants.FRONT_RIGHT.POSITION,
@@ -49,7 +49,7 @@ public class Chassis extends SubsystemBase {
         field = new Field2d();
         
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> poseEstimator.resetPosition(new Rotation2d(), getModulePositions(), getPose())));
-        addStatus();
+        
     }
 
     private void addStatus() {
