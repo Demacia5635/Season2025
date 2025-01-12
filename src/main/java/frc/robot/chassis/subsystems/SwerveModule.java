@@ -31,30 +31,6 @@ public class SwerveModule {
         SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
     }
 
-    public double getSteerVolt() {
-        return steerMotor.getMotorVoltage().getValueAsDouble();
-    }
-
-    public double getDriveVel() {
-        return driveMotor.getCurrentVelocity();
-    }
-
-    public double getDriveAcc() {
-        return driveMotor.getAcceleration().getValueAsDouble();
-    }
-
-    public double getDriveVolt() {
-        return driveMotor.getMotorVoltage().getValueAsDouble();
-    }
-
-    public void setSteerVolt(double volt) {
-        steerMotor.setControl(voltageOutSteer.withOutput(volt));
-    }
-
-    public void setDriveVolt(double volt) {
-        driveMotor.setControl(voltageOutDrive.withOutput(volt));
-    }
-
     public void setSteerPower(double power) {
         steerMotor.set(power);
     }

@@ -49,18 +49,6 @@ public class Chassis extends SubsystemBase {
         return poseEstimator.getEstimatedPosition();
     }
 
-    public void setDriveVolts(double volts) {
-        for (SwerveModule i : modules) {
-            i.setDriveVolt(volts);
-        }
-    }
-
-    public void setSteerVolts(double volts) {
-        for (SwerveModule i : modules) {
-            i.setSteerVolt(volts);
-        }
-    }
-
     public void setVelocities(ChassisSpeeds speeds) {
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
