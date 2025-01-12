@@ -42,47 +42,48 @@ public class ChassisConstants {
         public final CancoderConfig CANCODER_CONFIG;
         public final Translation2d POSITION;
         public final double STEER_OFFSET;
+        public final String NAME;
 
-        public SwerveModuleConfigs(TalonConfig steerConfig, TalonConfig driveConfig, CancoderConfig cancoderConfig, Translation2d position, double steerOffset) {
+        public SwerveModuleConfigs(TalonConfig steerConfig, TalonConfig driveConfig, CancoderConfig cancoderConfig, Translation2d position, double steerOffset, String name) {
             STEER_CONFIG = steerConfig;
             DRIVE_CONFIG = driveConfig;
             CANCODER_CONFIG = cancoderConfig;
             POSITION = position;
             STEER_OFFSET = steerOffset;
+            NAME = name;
         }
         
         public SwerveModuleConfigs(int swerveId, double steerOffset) {
-            String name;
             switch (swerveId) {
                 case 0:
-                    name = "Front Left";
+                    NAME = "Front Left";
                     break;
                 case 1:
-                    name = "Front Right";
+                    NAME = "Front Right";
                     break;
                 case 2:
-                    name = "Back Left";
+                    NAME = "Back Left";
                     break;
                 case 3:
-                    name = "Back Right";
+                    NAME = "Back Right";
                     break;
             
                 default:
-                    name = "";
+                    NAME = "";
                     break;
             }
-            STEER_CONFIG = new TalonConfig(swerveId * 3 + 2, CANBus, name + " Steer")
+            STEER_CONFIG = new TalonConfig(swerveId * 3 + 2, CANBus, NAME + " Steer")
                 .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
                 .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
                 .withBrake(true)
                 .withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
                 .withRampTime(RAMP_TIME_STEER);
-            DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CANBus, name + " Drive")
+            DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CANBus, NAME + " Drive")
                 .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, STEER_KS, STEER_KV, STEER_KA, 0)
                 .withBrake(true)
                 .withInvert(true)
                 .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE);
-            CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CANBus, name + " Cancoder");
+            CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CANBus, NAME + " Cancoder");
             POSITION = new Translation2d(
                 swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
                 swerveId == 0 || swerveId == 3 ? 0.29 : -0.29
