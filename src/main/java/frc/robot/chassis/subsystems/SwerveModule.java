@@ -62,7 +62,7 @@ public class SwerveModule {
     }
 
     public void setState(SwerveModuleState state) {
-        state = SwerveModuleState.optimize(state, getSteerAngle());
+        state.optimize(getSteerAngle());
         setDriveVelocity(state.speedMetersPerSecond);
         setSteerPosition(state.angle.getRadians());
     }
