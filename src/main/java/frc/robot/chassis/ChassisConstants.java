@@ -16,10 +16,10 @@ public class ChassisConstants {
     public static final double STEER_GEAR_RATIO = 151.0/7.0;
     public static final double DRIVE_GEAR_RATIO = 8.14;
     
-    public static final double STEER_KP = 2;
-    public static final double STEER_KI = 0;
+    public static final double STEER_KP = 4.1;
+    public static final double STEER_KI = 0.9;
     public static final double STEER_KD = 0;
-    public static final double STEER_KS = 0.06617640545050964;
+    public static final double STEER_KS = 0.19817640545050964;
     public static final double STEER_KV = 0.3866402641515461;
     public static final double STEER_KA = 0.05;
 
