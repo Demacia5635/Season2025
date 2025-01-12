@@ -1,5 +1,7 @@
 package frc.robot.chassis.subsystems;
 
+import com.ctre.phoenix6.StatusCode;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -9,6 +11,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -22,6 +25,9 @@ public class Chassis extends SubsystemBase {
     private SwerveDriveKinematics kinematics;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
+
+    private StatusSignal<Angle> gyroYawStatus;
+    private Rotation2d lastGyroYaw;
 
     public Chassis() {
         modules = new SwerveModule[] {
@@ -41,8 +47,14 @@ public class Chassis extends SubsystemBase {
         );
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         field = new Field2d();
-
+        
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> poseEstimator.resetPosition(new Rotation2d(), getModulePositions(), getPose())));
+        addStatus();
+    }
+
+    private void addStatus() {
+        gyroYawStatus = gyro.getYaw();
+        lastGyroYaw = new Rotation2d(gyroYawStatus.getValueAsDouble());
     }
 
     public Pose2d getPose() {
@@ -88,7 +100,11 @@ public class Chassis extends SubsystemBase {
     }
 
     public Rotation2d getGyroAngle() {
-        return Rotation2d.fromRadians(gyro.getAngle());
+        gyroYawStatus.refresh();
+        if (gyroYawStatus.getStatus() == StatusCode.OK) {
+            lastGyroYaw = new Rotation2d(gyroYawStatus.getValue());
+        }
+        return lastGyroYaw;
     }
 
     private SwerveModulePosition[] getModulePositions() {
