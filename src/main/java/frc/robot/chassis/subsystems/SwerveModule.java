@@ -1,7 +1,5 @@
 package frc.robot.chassis.subsystems;
 
-import com.ctre.phoenix6.controls.VoltageOut;
-
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -14,16 +12,13 @@ public class SwerveModule {
     private TalonMotor steerMotor;
     private TalonMotor driveMotor;
     private Cancoder cancoder;
-    VoltageOut voltageOutSteer;
-    VoltageOut voltageOutDrive;
+    public String name;
 
     public SwerveModule(SwerveModuleConfigs configs) {
         steerMotor = new TalonMotor(configs.STEER_CONFIG);
         driveMotor = new TalonMotor(configs.DRIVE_CONFIG);
         cancoder = new Cancoder(configs.CANCODER_CONFIG);
-
-        voltageOutSteer = new VoltageOut(0);
-        voltageOutDrive = new VoltageOut(0);
+        name = configs.NAME;
 
         steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
 
