@@ -4,11 +4,11 @@
 
 package frc.robot.robot1.arm.commands;
 
-import static frc.robot.robot1.arm.ArmConstants.ANGLES.*;
+import static frc.robot.robot1.arm.utils.ArmConstants.ANGLES.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.robot1.arm.ArmConstants.STATE;
 import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.arm.utils.ArmConstants.STATE;
 
 public class ArmCommand extends Command {
   private Arm arm;

@@ -4,10 +4,10 @@
 
 package frc.robot.robot1.arm.subsystems;
 
-import static frc.robot.robot1.arm.ArmConstants.MOTORS_CONFIGS.*;
+import static frc.robot.robot1.arm.utils.ArmConstants.MOTORS_CONFIGS.*;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.robot1.arm.ArmConstants.STATE;
+import frc.robot.robot1.arm.utils.ArmConstants.STATE;
 import frc.robot.utils.*;
 
 public class Arm extends SubsystemBase {

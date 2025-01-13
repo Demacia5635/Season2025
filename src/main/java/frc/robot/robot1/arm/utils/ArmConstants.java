@@ -2,12 +2,15 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.robot1.arm;
+package frc.robot.robot1.arm.utils;
 
 import com.ctre.phoenix6.CANBus;
 
 /** Add your docs here. */
 public class ArmConstants {
+    public static final double TABLE_HIGHT = 0.845;
+    public static final double ARM1 = 0.535;
+    public static final double ARM2 = 0.1;
     public static class MOTORS_CONFIGS{
         //motor1 config
         public static final CANBus CANBUS = new CANBus("rio");
