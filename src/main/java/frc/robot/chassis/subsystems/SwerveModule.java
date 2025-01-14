@@ -8,9 +8,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.chassis.ChassisConstants.SwerveModuleConfigs;
 import frc.robot.utils.Cancoder;
 import frc.robot.utils.TalonMotor;
-import static frc.robot.utils.Utils.*;
 
-import java.util.logging.LogManager;
 
 public class SwerveModule {
     private TalonMotor steerMotor;
@@ -58,11 +56,17 @@ public class SwerveModule {
     public double getSteerAngle() {
         return steerMotor.getCurrentPosition();
     }
+    public Rotation2d getSteerRotation() {
+        return Rotation2d.fromDegrees(getSteerAngle());
+    }
     public double getSteerVel() {
         return steerMotor.getCurrentVelocity();
     }
     public double getSteerAccel() {
         return steerMotor.getAcceleration().getValueAsDouble();
+    }
+    public double getDriveVel() {
+        return driveMotor.getCurrentVelocity();
     }
 
     public void setState(SwerveModuleState state) {
@@ -78,4 +82,13 @@ public class SwerveModule {
     public SwerveModulePosition getModulePosition() {
         return new SwerveModulePosition(driveMotor.getCurrentPosition(), Rotation2d.fromRadians(steerMotor.getCurrentPosition()));
     }
+
+    /**
+     * Returns the state of the module
+     * @return Velocity in m/s
+     */
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(getDriveVel(), getSteerRotation());
+    }
+
 }

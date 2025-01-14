@@ -130,4 +130,21 @@ public class Chassis extends SubsystemBase {
     public boolean isRed() {
         return RobotContainer.isRed();
     }
+
+    public ChassisSpeeds getChassisSpeeds() {
+        return kinematics.toChassisSpeeds(getModuleStates());
+    }
+    /**
+   * Returns the state of every module
+   * 
+   * 
+   * @return Velocity in m/s, angle in Rotation2d
+   */
+    public SwerveModuleState[] getModuleStates() {
+        SwerveModuleState[] res = new SwerveModuleState[modules.length];
+        for (int i = 0; i < modules.length; i++) {
+        res[i] = modules[i].getState();
+    }
+    return res;
+  }
 }

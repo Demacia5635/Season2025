@@ -14,23 +14,24 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.chassis.commands.Drive;
-import frc.robot.chassis.commands.KeepSpinning;
+import frc.robot.chassis.commands.auto.KeepSpinning;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.chassis.subsystems.SwerveModule;
 import frc.robot.utils.LogManager;
 
 
 public class RobotContainer implements Sendable{
-  
+  public static RobotContainer robotContainer;
   LogManager logManager;
   public static Boolean isRed = false;
-  Chassis chassis;
+  public Chassis chassis;
   Drive drive;
   double num = 0;
   private System sysid;
 
 
   public RobotContainer() {
+    robotContainer = this;
     logManager = new LogManager();
     chassis = new Chassis();
     drive = new Drive(chassis, new CommandXboxController(0));
@@ -60,6 +61,6 @@ public class RobotContainer implements Sendable{
   }
 
   public Command getAutonomousCommand() {
-    return new KeepSpinning(chassis);
+    return null;
   }
 }

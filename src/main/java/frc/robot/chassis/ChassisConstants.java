@@ -10,6 +10,7 @@ public class ChassisConstants {
     public static final double CYCLE_DT = 0.02;
     public static final double MAX_DRIVE_VELOCITY = 3.6;
     public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
+    public static final double DRIVE_ACCELERATION = 50;
     public static final int GYRO_ID = 14;
     public static final CANBus CANBus = new CANBus("rio");
     public static final double WHEEL_DIAMETER = 0.1016; // 4 inch
