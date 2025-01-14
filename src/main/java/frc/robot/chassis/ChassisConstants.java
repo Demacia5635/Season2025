@@ -7,6 +7,7 @@ import frc.robot.utils.CancoderConfig;
 import frc.robot.utils.TalonConfig;
 
 public class ChassisConstants {
+    public static final double CYCLE_DT = 0.02;
     public static final double MAX_DRIVE_VELOCITY = 3.6;
     public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
     public static final int GYRO_ID = 14;
