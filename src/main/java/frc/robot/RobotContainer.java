@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.chassis.commands.Drive;
+import frc.robot.chassis.commands.auto.Auto_3Coral;
 import frc.robot.chassis.commands.auto.KeepSpinning;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.chassis.subsystems.SwerveModule;
@@ -61,6 +62,6 @@ public class RobotContainer implements Sendable{
   }
 
   public Command getAutonomousCommand() {
-    return null;
+    return new Auto_3Coral();
   }
 }
