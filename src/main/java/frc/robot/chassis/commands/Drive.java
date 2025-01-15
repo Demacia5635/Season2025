@@ -25,12 +25,12 @@ public class Drive extends Command {
     public void execute() {
         isRed = chassis.isRed();
         direction = isRed ? 1 : -1;
-        double joyX = Utils.deadband(controller.getLeftY(), 0.1) * direction;
-        double joyY = Utils.deadband(controller.getLeftX(), 0.1) * direction;
+        double joyX = Utils.deadband(controller.getLeftY(), 0.13) * direction;
+        double joyY = Utils.deadband(controller.getLeftX(), 0.13) * direction;
         
         // Calculate rotation from trigger axes
-        double rot = (Utils.deadband(controller.getRightTriggerAxis(), 0.1)
-            - Utils.deadband(controller.getLeftTriggerAxis(), 0.1));
+        double rot = (Utils.deadband(controller.getRightTriggerAxis(), 0.13)
+            - Utils.deadband(controller.getLeftTriggerAxis(), 0.13));
         
         double velX = Math.pow(joyX, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyX);
         double velY = Math.pow(joyY, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyY);
