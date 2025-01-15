@@ -48,6 +48,7 @@ public class Chassis extends SubsystemBase {
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         field = new Field2d();
         
+        SmartDashboard.putData("Field", field);
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> poseEstimator.resetPosition(new Rotation2d(), getModulePositions(), getPose())));
         
     }
