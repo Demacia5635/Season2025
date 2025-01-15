@@ -5,12 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.robot1.arm.commands.ArmCommand;
-import frc.robot.robot1.arm.subsystems.Arm;
-import frc.robot.robot1.arm.utils.ArmConstants.STATE;
 import frc.robot.utils.LogManager;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -22,16 +18,11 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   LogManager logManager;
-  public static Arm arm;
-  private ArmCommand armCommand;
   private final CommandXboxController controller = new CommandXboxController(OperatorConstants.kDriverControllerPort);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     logManager = new LogManager();
-    arm = new Arm();
-    armCommand = new ArmCommand(arm);
-    arm.setDefaultCommand(new ArmCommand(arm));
     // Configure the trigger bindings
     configureBindings();
   }
