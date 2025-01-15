@@ -6,9 +6,9 @@ package frc.robot.griper.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class griper extends SubsystemBase {
+public class Gripper extends SubsystemBase {
   /** Creates a new griper. */
-  public griper() {}
+  public Gripper() {}
 
   @Override
   public void periodic() {
