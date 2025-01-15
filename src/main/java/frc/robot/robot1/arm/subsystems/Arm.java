@@ -4,69 +4,126 @@
 
 package frc.robot.robot1.arm.subsystems;
 
-import static frc.robot.robot1.arm.utils.ArmConstants.MOTORS_CONFIGS.*;
+import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.robot1.arm.utils.ArmConstants.STATE;
-import frc.robot.utils.*;
+
+import frc.robot.utils.LogManager;
+import frc.robot.utils.TalonMotor;
 
 public class Arm extends SubsystemBase {
-  private TalonMotor motor1;
-  private TalonMotor motor2;
-  public STATE state;
-  public boolean isL2Default;
+
+  private TalonMotor armAngleMotor;
+  private TalonMotor intakeAngleMotor;
+
+  private DigitalInput armAngleLimit;
+  private DigitalInput intakeAngleLimit;
+
+  public boolean isCalibrated;
+
   public Arm() {
-    motor1 = new TalonMotor(new TalonConfig(
-      MOTOR1_ID, CANBUS, MOTOR1_NAME)
-      .withPID(MOTOR1_KP, MOTOR1_KI, MOTOR1_KD, MOTOR1_KS, MOTOR1_KV, MOTOR1_KA, MOTOR1_KG)
-      .withMotionMagic(MOTOR1_MAX_VELOCITY,MOTOR1_MAX_Acceleration,MOTOR1_MAX_JERK)
-      .withBrake(IS_MOTOR1_BRAKE)
-      .withInvert(IS_MOTOR1_INVERT)
-      .withRadiansMotor()
-      .withMotorRatio(MOTOR1_GEAR_RATIO));
-    motor2 = new TalonMotor(new TalonConfig(
-      MOTOR2_ID, CANBUS, MOTOR2_NAME)
-      .withPID(MOTOR2_KP, MOTOR2_KI, MOTOR2_KD, MOTOR2_KS, MOTOR2_KV, MOTOR2_KA, MOTOR2_KG)
-      .withMotionMagic(MOTOR2_MAX_VELOCITY,MOTOR2_MAX_Acceleration,MOTOR2_MAX_JERK)
-      .withBrake(IS_MOTOR2_BRAKE)
-      .withInvert(IS_MOTOR2_INVERT)
-      .withRadiansMotor()
-      .withMotorRatio(MOTOR2_GEAR_RATIO));
-      state = STATE.DEFAULT;
-      isL2Default = true;
+    setName(NAME);
+
+    armAngleMotor = new TalonMotor(ArmAngleMotorConstants.CONFIG);
+    intakeAngleMotor = new TalonMotor(IntakeAngleMotorConstants.CONFIG);
+    
+    armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
+    intakeAngleLimit = new DigitalInput(IntakeAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
+
+    isCalibrated = false;
+    
+    SmartDashboard.putData(ArmAngleMotorConstants.NAME, armAngleMotor);
+    SmartDashboard.putData(IntakeAngleMotorConstants.NAME, intakeAngleMotor);
+
+    addLog();
+    SmartDashboard.putData(this);
+  }
+
+  public void addLog() {
+    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle);
+    LogManager.addEntry(getName() + "/Intake Angle", this::getIntakeAngle);
+    LogManager.addEntry(getName() + "/Arm Angle Limit Switch", () -> getArmAngleLimit() ? 1 : 0);
+    LogManager.addEntry(getName() + "/Intake Angle Limit Switch", () -> getIntakeAngleLimit() ? 1 : 0);
+
+  }
+
+  public void armAngleMotorSetPower(double power) {
+    armAngleMotor.setDuty(power);
+  }
+
+  public void intakeAngleMotorSetPower(double power) {
+    intakeAngleMotor.setDuty(power);
+  }
+
+  public void setPower(double armAnglePower, double intakeAnglePower) {
+    armAngleMotorSetPower(armAnglePower);
+    intakeAngleMotorSetPower(intakeAnglePower);
+  }
+
+  public void armAngleMotorSetMotionMagic(double angle) {
+    if (!isCalibrated) {
+      LogManager.log("Can not move motor before calibration", AlertType.kError);
+      return;
+    }
+
+    armAngleMotor.setMotionMagic(angle);
+  }
+
+  public void intakeAngleMotorSetMotionMagic(double angle) {
+    if (!isCalibrated) {
+      LogManager.log("Can not move motor before calibration", AlertType.kError);
+      return;
+    }
+
+    intakeAngleMotor.setMotionMagic(angle);
+  }
+
+  public void setMotionMagic(double armAngle, double intakeAngle) {
+    armAngleMotorSetMotionMagic(armAngle);
+    intakeAngleMotorSetMotionMagic(intakeAngle);
+  }
+
+  public void stop() {
+    armAngleMotor.stopMotor();
+    intakeAngleMotor.stopMotor();
+  }
+
+  public void armAngleSetPosition(double angle) {
+    armAngleMotor.setPosition(angle);
+  }
+
+  public void intakeAngleSetPosition(double angle) {
+    intakeAngleMotor.setPosition(angle);
+  }
+
+  public double getArmAngle() {
+    return armAngleMotor.getCurrentPosition();
+  }
+
+  public double getIntakeAngle() {
+    return intakeAngleMotor.getCurrentPosition();
+  }
+
+  public boolean getArmAngleLimit() {
+    return armAngleLimit.get();
+  }
+
+  public boolean getIntakeAngleLimit() {
+    return intakeAngleLimit.get();
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
+
   }
 
   @Override
   public void periodic() {
 
-  }
-
-  public void setMotor1Power(double power){
-    motor1.setDuty(power);
-  }
-
-  public void setMotor1Position(double angle){
-    motor1.setMotionMagic(angle);
-  }
-
-  public void setMotor2Power(double power){
-    motor2.setDuty(power);
-  }
-
-  public void setMotor2Position(double angle){
-    motor2.setMotionMagic(angle);
-  }
-
-  public double getMotor1Angle(){
-    return motor1.getCurrentPosition();
-  }
-
-  public double getMotor2Angle(){
-    return motor2.getCurrentPosition();
-  }
-
-  public void setAngle(){
-    motor1.setPosition(0);
-    motor2.setPosition(0);
   }
 }
