@@ -25,7 +25,7 @@ public class Auto_3Coral extends Command {
 
   @Override
   public void initialize() {
-    cmd = goToMultiple(new pathPoint[]{startingPoint, scoring1, dumy1, intakePoint, dumy2, scoring2, dumy1, intakePoint, scoring3},2.0);
+    cmd = goToMultiple(new pathPoint[]{startingPoint, scoring1, dumy1, intakePoint, dumy2, scoring2, dumy1, intakePoint, scoring3, intakePoint},4.0);
     cmd.schedule();
   }
 
