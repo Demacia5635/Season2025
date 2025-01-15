@@ -69,35 +69,20 @@ public class SwerveModule {
     ConsoleAlert alert;
 
     public void setState(SwerveModuleState state) {
-        if (alert == null) {
-            alert = LogManager.log("messege");
-        } 
-        state.angle = new Rotation2d(MathUtil.angleModulus(state.angle.getRadians()));
-        double currentAngle = steerMotor.getCurrentPosition();
-        double delta = state.angle.minus(new Rotation2d(currentAngle)).getRadians();
-        
-        alert.setText("angle: " + state.angle + "\ndelta: " + delta);
-    
-        if (Math.abs(delta) > 0.5 * Math.PI) {
-            if (delta > 0) {
-                state.angle = Rotation2d.fromRadians(state.angle.getRadians() - Math.PI);
-                state.speedMetersPerSecond = -state.speedMetersPerSecond;
-                alert.setText("-");
-
-            } else {
-                state.angle = Rotation2d.fromRadians(state.angle.getRadians() + Math.PI);
-                state.speedMetersPerSecond = -state.speedMetersPerSecond;
-                alert.setText("+");
-
-            }
-        }
-        else{
-            alert.setText("nun");
+        double wantedAngle = state.angle.getRadians();
+        double diff = wantedAngle - steerMotor.getCurrentPosition();
+        double vel = state.speedMetersPerSecond;
+        diff = MathUtil.angleModulus(diff);
+        if(diff > 0.5 * Math.PI) {
+            vel = -vel;
+            diff = diff-Math.PI;
+        } else if(diff < -0.5 * Math.PI) {
+            vel = -vel;
+            diff = diff + Math.PI;
         }
 
-    
-        setDriveVelocity(state.speedMetersPerSecond);
-        setSteerPosition(state.angle.getRadians());
+        setSteerPosition(steerMotor.getCurrentPosition() + diff);
+        setDriveVelocity(vel);
     }
 
     public SwerveModulePosition getModulePosition() {
