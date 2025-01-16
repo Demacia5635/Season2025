@@ -18,10 +18,10 @@ import frc.robot.utils.TalonMotor;
 public class Arm extends SubsystemBase {
 
   private TalonMotor armAngleMotor;
-  private TalonMotor intakeAngleMotor;
+  private TalonMotor gripperAngleMotor;
 
   private DigitalInput armAngleLimit;
-  private DigitalInput intakeAngleLimit;
+  private DigitalInput gripperAngleLimit;
 
   public boolean isCalibrated;
 
@@ -29,15 +29,15 @@ public class Arm extends SubsystemBase {
     setName(NAME);
 
     armAngleMotor = new TalonMotor(ArmAngleMotorConstants.CONFIG);
-    intakeAngleMotor = new TalonMotor(IntakeAngleMotorConstants.CONFIG);
-    
+    gripperAngleMotor = new TalonMotor(GripperAngleMotorConstants.CONFIG);
+
     armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
-    intakeAngleLimit = new DigitalInput(IntakeAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
+    gripperAngleLimit = new DigitalInput(GripperAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
 
     isCalibrated = false;
     
     SmartDashboard.putData(ArmAngleMotorConstants.NAME, armAngleMotor);
-    SmartDashboard.putData(IntakeAngleMotorConstants.NAME, intakeAngleMotor);
+    SmartDashboard.putData(GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
     addLog();
     SmartDashboard.putData(this);
@@ -45,9 +45,9 @@ public class Arm extends SubsystemBase {
 
   public void addLog() {
     LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle);
-    LogManager.addEntry(getName() + "/Intake Angle", this::getIntakeAngle);
+    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle);
     LogManager.addEntry(getName() + "/Arm Angle Limit Switch", () -> getArmAngleLimit() ? 1 : 0);
-    LogManager.addEntry(getName() + "/Intake Angle Limit Switch", () -> getIntakeAngleLimit() ? 1 : 0);
+    LogManager.addEntry(getName() + "/Gripper Angle Limit Switch", () -> getGripperAngleLimit() ? 1 : 0);
 
   }
 
@@ -55,13 +55,13 @@ public class Arm extends SubsystemBase {
     armAngleMotor.setDuty(power);
   }
 
-  public void intakeAngleMotorSetPower(double power) {
-    intakeAngleMotor.setDuty(power);
+  public void gripperAngleMotorSetPower(double power) {
+    gripperAngleMotor.setDuty(power);
   }
 
-  public void setPower(double armAnglePower, double intakeAnglePower) {
+  public void setPower(double armAnglePower, double gripperAnglePower) {
     armAngleMotorSetPower(armAnglePower);
-    intakeAngleMotorSetPower(intakeAnglePower);
+    gripperAngleMotorSetPower(gripperAnglePower);
   }
 
   public void armAngleMotorSetMotionMagic(double angle) {
@@ -73,47 +73,47 @@ public class Arm extends SubsystemBase {
     armAngleMotor.setMotionMagic(angle);
   }
 
-  public void intakeAngleMotorSetMotionMagic(double angle) {
+  public void gripperAngleMotorSetMotionMagic(double angle) {
     if (!isCalibrated) {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
     }
 
-    intakeAngleMotor.setMotionMagic(angle);
+    gripperAngleMotor.setMotionMagic(angle);
   }
 
-  public void setMotionMagic(double armAngle, double intakeAngle) {
+  public void setMotionMagic(double armAngle, double gripperAngle) {
     armAngleMotorSetMotionMagic(armAngle);
-    intakeAngleMotorSetMotionMagic(intakeAngle);
+    gripperAngleMotorSetMotionMagic(gripperAngle);
   }
 
   public void stop() {
     armAngleMotor.stopMotor();
-    intakeAngleMotor.stopMotor();
+    gripperAngleMotor.stopMotor();
   }
 
   public void armAngleSetPosition(double angle) {
     armAngleMotor.setPosition(angle);
   }
 
-  public void intakeAngleSetPosition(double angle) {
-    intakeAngleMotor.setPosition(angle);
+  public void gripperAngleSetPosition(double angle) {
+    gripperAngleMotor.setPosition(angle);
   }
 
   public double getArmAngle() {
     return armAngleMotor.getCurrentPosition();
   }
 
-  public double getIntakeAngle() {
-    return intakeAngleMotor.getCurrentPosition();
+  public double getGripperAngle() {
+    return gripperAngleMotor.getCurrentPosition();
   }
 
   public boolean getArmAngleLimit() {
     return armAngleLimit.get();
   }
 
-  public boolean getIntakeAngleLimit() {
-    return intakeAngleLimit.get();
+  public boolean getGripperAngleLimit() {
+    return gripperAngleLimit.get();
   }
 
   @Override

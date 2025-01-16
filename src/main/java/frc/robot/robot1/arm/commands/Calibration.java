@@ -31,10 +31,10 @@ public class Calibration extends Command {
       arm.armAngleMotorSetPower(0);
     }
 
-    if (arm.getIntakeAngleLimit()) {
-      arm.intakeAngleMotorSetPower(CalibrationConstants.INTAKE_ANGLE_POWER);
+    if (arm.getGripperAngleLimit()) {
+      arm.gripperAngleMotorSetPower(CalibrationConstants.GRIPPER_ANGLE_POWER);
     } else {
-      arm.intakeAngleMotorSetPower(0);
+      arm.gripperAngleMotorSetPower(0);
     }
 
   }
@@ -45,7 +45,7 @@ public class Calibration extends Command {
     arm.stop();
     
     arm.armAngleSetPosition(CalibrationConstants.ARM_ANGLE_LIMIT_ANGLE);
-    arm.intakeAngleSetPosition(CalibrationConstants.INTAKE_ANGLE_LIMIT_ANGLE);
+    arm.gripperAngleSetPosition(GripperAngleMotorConstants.BASE_ANGLE);
 
     arm.isCalibrated = true;
   }
@@ -53,6 +53,6 @@ public class Calibration extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.getArmAngleLimit() && arm.getIntakeAngleLimit();
+    return arm.getArmAngleLimit() && arm.getGripperAngleLimit();
   }
 }

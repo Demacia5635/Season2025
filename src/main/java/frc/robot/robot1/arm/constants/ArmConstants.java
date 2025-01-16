@@ -47,11 +47,12 @@ public class ArmConstants {
         .withBrake(IS_BRAKE)
         .withInvert(IS_INVERTED)
         .withMotorRatio(GEAR_RATIO).withRadiansMotor();
+                .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
+                .withBrake(IS_BRAKE)
     }
 
-    public static class IntakeAngleMotorConstants {
+    public static class GripperAngleMotorConstants {
         public static final int ID = 0;
-        /*TODO: change to canbus at constants when merging the branch */
         public static final CANBus CAN_BUS = new CANBus();
         public static final String NAME = "Intake Angle Motor";
         
@@ -89,10 +90,7 @@ public class ArmConstants {
         public static final double INTAKE_ANGLE_LIMIT_ANGLE = 0;
     }
 
-    public static enum ANGLES {
         L2(0, 0),
-        L3(0, 0),
-        CORAL_STATION(0, 0),
         TESTING(0, 0),
         IDLE(0, 0);
 
