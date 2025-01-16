@@ -5,11 +5,13 @@
 package frc.robot.robot1.arm.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
 import frc.robot.robot1.arm.constants.ArmConstants.CalibrationConstants;
+import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleMotorConstants;
 import frc.robot.robot1.arm.subsystems.Arm;
 
 public class Calibration extends Command {
-  
+
   private Arm arm;
 
   /** Creates a new Calibration. */
@@ -20,7 +22,8 @@ public class Calibration extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -43,8 +46,8 @@ public class Calibration extends Command {
   @Override
   public void end(boolean interrupted) {
     arm.stop();
-    
-    arm.armAngleSetPosition(CalibrationConstants.ARM_ANGLE_LIMIT_ANGLE);
+
+    arm.armAngleSetPosition(ArmAngleMotorConstants.BASE_ANGLE);
     arm.gripperAngleSetPosition(GripperAngleMotorConstants.BASE_ANGLE);
 
     arm.isCalibrated = true;
