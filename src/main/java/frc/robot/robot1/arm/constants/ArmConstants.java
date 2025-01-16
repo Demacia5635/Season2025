@@ -11,10 +11,12 @@ import frc.robot.utils.TalonConfig;
 /** Add your docs here. */
 public class ArmConstants {
 
-    public static final double TABLE_HIGHT = 0.845;
-    public static final double ARM1 = 0.535;
-    public static final double ARM2 = 0.1;
-    
+    public static class CalculationsConstants {
+        public static final double BASE_HEIGHT = 0.845;
+        public static final double ARM_1_LEN = 0.535;
+        public static final double ARM_2_LEN = 0.1;
+    }
+
     public static final String NAME = "Arm";
 
     public static class ArmAngleMotorConstants {

@@ -6,20 +6,29 @@ package frc.robot.robot1.arm.utils;
 
 import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
+import edu.wpi.first.math.Pair;
+
 /** Add your docs here. */
 public class ArmUtils {
 
-        hight = hight - TABLE_HIGHT;
-        double angleToPoint = Math.toDegrees(Math.atan(hight / dist));
-        double arm3 = hight / Math.sin(Math.toRadians(angleToPoint));
-        if (arm3 > (ARM1 + ARM2) || arm3 < (ARM1 - ARM2)) {
     public static Pair<Double, Double> calcAngles(double dist, double height) {
+        height = height - CalculationsConstants.BASE_HEIGHT;
+        double angleToPoint = Math.toDegrees(Math.atan(height / dist));
+        double hypotenuse = height / Math.sin(Math.toRadians(angleToPoint));
+        if (hypotenuse > (CalculationsConstants.ARM_1_LEN + CalculationsConstants.ARM_2_LEN)
+                || hypotenuse < (CalculationsConstants.ARM_1_LEN - CalculationsConstants.ARM_2_LEN)) {
             return null;
         }
         double jointA = 90 - angleToPoint
-                - Math.toDegrees(Math.acos(((ARM1 * ARM1) + (arm3 * arm3) - (ARM2 * ARM2)) / (2 * ARM1 * arm3)));
+                - Math.toDegrees(Math.acos(
+                        ((CalculationsConstants.ARM_1_LEN * CalculationsConstants.ARM_1_LEN) + (hypotenuse * hypotenuse)
+                                - (CalculationsConstants.ARM_2_LEN * CalculationsConstants.ARM_2_LEN))
+                                / (2 * CalculationsConstants.ARM_1_LEN * hypotenuse)));
         double jointB = 180
-                - Math.toDegrees(Math.acos(((ARM1 * ARM1) + (ARM2 * ARM2) - (arm3 * arm3)) / (2 * ARM1 * ARM2)));
+                - Math.toDegrees(Math.acos(((CalculationsConstants.ARM_1_LEN * CalculationsConstants.ARM_1_LEN)
+                        + (CalculationsConstants.ARM_2_LEN * CalculationsConstants.ARM_2_LEN)
+                        - (hypotenuse * hypotenuse))
+                        / (2 * CalculationsConstants.ARM_1_LEN * CalculationsConstants.ARM_2_LEN)));
         return new Pair<Double, Double>(jointA, jointB);
     }
 
