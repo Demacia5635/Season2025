@@ -10,15 +10,28 @@ import frc.robot.utils.TalonConfig;
 
 /** Add your docs here. */
 public class GripperConstants {
-    public static final int MOTOR_ID = 0;
-    public static final CANBus CANBUS = new CANBus("rio");
-    public static final String NAME = "Gripper";
-    public static final TalonConfig MOTOR_CONFIG = new TalonConfig(MOTOR_ID, CANBUS, NAME);
+    
+    public static String NAME = "Gripepr";
 
-    public static final int SENSOR_CHANNEL = 0;
+    public static class MotorConstants {
+        public static final int MOTOR_ID = 0;
+        public static final CANBus CANBUS = new CANBus("rio");
+        public static final String NAME = "Gripper Motor";
 
-    public static final double FEED_POWER = 0;
+        public static final TalonConfig MOTOR_CONFIG = new TalonConfig(MOTOR_ID, CANBUS, NAME);
+    }
 
-    public static final double EXCRETE_POWER = 0;
-    public static final double EXCRETE_DURATION = 3;
+    public static class SensorConstants {
+        public static final int SENSOR_CHANNEL = 0;
+    }
+
+    public static class GrabConstants {
+        public static final double FEED_POWER = 0;
+    }
+
+    public static class DropConstants {
+        public static final double DROP_POWER = 0;
+        public static final double DROP_DURATION = 3;
+    }
+
 }
