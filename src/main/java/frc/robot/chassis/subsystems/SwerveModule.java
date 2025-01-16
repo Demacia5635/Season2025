@@ -9,7 +9,6 @@ import frc.robot.chassis.ChassisConstants.SwerveModuleConfigs;
 import frc.robot.utils.Cancoder;
 import frc.robot.utils.TalonMotor;
 
-
 public class SwerveModule {
     private TalonMotor steerMotor;
     private TalonMotor driveMotor;
@@ -65,18 +64,26 @@ public class SwerveModule {
     public double getSteerAccel() {
         return steerMotor.getAcceleration().getValueAsDouble();
     }
+
     public double getDriveVel() {
         return driveMotor.getCurrentVelocity();
     }
 
     public void setState(SwerveModuleState state) {
-        state.angle = new Rotation2d(MathUtil.angleModulus(state.angle.getRadians()));
-        if(Math.abs(state.angle.minus(Rotation2d.fromRadians(getSteerAngle())).getDegrees()) > 90) {
-            state.angle = Rotation2d.fromDegrees(180).minus(state.angle);
-            state.speedMetersPerSecond = -state.speedMetersPerSecond;
+        double wantedAngle = state.angle.getRadians();
+        double diff = wantedAngle - steerMotor.getCurrentPosition();
+        double vel = state.speedMetersPerSecond;
+        diff = MathUtil.angleModulus(diff);
+        if(diff > 0.5 * Math.PI) {
+            vel = -vel;
+            diff = diff-Math.PI;
+        } else if(diff < -0.5 * Math.PI) {
+            vel = -vel;
+            diff = diff + Math.PI;
         }
-        setDriveVelocity(state.speedMetersPerSecond);
-        setSteerPosition(state.angle.getRadians());
+
+        setSteerPosition(steerMotor.getCurrentPosition() + diff);
+        setDriveVelocity(vel);
     }
 
     public SwerveModulePosition getModulePosition() {

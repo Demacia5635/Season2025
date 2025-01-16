@@ -88,7 +88,7 @@ public class ChassisConstants {
             CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CANBus, NAME + " Cancoder");
             POSITION = new Translation2d(
                 swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
-                swerveId == 0 || swerveId == 3 ? 0.29 : -0.29
+                swerveId == 0 || swerveId == 2 ? 0.29 : -0.29
             );
             STEER_OFFSET = steerOffset;
         }
