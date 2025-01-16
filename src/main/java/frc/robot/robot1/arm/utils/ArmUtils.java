@@ -9,18 +9,18 @@ import static frc.robot.robot1.arm.constants.ArmConstants.*;
 /** Add your docs here. */
 public class ArmUtils {
 
-    public static ArmState calcAngles(double dist, double hight) {
         hight = hight - TABLE_HIGHT;
         double angleToPoint = Math.toDegrees(Math.atan(hight / dist));
         double arm3 = hight / Math.sin(Math.toRadians(angleToPoint));
         if (arm3 > (ARM1 + ARM2) || arm3 < (ARM1 - ARM2)) {
+    public static Pair<Double, Double> calcAngles(double dist, double height) {
             return null;
         }
         double jointA = 90 - angleToPoint
                 - Math.toDegrees(Math.acos(((ARM1 * ARM1) + (arm3 * arm3) - (ARM2 * ARM2)) / (2 * ARM1 * arm3)));
         double jointB = 180
                 - Math.toDegrees(Math.acos(((ARM1 * ARM1) + (ARM2 * ARM2) - (arm3 * arm3)) / (2 * ARM1 * ARM2)));
-        return new ArmState(jointA, jointB);
+        return new Pair<Double, Double>(jointA, jointB);
     }
 
     // public double[] calcAngles(double dist, double hight){
