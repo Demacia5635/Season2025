@@ -25,6 +25,8 @@ public class Arm extends SubsystemBase {
 
   public boolean isCalibrated;
 
+  public ARM_ANGLE_STATES state;
+
   public Arm() {
     setName(NAME);
 
@@ -35,7 +37,9 @@ public class Arm extends SubsystemBase {
     gripperAngleLimit = new DigitalInput(GripperAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
 
     isCalibrated = false;
-    
+
+    state = ARM_ANGLE_STATES.IDLE;
+
     SmartDashboard.putData(ArmAngleMotorConstants.NAME, armAngleMotor);
     SmartDashboard.putData(GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
