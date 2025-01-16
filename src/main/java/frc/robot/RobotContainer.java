@@ -4,46 +4,62 @@
 
 package frc.robot;
 
-import frc.robot.Constants.OperatorConstants;
-import frc.robot.utils.LogManager;
+import java.util.function.Consumer;
+
+import edu.wpi.first.math.proto.System;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.chassis.commands.Drive;
+import frc.robot.chassis.commands.KeepSpinning;
+import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.chassis.subsystems.SwerveModule;
+import frc.robot.utils.LogManager;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
-public class RobotContainer {
+
+public class RobotContainer implements Sendable{
+  
   LogManager logManager;
+  public static Boolean isRed = false;
+  Chassis chassis;
+  Drive drive;
+  double num = 0;
+  private System sysid;
 
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+
   public RobotContainer() {
     logManager = new LogManager();
-    // Configure the trigger bindings
+    chassis = new Chassis();
+    drive = new Drive(chassis, new CommandXboxController(0));
+    chassis.setDefaultCommand(drive);
+    SmartDashboard.putData("RC", this);
+
     configureBindings();
   }
+  public double getNum(){ return num;}
+  public void setNum(double num){this.num = num;}
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
+
   private void configureBindings() {
+
   }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+  public void isRed(boolean isRed) {
+    this.isRed = isRed;
+  }
+
+  public static boolean isRed() {
+    return isRed;
+  }
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    builder.addDoubleProperty("NUM", ()->getNum(), (double num)->setNum(num));
+  }
+
   public Command getAutonomousCommand() {
-    return null;
+    return new KeepSpinning(chassis);
   }
 }
