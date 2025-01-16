@@ -2,14 +2,14 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.robot1.slug;
+package frc.robot.robot1.gripper;
 
 import com.ctre.phoenix6.CANBus;
 
 import frc.robot.utils.TalonConfig;
 
 /** Add your docs here. */
-public class SlugConstants {
+public class GripperConstants {
     public static final int MOTOR_ID = 0;
     public static final CANBus CANBUS = new CANBus("rio");
     public static final String NAME = "Gripper";
