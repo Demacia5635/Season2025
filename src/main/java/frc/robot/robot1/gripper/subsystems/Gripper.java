@@ -5,12 +5,8 @@
 package frc.robot.robot1.gripper.subsystems;
 
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.robot1.gripper.GripperConstants;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 
@@ -43,15 +39,6 @@ public class Gripper extends SubsystemBase {
     setPower(0);
   }
 
-  public Command getFeedCommand() {
-    return new InstantCommand(() -> setPower(GripperConstants.FEED_POWER), this)
-      .raceWith(new WaitUntilCommand(sensor::get))
-      .andThen(() -> stop(), this);
-  }
-
-  public Command getExcreteCommand() {
-    return new InstantCommand(() -> setPower(GripperConstants.EXCRETE_POWER), this).withTimeout(GripperConstants.EXCRETE_DURATION)
-      .andThen(() -> stop(), this);
   public boolean getSensor() {
     return sensor.get();
   }
