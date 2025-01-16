@@ -52,6 +52,8 @@ public class Gripper extends SubsystemBase {
   public Command getExcreteCommand() {
     return new InstantCommand(() -> setPower(GripperConstants.EXCRETE_POWER), this).withTimeout(GripperConstants.EXCRETE_DURATION)
       .andThen(() -> stop(), this);
+  public boolean getSensor() {
+    return sensor.get();
   }
 
   @Override
