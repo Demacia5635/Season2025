@@ -7,18 +7,32 @@ package frc.robot.robot1.gripper.subsystems;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.robot1.gripper.GripperConstants;
+import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
+
+import static frc.robot.robot1.gripper.constants.GripperConstants.*;
 
 public class Gripper extends SubsystemBase {
   private final TalonMotor motor;
   private final DigitalInput sensor;
 
   public Gripper() {
-    motor = new TalonMotor(GripperConstants.MOTOR_CONFIG);
-    sensor = new DigitalInput(GripperConstants.SENSOR_CHANNEL);
+    setName(NAME);
+
+    motor = new TalonMotor(MotorConstants.MOTOR_CONFIG);
+    sensor = new DigitalInput(SensorConstants.SENSOR_CHANNEL);
+
+    SmartDashboard.putData(getName() + "/Motor", motor);
+    addLog();
+    SmartDashboard.putData(this);
+  }
+
+  private void addLog() {
+    LogManager.addEntry(getName() + "/Is Sensor", ()-> getSensor() ? 1 : 0);
   }
 
   public void setPower(double power) {
