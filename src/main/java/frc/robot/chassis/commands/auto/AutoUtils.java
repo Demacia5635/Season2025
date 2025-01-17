@@ -8,7 +8,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.PathFollow.PathFollow;
-import frc.robot.PathFollow.Util.pathPoint;
+import frc.robot.PathFollow.Util.PathPoint;
 import static frc.robot.chassis.ChassisConstants.*;
 import frc.robot.chassis.subsystems.Chassis;
 
@@ -18,7 +18,7 @@ public class AutoUtils {
     static Chassis chassis = RobotContainer.robotContainer.chassis;
     static double maxVel = MAX_DRIVE_VELOCITY;
     static double maxAceel = DRIVE_ACCELERATION;
-    static pathPoint dummyPoint = new pathPoint(0, 0, new Rotation2d(), 0, false);
+    static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
 
 
@@ -26,33 +26,33 @@ public class AutoUtils {
         cmd.addCommands(c);
     }
     
-    public static pathPoint offset(Translation2d from, double x, double y, double angle) {
+    public static PathPoint offset(Translation2d from, double x, double y, double angle) {
         return offset(from, x, y, angle,0);
     }
 
-    public static pathPoint offset(Translation2d from, double x, double y, double angle, double radius) {
-        return new pathPoint(from.getX()+x, from.getY()+ y, Rotation2d.fromDegrees(angle),radius,false);
+    public static PathPoint offset(Translation2d from, double x, double y, double angle, double radius) {
+        return new PathPoint(from.getX()+x, from.getY()+ y, Rotation2d.fromDegrees(angle),radius,false);
     }
 
-    public static  Command goTo(pathPoint point) {
+    public static  Command goTo(PathPoint point) {
         return goTo(point, maxVel, true);
     }
-    public static  Command goTo(pathPoint point, double maxV) {
+    public static  Command goTo(PathPoint point, double maxV) {
         return goTo(point, maxV, true);
     }
-    public static  Command goToRotate(pathPoint point, double maxV, double rate) {
-        return new PathFollow(chassis, new pathPoint[] { dummyPoint, point }, maxV, maxAceel,
+    public static  Command goToRotate(PathPoint point, double maxV, double rate) {
+        return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxV, maxAceel,
          0, false).setAutoRotate(rate);
     }
 
-    public static Command goToMultiple(pathPoint[] points, double maxVel){
+    public static Command goToMultiple(PathPoint[] points, double maxVel){
         return new PathFollow(chassis, points, maxVel, maxAceel, 0, false);
     }
-    public static  Command goTo(pathPoint point, double maxv, boolean toSpeaker) {
-        return new PathFollow(chassis, new pathPoint[] { dummyPoint, point }, maxv, maxAceel, 0, toSpeaker);
+    public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker) {
+        return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxv, maxAceel, 0, toSpeaker);
     }
-    public static  Command goTo(pathPoint point, double maxv, boolean toSpeaker, double endV) {
-        return new PathFollow(chassis, new pathPoint[] { dummyPoint, point }, maxv, maxAceel, endV, toSpeaker);
+    public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker, double endV) {
+        return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxv, maxAceel, endV, toSpeaker);
     }
 
 

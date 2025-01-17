@@ -16,7 +16,7 @@ public class RoundedPoint{
 
     boolean aprilTagMode;
 
-    public RoundedPoint(pathPoint aPoint, pathPoint bPoint, pathPoint cPoint, boolean aprilTagMode){
+    public RoundedPoint(PathPoint aPoint, PathPoint bPoint, PathPoint cPoint, boolean aprilTagMode){
         this.radius = bPoint.getRadius();
         this.aPoint = aPoint.getTranslation();
         this.bPoint = bPoint.getTranslation();

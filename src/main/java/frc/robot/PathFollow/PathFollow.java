@@ -21,7 +21,7 @@ import frc.robot.RobotContainer;
 import frc.robot.PathFollow.Util.Leg;
 import frc.robot.PathFollow.Util.RoundedPoint;
 import frc.robot.PathFollow.Util.Segment;
-import frc.robot.PathFollow.Util.pathPoint;
+import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.chassis.ChassisConstants;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.LogManager;
@@ -58,7 +58,7 @@ public class PathFollow extends Command {
 
   Trajectory traj;
   double distancePassed = 0;
-  pathPoint[] points;
+  PathPoint[] points;
   double finishVel;
 
   boolean autoRotate = false;
@@ -75,18 +75,18 @@ public class PathFollow extends Command {
    * 
    */
 
-  public PathFollow(pathPoint[] points, double velocity) {
+  public PathFollow(PathPoint[] points, double velocity) {
     this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,
         0, RobotContainer.robotContainer.isRed());
   }
 
-  public PathFollow(pathPoint[] points) {
+  public PathFollow(PathPoint[] points) {
     this(RobotContainer.robotContainer.chassis, points, ChassisConstants.MAX_DRIVE_VELOCITY,
         ChassisConstants.DRIVE_ACCELERATION,
         0, RobotContainer.robotContainer.isRed());
   }
 
-  public PathFollow(Chassis chassis, pathPoint[] points, double maxVel, double maxAcc, double finishVel) {
+  public PathFollow(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel) {
     this.points = points;
     this.finishVel = finishVel;
 
@@ -106,7 +106,7 @@ public class PathFollow extends Command {
 
   }
 
-  public PathFollow(Chassis chassis, pathPoint[] points, double maxVel, double maxAcc, double finishVel,
+  public PathFollow(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel,
       boolean rotateToSpeaker) {
     this(chassis, points, maxVel, maxAcc, finishVel);
     this.rotateToSpeaker = rotateToSpeaker;
@@ -125,15 +125,15 @@ public class PathFollow extends Command {
   public void initialize() {
     isRed = RobotContainer.robotContainer.isRed();
     // sets first point to chassis pose to prevent bugs with red and blue alliance
-    points[0] = new pathPoint(chassis.getPose().getX(), chassis.getPose().getY(), points[1].getRotation(),
+    points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(), points[1].getRotation(),
         points[0].getRadius(), false);
 
     // case for red alliance (blue is the default)
     if (isRed) {
-      points[0] = new pathPoint(chassis.getPose().getX(), chassis.getPose().getY(),
+      points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(),
           Rotation2d.fromDegrees(180).minus(points[1].getRotation()), points[0].getRadius(), false);
       for (int i = 1; i < points.length; i++) {
-        points[i] = new pathPoint(fieldLength - points[i].getX(), points[i].getY(),
+        points[i] = new PathPoint(fieldLength - points[i].getX(), points[i].getY(),
             Rotation2d.fromDegrees(180).minus(points[i].getRotation()),
             points[i].getRadius(), points[i].isAprilTag());
       }
