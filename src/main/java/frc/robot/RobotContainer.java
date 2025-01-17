@@ -36,7 +36,6 @@ public class RobotContainer implements Sendable{
     drive = new Drive(chassis, new CommandXboxController(0));
     chassis.setDefaultCommand(drive);
     SmartDashboard.putData("RC", this);
-
     configureBindings();
   }
   public double getNum(){ return num;}
@@ -47,8 +46,8 @@ public class RobotContainer implements Sendable{
 
   }
 
-  public void isRed(boolean isRed) {
-    this.isRed = isRed;
+  public static void isRed(boolean isRed) {
+    RobotContainer.isRed = isRed;
   }
 
   public static boolean isRed() {
@@ -57,6 +56,7 @@ public class RobotContainer implements Sendable{
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("NUM", ()->getNum(), (double num)->setNum(num));
+    builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::isRed);
   }
 
   public Command getAutonomousCommand() {
