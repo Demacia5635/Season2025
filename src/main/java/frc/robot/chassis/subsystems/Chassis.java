@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.chassis.ChassisConstants;
+import frc.robot.vision.subsystem.Tag;
 
 public class Chassis extends SubsystemBase {
     private SwerveModule[] modules;
@@ -25,6 +26,7 @@ public class Chassis extends SubsystemBase {
     private SwerveDriveKinematics kinematics;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
+    private Tag tag;
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
@@ -47,9 +49,10 @@ public class Chassis extends SubsystemBase {
         );
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         field = new Field2d();
-        
-        SmartDashboard.putData("Field", field);
-        SmartDashboard.putData("reset gyro", new InstantCommand(()-> poseEstimator.resetPosition(new Rotation2d(), getModulePositions(), getPose())));
+        tag = new Tag(()->getGyroAngle());
+        SmartDashboard.putData("reset gyro", new InstantCommand(()-> gyro.setYaw(0)));
+        SmartDashboard.putData("goToVision", new InstantCommand(()-> poseEstimator.resetPose(tag.getPose())));
+        SmartDashboard.putData("field", field);
         
     }
 
@@ -125,6 +128,9 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         poseEstimator.update(getGyroAngle(), getModulePositions());
+        if(tag.getPose()!=null){
+            poseEstimator.addVisionMeasurement(tag.getPose(), tag.getTimestamp());
+        }
         field.setRobotPose(poseEstimator.getEstimatedPosition());
     }
         
