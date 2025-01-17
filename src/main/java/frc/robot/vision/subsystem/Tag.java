@@ -9,6 +9,7 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.LogManager;
 
 import static frc.robot.vision.utils.VisionConstants.*;
 
@@ -45,6 +46,7 @@ public class Tag extends SubsystemBase {
     private Translation2d[] RobotsToTagsRR;
     private double[] ids;
     private double count;
+    public Pose2d pose;
 
     private Translation2d T1;
     private Translation2d T2;
@@ -60,6 +62,8 @@ public class Tag extends SubsystemBase {
     private Supplier<Rotation2d> getRobotAngle;
     private Field2d field;
 
+    private double latency;
+
     /**
      * Creates a new Tag subsystem
      * @param robot_angle_from_pose Pigeon2 gyroscope for determining robot orientation
@@ -74,6 +78,8 @@ public class Tag extends SubsystemBase {
 
 
         field = new Field2d();
+        latency = 0;
+        Pose2d pose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
         SmartDashboard.putData("Tag", this);
         SmartDashboard.putData("field-tag", field);
     }
@@ -102,6 +108,7 @@ public class Tag extends SubsystemBase {
                 }
             }
             else{
+              cropEntry = t.getEntry("crop");
               cropStop();
             }
             camId++;
@@ -114,8 +121,9 @@ public class Tag extends SubsystemBase {
             // Use first valid tag for position
             for (int i = 0; i < ids.length; i++) {
                 if (ids[i] > 0) {
-                    Pose2d pose = new Pose2d(getOriginToRobot(i, LLAngle), LLAngle);
+                    pose = new Pose2d(getOriginToRobot(i, LLAngle), LLAngle);
                     field.setRobotPose(pose);
+                    latency = Tables[i].getEntry("tl").getDouble(0.0) + Tables[i].getEntry("tc").getDouble(0.0);
                     break;
                 }
             }
@@ -123,11 +131,15 @@ public class Tag extends SubsystemBase {
             // Use single tag with gyro angle
             for (int i = 0; i < ids.length; i++) {
                 if (ids[i] > 0) {
-                    Pose2d pose = new Pose2d(getOriginToRobot(i, getRobotAngle.get()), getRobotAngle.get());
+                    pose = new Pose2d(getOriginToRobot(i, getRobotAngle.get()), getRobotAngle.get());
                     field.setRobotPose(pose);
+                    latency = Tables[i].getEntry("tl").getDouble(0.0) + Tables[i].getEntry("cl").getDouble(0.0);
                     break;
                 }
             }
+        }
+        else{
+          pose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
         }
         // If no tags visible, pose is not updated
     }
@@ -138,6 +150,12 @@ public class Tag extends SubsystemBase {
      * @return Distance in meters
      */
     public double GetDistFromCamera(int cam) {
+      if (cam == 0){
+        alpha = camToTagPitch + CAM_PITHC[cam];
+        dist = (Math.abs(height - CAM_HIGHT[cam])) * (Math.tan(Math.toRadians(alpha)));
+        dist = dist/Math.cos(Math.toRadians(camToTagYaw));
+        return dist;
+      }
       alpha = camToTagPitch + CAM_PITHC[cam];
       dist = (Math.abs(height - CAM_HIGHT[cam])) / (Math.tan(Math.toRadians(alpha)));
       dist = dist/Math.cos(Math.toRadians(camToTagYaw));
@@ -226,7 +244,7 @@ public class Tag extends SubsystemBase {
         return count;
       }
       private void crop(){
-        double YawCrop = camToTagYaw/31.25;
+        double YawCrop = -camToTagYaw/31.25;
         double PitchCrop = camToTagPitch/24.45;
         double[] crop = {YawCrop-CROP_OFSET,YawCrop+CROP_OFSET,PitchCrop-CROP_OFSET,PitchCrop+CROP_OFSET};
         cropEntry.setDoubleArray(crop);
@@ -234,5 +252,12 @@ public class Tag extends SubsystemBase {
       private void cropStop(){
         double[] crop = {-1,1,-1, 1};
         cropEntry.setDoubleArray(crop);
+      }
+      public Pose2d getPose(){
+        return this.pose;
+      }
+
+      public double getTimestamp() {
+        return latency;
       }
 }
