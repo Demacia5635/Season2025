@@ -51,8 +51,8 @@ public class PathFollow extends Command {
 
   double driveVelocity = 0;
   double rotationVelocity = 0;
-  static double fieldLength = 16.54; // in meters
-  static double fieldHeight = 8.21; // in meters
+  public static double fieldLength = 17.524437; // in meters
+  public static double fieldHeight = 8.109847; // in meters
   boolean isRed;
   boolean rotateToSpeaker = false;
 
@@ -123,17 +123,17 @@ public class PathFollow extends Command {
 
   @Override
   public void initialize() {
-    isRed = RobotContainer.robotContainer.isRed();
+    isRed = RobotContainer.isRed();
     // sets first point to chassis pose to prevent bugs with red and blue alliance
-    points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(), points[1].getRotation(),
+    points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(), chassis.getPose().getRotation(),
         points[0].getRadius(), false);
 
     // case for red alliance (blue is the default)
     if (isRed) {
       points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(),
-          Rotation2d.fromDegrees(180).minus(points[1].getRotation()), points[0].getRadius(), false);
+          Rotation2d.fromDegrees(180).minus(chassis.getPose().getRotation()), points[0].getRadius(), false);
       for (int i = 1; i < points.length; i++) {
-        points[i] = new PathPoint(fieldLength - points[i].getX(), points[i].getY(),
+        points[i] = new PathPoint(fieldLength - points[i].getX(), fieldHeight - points[i].getY(),
             Rotation2d.fromDegrees(180).minus(points[i].getRotation()),
             points[i].getRadius(), points[i].isAprilTag());
       }
