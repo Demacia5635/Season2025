@@ -8,22 +8,24 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.PathFollow.Util.PathPoint;
 import static frc.robot.chassis.commands.auto.AutoUtils.*;
+import static frc.robot.PathFollow.PathFollow.*;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Auto_3Coral extends Command {
   Command cmd;
-  PathPoint scoring1 = new PathPoint(12.03, 2.789, Rotation2d.fromDegrees(50), 0.5, false);
-  PathPoint betweenCorals = new PathPoint(13.779, 1.81, Rotation2d.fromDegrees(-9.2), 0.5, false);
-  PathPoint corals = new PathPoint(16.415, 1.13, Rotation2d.fromDegrees(-56.39), 0.5, false);
-  PathPoint scoring2 = new PathPoint(14.0, 2.45, Rotation2d.fromDegrees(117), 0.5, false);
-  PathPoint scoring3 = new PathPoint(12.64, 2.747, Rotation2d.fromDegrees(129), 0.5, false);
+  PathPoint dumyPoint = new PathPoint(0, 0, Rotation2d.fromDegrees(0), 0, false);
+  PathPoint scoring1 = new PathPoint(fieldLength - 12, fieldHeight - 2.7, Rotation2d.fromDegrees(180).minus(Rotation2d.fromDegrees(50)), 0.1, false);
+  PathPoint betweenCorals = new PathPoint(13.779, 1.81, Rotation2d.fromDegrees(-9.2), 0.1, false);
+  PathPoint corals = new PathPoint(16.415, 1.13, Rotation2d.fromDegrees(-56.39), 0.1, false);
+  PathPoint scoring2 = new PathPoint(14.0, 2.45, Rotation2d.fromDegrees(117), 0.1, false);
+  PathPoint scoring3 = new PathPoint(12.64, 2.747, Rotation2d.fromDegrees(129), 0.1, false);
 
   public Auto_3Coral() {
   }
 
   @Override
   public void initialize() {
-    cmd = goToMultiple(new PathPoint[]{scoring1, betweenCorals, corals, scoring2, corals, scoring3, corals},1.0);
+    cmd = goToMultiple(new PathPoint[]{dumyPoint, scoring1},1.0);
     cmd.schedule();
   }
 
