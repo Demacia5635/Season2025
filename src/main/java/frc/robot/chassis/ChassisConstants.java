@@ -79,7 +79,7 @@ public class ChassisConstants {
                 .withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
                 .withRampTime(RAMP_TIME_STEER);
             DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CANBus, NAME + " Drive")
-                .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, STEER_KS, STEER_KV, STEER_KA, 0)
+                .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
                 .withBrake(true)
                 .withInvert(true)
                 .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE);
