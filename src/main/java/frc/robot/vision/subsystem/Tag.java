@@ -139,7 +139,7 @@ public class Tag extends SubsystemBase {
             }
         }
         else{
-          pose = new Pose2d(0,0, Rotation2d.fromDegrees(0));
+          pose = null;
         }
         // If no tags visible, pose is not updated
     }
