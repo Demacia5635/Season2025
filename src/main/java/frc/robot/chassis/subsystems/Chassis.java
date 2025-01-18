@@ -1,5 +1,7 @@
 package frc.robot.chassis.subsystems;
 
+import frc.robot.utils.LogManager;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
@@ -18,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.chassis.ChassisConstants;
+import frc.robot.utils.Utils;
 import frc.robot.vision.subsystem.Tag;
 
 public class Chassis extends SubsystemBase {
@@ -155,4 +158,14 @@ public class Chassis extends SubsystemBase {
     }
     return res;
   }
+
+  public void setVelocitiesRotateToAngle(ChassisSpeeds speeds, Rotation2d angle) {
+    double angleError = angle.minus(getGyroAngle()).getRadians();
+    double angleErrorabs = Math.abs(angleError);
+    if (angleErrorabs>Math.toRadians(3)){
+        speeds.omegaRadiansPerSecond = angleError * 2;
+    }
+    setVelocities(speeds);
+  }
+
 }
