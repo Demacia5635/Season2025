@@ -25,11 +25,11 @@ public class ChassisConstants {
     public static final double STEER_KV = 0.3866402641515461;
     public static final double STEER_KA = 0.05;
 
-    public static final double DRIVE_KP = 5;
+    public static final double DRIVE_KP = 19;
     public static final double DRIVE_KI = 0;
-    public static final double DRIVE_KD = 0.004;
-    public static final double DRIVE_KS = 0.2;
-    public static final double DRIVE_KV = 0.45;
+    public static final double DRIVE_KD = 0;
+    public static final double DRIVE_KS = 0.85;
+    public static final double DRIVE_KV = 0.75;
     public static final double DRIVE_KA = 0.004;
 
     public static final double MOTION_MAGIC_VEL = 15 * 2 * Math.PI;
@@ -81,7 +81,7 @@ public class ChassisConstants {
                 .withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
                 .withRampTime(RAMP_TIME_STEER);
             DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CANBus, NAME + " Drive")
-                .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, STEER_KS, STEER_KV, STEER_KA, 0)
+                .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
                 .withBrake(true)
                 .withInvert(true)
                 .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE);
