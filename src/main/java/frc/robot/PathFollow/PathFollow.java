@@ -77,7 +77,7 @@ public class PathFollow extends Command {
 
   public PathFollow(PathPoint[] points, double velocity) {
     this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,
-        0, RobotContainer.robotContainer.isRed());
+        0, RobotContainer.isRed());
   }
 
   public PathFollow(PathPoint[] points) {
@@ -226,10 +226,7 @@ public class PathFollow extends Command {
     trajField.setRobotPose(chassis.getPose());
 
     chassisPose = chassis.getPose();
-    // SmartDashboard.putNumber("Angle traj",
-    // points[segmentIndex].getRotation().getDegrees());
-
-    // current velocity vector
+  
     Translation2d currentVelocity = new Translation2d(chassis.getChassisSpeeds().vxMetersPerSecond,
         chassis.getChassisSpeeds().vyMetersPerSecond);
     distancePassed = totalLeft - segments[segmentIndex].distancePassed(chassisPose.getTranslation());
@@ -246,8 +243,6 @@ public class PathFollow extends Command {
 
     Translation2d velVector = segments[segmentIndex].calc(chassisPose.getTranslation(), driveVelocity);
 
-    // System.out.println("APRILTAG MODE: " +
-    // segments[segmentIndex].isAprilTagMode());
     if (segments[segmentIndex].isAprilTagMode()) {
       if (!foundAprilTag)
         wantedAngle = getAngleApriltag();
@@ -270,7 +265,7 @@ public class PathFollow extends Command {
       speed.omegaRadiansPerSecond = autoRotateVel;
       chassis.setVelocities(speed);
     } else {
-      chassis.setVelocities(speed);
+      chassis.setVelocitiesRotateToAngle(speed, this.wantedAngle);
     }
 
   }
