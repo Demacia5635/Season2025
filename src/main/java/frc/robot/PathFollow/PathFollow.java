@@ -64,6 +64,7 @@ public class PathFollow extends Command {
   boolean autoRotate = false;
   double autoRotateVel = 2;
   Pose2d[] aprilTagsPositions = new Pose2d[]{new Pose2d()};
+  Rotation2d finalAngle;
 
   /**
    * Creates a new path follower using the given points.
@@ -80,10 +81,11 @@ public class PathFollow extends Command {
         0, RobotContainer.isRed());
   }
 
-  public PathFollow(PathPoint[] points) {
-    this(RobotContainer.robotContainer.chassis, points, ChassisConstants.MAX_DRIVE_VELOCITY,
+  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel) {
+    this(RobotContainer.robotContainer.chassis, points, maxVel,
         ChassisConstants.DRIVE_ACCELERATION,
-        0, RobotContainer.robotContainer.isRed());
+        0, RobotContainer.isRed());
+    this.finalAngle = finalAngle;
   }
 
   public PathFollow(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel) {
@@ -123,7 +125,7 @@ public class PathFollow extends Command {
 
   @Override
   public void initialize() {
-    isRed = RobotContainer.isRed();
+    isRed = false;//RobotContainer.isRed();
     // sets first point to chassis pose to prevent bugs with red and blue alliance
     points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(), chassis.getPose().getRotation(),
         points[0].getRadius(), false);
@@ -243,30 +245,14 @@ public class PathFollow extends Command {
 
     Translation2d velVector = segments[segmentIndex].calc(chassisPose.getTranslation(), driveVelocity);
 
-    if (segments[segmentIndex].isAprilTagMode()) {
-      if (!foundAprilTag)
-        wantedAngle = getAngleApriltag();
-    }
-
-    else {
-      if (segmentIndex < points.length) {
-        wantedAngle = points[segmentIndex].getRotation();
-      } else {
-        wantedAngle = points[points.length - 1].getRotation();
-      }
-    }
+   
 
     if (totalLeft <= 0.1)
       velVector = new Translation2d(0, 0);
     ChassisSpeeds speed = new ChassisSpeeds(velVector.getX(), velVector.getY(), 0);
-    if (rotateToSpeaker) {
-      chassis.setVelocities(speed);
-    } else if(autoRotate) {
-      speed.omegaRadiansPerSecond = autoRotateVel;
-      chassis.setVelocities(speed);
-    } else {
-      chassis.setVelocitiesRotateToAngle(speed, this.wantedAngle);
-    }
+    
+      chassis.setVelocitiesRotateToAngle(speed, finalAngle);
+  
 
   }
 

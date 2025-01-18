@@ -114,20 +114,21 @@ public class Tag extends SubsystemBase {
             camId++;
         }
         
-        if (visibleTags(ids) > 1) {
-            // add multi-tag angle estimation
-            // Calculate angle using multiple tags
-            LLAngle = calcAngle();
-            // Use first valid tag for position
-            for (int i = 0; i < ids.length; i++) {
-                if (ids[i] > 0) {
-                    pose = new Pose2d(getOriginToRobot(i, LLAngle), LLAngle);
-                    field.setRobotPose(pose);
-                    latency = Tables[i].getEntry("tl").getDouble(0.0) + Tables[i].getEntry("tc").getDouble(0.0);
-                    break;
-                }
-            }
-        } else if (visibleTags(ids) == 1) {
+        // if (visibleTags(ids) > 1) {
+        //     // add multi-tag angle estimation
+        //     // Calculate angle using multiple tags
+        //     LLAngle = calcAngle();
+        //     // Use first valid tag for position
+        //     for (int i = 0; i < ids.length; i++) {
+        //         if (ids[i] > 0) {
+        //             pose = new Pose2d(getOriginToRobot(i, LLAngle), LLAngle);
+        //             field.setRobotPose(pose);
+        //             latency = Tables[i].getEntry("tl").getDouble(0.0) + Tables[i].getEntry("tc").getDouble(0.0);
+        //             break;
+        //         }
+        //     }
+        // } else 
+        if (visibleTags(ids) == 1) {
             // Use single tag with gyro angle
             for (int i = 0; i < ids.length; i++) {
                 if (ids[i] > 0) {

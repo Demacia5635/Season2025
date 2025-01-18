@@ -131,7 +131,7 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         if(tag.getPose()!=null){
-            poseEstimator.resetPose(tag.getPose());
+            poseEstimator.resetPose(new Pose2d(tag.getPose().getTranslation(), getGyroAngle()));
         }else{
             poseEstimator.update(getGyroAngle(), getModulePositions());
         }
@@ -162,8 +162,8 @@ public class Chassis extends SubsystemBase {
   public void setVelocitiesRotateToAngle(ChassisSpeeds speeds, Rotation2d angle) {
     double angleError = angle.minus(getGyroAngle()).getRadians();
     double angleErrorabs = Math.abs(angleError);
-    if (angleErrorabs>Math.toRadians(3)){
-        speeds.omegaRadiansPerSecond = angleError * 2;
+    if (angleErrorabs>Math.toRadians(1.5)){
+        speeds.omegaRadiansPerSecond = angleError * 3;
     }
     setVelocities(speeds);
   }
