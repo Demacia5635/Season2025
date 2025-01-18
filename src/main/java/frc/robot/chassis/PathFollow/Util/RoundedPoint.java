@@ -1,5 +1,5 @@
 
-package frc.robot.PathFollow.Util;
+package frc.robot.chassis.PathFollow.Util;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
@@ -16,7 +16,7 @@ public class RoundedPoint{
 
     boolean aprilTagMode;
 
-    public RoundedPoint(PathPoint aPoint, PathPoint bPoint, PathPoint cPoint, boolean aprilTagMode){
+    public RoundedPoint(pathPoint aPoint, pathPoint bPoint, pathPoint cPoint, boolean aprilTagMode){
         this.radius = bPoint.getRadius();
         this.aPoint = aPoint.getTranslation();
         this.bPoint = bPoint.getTranslation();
