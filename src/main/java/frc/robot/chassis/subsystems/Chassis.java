@@ -9,7 +9,6 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -74,9 +73,6 @@ public class Chassis extends SubsystemBase {
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
-
-
-    
 
     public void setSteerPositions(double[] positions) {
         for (int i = 0; i < positions.length; i++) {
@@ -149,9 +145,6 @@ public class Chassis extends SubsystemBase {
     public ChassisSpeeds getChassisSpeeds() {
         return kinematics.toChassisSpeeds(getModuleStates());
     }
-    public Translation2d getVelocityVector(){
-        return new Translation2d(getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond); 
-    }
     /**
    * Returns the state of every module
    * 
@@ -166,9 +159,6 @@ public class Chassis extends SubsystemBase {
     return res;
   }
 
-  public void resetPose(){
-    poseEstimator.resetPose(new Pose2d());
-  }
   public void setVelocitiesRotateToAngle(ChassisSpeeds speeds, Rotation2d angle) {
     double angleError = angle.minus(getGyroAngle()).getRadians();
     double angleErrorabs = Math.abs(angleError);
