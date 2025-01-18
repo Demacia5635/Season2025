@@ -127,9 +127,10 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void periodic() {
-        poseEstimator.update(getGyroAngle(), getModulePositions());
         if(tag.getPose()!=null){
-            poseEstimator.addVisionMeasurement(tag.getPose(), tag.getTimestamp());
+            poseEstimator.resetPose(tag.getPose());
+        }else{
+            poseEstimator.update(getGyroAngle(), getModulePositions());
         }
         field.setRobotPose(poseEstimator.getEstimatedPosition());
     }
