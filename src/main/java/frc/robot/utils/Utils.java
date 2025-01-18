@@ -33,7 +33,7 @@ public class Utils {
     }
 
     public static Translation2d getStickVector(CommandXboxController controller){
-      return new Translation2d(controller.getRightX(), controller.getRightY());
+      return new Translation2d(deadband(controller.getRightX(), 0.13), deadband(controller.getRightY(), 0.13));
     }
 
   
