@@ -4,6 +4,7 @@
 
 package frc.robot.vision.utils;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 /**
@@ -50,6 +51,30 @@ public class VisionConstants {
         new Translation2d(inchToMeter(193.10), inchToMeter(193.10)),//22
 
     };
+    public static Rotation2d[] TAG_ANGLE = {null,//0
+        Rotation2d.fromDegrees(126),//1
+        Rotation2d.fromDegrees(234),//2
+        Rotation2d.fromDegrees(270),//3
+        Rotation2d.fromDegrees(0),//4
+        Rotation2d.fromDegrees(0),//5
+        Rotation2d.fromDegrees(300),//6
+        Rotation2d.fromDegrees(0),//7
+        Rotation2d.fromDegrees(60),//8
+        Rotation2d.fromDegrees(120),//9
+        Rotation2d.fromDegrees(180),//10
+        Rotation2d.fromDegrees(240),//11
+        Rotation2d.fromDegrees(54),//12
+        Rotation2d.fromDegrees(306),//13
+        Rotation2d.fromDegrees(180),//14
+        Rotation2d.fromDegrees(180),//15
+        Rotation2d.fromDegrees(90),//16
+        Rotation2d.fromDegrees(240),//17
+        Rotation2d.fromDegrees(180),//18
+        Rotation2d.fromDegrees(120),//19
+        Rotation2d.fromDegrees(120),//20
+        Rotation2d.fromDegrees(0),//21
+        Rotation2d.fromDegrees(300),//22
+    };
 
     /**
      * Array of AprilTag heights from the ground.
@@ -81,6 +106,8 @@ public class VisionConstants {
         REEF_TAG_HIGHT,//22
     };
 
+    public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-530,-160);
+    public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-530,160);
     /**
      * Converts a measurement from inches to meters
      * @param inch Value in inches

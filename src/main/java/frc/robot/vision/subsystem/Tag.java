@@ -64,6 +64,8 @@ public class Tag extends SubsystemBase {
 
     private double latency;
 
+    private Translation2d robotToTagFC;
+
     /**
      * Creates a new Tag subsystem
      * @param robot_angle_from_pose Pigeon2 gyroscope for determining robot orientation
@@ -128,7 +130,7 @@ public class Tag extends SubsystemBase {
         //         }
         //     }
         // } else 
-        if (visibleTags(ids) == 1) {
+        if (visibleTags(ids) != 0) {
             // Use single tag with gyro angle
             for (int i = 0; i < ids.length; i++) {
                 if (ids[i] > 0) {
@@ -178,7 +180,8 @@ public class Tag extends SubsystemBase {
       robotToTag = robotToTag.rotateBy(Rotation2d.fromDegrees(CAM_YAW[cam]));
 
       return robotToTag;
-  }
+    }
+
 
   /**
      * Calculates robot position relative to field origin
@@ -191,15 +194,15 @@ public class Tag extends SubsystemBase {
 
       height = TAG_HIGHT[(int)this.id];
       if(origintoTag != null) {
-          // Get vector from robot to tag
-          robotToTagRR = getRobotToTagRR(cam);
+        // Get vector from robot to tag
+        robotToTagRR = getRobotToTagRR(cam);
 
-          Translation2d robotToTagFC = robotToTagRR.rotateBy(Angle);
-                    originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.fromDegrees(180)));
-          
-                    return originToRobot;
-                }
-                return new Translation2d();
+        robotToTagFC = robotToTagRR.rotateBy(Angle);
+        originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.fromDegrees(180)));
+        
+        return originToRobot;
+      }
+        return new Translation2d();
                 
       }
           

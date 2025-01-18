@@ -29,7 +29,7 @@ public class Chassis extends SubsystemBase {
     private SwerveDriveKinematics kinematics;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
-    private Tag tag;
+    public Tag tag;
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
