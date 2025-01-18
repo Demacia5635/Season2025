@@ -23,11 +23,11 @@ public class ChassisConstants {
     public static final double STEER_KV = 0.3866402641515461;
     public static final double STEER_KA = 0.05;
 
-    public static final double DRIVE_KP = 5;
+    public static final double DRIVE_KP = 19;
     public static final double DRIVE_KI = 0;
-    public static final double DRIVE_KD = 0.004;
-    public static final double DRIVE_KS = 0.2;
-    public static final double DRIVE_KV = 0.45;
+    public static final double DRIVE_KD = 0;
+    public static final double DRIVE_KS = 0.85;
+    public static final double DRIVE_KV = 0.75;
     public static final double DRIVE_KA = 0.004;
 
     public static final double MOTION_MAGIC_VEL = 15 * 2 * Math.PI;
