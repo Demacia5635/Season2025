@@ -1,5 +1,7 @@
 package frc.robot.chassis.commands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -35,7 +37,18 @@ public class Drive extends Command {
         double velX = Math.pow(joyX, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyX);
         double velY = Math.pow(joyY, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyY);
         double velRot = Math.pow(rot, 2) * ChassisConstants.MAX_OMEGA_VELOCITY * Math.signum(rot);
+
         speeds = new ChassisSpeeds(velX, velY,velRot);
-        chassis.setVelocities(speeds);
+
+        Translation2d RightJoyVector = Utils.getStickVector(controller);
+        Rotation2d sticAngle = RightJoyVector.getAngle().unaryMinus().plus(Rotation2d.fromDegrees(90));
+        if (!isRed){
+            sticAngle = sticAngle.plus(Rotation2d.fromDegrees(180));
+        }
+        if(RightJoyVector.getNorm() > 0.3){
+            chassis.setVelocitiesRotateToAngle(speeds, sticAngle);
+        }else{
+            chassis.setVelocities(speeds);
+        }
     }
 }
