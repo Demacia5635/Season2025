@@ -77,6 +77,13 @@ public class Arm extends SubsystemBase {
       return;
     }
 
+    if (angle < ArmAngleMotorConstants.BACK_LIMIT) {
+      angle = ArmAngleMotorConstants.BACK_LIMIT;
+    }
+    if (angle > ArmAngleMotorConstants.FWD_LIMIT) {
+      angle = ArmAngleMotorConstants.FWD_LIMIT;
+    }
+
     armAngleMotor.setMotionMagic(angle);
   }
 
@@ -84,6 +91,13 @@ public class Arm extends SubsystemBase {
     if (!isCalibrated) {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
+    }
+
+    if (angle < GripperAngleMotorConstants.BACK_LIMIT) {
+      angle = GripperAngleMotorConstants.BACK_LIMIT;
+    }
+    if (angle > GripperAngleMotorConstants.FWD_LIMIT) {
+      angle = GripperAngleMotorConstants.FWD_LIMIT;
     }
 
     gripperAngleMotor.setMotionMagic(angle);

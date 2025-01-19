@@ -47,6 +47,8 @@ public class ArmConstants {
 
         /* The angle where the limit switch */
         public static final double BASE_ANGLE = 0;
+        public static final double BACK_LIMIT = 0;
+        public static final double FWD_LIMIT = 0;
 
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
                 .withPID(KP, KI, KD, KS, KV, KA, KG)
@@ -82,6 +84,8 @@ public class ArmConstants {
 
         /* The angle in the limit switch */
         public static final double BASE_ANGLE = 0;
+        public static final double BACK_LIMIT = 0;
+        public static final double FWD_LIMIT = 0;
 
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
                 .withPID(KP, KI, KD, KS, KV, KA, KG)
