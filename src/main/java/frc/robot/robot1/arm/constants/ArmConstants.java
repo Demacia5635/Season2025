@@ -105,6 +105,8 @@ public class ArmConstants {
         public static final Pair<Double, Double> L2 = new Pair<Double,Double>(0.0, 0.0);
         public static final Pair<Double, Double> L3 = new Pair<Double,Double>(0.0, 0.0);
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double,Double>(0.0, 0.0);
+        public static final Pair<Double, Double> ALGAE_UNDER = new Pair<Double,Double>(0.0, 0.0);
+        public static final Pair<Double, Double> ALGAE_OVER = new Pair<Double,Double>(0.0, 0.0);
     }
     
     public static enum ARM_ANGLE_STATES {
@@ -112,6 +114,8 @@ public class ArmConstants {
         L3_CALC,
         L2_TOUCHING,
         L3_TOUCHING,
+        ALGAE_UNDER,
+        ALGAE_OVER,
         CORAL_STATION,
         TESTING,
         IDLE;

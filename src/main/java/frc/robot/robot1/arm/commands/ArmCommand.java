@@ -9,7 +9,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
-
+import frc.robot.robot1.arm.constants.ArmConstants.ANGLES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.arm.utils.ArmUtils;
 import frc.robot.utils.LogManager;
@@ -54,6 +54,14 @@ public class ArmCommand extends Command {
       
       case L3_TOUCHING:
         wantedAngle = ANGLES.L3;
+        break;
+
+      case ALGAE_UNDER:
+        wantedAngle = ANGLES.ALGAE_UNDER;
+        break;
+
+      case ALGAE_OVER:
+        wantedAngle = ANGLES.ALGAE_OVER;
         break;
 
       case CORAL_STATION:
