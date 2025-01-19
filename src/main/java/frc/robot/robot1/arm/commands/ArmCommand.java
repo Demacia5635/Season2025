@@ -7,13 +7,14 @@ package frc.robot.robot1.arm.commands;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
-import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
-import frc.robot.robot1.arm.constants.ArmConstants.FieldConstants;
-import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleMotorConstants;
+
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.arm.utils.ArmUtils;
+import frc.robot.utils.LogManager;
+
+import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
 public class ArmCommand extends Command {
   private Arm arm;
@@ -39,27 +40,40 @@ public class ArmCommand extends Command {
   @Override
   public void execute() {
     switch (arm.state) {
-      case L2, L3:
-        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(), arm.state.TARGET_HEIGHT);
-        arm.setMotionMagic(wantedAngle.getFirst(), wantedAngle.getSecond());
+      case L2_CALC:
+        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(), FieldConstants.L2_HEIGHT);
+        break;
+
+      case L3_CALC:
+        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(), FieldConstants.L3_HEIGHT);
+        break;
+
+      case L2_TOUCHING:
+        wantedAngle = ANGLES.L2;
+        break;
+      
+      case L3_TOUCHING:
+        wantedAngle = ANGLES.L3;
         break;
 
       case CORAL_STATION:
-        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.CORAL_STATION).getNorm(), arm.state.TARGET_HEIGHT);
-        arm.setMotionMagic(wantedAngle.getFirst(), wantedAngle.getSecond());
+        wantedAngle = ANGLES.CORAL_STATION;
         break;
 
       case TESTING:
-        arm.setMotionMagic(testArmAngle, testGripperAngle);
         break;
 
       case IDLE:
+        wantedAngle = new Pair<Double,Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
 
       default:
+        LogManager.log("Arm state is illegul", AlertType.kError);
+        wantedAngle = new Pair<Double,Double>(arm.getArmAngle(), arm.getGripperAngle());
+        arm.stop();
 
     }
-
+    arm.setMotionMagic(wantedAngle.getFirst(), wantedAngle.getSecond());
   }
 
   @Override

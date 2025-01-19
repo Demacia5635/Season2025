@@ -6,6 +6,7 @@ package frc.robot.robot1.arm.constants;
 
 import com.ctre.phoenix6.CANBus;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.utils.TalonConfig;
 
@@ -95,17 +96,22 @@ public class ArmConstants {
         public static final double GRIPPER_ANGLE_POWER = -0.1;
     }
 
+    public static class ANGLES {
+        public static final Pair<Double, Double> L2 = new Pair<Double,Double>(0.0, 0.0);
+        public static final Pair<Double, Double> L3 = new Pair<Double,Double>(0.0, 0.0);
+        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double,Double>(0.0, 0.0);
+    }
+    
     public static enum ARM_ANGLE_STATES {
-        L2(0),
-        L3(0),
-        CORAL_STATION(0),
-        TESTING(0),
-        IDLE(0);
+        L2_CALC,
+        L3_CALC,
+        L2_TOUCHING,
+        L3_TOUCHING,
+        CORAL_STATION,
+        TESTING,
+        IDLE;
 
-        public final double TARGET_HEIGHT;
-
-        ARM_ANGLE_STATES(double targetHeight) {
-            this.TARGET_HEIGHT = targetHeight;
+        ARM_ANGLE_STATES() {
         }
     }
 
@@ -113,5 +119,9 @@ public class ArmConstants {
     public static class FieldConstants {
         public static final Translation2d REEF = new Translation2d();
         public static final Translation2d CORAL_STATION = new Translation2d();
+        
+        public static final double L2_HEIGHT = 0;
+        public static final double L3_HEIGHT = 0;
+        public static final double CORAL_STATION_HEIGHT = 0;
     }
 }
