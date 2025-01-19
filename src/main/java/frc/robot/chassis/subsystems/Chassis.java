@@ -17,13 +17,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.Odometry.DemaciaPoseEstimator;
 import frc.robot.chassis.ChassisConstants;
 
 public class Chassis extends SubsystemBase {
     private SwerveModule[] modules;
     private Pigeon2 gyro;
     private SwerveDriveKinematics kinematics;
-    private SwerveDrivePoseEstimator poseEstimator;
+    private DemaciaPoseEstimator demaciaPoseEstimator;
+    
     private Field2d field;
 
     private StatusSignal<Angle> gyroYawStatus;
@@ -45,7 +47,7 @@ public class Chassis extends SubsystemBase {
             ChassisConstants.BACK_RIGHT.POSITION
 
         );
-        poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
+         = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         field = new Field2d();
         
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> poseEstimator.resetPosition(new Rotation2d(), getModulePositions(), getPose())));
