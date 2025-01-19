@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.KeepSpinning;
+import frc.robot.chassis.commands.auto.AlignToTag;
 import frc.robot.chassis.commands.auto.Auto_3Coral;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.chassis.subsystems.SwerveModule;
@@ -29,6 +30,7 @@ public class RobotContainer implements Sendable{
   Drive drive;
   double num = 0;
   private System sysid;
+  private CommandXboxController controller;
 
 
   public RobotContainer() {
@@ -38,6 +40,7 @@ public class RobotContainer implements Sendable{
     drive = new Drive(chassis, new CommandXboxController(0));
     chassis.setDefaultCommand(drive);
     SmartDashboard.putData("RC", this);
+    controller = new CommandXboxController(0);
     configureBindings();
   }
   public double getNum(){ return num;}
@@ -45,6 +48,8 @@ public class RobotContainer implements Sendable{
 
 
   private void configureBindings() {
+    controller.a().onTrue(new AlignToTag(chassis, true));
+    controller.b().onTrue(new AlignToTag(chassis, false));
 
   }
 

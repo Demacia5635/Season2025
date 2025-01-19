@@ -64,8 +64,10 @@ public class Tag extends SubsystemBase {
 
     private double latency;
 
-    private Translation2d robotToTagFC;
+    public Translation2d robotToTagFC;
+    public Double cameraID;
 
+    public double tagID = 0;
     /**
      * Creates a new Tag subsystem
      * @param robot_angle_from_pose Pigeon2 gyroscope for determining robot orientation
@@ -137,11 +139,14 @@ public class Tag extends SubsystemBase {
                     pose = new Pose2d(getOriginToRobot(i, getRobotAngle.get()), getRobotAngle.get());
                     field.setRobotPose(pose);
                     latency = Tables[i].getEntry("tl").getDouble(0.0) + Tables[i].getEntry("cl").getDouble(0.0);
+                    cameraID = (double)i;
+                    tagID = Tables[i].getEntry("tid").getDouble(0.0);
                     break;
                 }
             }
         }
         else{
+          cameraID = null;
           pose = null;
         }
         // If no tags visible, pose is not updated

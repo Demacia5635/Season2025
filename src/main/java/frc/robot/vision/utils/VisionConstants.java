@@ -62,7 +62,7 @@ public class VisionConstants {
         Rotation2d.fromDegrees(60),//8
         Rotation2d.fromDegrees(120),//9
         Rotation2d.fromDegrees(180),//10
-        Rotation2d.fromDegrees(240),//11
+        Rotation2d.fromDegrees(60),//11
         Rotation2d.fromDegrees(54),//12
         Rotation2d.fromDegrees(306),//13
         Rotation2d.fromDegrees(180),//14
@@ -106,8 +106,8 @@ public class VisionConstants {
         REEF_TAG_HIGHT,//22
     };
 
-    public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-530,-160);
-    public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-530,160);
+    public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-0.51,-0.160);
+    public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-0.51,0.160);
     /**
      * Converts a measurement from inches to meters
      * @param inch Value in inches
