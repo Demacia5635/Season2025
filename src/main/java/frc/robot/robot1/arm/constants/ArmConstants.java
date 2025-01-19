@@ -96,6 +96,11 @@ public class ArmConstants {
         public static final double GRIPPER_ANGLE_POWER = -0.1;
     }
 
+    public static class MaxErrors {
+        public static final double ARM_ANGLE_ERROR = 0.25;
+        public static final double GRIPPER_ANGLE_ERROR = 0.25;
+    }
+    
     public static class ANGLES {
         public static final Pair<Double, Double> L2 = new Pair<Double,Double>(0.0, 0.0);
         public static final Pair<Double, Double> L3 = new Pair<Double,Double>(0.0, 0.0);

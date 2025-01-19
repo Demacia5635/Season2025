@@ -4,8 +4,6 @@
 
 package frc.robot.robot1.arm.subsystems;
 
-import static frc.robot.robot1.arm.constants.ArmConstants.*;
-
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -14,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
+
+import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
 public class Arm extends SubsystemBase {
 
@@ -24,8 +24,9 @@ public class Arm extends SubsystemBase {
   private DigitalInput gripperAngleLimit;
 
   public boolean isCalibrated;
-
+  
   public ARM_ANGLE_STATES state;
+  private boolean isReady;
 
   public Arm() {
     setName(NAME);
@@ -39,6 +40,7 @@ public class Arm extends SubsystemBase {
     isCalibrated = false;
 
     state = ARM_ANGLE_STATES.IDLE;
+    isReady = true;
 
     SmartDashboard.putData(ArmAngleMotorConstants.NAME, armAngleMotor);
     SmartDashboard.putData(GripperAngleMotorConstants.NAME, gripperAngleMotor);
@@ -52,6 +54,7 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle);
     LogManager.addEntry(getName() + "/Arm Angle Limit Switch", () -> getArmAngleLimit() ? 1 : 0);
     LogManager.addEntry(getName() + "/Gripper Angle Limit Switch", () -> getGripperAngleLimit() ? 1 : 0);
+    LogManager.addEntry(getName() + "/IsReady", ()-> isReady() ? 1 : 0);
 
   }
 
@@ -104,6 +107,15 @@ public class Arm extends SubsystemBase {
     gripperAngleMotor.setPosition(angle);
   }
 
+  private void checkIfIsReady() {
+    isReady = armAngleMotor.getCurrentClosedLoopError() <= MaxErrors.ARM_ANGLE_ERROR
+    && gripperAngleMotor.getCurrentClosedLoopError() <= MaxErrors.GRIPPER_ANGLE_ERROR;
+  }
+
+  public boolean isReady() {
+    return isReady;
+  }
+
   public double getArmAngle() {
     return armAngleMotor.getCurrentPosition();
   }
@@ -128,6 +140,6 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-
+    checkIfIsReady();
   }
 }
