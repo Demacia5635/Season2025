@@ -69,6 +69,7 @@ public class ArmCommand extends Command {
         break;
 
       case TESTING:
+        wantedAngle = new Pair<Double,Double>(testArmAngle, testGripperAngle);
         break;
 
       case IDLE:
