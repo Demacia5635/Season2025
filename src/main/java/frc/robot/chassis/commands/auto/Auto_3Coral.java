@@ -29,14 +29,21 @@ public class Auto_3Coral extends Command {
     cmd = goToMultiple(new PathPoint[]{dumyPoint, scoring1} ,3.5, Rotation2d.fromDegrees(50), false);
     cmd = cmd.andThen(new AlignToTag(chassis, true, true));
 
-    for(int i =0 ; i< 3; i++){
-      cmd = cmd.andThen(goToMultiple(new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(13.2, 1.92), Rotation2d.fromDegrees(0))}, 2, Rotation2d.fromDegrees(50), true));
-      cmd = cmd.andThen(goToMultiple(new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(16, 1.24), new Rotation2d(), 0.2)}, 3, feeder.getRotation(), false));
-      cmd = cmd.andThen(new AlignToTag(chassis, false, false));
+    cmd = cmd.andThen(goToMultiple(
+      new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(13.2, 1.92), Rotation2d.fromDegrees(0))},
+       2, Rotation2d.fromDegrees(50), true));
+       
+      cmd = cmd.andThen(goToMultiple(
+        new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(16, 1.24), new Rotation2d(), 0.2)},
+         3, feeder.getRotation(), false));
+     // cmd = cmd.andThen(new AlignToTag(chassis, false, false));
       cmd = cmd.andThen(new WaitCommand(0.5));
-      cmd = cmd.andThen(goToMultiple(new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(11.6, 1.5), Rotation2d.fromDegrees(0))}, 2.7, Rotation2d.fromDegrees(50), false));
-      cmd = cmd.andThen(new AlignToTag(chassis, true, true));
-    }
+      
+
+      cmd = cmd.andThen(goToMultiple(
+        new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(12, 1), Rotation2d.fromDegrees(0))},
+         2, Rotation2d.fromDegrees(50), true));
+    
     
     
 
