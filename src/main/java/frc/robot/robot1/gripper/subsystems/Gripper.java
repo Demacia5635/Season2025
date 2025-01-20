@@ -8,21 +8,27 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LogManager;
-import frc.robot.utils.TalonMotor;
 
 import static frc.robot.robot1.gripper.constants.GripperConstants.*;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.InvertType;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 public class Gripper extends SubsystemBase {
-  private final TalonMotor motor;
+  private final TalonSRX motor;
   private final DigitalInput sensor;
 
   public Gripper() {
     setName(NAME);
 
-    motor = new TalonMotor(MotorConstants.MOTOR_CONFIG);
+    motor = new TalonSRX(MotorConstants.MOTOR_ID);
+    motor.setInverted(MotorConstants.INVERT ? InvertType.InvertMotorOutput : InvertType.None);
+    motor.setNeutralMode(MotorConstants.BRAKE ? NeutralMode.Brake : NeutralMode.Coast);
+
     sensor = new DigitalInput(SensorConstants.SENSOR_CHANNEL);
 
-    SmartDashboard.putData(getName() + "/Motor", motor);
     addLog();
     SmartDashboard.putData(this);
   }
@@ -32,7 +38,7 @@ public class Gripper extends SubsystemBase {
   }
 
   public void setPower(double power) {
-    motor.set(power);
+    motor.set(ControlMode.PercentOutput, power);
   }
 
   public void stop() {

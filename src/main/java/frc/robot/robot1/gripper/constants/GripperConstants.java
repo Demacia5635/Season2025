@@ -4,10 +4,6 @@
 
 package frc.robot.robot1.gripper.constants;
 
-import com.ctre.phoenix6.CANBus;
-
-import frc.robot.utils.TalonConfig;
-
 /** Add your docs here. */
 public class GripperConstants {
     
@@ -15,10 +11,8 @@ public class GripperConstants {
 
     public static class MotorConstants {
         public static final int MOTOR_ID = 0;
-        public static final CANBus CANBUS = new CANBus("rio");
-        public static final String NAME = "Gripper Motor";
-
-        public static final TalonConfig MOTOR_CONFIG = new TalonConfig(MOTOR_ID, CANBUS, NAME);
+        public static final boolean INVERT = false;
+        public static final boolean BRAKE = true;
     }
 
     public static class SensorConstants {
