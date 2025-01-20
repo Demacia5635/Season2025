@@ -172,5 +172,12 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     checkIfIsReady();
+
+    if (armAngleMotor.getCurrentVelocity() > Math.abs(TeethRatios.ARM_ANGLE_MINIMUM_VELOCITY) 
+    && gripperAngleMotor.getCurrentVoltage() > Math.abs(TeethRatios.GRIPPER_ANGLE_MINIMUM_VOLTAGE)) {
+      gripperAngleSetVelocity(-1 * TeethRatios.GEARS_RATIO * armAngleMotor.getCurrentVelocity());
+    } else if (gripperAngleMotor.getCurrentControlMode() == "VoltageVelocity") {
+      gripperAngleSetVelocity(0);
+    }
   }
 }
