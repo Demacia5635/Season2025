@@ -8,6 +8,7 @@ import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
+import frc.robot.Constants;
 import frc.robot.utils.TalonConfig;
 
 /** Add your docs here. */
@@ -24,7 +25,7 @@ public class ArmConstants {
     public static class ArmAngleMotorConstants {
         public static final int ID = 20;
         /* TODO: change to canbus at constants when merging the branch */
-        public static final CANBus CAN_BUS = new CANBus();
+        public static final CANBus CAN_BUS = Constants.CAN_BUS;
         public static final String NAME = "Arm Angle Motor";
 
         public static final double KP = 0;
@@ -61,7 +62,7 @@ public class ArmConstants {
     public static class GripperAngleMotorConstants {
         public static final int ID = 21;
         /* TODO: change to canbus at constants when merging the branch */
-        public static final CANBus CAN_BUS = new CANBus();
+        public static final CANBus CAN_BUS = Constants.CAN_BUS;
         public static final String NAME = "Gripper Angle Motor";
 
         public static final double KP = 0;
