@@ -62,7 +62,7 @@ public class VisionConstants {
         Rotation2d.fromDegrees(60),//8
         Rotation2d.fromDegrees(120),//9
         Rotation2d.fromDegrees(180),//10
-        Rotation2d.fromDegrees(60),//11
+        Rotation2d.fromDegrees(240),//11
         Rotation2d.fromDegrees(54),//12
         Rotation2d.fromDegrees(306),//13
         Rotation2d.fromDegrees(180),//14

@@ -44,7 +44,7 @@ public class AlignToTag extends Command {
     if(tagID == null){
       robotToTag = O_TO_TAG[tagID].minus(chassis.getPose().getTranslation());
       tagToTarget = isRight ? REEF_TAG_TO_RIGHT_SCORING : REEF_TAG_TO_LEFT_SCORING;
-      targetAngle = TAG_ANGLE[tagID];
+      targetAngle = TAG_ANGLE[tagID].minus(Rotation2d.fromDegrees(180));
       tagToTarget = tagToTarget.rotateBy(targetAngle);
       robotToTarget = robotToTag.plus(tagToTarget);
       chassis.setVelocitiesRotateToAngle(new ChassisSpeeds(Math.min(robotToTarget.getX()*4, maxVel), Math.min(robotToTarget.getY()*4, maxVel), 0), targetAngle);
