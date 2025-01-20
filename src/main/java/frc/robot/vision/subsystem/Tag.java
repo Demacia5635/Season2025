@@ -1,5 +1,6 @@
 package frc.robot.vision.subsystem;
 
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -11,9 +12,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LogManager;
 
+
 import static frc.robot.vision.utils.VisionConstants.*;
 
+
+import java.math.RoundingMode;
 import java.util.function.Supplier;
+
 
 /**
  * Subsystem for processing AprilTag vision data and calculating robot position.
@@ -21,16 +26,20 @@ import java.util.function.Supplier;
  */
 public class Tag extends SubsystemBase {
 
+
     private Translation2d robotToTag;
     private Translation2d cameraToTag;
     private double alpha;
 
-    // NetworkTables communication for each camera
-    private NetworkTable ltagTable = NetworkTableInstance.getDefault().getTable(TABLE[0]);
-    private NetworkTable rtagTable = NetworkTableInstance.getDefault().getTable(TABLE[1]);
-    private NetworkTable stagTable = NetworkTableInstance.getDefault().getTable(TABLE[2]);
 
-    private NetworkTable[] Tables = {ltagTable, rtagTable, stagTable};
+    // NetworkTables communication for each camera
+    private NetworkTable bottomTagTable = NetworkTableInstance.getDefault().getTable(TABLE[0]);
+    private NetworkTable frontTagTable = NetworkTableInstance.getDefault().getTable(TABLE[1]);
+    private NetworkTable backTagTable = NetworkTableInstance.getDefault().getTable(TABLE[2]);
+
+
+    private NetworkTable[] Tables = {bottomTagTable, frontTagTable, backTagTable};
+
 
     // Vision processing variables
     private double camToTagYaw;
@@ -48,24 +57,31 @@ public class Tag extends SubsystemBase {
     private double count;
     public Pose2d pose;
 
+
     private Translation2d T1;
     private Translation2d T2;
     private double ID1;
     private double ID2;
 
+
     private Translation2d TagToTagRR;
     private Translation2d TagToTagFR;
 
+
     private NetworkTableEntry cropEntry;
 
-    
+
+   
     private Supplier<Rotation2d> getRobotAngle;
     private Field2d field;
 
+
     private double latency;
+
 
     public Translation2d robotToTagFC;
     public Double cameraID;
+
 
     public double tagID = 0;
     /**
@@ -75,10 +91,13 @@ public class Tag extends SubsystemBase {
     public Tag(Supplier<Rotation2d> robot_angle_from_pose) {
         this.getRobotAngle = robot_angle_from_pose;
 
+
         // Initialize NetworkTables connections for all cameras
-        ltagTable = NetworkTableInstance.getDefault().getTable(TABLE[0]);
-        rtagTable = NetworkTableInstance.getDefault().getTable(TABLE[1]);
-        stagTable = NetworkTableInstance.getDefault().getTable(TABLE[2]);
+        bottomTagTable = NetworkTableInstance.getDefault().getTable(TABLE[0]);
+        frontTagTable = NetworkTableInstance.getDefault().getTable(TABLE[1]);
+        backTagTable = NetworkTableInstance.getDefault().getTable(TABLE[2]);
+
+
 
 
         field = new Field2d();
@@ -88,15 +107,16 @@ public class Tag extends SubsystemBase {
         SmartDashboard.putData("field-tag", field);
     }
 
+
     @Override
     public void periodic() {
         // Initialize arrays if they haven't been initialized
         ids = new double[Tables.length];
         RobotsToTagsRR = new Translation2d[Tables.length];
-        
+       
         // Reset camId to -1
         camId = 0;
-        
+       
         // Process data from each camera
         for (NetworkTable t : Tables) {
             if (t.getEntry("tv").getDouble(0.0) != 0) {
@@ -117,7 +137,7 @@ public class Tag extends SubsystemBase {
             }
             camId++;
         }
-        
+       
         // if (visibleTags(ids) > 1) {
         //     // add multi-tag angle estimation
         //     // Calculate angle using multiple tags
@@ -131,7 +151,7 @@ public class Tag extends SubsystemBase {
         //             break;
         //         }
         //     }
-        // } else 
+        // } else
         if (visibleTags(ids) != 0) {
             // Use single tag with gyro angle
             for (int i = 0; i < ids.length; i++) {
@@ -152,6 +172,7 @@ public class Tag extends SubsystemBase {
         // If no tags visible, pose is not updated
     }
 
+
       /**
      * Calculates straight-line distance from camera to AprilTag
      * Uses trigonometry with known tag height and camera angle
@@ -170,6 +191,7 @@ public class Tag extends SubsystemBase {
       return dist;
     }
 
+
       /**
      * Calculates vector from robot center to detected AprilTag
      * Accounts for camera offset from robot center
@@ -177,15 +199,18 @@ public class Tag extends SubsystemBase {
      */
     public Translation2d getRobotToTagRR(int cam) {
       // Convert camera measurements to vector
-      cameraToTag = new Translation2d(GetDistFromCamera(cam), 
+      cameraToTag = new Translation2d(GetDistFromCamera(cam),
           Rotation2d.fromDegrees(camToTagYaw));
-          
+         
       // Add camera offset to get robot center to tag vector
       robotToTag = ROBOT_TO_CAM[cam].plus(cameraToTag);
       robotToTag = robotToTag.rotateBy(Rotation2d.fromDegrees(CAM_YAW[cam]));
 
+
       return robotToTag;
     }
+
+
 
 
   /**
@@ -195,22 +220,25 @@ public class Tag extends SubsystemBase {
      */
     public Translation2d getOriginToRobot(int cam, Rotation2d Angle) {
 
+
       origintoTag = O_TO_TAG[(int)this.id];
+
 
       height = TAG_HIGHT[(int)this.id];
       if(origintoTag != null) {
         // Get vector from robot to tag
         robotToTagRR = getRobotToTagRR(cam);
 
+
         robotToTagFC = robotToTagRR.rotateBy(Angle);
         originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.fromDegrees(180)));
-        
+       
         return originToRobot;
       }
         return new Translation2d();
-                
+               
       }
-          
+         
       private Rotation2d calcAngle() {
         T1 = null;
         T2 = null;
@@ -245,6 +273,7 @@ public class Tag extends SubsystemBase {
         return LLAngle;
       }
 
+
       private double visibleTags(double[] ids){
         count = 0;
         for (double id : ids) {
@@ -266,7 +295,45 @@ public class Tag extends SubsystemBase {
         return this.pose;
       }
 
+
       public double getTimestamp() {
         return latency;
       }
+      public Rotation2d alignRobot(){
+        Rotation2d yaw = Rotation2d.fromDegrees(0);
+        Double id;
+        if (bottomTagTable.getEntry("tv").getDouble(0.0) != 0) {
+         
+          bottomTagTable.getEntry("pipeline").setNumber(1);
+         
+          double[] botpose = NetworkTableInstance.getDefault().getTable("limelight-bottom").getEntry("botpose_targetspace").getDoubleArray(new double[6]);
+          System.out.println(botpose[4]);
+          yaw = Rotation2d.fromDegrees(botpose[4]);
+          System.out.println("preview" + yaw);
+
+
+          id = bottomTagTable.getEntry("tid").getDouble(0.0);
+
+
+          if (id != 0){
+            Rotation2d tagAngle = TAG_ANGLE[id.intValue()].minus(Rotation2d.fromDegrees(180));
+           
+            yaw = yaw.rotateBy(tagAngle);
+            System.out.println("Yaw" + yaw);
+
+
+            System.out.println("Tagangle" + tagAngle);
+
+
+          }
+
+
+
+
+          bottomTagTable.getEntry("pipeline").setNumber(0);
+          return yaw;
+      }
+      return yaw;
+    }
 }
+
