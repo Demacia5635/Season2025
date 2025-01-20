@@ -22,7 +22,7 @@ public class AlignToTag extends Command {
   private Translation2d robotToTag;
   private Translation2d tagToTarget;
   private Rotation2d targetAngle;
-  private Translation2d robotToTarget;
+  private Translation2d robotToTarget = new Translation2d(10,10);
   private double maxVel = 3.8;
   private Integer tagID = null;
 
@@ -41,7 +41,10 @@ public class AlignToTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(tagID == null){
+    if (chassis.tag.tagID != 0){
+      tagID = (int)chassis.tag.tagID;
+    }
+    if(tagID != null){
       robotToTag = O_TO_TAG[tagID].minus(chassis.getPose().getTranslation());
       tagToTarget = isRight ? REEF_TAG_TO_RIGHT_SCORING : REEF_TAG_TO_LEFT_SCORING;
       targetAngle = TAG_ANGLE[tagID].minus(Rotation2d.fromDegrees(180));

@@ -106,8 +106,8 @@ public class VisionConstants {
         REEF_TAG_HIGHT,//22
     };
 
-    public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-0.51,-0.160);
-    public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-0.51,0.160);
+    public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-0.52,-0.160);
+    public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-0.52,0.160);
     /**
      * Converts a measurement from inches to meters
      * @param inch Value in inches
