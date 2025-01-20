@@ -108,6 +108,23 @@ public class Arm extends SubsystemBase {
     gripperAngleMotorSetMotionMagic(gripperAngle);
   }
 
+  public void gripperAngleSetVelocity(double velocity) {
+    if (!isCalibrated) {
+      LogManager.log("Can not move motor before calibration", AlertType.kError);
+      return;
+    }
+
+    if (getGripperAngle() < GripperAngleMotorConstants.BACK_LIMIT) {
+      velocity = 0;
+    }
+
+    if (getGripperAngle() > GripperAngleMotorConstants.FWD_LIMIT) {
+      velocity = 0;
+    }
+    
+    gripperAngleMotor.setVelocity(velocity);
+  }
+
   public void stop() {
     armAngleMotor.stopMotor();
     gripperAngleMotor.stopMotor();
