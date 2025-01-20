@@ -16,13 +16,13 @@ public class ArmConstants {
     public static final String NAME = "Arm";
 
     public static class CalculationsConstants {
-        public static final double BASE_HEIGHT = 0.845;
-        public static final double ARM_1_LEN = 0.535;
-        public static final double ARM_2_LEN = 0.1;
+        public static final double BASE_HEIGHT = 0.846;
+        public static final double ARM_1_LEN = 0.410;
+        public static final double ARM_2_LEN = 0.255;
     }
 
     public static class ArmAngleMotorConstants {
-        public static final int ID = 0;
+        public static final int ID = 20;
         /* TODO: change to canbus at constants when merging the branch */
         public static final CANBus CAN_BUS = new CANBus();
         public static final String NAME = "Arm Angle Motor";
@@ -42,8 +42,8 @@ public class ArmConstants {
         public static final int LIMIT_SWITCH_CHANNEL = 0;
 
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = false;
-        public static final double GEAR_RATIO = 0;
+        public static final boolean IS_INVERTED = true;
+        public static final double GEAR_RATIO = 1.0 / 36.0 * (16.0 / 105.0);
 
         /* The angle where the limit switch */
         public static final double BASE_ANGLE = 0;
@@ -59,7 +59,7 @@ public class ArmConstants {
     }
 
     public static class GripperAngleMotorConstants {
-        public static final int ID = 0;
+        public static final int ID = 21;
         /* TODO: change to canbus at constants when merging the branch */
         public static final CANBus CAN_BUS = new CANBus();
         public static final String NAME = "Gripper Angle Motor";
@@ -79,8 +79,8 @@ public class ArmConstants {
         public static final int LIMIT_SWITCH_CHANNEL = 0;
 
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = false;
-        public static final double GEAR_RATIO = 0;
+        public static final boolean IS_INVERTED = true;
+        public static final double GEAR_RATIO = 1.0 / 36.0 * (18.0 / 25.0) * (83.0 / 49.0);
 
         /* The angle in the limit switch */
         public static final double BASE_ANGLE = 0;
