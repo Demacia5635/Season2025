@@ -122,7 +122,7 @@ public class DemaciaPoseEstimator<T> {
    *
    * @return The estimated robot pose in meters.
    */
-  private Pose2d getEstimatedPosition() {
+  public Pose2d getEstimatedPosition() {
     return m_odometry.getCurPose();
   }
 

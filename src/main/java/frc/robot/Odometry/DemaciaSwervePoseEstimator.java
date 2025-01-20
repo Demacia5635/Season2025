@@ -115,6 +115,7 @@ public class DemaciaSwervePoseEstimator extends DemaciaPoseEstimator<SwerveModul
     return update(gyroAngle, modulePositions);
   }
 
+
   /**
    * Updates the pose estimator with wheel encoder and gyro information. This should be called every
    * loop.

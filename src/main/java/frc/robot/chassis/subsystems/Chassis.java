@@ -17,14 +17,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.Odometry.DemaciaKinematics;
+import frc.robot.Odometry.DemaciaOdometry;
 import frc.robot.Odometry.DemaciaPoseEstimator;
+import frc.robot.Odometry.DemaciaSwervePoseEstimator;
 import frc.robot.chassis.ChassisConstants;
 
 public class Chassis extends SubsystemBase {
     private SwerveModule[] modules;
     private Pigeon2 gyro;
-    private SwerveDriveKinematics kinematics;
-    private DemaciaPoseEstimator demaciaPoseEstimator;
+    private DemaciaKinematics kinematics;
+    private DemaciaSwervePoseEstimator demaciaPoseEstimator;
     
     private Field2d field;
 
@@ -40,17 +43,17 @@ public class Chassis extends SubsystemBase {
         };
         gyro = new Pigeon2(ChassisConstants.GYRO_ID, ChassisConstants.CANBus);
         addStatus();
-        kinematics = new SwerveDriveKinematics(
+        kinematics = new DemaciaKinematics(
             ChassisConstants.FRONT_LEFT.POSITION,
             ChassisConstants.FRONT_RIGHT.POSITION,
             ChassisConstants.BACK_LEFT.POSITION,
             ChassisConstants.BACK_RIGHT.POSITION
 
         );
-         = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
+        demaciaPoseEstimator = new DemaciaSwervePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), getPose(), new DemaciaOdometry(kinematics, getGyroAngle(), getModulePositions(), getPose()));
         field = new Field2d();
         
-        SmartDashboard.putData("reset gyro", new InstantCommand(()-> poseEstimator.resetPosition(new Rotation2d(), getModulePositions(), getPose())));
+        SmartDashboard.putData("reset gyro", new InstantCommand(()-> demaciaPoseEstimator.resetPosition(new Rotation2d(), getModulePositions(), getPose())));
         
     }
 
@@ -60,7 +63,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return poseEstimator.getEstimatedPosition();
+        return demaciaPoseEstimator.getEstimatedPosition();
     }
 
     public void setVelocities(ChassisSpeeds speeds) {
@@ -125,8 +128,8 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void periodic() {
-        poseEstimator.update(getGyroAngle(), getModulePositions());
-        field.setRobotPose(poseEstimator.getEstimatedPosition());
+        demaciaPoseEstimator.update(getGyroAngle(), getModulePositions());
+        field.setRobotPose(demaciaPoseEstimator.getEstimatedPosition());
     }
         
     public boolean isRed() {
