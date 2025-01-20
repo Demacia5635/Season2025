@@ -29,6 +29,7 @@ import frc.robot.utils.TrapezoidNoam;
 
 public class PathFollow extends Command {
   Timer timer = new Timer();
+  double maxVel;
 
   Chassis chassis;
   RoundedPoint[] corners;
@@ -65,6 +66,7 @@ public class PathFollow extends Command {
   double autoRotateVel = 2;
   Pose2d[] aprilTagsPositions = new Pose2d[]{new Pose2d()};
   Rotation2d finalAngle;
+  boolean isConstVel = false;
 
   /**
    * Creates a new path follower using the given points.
@@ -79,13 +81,16 @@ public class PathFollow extends Command {
   public PathFollow(PathPoint[] points, double velocity) {
     this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,
         0, RobotContainer.isRed());
+        this.maxVel = velocity;
   }
 
-  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel) {
+  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel) {
     this(RobotContainer.robotContainer.chassis, points, maxVel,
-        ChassisConstants.DRIVE_ACCELERATION,
+        8,
         0, RobotContainer.isRed());
     this.finalAngle = finalAngle;
+    this.maxVel = maxVel;
+    this.isConstVel = isConstVel;
   }
 
   public PathFollow(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel) {
@@ -239,9 +244,11 @@ public class PathFollow extends Command {
       if (segmentIndex != segments.length - 1)
         segmentIndex++;
     }
-    driveVelocity = driveTrapezoid.calculate(
-        totalLeft - segments[segmentIndex].distancePassed(chassisPose.getTranslation()),
-        currentVelocity.getNorm(), finishVel);
+    /*driveVelocity = driveTrapezoid.calculate(
+      totalLeft - segments[segmentIndex].distancePassed(chassisPose.getTranslation()),
+        currentVelocity.getNorm(), finishVel);*/
+
+    driveVelocity = isConstVel ? maxVel : Math.min((totalLeft - segments[segmentIndex].distancePassed(chassis.getPose().getTranslation())) * 3, maxVel) ;
 
     Translation2d velVector = segments[segmentIndex].calc(chassisPose.getTranslation(), driveVelocity);
 

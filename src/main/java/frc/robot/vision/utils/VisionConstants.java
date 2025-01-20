@@ -108,6 +108,8 @@ public class VisionConstants {
 
     public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-0.52,-0.160);
     public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-0.52,0.160);
+    public static final Translation2d INTAKE_TAG_TO_LEFT_SCORING = new Translation2d(-0.80,0.0);
+
     /**
      * Converts a measurement from inches to meters
      * @param inch Value in inches
@@ -119,8 +121,8 @@ public class VisionConstants {
     
     // 0 is LEFT TAG(ll2), 1 is RIGHT TAG, 2 is SIDE TAG, 3 is NOTE.
     //TAG Camera mounting configuration
-    public static final double[] CAM_HIGHT = {0.491,0.91,0.91};
-    public static final double[] CAM_PITHC = {67.886,50-3.5,50+3.5};
+    public static final double[] CAM_HIGHT = {0.491,0.905,0.91};
+    public static final double[] CAM_PITHC = {67.886,30,45};
     public static final double[] CAM_YAW = {0,0,90};
 
     // Camera to Tag position relative to robot center

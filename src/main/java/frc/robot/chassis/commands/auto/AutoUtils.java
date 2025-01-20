@@ -45,8 +45,8 @@ public class AutoUtils {
          0, false).setAutoRotate(rate);
     }
 
-    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle){
-        return new PathFollow(points, finalAngle, maxVel);
+    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel){
+        return new PathFollow(points, finalAngle, maxVel, isConstVel);
     }
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker) {
         return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxv, maxAceel, 0, toSpeaker);

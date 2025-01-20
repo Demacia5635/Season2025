@@ -19,6 +19,7 @@ import static frc.robot.vision.utils.VisionConstants.*;
 public class AlignToTag extends Command {
   private Chassis chassis;
   private boolean isRight;
+  private boolean isReef;
   private Translation2d robotToTag;
   private Translation2d tagToTarget;
   private Rotation2d targetAngle;
@@ -27,9 +28,10 @@ public class AlignToTag extends Command {
   private Integer tagID = null;
 
 
-  public AlignToTag(Chassis chassis, boolean isRight) {
+  public AlignToTag(Chassis chassis, boolean isRight, boolean isReef) {
     this.chassis = chassis;
     this.isRight = isRight;
+    this.isReef = isReef;
   }
   @Override
   public void initialize() {
@@ -46,7 +48,7 @@ public class AlignToTag extends Command {
     }
     if(tagID != null){
       robotToTag = O_TO_TAG[tagID].minus(chassis.getPose().getTranslation());
-      tagToTarget = isRight ? REEF_TAG_TO_RIGHT_SCORING : REEF_TAG_TO_LEFT_SCORING;
+      tagToTarget = isReef ? (isRight ? REEF_TAG_TO_RIGHT_SCORING : REEF_TAG_TO_LEFT_SCORING) : INTAKE_TAG_TO_LEFT_SCORING;
       targetAngle = TAG_ANGLE[tagID].minus(Rotation2d.fromDegrees(180));
       tagToTarget = tagToTarget.rotateBy(targetAngle);
       robotToTarget = robotToTag.plus(tagToTarget);

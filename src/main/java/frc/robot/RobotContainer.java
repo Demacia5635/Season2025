@@ -48,8 +48,10 @@ public class RobotContainer implements Sendable{
 
 
   private void configureBindings() {
-    controller.a().onTrue(new AlignToTag(chassis, true));
-    controller.b().onTrue(new AlignToTag(chassis, false));
+    controller.a().onTrue(new AlignToTag(chassis, true , true));
+    controller.b().onTrue(new AlignToTag(chassis, false, true));
+    controller.y().onTrue(new AlignToTag(chassis, false, false));
+
 
   }
 
