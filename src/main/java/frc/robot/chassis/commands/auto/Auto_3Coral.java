@@ -36,7 +36,7 @@ public class Auto_3Coral extends Command {
     cmd = cmd.andThen(goToMultiple(
       new PathPoint[]{dummyPoint, scoring1},
        2.5, Rotation2d.fromDegrees(50), true, false));
-      
+     
        
       cmd = cmd.andThen(goToMultiple(
         new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(16, 1.24), new Rotation2d(), 0)},
@@ -44,7 +44,7 @@ public class Auto_3Coral extends Command {
       
       cmd = cmd.andThen(new AlignToTag(chassis, false, false));
 
-     // cmd = cmd.andThen(new AlignToTag(chassis, false, false));
+      cmd = cmd.andThen(new AlignToTag(chassis, false, false));
       cmd = cmd.andThen(new WaitCommand(0.5));
 
       cmd = cmd.andThen(goToLine(new Pose2d(14.54, 2.3, Rotation2d.fromDegrees(135)), 
