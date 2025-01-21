@@ -86,6 +86,8 @@ public class Tag extends SubsystemBase {
     public double tagID = 0;
 
     private double Yaw3d;
+    private Rotation2d yaw3dRotation2d;
+
     /**
      * Creates a new Tag subsystem
      * @param robot_angle_from_pose Pigeon2 gyroscope for determining robot orientation
@@ -304,9 +306,18 @@ public class Tag extends SubsystemBase {
       public Rotation2d alignRobot(){
         if (cameraID != null){
           Tables[(int)cameraID.doubleValue()].getEntry("pipeline").setNumber(1);
-          Yaw3d = Tables[(int)cameraID.doubleValue()].getEntry("botpose_targetspace").getDoubleArray(new double[6])[4];
-          Tables[(int)cameraID.doubleValue()].getEntry("pipeline").setNumber(0);
-          return Rotation2d.fromDegrees(Yaw3d).rotateBy(TAG_ANGLE[(int)tagID]).rotateBy(Rotation2d.fromDegrees(180));
+          try{
+            Yaw3d = -Tables[(int)cameraID.doubleValue()].getEntry("camerapose_targetspace").getDoubleArray(new double[]{0,0,0,0,0,0})[4];
+            LogManager.log(" " + Yaw3d);
+            Tables[(int)cameraID.doubleValue()].getEntry("pipeline").setNumber(0);
+            yaw3dRotation2d = Rotation2d.fromDegrees(Yaw3d).rotateBy(TAG_ANGLE[(int)tagID]).rotateBy(Rotation2d.fromDegrees(180));
+            //LogManager.log(" " + yaw3dRotation2d.getDegrees());
+            return yaw3dRotation2d;
+
+          }catch(Exception E){
+            alignRobot();
+          }
+          //Tables[(int)cameraID.doubleValue()].getEntry("pipeline").setNumber(0);
 
         }
         return null;
