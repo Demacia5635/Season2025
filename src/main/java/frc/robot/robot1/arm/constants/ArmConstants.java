@@ -36,9 +36,9 @@ public class ArmConstants {
         public static final double KA = 1.0118533303602197;
         public static final double KG = 0;
 
-        public static final double MOTION_MAGIC_VELOCITY = 0;
-        public static final double MOTION_MAGIC_ACCELERATION = 0;
-        public static final double MOTION_MAGIC_JERK = 0;
+        public static final double MOTION_MAGIC_VELOCITY = 0.25;
+        public static final double MOTION_MAGIC_ACCELERATION = 0.5;
+        public static final double MOTION_MAGIC_JERK = 1;
 
         public static final int LIMIT_SWITCH_CHANNEL = 0;
 
