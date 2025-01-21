@@ -47,16 +47,16 @@ public class ArmConstants {
         public static final double GEAR_RATIO = 36.0 * (105.0 / 16.0);
 
         /* The angle where the limit switch */
-        public static final double BASE_ANGLE = -0.1452;
-        public static final double BACK_LIMIT = -0.1452;
-        public static final double FWD_LIMIT = 0.13;
+        public static final double BASE_ANGLE = 0.1048 * 2 * Math.PI;
+        public static final double BACK_LIMIT = 0.1048 * 2 * Math.PI;
+        public static final double FWD_LIMIT = 0.38 * 2 * Math.PI;
 
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
                 .withPID(KP, KI, KD, KS, KV, KA, KG)
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)
-                .withMotorRatio(GEAR_RATIO);
+                .withMotorRatio(GEAR_RATIO).withRadiansMotor();
     }
 
     public static class GripperAngleMotorConstants {
