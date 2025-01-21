@@ -115,6 +115,7 @@ public class TalonMotor extends TalonFX {
 		cfg.Voltage.PeakReverseVoltage = config.minVolt;
 
 		cfg.Feedback.SensorToMechanismRatio = config.motorRatio;
+
 		cfg.MotionMagic.MotionMagicAcceleration = config.motionMagicAccel;
 		cfg.MotionMagic.MotionMagicCruiseVelocity = config.motionMagicVelocity;
 		cfg.MotionMagic.MotionMagicJerk = config.motionMagicJerk;
