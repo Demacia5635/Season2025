@@ -198,8 +198,8 @@ public class TalonMotor extends TalonFX {
   /*
    * set motor to brake or coast
    */
-  public void setBrake(boolean brake) {
-		cfg.MotorOutput.NeutralMode = config.brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+  public void setNeutralMode(boolean isBrake) {
+		cfg.MotorOutput.NeutralMode = isBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
 		getConfigurator().apply(cfg.MotorOutput);
   }
 
@@ -239,8 +239,10 @@ public class TalonMotor extends TalonFX {
   * @param feedForward wanted feed forward to add to the ks kv ka and kg defaults to 0
   */
 	public void setMotionMagic(double position, double feedForward) {
-		setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
-		positionEntry.log(position);
+    if (Math.abs(position - getCurrentPosition()) > 0.015) {
+      setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
+      positionEntry.log(position);
+    } else stopMotor();
 	}
 
 	public void setMotionMagic(double position) {
@@ -248,8 +250,10 @@ public class TalonMotor extends TalonFX {
 	}
 
   public void setPositionVoltage(double position, double feedForward) {
-    setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
-    positionEntry.log(position);
+    if (Math.abs(position - getCurrentPosition()) > 0.015) {
+      setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
+      positionEntry.log(position);
+    } else stopMotor();
   }
 
   public void setPositionVoltage(double position) {

@@ -72,11 +72,11 @@ public class Arm extends SubsystemBase {
   }
 
   public void armAngleNeutralMode(boolean isBrake) {
-    armAngleMotor.setBrake(isBrake);
+    armAngleMotor.setNeutralMode(isBrake);
   }
 
   public void gripperAngleNeutralMode(boolean isBrake) {
-    gripperAngleMotor.setBrake(isBrake);
+    gripperAngleMotor.setNeutralMode(isBrake);
   }
 
   public void armAngleMotorSetPower(double power) {
