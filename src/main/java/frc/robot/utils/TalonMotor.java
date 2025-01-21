@@ -72,7 +72,7 @@ public class TalonMotor extends TalonFX {
   private void configMotor() {
 		cfg = new TalonFXConfiguration();
 		cfg.CurrentLimits.SupplyCurrentLimit = config.maxCurrent;
-    cfg.CurrentLimits.SupplyCurrentLowerLimit = config.maxCurrentTriggerTime;
+    cfg.CurrentLimits.SupplyCurrentLowerLimit = config.maxCurrent;
     cfg.CurrentLimits.SupplyCurrentLowerTime = config.maxCurrentTriggerTime;
 		cfg.CurrentLimits.SupplyCurrentLimitEnable = true;
 
