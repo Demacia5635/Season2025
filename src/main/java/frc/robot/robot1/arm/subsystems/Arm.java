@@ -43,8 +43,8 @@ public class Arm extends SubsystemBase {
     state = ARM_ANGLE_STATES.IDLE;
     isReady = true;
 
-    SmartDashboard.putData(ArmAngleMotorConstants.NAME, armAngleMotor);
-    SmartDashboard.putData(GripperAngleMotorConstants.NAME, gripperAngleMotor);
+    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
+    SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set brake", new InstantCommand(()-> armAngleNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set coast", new InstantCommand(()-> armAngleNeutralMode(false)).ignoringDisable(true));
