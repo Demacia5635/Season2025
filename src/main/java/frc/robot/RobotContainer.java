@@ -31,7 +31,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     logManager = new LogManager();
-    controller = new CommandXboxController(0);
+    controller = new CommandXboxController(OperatorConstants.kDriverControllerPort);
     arm = new Arm();
     // Configure the trigger bindings
     configureBindings();
