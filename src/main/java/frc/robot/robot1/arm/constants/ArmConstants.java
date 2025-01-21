@@ -47,9 +47,9 @@ public class ArmConstants {
         public static final double GEAR_RATIO = 1.0 / 36.0 * (16.0 / 105.0);
 
         /* The angle where the limit switch */
-        public static final double BASE_ANGLE = 0;
-        public static final double BACK_LIMIT = 0;
-        public static final double FWD_LIMIT = 0;
+        public static final double BASE_ANGLE = -0.1452;
+        public static final double BACK_LIMIT = -0.1452;
+        public static final double FWD_LIMIT = 0.13;
 
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
                 .withPID(KP, KI, KD, KS, KV, KA, KG)
