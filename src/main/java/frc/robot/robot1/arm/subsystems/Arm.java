@@ -47,26 +47,28 @@ public class Arm extends SubsystemBase {
     state = ARM_ANGLE_STATES.IDLE;
     isReady = true;
 
+    gripperAngleMotor.setPosition(getGripperAngle());
+
+    addNT();
+    SmartDashboard.putData(this);
+  }
+
+  public void addNT() {
+    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle);
+    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle);
+    LogManager.addEntry(getName() + "/Gripper Angle Motor", this::getGripperAngleMotor);
+    LogManager.addEntry(getName() + "/Arm Angle Limit Switch", () -> getArmAngleLimit() ? 1 : 0);
+    LogManager.addEntry(getName() + "/Gripper Angle Limit Switch", () -> getGripperAngleLimit() ? 1 : 0);
+    LogManager.addEntry(getName() + "/IsReady", ()-> isReady() ? 1 : 0);
+
+    
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
-    gripperAngleMotor.setPosition(getGripperAngle());
 
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set brake", new InstantCommand(()-> armAngleNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set coast", new InstantCommand(()-> armAngleNeutralMode(false)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME + "/gripper angle set brake", new InstantCommand(()-> gripperAngleNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME + "/gripper angle set coast", new InstantCommand(()-> gripperAngleNeutralMode(false)).ignoringDisable(true));
-    
-    addLog();
-    SmartDashboard.putData(this);
-  }
-
-  public void addLog() {
-    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle);
-    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle);
-    LogManager.addEntry(getName() + "/Arm Angle Limit Switch", () -> getArmAngleLimit() ? 1 : 0);
-    LogManager.addEntry(getName() + "/Gripper Angle Limit Switch", () -> getGripperAngleLimit() ? 1 : 0);
-    LogManager.addEntry(getName() + "/IsReady", ()-> isReady() ? 1 : 0);
-
   }
 
   public void armAngleNeutralMode(boolean isBrake) {
