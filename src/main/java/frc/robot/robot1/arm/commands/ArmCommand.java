@@ -29,6 +29,7 @@ public class ArmCommand extends Command {
     this.arm = arm;
     testArmAngle = ArmAngleMotorConstants.BASE_ANGLE;
     testGripperAngle = GripperAngleMotorConstants.BASE_ANGLE;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
