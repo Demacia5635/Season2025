@@ -6,6 +6,7 @@ package frc.robot.robot1.arm.subsystems;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -23,6 +24,7 @@ public class Arm extends SubsystemBase {
 
   private DigitalInput armAngleLimit;
   private DigitalInput gripperAngleLimit;
+  private DutyCycleEncoder gripperAngleEncoder;
 
   public boolean isCalibrated;
   
@@ -38,6 +40,8 @@ public class Arm extends SubsystemBase {
     armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
     gripperAngleLimit = new DigitalInput(GripperAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
 
+    gripperAngleEncoder = new DutyCycleEncoder(GripperAngleMotorConstants.ENCODER_CHANNEL);
+
     isCalibrated = false;
 
     state = ARM_ANGLE_STATES.IDLE;
@@ -45,6 +49,7 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
+    gripperAngleMotor.setPosition(getGripperAngle());
 
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set brake", new InstantCommand(()-> armAngleNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set coast", new InstantCommand(()-> armAngleNeutralMode(false)).ignoringDisable(true));
@@ -165,8 +170,12 @@ public class Arm extends SubsystemBase {
     return armAngleMotor.getCurrentPosition();
   }
 
-  public double getGripperAngle() {
+  public double getGripperAngleMotor() {
     return gripperAngleMotor.getCurrentPosition();
+  }
+
+  public double getGripperAngle() {
+    return gripperAngleEncoder.get() * 2 * Math.PI;
   }
 
   public boolean getArmAngleLimit() {
@@ -185,6 +194,10 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (!gripperAngleEncoder.isConnected()) {
+      LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
+    }
+
     checkIfIsReady();
 
     if (armAngleMotor.getCurrentVelocity() > Math.abs(TeethRatios.ARM_ANGLE_MINIMUM_VELOCITY) 
