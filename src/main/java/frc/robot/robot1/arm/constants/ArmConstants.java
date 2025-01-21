@@ -56,7 +56,7 @@ public class ArmConstants {
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)
-                .withMotorRatio(GEAR_RATIO).withRadiansMotor();
+                .withMotorRatio(GEAR_RATIO);
     }
 
     public static class GripperAngleMotorConstants {
