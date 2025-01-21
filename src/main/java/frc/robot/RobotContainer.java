@@ -5,8 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.robot1.arm.commands.ArmCommand;
+import frc.robot.robot1.arm.commands.ArmDrive;
+import frc.robot.robot1.arm.commands.Calibration;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.utils.LogManager;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -18,11 +25,14 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
   LogManager logManager;
-  private final CommandXboxController controller = new CommandXboxController(OperatorConstants.kDriverControllerPort);
+  CommandXboxController controller;
+  Arm arm;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     logManager = new LogManager();
+    controller = new CommandXboxController(0);
+    arm = new Arm();
     // Configure the trigger bindings
     configureBindings();
   }
@@ -37,6 +47,12 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    controller.a().onTrue(new ArmDrive(arm, controller));
+    controller.b().onTrue(new RunCommand(()-> arm.armAngleMotorSetMotionMagic(0), arm));
+    controller.y().onTrue(new InstantCommand(()-> arm.state = ARM_ANGLE_STATES.TESTING));
+    controller.x().onTrue(new Calibration(arm));
+    controller.rightBumper().onTrue(new ArmCommand(arm));
+    controller.leftBumper().onTrue(new InstantCommand(()-> arm.stop(), arm));
   }
 
   /**
