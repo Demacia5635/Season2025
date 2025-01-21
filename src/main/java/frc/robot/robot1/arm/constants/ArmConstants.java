@@ -40,7 +40,7 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_ACCELERATION = 0.5;
         public static final double MOTION_MAGIC_JERK = 1;
 
-        public static final int LIMIT_SWITCH_CHANNEL = 0;
+        public static final int LIMIT_SWITCH_CHANNEL = 1;
 
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERTED = true;
@@ -77,7 +77,7 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_ACCELERATION = 0;
         public static final double MOTION_MAGIC_JERK = 0;
 
-        public static final int LIMIT_SWITCH_CHANNEL = 0;
+        public static final int LIMIT_SWITCH_CHANNEL = 2;
 
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERTED = true;
