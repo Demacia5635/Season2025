@@ -156,11 +156,11 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean getArmAngleLimit() {
-    return armAngleLimit.get();
+    return !armAngleLimit.get();
   }
 
   public boolean getGripperAngleLimit() {
-    return gripperAngleLimit.get();
+    return !gripperAngleLimit.get();
   }
 
   @Override
