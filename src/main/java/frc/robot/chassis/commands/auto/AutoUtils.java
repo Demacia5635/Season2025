@@ -1,5 +1,6 @@
 package frc.robot.chassis.commands.auto;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -45,14 +46,18 @@ public class AutoUtils {
          0, false).setAutoRotate(rate);
     }
 
-    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel){
-        return new PathFollow(points, finalAngle, maxVel, isConstVel);
+    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecision){
+        return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecision);
     }
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker) {
         return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxv, maxAceel, 0, toSpeaker);
     }
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker, double endV) {
         return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxv, maxAceel, endV, toSpeaker);
+    }
+    public static Command goToLine(Pose2d point, Pose2d pose, double vel){
+        Translation2d diff = point.getTranslation().minus(pose.getTranslation());
+        return new RunCommand(()->chassis.setVelocitiesRotateToAngle(new ChassisSpeeds(vel * diff.getAngle().getCos(), vel * diff.getAngle().getSin(), 0), point.getRotation()));
     }
 
 

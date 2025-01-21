@@ -5,6 +5,12 @@ import frc.robot.utils.LogManager;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
+import com.ctre.phoenix6.swerve.jni.SwerveJNI.ModuleState;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.controllers.PathFollowingController;
 
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -56,7 +62,13 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> setGyroAngle(Rotation2d.fromDegrees(0))));
         SmartDashboard.putData("goToVision", new InstantCommand(()-> poseEstimator.resetPose(tag.getPose())));
         SmartDashboard.putData("field", field);
+
         
+        
+    }
+
+    public void resetPose(Pose2d pose){
+        poseEstimator.resetPose(pose);
     }
 
     private void addStatus() {
@@ -95,6 +107,13 @@ public class Chassis extends SubsystemBase {
         setSteerPositions(new double[] { position, position, position, position});
     }
 
+    public ChassisSpeeds getRobotRelVelocities(){
+        return ChassisSpeeds.fromFieldRelativeSpeeds(getChassisSpeeds(), getGyroAngle());
+    }
+    public void setRobotRelVelocities(ChassisSpeeds speeds){
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        setModuleStates(states);
+    }
 
     public void setDriveVelocities(double[] velocities) {
         for (int i = 0; i < velocities.length; i++) {

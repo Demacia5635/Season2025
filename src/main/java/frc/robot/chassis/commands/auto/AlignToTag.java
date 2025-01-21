@@ -9,6 +9,7 @@ package frc.robot.chassis.commands.auto;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.chassis.subsystems.Chassis;
 
@@ -26,6 +27,7 @@ public class AlignToTag extends Command {
   private Translation2d robotToTarget = new Translation2d(10,10);
   private double maxVel = 3.8;
   private Integer tagID = null;
+  private Timer timer;
 
 
   public AlignToTag(Chassis chassis, boolean isRight, boolean isReef) {
@@ -38,6 +40,8 @@ public class AlignToTag extends Command {
     if (chassis.tag.tagID != 0){
       tagID = (int)chassis.tag.tagID;
     }
+    timer = new Timer();
+    timer.start();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -69,7 +73,7 @@ public class AlignToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return tagID == null || Math.abs(robotToTarget.getNorm()) < 0.01;
+    return tagID == null || Math.abs(robotToTarget.getNorm()) < 0.02;
   }
 }
 
