@@ -67,9 +67,7 @@ public class PathFollow extends Command {
   Pose2d[] aprilTagsPositions = new Pose2d[]{new Pose2d()};
   Rotation2d finalAngle;
   boolean isConstVel = false;
-  boolean isPrecision;
-
-
+  
   /**
    * Creates a new path follower using the given points.
    * 
@@ -86,14 +84,14 @@ public class PathFollow extends Command {
         this.maxVel = velocity;
   }
 
-  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecision) {
+  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel) {
     this(RobotContainer.robotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
     this.finalAngle = finalAngle;
     this.maxVel = maxVel;
     this.isConstVel = isConstVel;
-    this.isPrecision = isPrecision;
+  
   }
 
   public PathFollow(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel) {
@@ -281,7 +279,7 @@ public class PathFollow extends Command {
 
   @Override
   public boolean isFinished() {
-    return isPrecision ? totalLeft <= 0.1 : totalLeft <= 0.3;
+    return totalLeft <= 0.1;
   }
 
   @Override

@@ -17,7 +17,7 @@ import static frc.robot.PathFollow.PathFollow.*;
 public class Auto_3Coral extends Command {
   Command cmd;
   PathPoint dumyPoint = new PathPoint(0, 0, Rotation2d.fromDegrees(0), 0, false);
-  PathPoint scoring1 = new PathPoint(12.33, 2.31, Rotation2d.fromDegrees(50), 0.1, false);
+  PathPoint scoring1 = new PathPoint(11.88, 2.31, Rotation2d.fromDegrees(50), 0.1, false);
   PathPoint anchor = new PathPoint(new Translation2d(15.5, 1.2), Rotation2d.fromDegrees(0), 0.3);
   PathPoint feeder = new PathPoint(new Translation2d(16.77, 0.766), Rotation2d.fromDegrees(-50));
  
@@ -27,24 +27,24 @@ public class Auto_3Coral extends Command {
 
   @Override
   public void initialize() {
-    cmd = goToMultiple(new PathPoint[]{dumyPoint, scoring1} ,3.5, Rotation2d.fromDegrees(50), false, false);
+    cmd = goToMultiple(new PathPoint[]{dumyPoint, scoring1} ,3.5, Rotation2d.fromDegrees(50), false);
 
     
       
     cmd = cmd.andThen(new AlignToTag(chassis, true, true));
 
     cmd = cmd.andThen(goToMultiple(
-      new PathPoint[]{dummyPoint, scoring1},
-       2.5, Rotation2d.fromDegrees(50), true, false));
+      new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(12.1, 2.4), Rotation2d.fromDegrees(0))},
+       3.5, Rotation2d.fromDegrees(50), true));
      
        
       cmd = cmd.andThen(goToMultiple(
         new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(16, 1.24), new Rotation2d(), 0)},
-         3, feeder.getRotation(), false, false));
+         3, feeder.getRotation(), false));
       
       cmd = cmd.andThen(new AlignToTag(chassis, false, false));
 
-      cmd = cmd.andThen(new AlignToTag(chassis, false, false));
+
       cmd = cmd.andThen(new WaitCommand(0.5));
 
       cmd = cmd.andThen(goToLine(new Pose2d(14.54, 2.3, Rotation2d.fromDegrees(135)), 
@@ -55,14 +55,15 @@ public class Auto_3Coral extends Command {
 
       cmd = cmd.andThen(goToMultiple(
         new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(16, 1.24), new Rotation2d(), 0)},
-         3, feeder.getRotation(), false, false));
+         3, feeder.getRotation(), false));
 
       
       cmd = cmd.andThen(new AlignToTag(chassis, false, false));    
       
-      cmd = cmd.andThen(goToLine(new Pose2d(14.54, 2.3, Rotation2d.fromDegrees(135)), 
-        new Pose2d(16, 1.24, feeder.getRotation()), 1.5).withTimeout(1));
-
+      cmd = cmd.andThen(goToLine(new Pose2d(13.54, 2.3, Rotation2d.fromDegrees(135)), 
+        new Pose2d(15.7, 1.24, feeder.getRotation()), 1.5).withTimeout(1));
+      
+      cmd = cmd.andThen(new WaitCommand(0.3));
 
       cmd = cmd.andThen(new AlignToTag(chassis, false, true));
       

@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.function.Consumer;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.proto.System;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -17,7 +19,10 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.KeepSpinning;
 import frc.robot.chassis.commands.auto.AlignToTag;
+import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.Auto_3Coral;
+import frc.robot.chassis.commands.auto.goToPlace;
+import frc.robot.chassis.commands.auto.AutoUtils.FIELD_ELEMENTS;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.chassis.subsystems.SwerveModule;
 import frc.robot.utils.LogManager;
@@ -39,6 +44,10 @@ public class RobotContainer implements Sendable{
     logManager = new LogManager();
     chassis = new Chassis();
     drive = new Drive(chassis, new CommandXboxController(0));
+
+    
+    AutoUtils a = new AutoUtils(); //no need to use only to update values
+
     chassis.setDefaultCommand(drive);
     SmartDashboard.putData("RC", this);
     controller = new CommandXboxController(0);
@@ -51,8 +60,10 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     controller.a().onTrue(new AlignToTag(chassis, true , true));
     controller.b().onTrue(new AlignToTag(chassis, false, true));
-    controller.y().onTrue(new AlignToTag(chassis, false, false));
+    controller.y().onTrue(new goToPlace(FIELD_ELEMENTS.FEEDER_LEFT, 2));
     controller.x().onTrue(new InstantCommand(()->chassis.setGyroAngle(chassis.tag.alignRobot())));
+
+    controller.leftBumper().onTrue(new AlignToTag(chassis, false, false));
 
 
   }
@@ -71,6 +82,6 @@ public class RobotContainer implements Sendable{
   }
 
   public Command getAutonomousCommand() {
-    return new Auto_3Coral();
+    return new Auto_3Coral();  
   }
 }

@@ -11,6 +11,9 @@ import frc.robot.RobotContainer;
 import frc.robot.PathFollow.PathFollow;
 import frc.robot.PathFollow.Util.PathPoint;
 import static frc.robot.chassis.ChassisConstants.*;
+
+import java.util.HashMap;
+
 import frc.robot.chassis.subsystems.Chassis;
 
 public class AutoUtils {
@@ -21,6 +24,26 @@ public class AutoUtils {
     static double maxAceel = DRIVE_ACCELERATION;
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
+
+
+    public enum FIELD_ELEMENTS{
+        FEEDER_LEFT, FEEDER_RIGHT, A_LEFT, A_RIGHT, A_CENTER, B_LEFT, B_RIGHT, B_CENTER, C_LEFT, C_RIGHT, C_CENTER, D_LEFT, D_RIGHT, D_CENTER, E_LEFT, E_RIGHT, E_CENTER, F_LEFT, F_RIGHT, F_CENTER
+    }
+    public static boolean isLeft(FIELD_ELEMENTS element){
+        return element == FIELD_ELEMENTS.FEEDER_LEFT || element == FIELD_ELEMENTS.A_LEFT
+         || element == FIELD_ELEMENTS.B_LEFT || element == FIELD_ELEMENTS.C_LEFT
+         || element == FIELD_ELEMENTS.D_LEFT || element == FIELD_ELEMENTS.E_LEFT
+         || element == FIELD_ELEMENTS.F_LEFT;
+    }
+    
+    public static HashMap<FIELD_ELEMENTS, PathPoint> fieldElements = new HashMap<>(){
+        
+    };
+
+    public AutoUtils(){
+        fieldElements.put(FIELD_ELEMENTS.FEEDER_LEFT, new PathPoint(new Translation2d(15.5, 1.8), Rotation2d.fromDegrees(-55)));
+    }
+
 
 
     public static void addCommands(Command c, SequentialCommandGroup cmd) {
@@ -46,8 +69,8 @@ public class AutoUtils {
          0, false).setAutoRotate(rate);
     }
 
-    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecision){
-        return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecision);
+    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel){
+        return new PathFollow(points, finalAngle, maxVel, isConstVel);
     }
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker) {
         return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxv, maxAceel, 0, toSpeaker);

@@ -25,7 +25,7 @@ public class AlignToTag extends Command {
   private Translation2d tagToTarget;
   private Rotation2d targetAngle;
   private Translation2d robotToTarget = new Translation2d(10,10);
-  private double maxVel = 3.8;
+  private double maxVel = 3;
   private Integer tagID = null;
   private Timer timer;
 
@@ -40,6 +40,7 @@ public class AlignToTag extends Command {
     if (chassis.tag.tagID != 0){
       tagID = (int)chassis.tag.tagID;
     }
+    if(!isReef) maxVel = 2;
     timer = new Timer();
     timer.start();
   }
@@ -47,6 +48,7 @@ public class AlignToTag extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     if (chassis.tag.tagID != 0){
       tagID = (int)chassis.tag.tagID;
     }
@@ -56,7 +58,7 @@ public class AlignToTag extends Command {
       targetAngle = TAG_ANGLE[tagID].minus(Rotation2d.fromDegrees(180));
       tagToTarget = tagToTarget.rotateBy(targetAngle);
       robotToTarget = robotToTag.plus(tagToTarget);
-      chassis.setVelocitiesRotateToAngle(new ChassisSpeeds(Math.min(robotToTarget.getX()*4, maxVel), Math.min(robotToTarget.getY()*4, maxVel), 0), targetAngle);
+      chassis.setVelocitiesRotateToAngle(new ChassisSpeeds(Math.min(robotToTarget.getX()*3, maxVel), Math.min(robotToTarget.getY()*3, maxVel), 0), targetAngle);
     }
 
   }
@@ -73,7 +75,7 @@ public class AlignToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return tagID == null || Math.abs(robotToTarget.getNorm()) < 0.02;
+    return tagID == null || Math.abs(robotToTarget.getNorm()) < 0.02 || timer.get() > 1;
   }
 }
 
