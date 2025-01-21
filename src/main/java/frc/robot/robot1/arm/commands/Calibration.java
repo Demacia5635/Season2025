@@ -4,6 +4,7 @@
 
 package frc.robot.robot1.arm.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
 import frc.robot.robot1.arm.constants.ArmConstants.CalibrationConstants;
@@ -13,25 +14,32 @@ import frc.robot.robot1.arm.subsystems.Arm;
 public class Calibration extends Command {
 
   private Arm arm;
+  Timer timer;
 
   /** Creates a new Calibration. */
   public Calibration(Arm arm) {
     this.arm = arm;
+    timer = new Timer();
     addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    timer.start();
+    arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_START_POWER);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (arm.getArmAngleLimit()) {
-      arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_POWER);
-    } else {
-      arm.armAngleMotorSetPower(0);
+
+    if (timer.hasElapsed(0.25)) {
+      if (!arm.getArmAngleLimit()) {
+        arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_POWER);
+      } else {
+        arm.armAngleMotorSetPower(0);
+      }
     }
 
     if (arm.getGripperAngleLimit()) {
@@ -51,11 +59,14 @@ public class Calibration extends Command {
     arm.gripperAngleSetPosition(GripperAngleMotorConstants.BASE_ANGLE);
 
     arm.isCalibrated = true;
+
+    timer.stop();
+    timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return arm.getArmAngleLimit() && arm.getGripperAngleLimit();
+    return arm.getArmAngleLimit();
   }
 }
