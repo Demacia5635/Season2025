@@ -28,12 +28,12 @@ public class ArmConstants {
         public static final CANBus CAN_BUS = Constants.CAN_BUS;
         public static final String NAME = "Arm Angle Motor";
 
-        public static final double KP = 0;
+        public static final double KP = 0.3;
         public static final double KI = 0;
         public static final double KD = 0;
-        public static final double KS = 0;
-        public static final double KV = 0;
-        public static final double KA = 0;
+        public static final double KS = 1;
+        public static final double KV = 20;
+        public static final double KA = 1.0118533303602197;
         public static final double KG = 0;
 
         public static final double MOTION_MAGIC_VELOCITY = 0;
