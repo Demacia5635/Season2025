@@ -77,7 +77,7 @@ public class ArmCommand extends Command {
         arm.stop();
 
       default:
-        LogManager.log("Arm state is illegul", AlertType.kError);
+        LogManager.log("Arm state is illegal", AlertType.kError);
         wantedAngle = new Pair<Double,Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
 
