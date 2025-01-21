@@ -8,7 +8,6 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
 import frc.robot.robot1.arm.constants.ArmConstants.CalibrationConstants;
-import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleMotorConstants;
 import frc.robot.robot1.arm.subsystems.Arm;
 
 public class Calibration extends Command {
@@ -33,21 +32,9 @@ public class Calibration extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
     if (timer.hasElapsed(0.25)) {
-      if (!arm.getArmAngleLimit()) {
-        arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_POWER);
-      } else {
-        arm.armAngleMotorSetPower(0);
-      }
+      arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_POWER);
     }
-
-    if (arm.getGripperAngleLimit()) {
-      arm.gripperAngleMotorSetPower(CalibrationConstants.GRIPPER_ANGLE_POWER);
-    } else {
-      arm.gripperAngleMotorSetPower(0);
-    }
-
   }
 
   // Called once the command ends or is interrupted.
@@ -56,8 +43,6 @@ public class Calibration extends Command {
     arm.stop();
 
     arm.armAngleSetPosition(ArmAngleMotorConstants.BASE_ANGLE);
-    arm.gripperAngleSetPosition(GripperAngleMotorConstants.BASE_ANGLE);
-
     arm.isCalibrated = true;
 
     timer.stop();

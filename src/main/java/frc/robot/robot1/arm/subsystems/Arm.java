@@ -153,10 +153,6 @@ public class Arm extends SubsystemBase {
     armAngleMotor.setPosition(angle);
   }
 
-  public void gripperAngleSetPosition(double angle) {
-    gripperAngleMotor.setPosition(angle);
-  }
-
   private void checkIfIsReady() {
     isReady = armAngleMotor.getCurrentClosedLoopError() <= MaxErrors.ARM_ANGLE_ERROR
     && gripperAngleMotor.getCurrentClosedLoopError() <= MaxErrors.GRIPPER_ANGLE_ERROR;
