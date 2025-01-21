@@ -84,6 +84,8 @@ public class Tag extends SubsystemBase {
 
 
     public double tagID = 0;
+
+    private double Yaw3d;
     /**
      * Creates a new Tag subsystem
      * @param robot_angle_from_pose Pigeon2 gyroscope for determining robot orientation
@@ -300,40 +302,14 @@ public class Tag extends SubsystemBase {
         return latency;
       }
       public Rotation2d alignRobot(){
-        Rotation2d yaw = Rotation2d.fromDegrees(0);
-        Double id;
-        if (bottomTagTable.getEntry("tv").getDouble(0.0) != 0) {
-         
-          bottomTagTable.getEntry("pipeline").setNumber(1);
-         
-          double[] botpose = NetworkTableInstance.getDefault().getTable("limelight-bottom").getEntry("botpose_targetspace").getDoubleArray(new double[6]);
-          System.out.println(botpose[4]);
-          yaw = Rotation2d.fromDegrees(botpose[4]);
-          System.out.println("preview" + yaw);
+        if (cameraID != null){
+          Tables[(int)cameraID.doubleValue()].getEntry("pipeline").setNumber(1);
+          Yaw3d = Tables[(int)cameraID.doubleValue()].getEntry("botpose_targetspace").getDoubleArray(new double[6])[4];
+          Tables[(int)cameraID.doubleValue()].getEntry("pipeline").setNumber(0);
+          return Rotation2d.fromDegrees(Yaw3d).rotateBy(TAG_ANGLE[(int)tagID]).rotateBy(Rotation2d.fromDegrees(180));
 
-
-          id = bottomTagTable.getEntry("tid").getDouble(0.0);
-
-
-          if (id != 0){
-            Rotation2d tagAngle = TAG_ANGLE[id.intValue()].minus(Rotation2d.fromDegrees(180));
-           
-            yaw = yaw.rotateBy(tagAngle);
-            System.out.println("Yaw" + yaw);
-
-
-            System.out.println("Tagangle" + tagAngle);
-
-
-          }
-
-
-
-
-          bottomTagTable.getEntry("pipeline").setNumber(0);
-          return yaw;
-      }
-      return yaw;
+        }
+        return null;
     }
 }
 

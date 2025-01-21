@@ -52,7 +52,7 @@ public class RobotContainer implements Sendable{
     controller.a().onTrue(new AlignToTag(chassis, true , true));
     controller.b().onTrue(new AlignToTag(chassis, false, true));
     controller.y().onTrue(new AlignToTag(chassis, false, false));
-    controller.x().onTrue(new InstantCommand(()-> LogManager.log("" + chassis.tag.alignRobot())));
+    controller.x().onTrue(new InstantCommand(()->chassis.setGyroAngle(chassis.tag.alignRobot())));
 
 
   }
