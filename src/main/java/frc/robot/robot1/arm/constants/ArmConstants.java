@@ -105,6 +105,7 @@ public class ArmConstants {
     public static class CalibrationConstants {
         public static final double ARM_ANGLE_POWER = -0.1;
         public static final double GRIPPER_ANGLE_POWER = -0.1;
+        public static final double ARM_ANGLE_START_POWER = 0.1;
     }
 
     public static class MaxErrors {
