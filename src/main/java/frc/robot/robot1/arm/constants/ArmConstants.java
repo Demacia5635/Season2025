@@ -97,12 +97,6 @@ public class ArmConstants {
                 .withMotorRatio(GEAR_RATIO).withRadiansMotor();
     }
 
-    public static class TeethRatios {
-        public static final double ARM_ANGLE_MINIMUM_VELOCITY = 0.2;
-        public static final double GRIPPER_ANGLE_MINIMUM_VOLTAGE = 1;
-        public static final double GEARS_RATIO = (105.0 / 16.0) / (25.0 / 18.0);
-    }
-
     public static class CalibrationConstants {
         public static final double ARM_ANGLE_POWER = -0.1;
         public static final double GRIPPER_ANGLE_POWER = -0.1;
