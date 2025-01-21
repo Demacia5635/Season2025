@@ -8,6 +8,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.LogManager;
@@ -45,6 +46,11 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData(ArmAngleMotorConstants.NAME, armAngleMotor);
     SmartDashboard.putData(GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
+    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set brake", new InstantCommand(()-> armAngleNeutralMode(true)).ignoringDisable(true));
+    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set coast", new InstantCommand(()-> armAngleNeutralMode(false)).ignoringDisable(true));
+    SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME + "/gripper angle set brake", new InstantCommand(()-> gripperAngleNeutralMode(true)).ignoringDisable(true));
+    SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME + "/gripper angle set coast", new InstantCommand(()-> gripperAngleNeutralMode(false)).ignoringDisable(true));
+    
     addLog();
     SmartDashboard.putData(this);
   }
@@ -56,6 +62,14 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/Gripper Angle Limit Switch", () -> getGripperAngleLimit() ? 1 : 0);
     LogManager.addEntry(getName() + "/IsReady", ()-> isReady() ? 1 : 0);
 
+  }
+
+  public void armAngleNeutralMode(boolean isBrake) {
+    armAngleMotor.setBrake(isBrake);
+  }
+
+  public void gripperAngleNeutralMode(boolean isBrake) {
+    gripperAngleMotor.setBrake(isBrake);
   }
 
   public void armAngleMotorSetPower(double power) {
