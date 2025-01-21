@@ -44,7 +44,7 @@ public class ArmConstants {
 
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERTED = true;
-        public static final double GEAR_RATIO = 1.0 / 36.0 * (16.0 / 105.0);
+        public static final double GEAR_RATIO = 36.0 * (105.0 / 16.0);
 
         /* The angle where the limit switch */
         public static final double BASE_ANGLE = -0.1452;
@@ -81,7 +81,7 @@ public class ArmConstants {
 
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERTED = true;
-        public static final double GEAR_RATIO = 1.0 / 36.0 * (18.0 / 25.0) * (83.0 / 49.0);
+        public static final double GEAR_RATIO = 1.0 / 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
 
         /* The angle in the limit switch */
         public static final double BASE_ANGLE = 0;
@@ -99,7 +99,7 @@ public class ArmConstants {
     public static class TeethRatios {
         public static final double ARM_ANGLE_MINIMUM_VELOCITY = 0.2;
         public static final double GRIPPER_ANGLE_MINIMUM_VOLTAGE = 1;
-        public static final double GEARS_RATIO = (16.0 / 105.0) / (18.0 / 25.0);
+        public static final double GEARS_RATIO = (105.0 / 16.0) / (25.0 / 18.0);
     }
 
     public static class CalibrationConstants {
