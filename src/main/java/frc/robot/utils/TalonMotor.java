@@ -197,8 +197,8 @@ public class TalonMotor extends TalonFX {
   /*
    * set motor to brake or coast
    */
-  public void setBrake(boolean brake) {
-		cfg.MotorOutput.NeutralMode = config.brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+  public void setNeutralMode(boolean isBrake) {
+		cfg.MotorOutput.NeutralMode = isBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
 		getConfigurator().apply(cfg.MotorOutput);
   }
 
