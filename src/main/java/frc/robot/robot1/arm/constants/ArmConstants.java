@@ -43,7 +43,7 @@ public class ArmConstants {
         public static final int LIMIT_SWITCH_CHANNEL = 1;
 
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = true;
+        public static final boolean IS_INVERTED = false;
         public static final double GEAR_RATIO = 36.0 * (105.0 / 16.0);
 
         /* The angle where the limit switch */
