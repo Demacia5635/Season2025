@@ -29,11 +29,11 @@ public class Gripper extends SubsystemBase {
 
     sensor = new DigitalInput(SensorConstants.SENSOR_CHANNEL);
 
-    addLog();
     SmartDashboard.putData(this);
+    addNT();
   }
 
-  private void addLog() {
+  private void addNT() {
     LogManager.addEntry(getName() + "/Is Sensor", ()-> getSensor() ? 1 : 0);
   }
 
