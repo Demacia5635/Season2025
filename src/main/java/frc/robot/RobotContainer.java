@@ -12,6 +12,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.robot1.gripper.commands.Drop;
+import frc.robot.robot1.gripper.commands.Grab;
+import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.utils.LogManager;
 
 /**
@@ -24,6 +27,11 @@ public class RobotContainer {
 
   LogManager logManager;
   CommandXboxController controller;
+
+  Gripper gripper;
+
+  Grab grab;
+  Drop drop;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -43,6 +51,7 @@ public class RobotContainer {
    * This function is called at the robot container constractor.
    */
   private void configureSubsytems() {
+    gripper = new Gripper();
   }
 
   /**
@@ -51,6 +60,8 @@ public class RobotContainer {
    * This function is called at the robot container constractor.
    */
   private void configureCommands() {
+    grab = new Grab(gripper);
+    drop = new Drop(gripper);
   }
 
   /**
@@ -71,6 +82,8 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
+    controller.a().onTrue(grab);
+    controller.b().onTrue(drop);
   }
 
   /**
