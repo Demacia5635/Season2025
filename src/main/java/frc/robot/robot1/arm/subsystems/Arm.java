@@ -71,6 +71,14 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData(this);
   }
 
+  public void setState(ARM_ANGLE_STATES state) {
+    this.state = state;
+  }
+
+  public ARM_ANGLE_STATES getState() {
+    return state;
+  }
+
   public void armAngleNeutralMode(boolean isBrake) {
     armAngleMotor.setNeutralMode(isBrake);
   }
