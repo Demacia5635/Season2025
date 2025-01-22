@@ -14,6 +14,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -140,14 +141,19 @@ public class Chassis extends SubsystemBase {
             modules[i].setState(states[i]);
         }
     }
-
+    
+    private void updateVision(Pose2d pose){
+        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
+    }
     @Override
     public void periodic() {
+
         if(tag.getPose()!=null){
-            poseEstimator.resetPose(new Pose2d(tag.getPose().getTranslation(), getGyroAngle()));
-        }else{
-            poseEstimator.update(getGyroAngle(), getModulePositions());
+            updateVision(new Pose2d(tag.getPose().getTranslation(), getGyroAngle()));
         }
+        poseEstimator.update(getGyroAngle(), getModulePositions());
+            
+        
         field.setRobotPose(poseEstimator.getEstimatedPosition());
     }
         
