@@ -29,12 +29,15 @@ public class Gripper extends SubsystemBase {
 
     sensor = new DigitalInput(SensorConstants.SENSOR_CHANNEL);
 
-    SmartDashboard.putData(this);
     addNT();
   }
 
   private void addNT() {
     LogManager.addEntry(getName() + "/Is Sensor", ()-> getSensor() ? 1 : 0);
+    
+    LogManager.addEntry(getName() + "/Motor" + "/Velocity", motor::getSelectedSensorVelocity);
+
+    SmartDashboard.putData(this);
   }
 
   public void setPower(double power) {
