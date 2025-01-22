@@ -4,6 +4,7 @@
 
 package frc.robot.robot1.gripper.subsystems;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -50,6 +51,11 @@ public class Gripper extends SubsystemBase {
 
   public boolean getSensor() {
     return sensor.get();
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
   }
 
   @Override
