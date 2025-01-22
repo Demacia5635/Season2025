@@ -28,8 +28,8 @@ public class ArmCommand extends Command {
   /** Creates a new ArmCommand. */
   public ArmCommand(Arm arm) {
     this.arm = arm;
-    testArmAngle = ArmAngleMotorConstants.BASE_ANGLE;
-    testGripperAngle = GripperAngleMotorConstants.BASE_ANGLE;
+    testArmAngle = arm.getArmAngle();
+    testGripperAngle = arm.getGripperAngle();
     SmartDashboard.putData(this);
     addRequirements(arm);
   }
