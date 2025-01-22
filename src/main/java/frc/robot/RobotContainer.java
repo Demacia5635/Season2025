@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmDrive;
-import frc.robot.robot1.arm.commands.Calibration;
+import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.utils.LogManager;
@@ -31,7 +31,7 @@ public class RobotContainer {
 
   Arm arm;
 
-  Calibration armCalibration;
+  ArmCalibration armCalibration;
   ArmCommand armCommand;
   ArmDrive armDrive;
   Command armSetStateTesting;
@@ -63,7 +63,7 @@ public class RobotContainer {
    * This function is called at the robot container constractor.
    */
   private void configureCommands() {
-    armCalibration = new Calibration(arm);
+    armCalibration = new ArmCalibration(arm);
     armCommand = new ArmCommand(arm);
     armDrive = new ArmDrive(arm, controller);
     armSetStateTesting = new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.TESTING)).ignoringDisable(true);

@@ -10,13 +10,13 @@ import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
 import frc.robot.robot1.arm.constants.ArmConstants.CalibrationConstants;
 import frc.robot.robot1.arm.subsystems.Arm;
 
-public class Calibration extends Command {
+public class ArmCalibration extends Command {
 
   private Arm arm;
   Timer timer;
 
   /** Creates a new Calibration. */
-  public Calibration(Arm arm) {
+  public ArmCalibration(Arm arm) {
     this.arm = arm;
     timer = new Timer();
     addRequirements(arm);
