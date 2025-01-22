@@ -7,6 +7,7 @@ package frc.robot.robot1.gripper.subsystems;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LogManager;
 
@@ -37,6 +38,9 @@ public class Gripper extends SubsystemBase {
     LogManager.addEntry(getName() + "/Is Sensor", ()-> getSensor() ? 1 : 0);
     
     LogManager.addEntry(getName() + "/Motor" + "/Velocity", motor::getSelectedSensorVelocity);
+    
+    SmartDashboard.putData(getName() + "/Motor" + "/set Brake", new InstantCommand(()-> setNeutralMode(true)).ignoringDisable(true));
+    SmartDashboard.putData(getName() + "/Motor" + "/set Coast", new InstantCommand(()-> setNeutralMode(false)).ignoringDisable(true));
 
     SmartDashboard.putData(this);
   }
@@ -47,6 +51,10 @@ public class Gripper extends SubsystemBase {
 
   public void stop() {
     setPower(0);
+  }
+
+  public void setNeutralMode(boolean isBrake) {
+    motor.setNeutralMode(isBrake ? NeutralMode.Brake : NeutralMode.Coast);
   }
 
   public boolean getSensor() {
