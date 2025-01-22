@@ -72,7 +72,7 @@ public class TalonMotor extends TalonFX {
   private void configMotor() {
 		cfg = new TalonFXConfiguration();
 		cfg.CurrentLimits.SupplyCurrentLimit = config.maxCurrent;
-    cfg.CurrentLimits.SupplyCurrentLowerLimit = config.maxCurrentTriggerTime;
+    cfg.CurrentLimits.SupplyCurrentLowerLimit = config.maxCurrent;
     cfg.CurrentLimits.SupplyCurrentLowerTime = config.maxCurrentTriggerTime;
 		cfg.CurrentLimits.SupplyCurrentLimitEnable = true;
 
@@ -197,8 +197,8 @@ public class TalonMotor extends TalonFX {
   /*
    * set motor to brake or coast
    */
-  public void setBrake(boolean brake) {
-		cfg.MotorOutput.NeutralMode = config.brake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
+  public void setNeutralMode(boolean isBrake) {
+		cfg.MotorOutput.NeutralMode = isBrake ? NeutralModeValue.Brake : NeutralModeValue.Coast;
 		getConfigurator().apply(cfg.MotorOutput);
   }
 
