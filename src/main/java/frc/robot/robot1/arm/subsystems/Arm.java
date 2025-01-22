@@ -173,7 +173,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getGripperAngle() {
-    return gripperAngleEncoder.get() * 2 * Math.PI;
+    return (gripperAngleEncoder.get() * 2 * Math.PI) + GripperAngleMotorConstants.ENCODER_BASE_ANGLE;
   }
 
   public boolean getArmAngleLimit() {

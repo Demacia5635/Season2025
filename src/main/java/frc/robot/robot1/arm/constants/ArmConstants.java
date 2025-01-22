@@ -85,7 +85,7 @@ public class ArmConstants {
         public static final double GEAR_RATIO = 1.0 / 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
 
         /* The angle in the limit switch */
-        public static final double BASE_ANGLE = 0;
+        public static final double ENCODER_BASE_ANGLE = 0;
         public static final double BACK_LIMIT = 0;
         public static final double FWD_LIMIT = 0;
 
