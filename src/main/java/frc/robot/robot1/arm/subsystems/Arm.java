@@ -50,7 +50,6 @@ public class Arm extends SubsystemBase {
     gripperAngleMotor.setPosition(getGripperAngle());
 
     addNT();
-    SmartDashboard.putData(this);
   }
 
   public void addNT() {
@@ -61,7 +60,6 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/Gripper Angle Limit Switch", () -> getGripperAngleLimit() ? 1 : 0);
     LogManager.addEntry(getName() + "/IsReady", ()-> isReady() ? 1 : 0);
 
-    
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
@@ -69,6 +67,8 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set coast", new InstantCommand(()-> armAngleNeutralMode(false)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME + "/gripper angle set brake", new InstantCommand(()-> gripperAngleNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME + "/gripper angle set coast", new InstantCommand(()-> gripperAngleNeutralMode(false)).ignoringDisable(true));
+
+    SmartDashboard.putData(this);
   }
 
   public void armAngleNeutralMode(boolean isBrake) {
