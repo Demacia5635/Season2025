@@ -25,10 +25,7 @@ public class AutoUtils {
     static double maxAceel = DRIVE_ACCELERATION;
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
-    static Translation2d feeder = new Translation2d(0.75, 0);
-    static Translation2d reef = new Translation2d(0.45, 0);
-    static Translation2d reefRight = new Translation2d(0.45, -0.160);
-    static Translation2d reefLeft = new Translation2d(0.45, 0.160);
+    static Translation2d offset = new Translation2d(1.5, 0);
 // for red
     public enum FIELD_ELEMENTS{
         FEEDER_LEFT, FEEDER_RIGHT, A_LEFT, A_RIGHT, A_CENTER, B_LEFT, B_RIGHT, B_CENTER, C_LEFT, C_RIGHT, C_CENTER, D_LEFT, D_RIGHT, D_CENTER, E_LEFT, E_RIGHT, E_CENTER, F_LEFT, F_RIGHT, F_CENTER
@@ -43,26 +40,26 @@ public class AutoUtils {
     
     public static HashMap<FIELD_ELEMENTS, PathPoint> fieldElements = new HashMap<>();
     static {
-        fieldElements.put(FIELD_ELEMENTS.FEEDER_LEFT, getElement(1, feeder));
-        fieldElements.put(FIELD_ELEMENTS.FEEDER_RIGHT, getElement(2, feeder));
-        fieldElements.put(FIELD_ELEMENTS.A_LEFT, getElement(6, reefLeft));
-        fieldElements.put(FIELD_ELEMENTS.A_RIGHT, getElement(6, reefRight));
-        fieldElements.put(FIELD_ELEMENTS.A_CENTER, getElement(6, reef));
-        fieldElements.put(FIELD_ELEMENTS.B_LEFT, getElement(7, reefLeft));
-        fieldElements.put(FIELD_ELEMENTS.B_RIGHT, getElement(7, reefRight));
-        fieldElements.put(FIELD_ELEMENTS.B_CENTER, getElement(7, reef));
-        fieldElements.put(FIELD_ELEMENTS.C_LEFT, getElement(8, reefLeft));
-        fieldElements.put(FIELD_ELEMENTS.C_RIGHT, getElement(8, reefRight));
-        fieldElements.put(FIELD_ELEMENTS.C_CENTER, getElement(8, reef));
-        fieldElements.put(FIELD_ELEMENTS.D_LEFT, getElement(9, reefLeft));
-        fieldElements.put(FIELD_ELEMENTS.D_RIGHT, getElement(9, reefRight));
-        fieldElements.put(FIELD_ELEMENTS.D_CENTER, getElement(9, reef));
-        fieldElements.put(FIELD_ELEMENTS.E_LEFT, getElement(10, reefLeft));
-        fieldElements.put(FIELD_ELEMENTS.E_RIGHT, getElement(10, reefRight));
-        fieldElements.put(FIELD_ELEMENTS.E_CENTER, getElement(10, reef));
-        fieldElements.put(FIELD_ELEMENTS.F_LEFT, getElement(11, reefLeft));
-        fieldElements.put(FIELD_ELEMENTS.F_RIGHT, getElement(11, reefRight));
-        fieldElements.put(FIELD_ELEMENTS.F_CENTER, getElement(11, reef));
+        fieldElements.put(FIELD_ELEMENTS.FEEDER_LEFT, getElement(1, offset));
+        fieldElements.put(FIELD_ELEMENTS.FEEDER_RIGHT, getElement(2, offset));
+        fieldElements.put(FIELD_ELEMENTS.A_LEFT, getElement(6, offset));
+        fieldElements.put(FIELD_ELEMENTS.A_RIGHT, getElement(6, offset));
+        fieldElements.put(FIELD_ELEMENTS.A_CENTER, getElement(6, offset));
+        fieldElements.put(FIELD_ELEMENTS.B_LEFT, getElement(7, offset));
+        fieldElements.put(FIELD_ELEMENTS.B_RIGHT, getElement(7, offset));
+        fieldElements.put(FIELD_ELEMENTS.B_CENTER, getElement(7, offset));
+        fieldElements.put(FIELD_ELEMENTS.C_LEFT, getElement(8, offset));
+        fieldElements.put(FIELD_ELEMENTS.C_RIGHT, getElement(8, offset));
+        fieldElements.put(FIELD_ELEMENTS.C_CENTER, getElement(8, offset));
+        fieldElements.put(FIELD_ELEMENTS.D_LEFT, getElement(9, offset));
+        fieldElements.put(FIELD_ELEMENTS.D_RIGHT, getElement(9, offset));
+        fieldElements.put(FIELD_ELEMENTS.D_CENTER, getElement(9, offset));
+        fieldElements.put(FIELD_ELEMENTS.E_LEFT, getElement(10, offset));
+        fieldElements.put(FIELD_ELEMENTS.E_RIGHT, getElement(10, offset));
+        fieldElements.put(FIELD_ELEMENTS.E_CENTER, getElement(10, offset));
+        fieldElements.put(FIELD_ELEMENTS.F_LEFT, getElement(11, offset));
+        fieldElements.put(FIELD_ELEMENTS.F_RIGHT, getElement(11, offset));
+        fieldElements.put(FIELD_ELEMENTS.F_CENTER, getElement(11, offset));
 
     }
 
