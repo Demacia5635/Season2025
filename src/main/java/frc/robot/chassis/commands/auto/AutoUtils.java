@@ -11,6 +11,7 @@ import frc.robot.RobotContainer;
 import frc.robot.PathFollow.PathFollow;
 import frc.robot.PathFollow.Util.PathPoint;
 import static frc.robot.chassis.ChassisConstants.*;
+import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
 import static frc.robot.vision.utils.VisionConstants.*;
 
 import java.util.HashMap;
@@ -25,8 +26,10 @@ public class AutoUtils {
     static double maxAceel = DRIVE_ACCELERATION;
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
-    static Translation2d offset = new Translation2d(1.5, 0);
-// for red
+    static Translation2d offset = new Translation2d(1, 0);
+    
+    
+    // for red
     public enum FIELD_ELEMENTS{
         FEEDER_LEFT, FEEDER_RIGHT, A_LEFT, A_RIGHT, A_CENTER, B_LEFT, B_RIGHT, B_CENTER, C_LEFT, C_RIGHT, C_CENTER, D_LEFT, D_RIGHT, D_CENTER, E_LEFT, E_RIGHT, E_CENTER, F_LEFT, F_RIGHT, F_CENTER
 
@@ -63,10 +66,16 @@ public class AutoUtils {
 
     }
 
+    public static PathPoint[] REEF_POINTS = new PathPoint[]{
+        fieldElements.get(FIELD_ELEMENTS.A_LEFT), fieldElements.get(FIELD_ELEMENTS.B_LEFT), 
+        fieldElements.get(FIELD_ELEMENTS.C_LEFT), fieldElements.get(FIELD_ELEMENTS.D_LEFT),
+        fieldElements.get(FIELD_ELEMENTS.E_LEFT), fieldElements.get(FIELD_ELEMENTS.F_LEFT)  
+    };
+
     public static PathPoint getElement(int elementTag, Translation2d ofset){
         Translation2d originToTag = O_TO_TAG[elementTag];
         ofset = ofset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(ofset), TAG_ANGLE[elementTag]);
+        return new PathPoint(originToTag.plus(ofset), TAG_ANGLE[elementTag], 0.2);
     }
 
     public AutoUtils(){
@@ -97,9 +106,11 @@ public class AutoUtils {
         return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxV, maxAceel,
          0, false).setAutoRotate(rate);
     }
-
-    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel){
-        return new PathFollow(points, finalAngle, maxVel, isConstVel);
+    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise){
+        return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise);
+    }
+    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise, FIELD_ELEMENTS toGoElement, AlignToTag alignToTag){
+        return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise, toGoElement, alignToTag);
     }
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker) {
         return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxv, maxAceel, 0, toSpeaker);

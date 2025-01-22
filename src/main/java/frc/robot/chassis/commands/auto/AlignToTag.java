@@ -25,15 +25,16 @@ public class AlignToTag extends Command {
   private Translation2d tagToTarget;
   private Rotation2d targetAngle;
   private Translation2d robotToTarget = new Translation2d(10,10);
-  private double maxVel = 3;
+  private double maxVel = 2.5;
   private Integer tagID = null;
   private Timer timer;
+  private boolean isAuto;
 
-
-  public AlignToTag(Chassis chassis, boolean isRight, boolean isReef) {
+  public AlignToTag(Chassis chassis, boolean isRight, boolean isReef, boolean isAuto) {
     this.chassis = chassis;
     this.isRight = isRight;
     this.isReef = isReef;
+    this.isAuto = isAuto;
   }
   @Override
   public void initialize() {
@@ -58,7 +59,7 @@ public class AlignToTag extends Command {
       targetAngle = TAG_ANGLE[tagID].minus(Rotation2d.fromDegrees(180));
       tagToTarget = tagToTarget.rotateBy(targetAngle);
       robotToTarget = robotToTag.plus(tagToTarget);
-      chassis.setVelocitiesRotateToAngle(new ChassisSpeeds(Math.min(robotToTarget.getX()*3, maxVel), Math.min(robotToTarget.getY()*3, maxVel), 0), targetAngle);
+      chassis.setVelocitiesRotateToAngle(new ChassisSpeeds(Math.min(robotToTarget.getX()* (isAuto ? 4 : 2), maxVel), Math.min(robotToTarget.getY()*(isAuto ? 4 : 2), maxVel), 0), targetAngle);
     }
 
   }
@@ -75,7 +76,7 @@ public class AlignToTag extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return tagID == null || Math.abs(robotToTarget.getNorm()) < 0.02 || timer.get() > 1;
+    return tagID == null || Math.abs(robotToTarget.getNorm()) < 0.02;
   }
 }
 

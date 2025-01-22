@@ -28,8 +28,11 @@ public class goToPlace extends Command {
   public void initialize() {
     AutoUtils.goToMultiple(new PathPoint[]
     {dummyPoint, AutoUtils.fieldElements.get(element)}, maxVel, fieldElements.get(element).getRotation(),
-     false).andThen(new AlignToTag(chassis, !AutoUtils.isLeft(element),
-      element != FIELD_ELEMENTS.FEEDER_LEFT || element != FIELD_ELEMENTS.FEEDER_RIGHT)).schedule();
+     false, false, element, new AlignToTag(chassis, !AutoUtils.isLeft(element),
+     element != FIELD_ELEMENTS.FEEDER_LEFT || element != FIELD_ELEMENTS.FEEDER_RIGHT, false))
+     
+    .andThen(new AlignToTag(chassis, !AutoUtils.isLeft(element),
+      element != FIELD_ELEMENTS.FEEDER_LEFT || element != FIELD_ELEMENTS.FEEDER_RIGHT, false)).schedule();
 
   }
 

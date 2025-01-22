@@ -27,22 +27,22 @@ public class Auto_3Coral extends Command {
 
   @Override
   public void initialize() {
-    cmd = goToMultiple(new PathPoint[]{dumyPoint, scoring1} ,3.5, Rotation2d.fromDegrees(50), false);
+    cmd = goToMultiple(new PathPoint[]{dumyPoint, scoring1} ,3.5, Rotation2d.fromDegrees(50), false, false);
 
     
       
-    cmd = cmd.andThen(new AlignToTag(chassis, true, true));
+    cmd = cmd.andThen(new AlignToTag(chassis, true, true, true));
 
     cmd = cmd.andThen(goToMultiple(
       new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(12.1, 2.4), Rotation2d.fromDegrees(0))},
-       3.5, Rotation2d.fromDegrees(50), true));
+       3.5, Rotation2d.fromDegrees(50), true, true));
      
        
       cmd = cmd.andThen(goToMultiple(
         new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(16, 1.24), new Rotation2d(), 0)},
-         3, feeder.getRotation(), false));
+         3, feeder.getRotation(), false, false));
       
-      cmd = cmd.andThen(new AlignToTag(chassis, false, false));
+      cmd = cmd.andThen(new AlignToTag(chassis, false, false, true));
 
 
       cmd = cmd.andThen(new WaitCommand(0.5));
@@ -51,21 +51,21 @@ public class Auto_3Coral extends Command {
         new Pose2d(16, 1.24, feeder.getRotation()), 1.5).withTimeout(1));
 
       
-      cmd = cmd.andThen(new AlignToTag(chassis, true, true));
+      cmd = cmd.andThen(new AlignToTag(chassis, true, true, true));
 
       cmd = cmd.andThen(goToMultiple(
         new PathPoint[]{dummyPoint, new PathPoint(new Translation2d(16, 1.24), new Rotation2d(), 0)},
-         3, feeder.getRotation(), false));
+         3, feeder.getRotation(), false, false));
 
       
-      cmd = cmd.andThen(new AlignToTag(chassis, false, false));    
+      cmd = cmd.andThen(new AlignToTag(chassis, false, false, true));    
       
       cmd = cmd.andThen(goToLine(new Pose2d(13.54, 2.3, Rotation2d.fromDegrees(135)), 
         new Pose2d(15.7, 1.24, feeder.getRotation()), 1.5).withTimeout(1));
       
       cmd = cmd.andThen(new WaitCommand(0.3));
 
-      cmd = cmd.andThen(new AlignToTag(chassis, false, true));
+      cmd = cmd.andThen(new AlignToTag(chassis, false, true, true));
       
 
       

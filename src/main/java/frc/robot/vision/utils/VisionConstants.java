@@ -108,7 +108,7 @@ public class VisionConstants {
 
     public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-0.52,-0.160);
     public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-0.52,0.160);
-    public static final Translation2d INTAKE_TAG_TO_LEFT_SCORING = new Translation2d(-0.80,0.0);
+    public static final Translation2d INTAKE_TAG_TO_LEFT_SCORING = new Translation2d(-0.85,0.0);
 
     /**
      * Converts a measurement from inches to meters

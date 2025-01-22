@@ -1,5 +1,6 @@
 package frc.robot.PathFollow;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -12,10 +13,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import static frc.robot.chassis.ChassisConstants.*;
+import static frc.robot.chassis.commands.auto.AutoUtils.REEF_POINTS;
+import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
+import static frc.robot.chassis.commands.auto.AutoUtils.isLeft;
+
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.SubmissionPublisher;
 
 import frc.robot.RobotContainer;
 import frc.robot.PathFollow.Util.Leg;
@@ -23,6 +29,9 @@ import frc.robot.PathFollow.Util.RoundedPoint;
 import frc.robot.PathFollow.Util.Segment;
 import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.chassis.ChassisConstants;
+import frc.robot.chassis.commands.auto.AlignToTag;
+import frc.robot.chassis.commands.auto.AutoUtils;
+import frc.robot.chassis.commands.auto.AutoUtils.FIELD_ELEMENTS;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TrapezoidNoam;
@@ -42,7 +51,7 @@ public class PathFollow extends Command {
   double totalLeft;
   int segmentIndex = 0;
 
-  Segment[] segments;
+  ArrayList<Segment> segments;
   Translation2d vecVel;
   Rotation2d wantedAngle;
 
@@ -67,6 +76,12 @@ public class PathFollow extends Command {
   Pose2d[] aprilTagsPositions = new Pose2d[]{new Pose2d()};
   Rotation2d finalAngle;
   boolean isConstVel = false;
+  boolean isPrecise = false;
+  double reefRadius = 3;
+  Translation2d reefCenter = new Translation2d(fieldLength-4.5,fieldHeight-4); 
+  FIELD_ELEMENTS toGoElement;
+  boolean stop = false;
+  AlignToTag alignToTag;
   
   /**
    * Creates a new path follower using the given points.
@@ -83,15 +98,28 @@ public class PathFollow extends Command {
         0, RobotContainer.isRed());
         this.maxVel = velocity;
   }
-
-  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel) {
+  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise) {
     this(RobotContainer.robotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
     this.finalAngle = finalAngle;
     this.maxVel = maxVel;
     this.isConstVel = isConstVel;
+    this.isPrecise = isPrecise;
   
+  }
+
+  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise, FIELD_ELEMENTS toGoElement, AlignToTag alignToTag) {
+    this(RobotContainer.robotContainer.chassis, points, maxVel,
+        8,
+        0, RobotContainer.isRed());
+    this.finalAngle = finalAngle;
+    this.maxVel = maxVel;
+    this.isConstVel = isConstVel;
+    this.isPrecise = isPrecise;
+    this.toGoElement = toGoElement;
+  
+    this.alignToTag = alignToTag;
   }
 
   public PathFollow(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel) {
@@ -110,7 +138,7 @@ public class PathFollow extends Command {
     rotationTrapezoid = new TrapezoidNoam(180, 360);
 
     // calculate the total length of the path
-    segments = new Segment[1 + ((points.length - 2) * 2)];
+    segments = new ArrayList<Segment>();
 
   }
 
@@ -119,6 +147,62 @@ public class PathFollow extends Command {
     this(chassis, points, maxVel, maxAcc, finishVel);
     this.rotateToSpeaker = rotateToSpeaker;
   }
+  
+
+  private boolean isIntersectingSegment(Segment segment){
+    // Extract coordinates of the segment
+    Translation2d segmentVector = segment.getPoints()[0].minus(segment.getPoints()[1]);
+    Translation2d startToCenter = segment.getPoints()[0].minus(reefCenter);
+
+    if (startToCenter.getNorm() > segmentVector.getNorm()) {
+      return false;
+    }
+    Translation2d vectorA = new Translation2d(reefRadius, startToCenter.getAngle().plus(Rotation2d.fromDegrees(90)));
+    Rotation2d highBound = startToCenter.plus(vectorA).getAngle();
+    Rotation2d segmentAngle = segmentVector.getAngle().minus(startToCenter.getAngle());
+    
+
+    return Math.abs(segmentAngle.getRadians()) < Math.abs(highBound.getRadians());
+
+
+    
+  }
+
+
+  private Translation2d getShortenPoint(Segment segment){
+    double x0 = segment.getPoints()[0].getX();
+    double y0 = segment.getPoints()[0].getY();
+    double x1 = segment.getPoints()[1].getX();
+    double y1 = segment.getPoints()[1].getY();
+    
+    double m = (y1 - y0) / (x1 - x0);
+    
+    double opM = -1 / m;
+    
+    double x1Intersection = (x0 + x1) / 2 + 1;
+    double y1Intersection = opM * (x1Intersection - (x0 + x1) / 2) + (y0 + y1) / 2;
+    
+    double x2Intersection = (x0 + x1) / 2 - 1;
+    double y2Intersection = opM * (x2Intersection - (x0 + x1) / 2) + (y0 + y1) / 2;
+
+    Translation2d intersection1 = new Translation2d(x1Intersection, y1Intersection);
+    Translation2d intersection2 = new Translation2d(x2Intersection, y2Intersection);
+
+    Translation2d centerToIntersection1 = intersection1.minus(reefCenter);
+    Translation2d centerToIntersection2 = intersection2.minus(reefCenter);
+
+    Translation2d centerToIntersection = intersection1.getNorm() > intersection2.getNorm() ? centerToIntersection2 : centerToIntersection1;
+
+    centerToIntersection = centerToIntersection.plus(centerToIntersection.div(centerToIntersection.getNorm()).times(1.5));
+    return reefCenter.plus(centerToIntersection);
+
+  }
+  /*private boolean getClosetPoint(Pose2d startingPose){
+    double closetDistance = Integer.MAX_VALUE;
+    for(int i = 0; i < AutoUtils.fieldElements.size(); i++){
+      
+    }
+  }*/
 
   /*
    * public String currentSegmentInfo() {
@@ -131,6 +215,7 @@ public class PathFollow extends Command {
 
   @Override
   public void initialize() {
+    
     isRed = false;//RobotContainer.isRed();
     // sets first point to chassis pose to prevent bugs with red and blue alliance
     points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(), chassis.getPose().getRotation(),
@@ -138,6 +223,8 @@ public class PathFollow extends Command {
 
     // case for red alliance (blue is the default)
     if (isRed) {
+      reefCenter = new Translation2d(fieldLength - reefCenter.getX(), fieldHeight - reefCenter.getY());
+
       points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(),
           Rotation2d.fromDegrees(180).minus(chassis.getPose().getRotation()), points[0].getRadius(), false);
       for (int i = 1; i < points.length; i++) {
@@ -150,30 +237,40 @@ public class PathFollow extends Command {
     for (int i = 0; i < points.length - 2; i++) {
       corners[i] = new RoundedPoint(points[i], points[i + 1], points[i + 2], points[i].isAprilTag());
     }
-    // case for 1 segment, need to create only 1 leg
+    
+    System.out.println();
+
     if (points.length < 3) {
-      segments[0] = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
-      // System.out.println("------LESS THAN 3------");
+      Segment cur = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
+      System.out.println(isIntersectingSegment(cur));
+      if(isIntersectingSegment(cur)){
+        new PathFollow(
+          new PathPoint[]{new PathPoint(new Translation2d(), new Rotation2d()),
+          new PathPoint(getShortenPoint(cur), new Rotation2d()),
+            points[points.length - 1]}, points[points.length -1].getRotation(),
+             2, false, true).andThen(alignToTag).schedule();
+        stop = true;
+      }
+      segments.add(cur);
+      
     }
     // case for more then 1 segment
     else {
       // creates the first leg
-      segments[0] = corners[0].getAtoCurveLeg();
+      segments.add(0, corners[0].getAtoCurveLeg());
 
       int segmentIndexCreator = 1;
       // creates arc than leg
       for (int i = 0; i < corners.length - 1; i += 1) {
 
-        segments[segmentIndexCreator] = corners[i].getArc();
+        segments.add(corners[i].getArc());
 
-        segments[segmentIndexCreator + 1] = new Leg(corners[i].getCurveEnd(), corners[i + 1].getCurveStart(),
-            points[i].isAprilTag());
-        segments[segmentIndexCreator].setAprilTagMode(points[i].isAprilTag());
-        segmentIndexCreator += 2;
+        segments.add(new Leg(corners[i].getCurveEnd(), corners[i + 1].getCurveStart(),
+            points[i].isAprilTag()));
       }
       // creates the last arc and leg
-      segments[segments.length - 2] = corners[corners.length - 1].getArc();
-      segments[segments.length - 1] = corners[corners.length - 1].getCtoCurveLeg();
+      segments.add(corners[corners.length - 1].getArc());
+      segments.add(corners[corners.length - 1].getCtoCurveLeg());
     }
 
     // calculates the length of the entire path
@@ -230,6 +327,7 @@ public class PathFollow extends Command {
 
   @Override
   public void execute() {
+    if(stop) return;
 
     trajField.setRobotPose(chassis.getPose());
 
@@ -237,21 +335,21 @@ public class PathFollow extends Command {
   
     Translation2d currentVelocity = new Translation2d(chassis.getChassisSpeeds().vxMetersPerSecond,
         chassis.getChassisSpeeds().vyMetersPerSecond);
-    distancePassed = totalLeft - segments[segmentIndex].distancePassed(chassisPose.getTranslation());
+    distancePassed = totalLeft - segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());
 
-    if (segments[segmentIndex].distancePassed(chassisPose.getTranslation()) >= segments[segmentIndex].getLength()
+    if (segments.get(segmentIndex).distancePassed(chassisPose.getTranslation()) >= segments.get(segmentIndex).getLength()
         - distanceOffset) {
-      totalLeft -= segments[segmentIndex].getLength();
-      if (segmentIndex != segments.length - 1)
+      totalLeft -= segments.get(segmentIndex).getLength();
+      if (segmentIndex != segments.size() - 1)
         segmentIndex++;
     }
     /*driveVelocity = driveTrapezoid.calculate(
       totalLeft - segments[segmentIndex].distancePassed(chassisPose.getTranslation()),
         currentVelocity.getNorm(), finishVel);*/
 
-    driveVelocity = isConstVel ? maxVel : Math.min((totalLeft - segments[segmentIndex].distancePassed(chassis.getPose().getTranslation())) * 3, maxVel) ;
+    driveVelocity = isConstVel ? maxVel : Math.min((totalLeft - segments.get(segmentIndex).distancePassed(chassis.getPose().getTranslation())) * 3, maxVel) ;
 
-    Translation2d velVector = segments[segmentIndex].calc(chassisPose.getTranslation(), driveVelocity);
+    Translation2d velVector = segments.get(segmentIndex).calc(chassisPose.getTranslation(), driveVelocity);
 
    
 
@@ -279,7 +377,7 @@ public class PathFollow extends Command {
 
   @Override
   public boolean isFinished() {
-    return totalLeft <= 0.1;
+    return totalLeft <= (isPrecise ? 0.1 : 0.6) || stop;
   }
 
   @Override

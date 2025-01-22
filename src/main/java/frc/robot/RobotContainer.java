@@ -58,12 +58,12 @@ public class RobotContainer implements Sendable{
 
 
   private void configureBindings() {
-    controller.a().onTrue(new AlignToTag(chassis, true , true));
-    controller.b().onTrue(new AlignToTag(chassis, false, true));
-    controller.y().onTrue(new goToPlace(FIELD_ELEMENTS.FEEDER_LEFT, 2));
+    controller.a().onTrue(new AlignToTag(chassis, true , true, false));
+    controller.b().onTrue(new AlignToTag(chassis, false, true, false));
+    controller.y().onTrue(new goToPlace(FIELD_ELEMENTS.FEEDER_LEFT, 3.5));
     controller.x().onTrue(new InstantCommand(()->chassis.setGyroAngle(chassis.tag.alignRobot())));
 
-    controller.leftBumper().onTrue(new AlignToTag(chassis, false, false));
+    controller.leftBumper().onTrue(new AlignToTag(chassis, false, false, false));
 
 
   }
