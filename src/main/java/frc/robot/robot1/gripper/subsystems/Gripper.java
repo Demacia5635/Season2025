@@ -5,6 +5,7 @@
 package frc.robot.robot1.gripper.subsystems;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +20,7 @@ import static frc.robot.robot1.gripper.constants.GripperConstants.*;
 
 public class Gripper extends SubsystemBase {
   private final TalonSRX motor;
+  private final AnalogInput sensor;
 
   public Gripper() {
     setName(NAME);
@@ -27,11 +29,14 @@ public class Gripper extends SubsystemBase {
     motor.setInverted(MotorConstants.INVERT ? InvertType.InvertMotorOutput : InvertType.None);
     motor.setNeutralMode(MotorConstants.BRAKE ? NeutralMode.Brake : NeutralMode.Coast);
 
+    sensor = new AnalogInput(SensorConstants.SENSOR_CHANNEL);
+
     addNT();
   }
 
   private void addNT() {
-    LogManager.addEntry(getName() + "/Is Sensor", ()-> getSensor() ? 1 : 0);
+    LogManager.addEntry(getName() + "/get Sensor", ()-> getSensor());
+    LogManager.addEntry(getName() + "/Is Coral", ()-> isCoral() ? 1 : 0);
     
     LogManager.addEntry(getName() + "/Motor" + "/Velocity", motor::getSelectedSensorVelocity);
     
@@ -53,8 +58,12 @@ public class Gripper extends SubsystemBase {
     motor.setNeutralMode(isBrake ? NeutralMode.Brake : NeutralMode.Coast);
   }
 
-  public boolean getSensor() {
-    return motor.getSensorCollection().getAnalogIn() >= SensorConstants.VOLTS_IF_CORAL_IN_SENSOR;
+  public double getSensor() {
+    return sensor.getVoltage();
+  }
+
+  public boolean isCoral() {
+    return getSensor() < SensorConstants.CORAL_IN_SENSOR;
   }
 
   @Override

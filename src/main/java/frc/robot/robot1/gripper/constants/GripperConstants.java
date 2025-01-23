@@ -16,7 +16,8 @@ public class GripperConstants {
     }
 
     public static class SensorConstants {
-        public static final double VOLTS_IF_CORAL_IN_SENSOR = 0;
+        public static final int SENSOR_CHANNEL = 3;
+        public static final double CORAL_IN_SENSOR = 3;
     }
 
     public static class GrabConstants {
