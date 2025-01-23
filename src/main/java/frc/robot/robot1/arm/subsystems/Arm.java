@@ -109,8 +109,9 @@ public class Arm extends SubsystemBase {
     if (angle > ArmAngleMotorConstants.FWD_LIMIT) {
       angle = ArmAngleMotorConstants.FWD_LIMIT;
     }
-
-    armAngleMotor.setMotionMagic(angle);
+    double currentAngle = armAngleMotor.getCurrentPosition();
+    double v = (angle - currentAngle)*4;
+    armAngleMotor.setVelocity(v); // MotionMagic(angle);
   }
 
   public void gripperAngleMotorSetMotionMagic(double angle) {
