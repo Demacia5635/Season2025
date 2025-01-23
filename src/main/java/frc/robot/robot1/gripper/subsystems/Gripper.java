@@ -11,12 +11,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LogManager;
 
-import static frc.robot.robot1.gripper.constants.GripperConstants.*;
-
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.InvertType;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
+import static frc.robot.robot1.gripper.constants.GripperConstants.*;
 
 public class Gripper extends SubsystemBase {
   private final TalonSRX motor;
