@@ -100,7 +100,7 @@ public class RobotContainer {
    * @return the ommand that start at the start at enable
    */
   public Command getEnableInitCommand() {
-    return armCalibration;
+    return armCalibration.andThen(armSetStateTesting);
   }
 
   /**
