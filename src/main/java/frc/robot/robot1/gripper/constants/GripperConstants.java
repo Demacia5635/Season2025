@@ -10,7 +10,7 @@ public class GripperConstants {
     public static String NAME = "Gripepr";
 
     public static class MotorConstants {
-        public static final int MOTOR_ID = 0;
+        public static final int MOTOR_ID = 30;
         public static final boolean INVERT = false;
         public static final boolean BRAKE = true;
     }
