@@ -103,8 +103,8 @@ public class ArmConstants {
     }
 
     public static class MaxErrors {
-        public static final double ARM_ANGLE_ERROR = 0.25;
-        public static final double GRIPPER_ANGLE_ERROR = 0.25;
+        public static final double ARM_ANGLE_ERROR = 0.05;
+        public static final double GRIPPER_ANGLE_ERROR = 0.05;
     }
     
     public static class ANGLES {
