@@ -97,21 +97,33 @@ public class Arm extends SubsystemBase {
     gripperAngleMotorSetPower(gripperAnglePower);
   }
 
-  public void armAngleMotorSetMotionMagic(double angle) {
+  public void armAngleMotorSetMotionMagic(double targetAngle) {
     if (!isCalibrated) {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
     }
 
-    if (angle < ArmAngleMotorConstants.BACK_LIMIT) {
-      angle = ArmAngleMotorConstants.BACK_LIMIT;
+    if (targetAngle < ArmAngleMotorConstants.BACK_LIMIT) {
+      targetAngle = ArmAngleMotorConstants.BACK_LIMIT;
     }
-    if (angle > ArmAngleMotorConstants.FWD_LIMIT) {
-      angle = ArmAngleMotorConstants.FWD_LIMIT;
+    if (targetAngle > ArmAngleMotorConstants.FWD_LIMIT) {
+      targetAngle = ArmAngleMotorConstants.FWD_LIMIT;
     }
-    double currentAngle = armAngleMotor.getCurrentPosition();
-    double v = (angle - currentAngle)*4;
-    armAngleMotor.setVelocity(v); // MotionMagic(angle);
+    
+    /* Option 1 */
+    armAngleMotor.setPositionVoltage(targetAngle);
+    
+    /* Option 2 */
+    double currentAngle = getArmAngle();
+    double velocity = 0;
+    double upDelta = 0.05;
+    double downDelta = -0.05;
+    if (currentAngle < targetAngle + MaxErrors.ARM_ANGLE_ERROR) {
+      velocity = (targetAngle + upDelta - currentAngle) * ArmAngleMotorConstants.KP;
+    } else if (currentAngle > targetAngle + MaxErrors.ARM_ANGLE_ERROR) {
+      velocity = (targetAngle + downDelta - currentAngle) * ArmAngleMotorConstants.KP;
+    }
+    armAngleMotor.setVelocity(velocity);
   }
 
   public void gripperAngleMotorSetMotionMagic(double angle) {
