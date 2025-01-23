@@ -23,7 +23,6 @@ public class Arm extends SubsystemBase {
   private TalonMotor gripperAngleMotor;
 
   private DigitalInput armAngleLimit;
-  private DigitalInput gripperAngleLimit;
   private DutyCycleEncoder gripperAngleEncoder;
 
   public boolean isCalibrated;
@@ -38,7 +37,6 @@ public class Arm extends SubsystemBase {
     gripperAngleMotor = new TalonMotor(GripperAngleMotorConstants.CONFIG);
 
     armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
-    gripperAngleLimit = new DigitalInput(GripperAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
 
     gripperAngleEncoder = new DutyCycleEncoder(GripperAngleMotorConstants.ENCODER_CHANNEL);
 
@@ -57,7 +55,6 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle);
     LogManager.addEntry(getName() + "/Gripper Angle Motor", this::getGripperAngleMotor);
     LogManager.addEntry(getName() + "/Arm Angle Limit Switch", () -> getArmAngleLimit() ? 1 : 0);
-    LogManager.addEntry(getName() + "/Gripper Angle Limit Switch", () -> getGripperAngleLimit() ? 1 : 0);
     LogManager.addEntry(getName() + "/IsReady", ()-> isReady() ? 1 : 0);
 
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
@@ -186,10 +183,6 @@ public class Arm extends SubsystemBase {
 
   public boolean getArmAngleLimit() {
     return !armAngleLimit.get();
-  }
-
-  public boolean getGripperAngleLimit() {
-    return !gripperAngleLimit.get();
   }
 
   @Override
