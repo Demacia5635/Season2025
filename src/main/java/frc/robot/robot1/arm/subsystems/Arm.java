@@ -136,26 +136,6 @@ public class Arm extends SubsystemBase {
     gripperAngleMotor.setPositionVoltage(angle);
   }
 
-  public void setMotionMagic(double armAngle, double gripperAngle) {
-    armAngleMotorSetMotionMagic(armAngle);
-    gripperAngleMotorSetMotionMagic(gripperAngle);
-  }
-
-  public void gripperAngleSetVelocity(double velocity) {
-    if (!isCalibrated) {
-      LogManager.log("Can not move motor before calibration", AlertType.kError);
-      return;
-    }
-
-    if (getGripperAngle() < GripperAngleMotorConstants.BACK_LIMIT) {
-      velocity = 0;
-    }
-
-    if (getGripperAngle() > GripperAngleMotorConstants.FWD_LIMIT) {
-      velocity = 0;
-    }
-    
-    gripperAngleMotor.setVelocity(velocity);
   public void setPositionVoltage(double armAngle, double gripperAngle) {
     armAngleMotorSetPositionVoltage(armAngle);
     gripperAngleMotorSetPositionVoltage(gripperAngle);
@@ -164,10 +144,6 @@ public class Arm extends SubsystemBase {
   public void stop() {
     armAngleMotor.stopMotor();
     gripperAngleMotor.stopMotor();
-  }
-
-  public void armAngleSetPosition(double angle) {
-    armAngleMotor.setPosition(angle);
   }
 
   private void checkIfIsReady() {
