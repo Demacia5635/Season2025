@@ -84,6 +84,7 @@ public class RobotContainer {
   private void configureBindings() {
     controller.a().onTrue(grab);
     controller.b().onTrue(drop);
+    controller.leftBumper().onTrue(getDisableInitCommand());
   }
 
   /**
