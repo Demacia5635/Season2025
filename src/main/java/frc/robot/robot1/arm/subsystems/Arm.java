@@ -126,7 +126,7 @@ public class Arm extends SubsystemBase {
       angle = GripperAngleMotorConstants.FWD_LIMIT;
     }
 
-    gripperAngleMotor.setMotionMagic(angle);
+    gripperAngleMotor.setPositionVoltage(angle);
   }
 
   public void setMotionMagic(double armAngle, double gripperAngle) {
