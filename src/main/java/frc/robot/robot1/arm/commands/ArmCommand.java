@@ -85,7 +85,7 @@ public class ArmCommand extends Command {
         arm.stop();
 
     }
-    arm.setMotionMagic(wantedAngle.getFirst(), wantedAngle.getSecond());
+    arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
   }
 
   @Override
