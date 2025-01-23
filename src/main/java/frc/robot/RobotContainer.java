@@ -104,8 +104,8 @@ public class RobotContainer {
    */
   public Command getDisableInitCommand() {
     Command initDisableCommand = new InstantCommand(()-> {
-
-    }
+      gripper.stop();
+    }, gripper
     ).ignoringDisable(true);
     initDisableCommand.setName("Init Disable Command");
     return initDisableCommand;
