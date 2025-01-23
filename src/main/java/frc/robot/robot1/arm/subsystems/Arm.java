@@ -110,20 +110,7 @@ public class Arm extends SubsystemBase {
       targetAngle = ArmAngleMotorConstants.FWD_LIMIT;
     }
     
-    /* Option 1 */
     armAngleMotor.setPositionVoltage(targetAngle);
-    
-    /* Option 2 */
-    double currentAngle = getArmAngle();
-    double velocity = 0;
-    double upDelta = 0.05;
-    double downDelta = -0.05;
-    if (currentAngle < targetAngle + MaxErrors.ARM_ANGLE_ERROR) {
-      velocity = (targetAngle + upDelta - currentAngle) * ArmAngleMotorConstants.KP;
-    } else if (currentAngle > targetAngle + MaxErrors.ARM_ANGLE_ERROR) {
-      velocity = (targetAngle + downDelta - currentAngle) * ArmAngleMotorConstants.KP;
-    }
-    armAngleMotor.setVelocity(velocity);
   }
 
   public void gripperAngleMotorSetMotionMagic(double angle) {
