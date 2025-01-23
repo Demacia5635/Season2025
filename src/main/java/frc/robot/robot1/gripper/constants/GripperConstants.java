@@ -21,11 +21,11 @@ public class GripperConstants {
     }
 
     public static class GrabConstants {
-        public static final double FEED_POWER = 0;
+        public static final double FEED_POWER = 0.25;
     }
 
     public static class DropConstants {
-        public static final double DROP_POWER = 0;
+        public static final double DROP_POWER = 0.25;
         public static final double DROP_DURATION = 3;
     }
 
