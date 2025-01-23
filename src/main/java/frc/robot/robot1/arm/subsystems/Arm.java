@@ -141,6 +141,10 @@ public class Arm extends SubsystemBase {
     gripperAngleMotorSetPositionVoltage(gripperAngle);
   }
 
+  public void armAngleSetPosition(double angle) {
+    armAngleMotor.setPosition(angle);
+  }
+
   public void stop() {
     armAngleMotor.stopMotor();
     gripperAngleMotor.stopMotor();
