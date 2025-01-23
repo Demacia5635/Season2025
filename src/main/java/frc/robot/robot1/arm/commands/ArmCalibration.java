@@ -32,7 +32,7 @@ public class ArmCalibration extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (timer.hasElapsed(0.25)) {
+    if (timer.hasElapsed(CalibrationConstants.TIME_TO_CHANGE_POWER)) {
       arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_POWER);
     }
   }
