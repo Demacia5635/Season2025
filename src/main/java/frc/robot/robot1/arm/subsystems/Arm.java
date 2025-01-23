@@ -11,10 +11,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
-import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
-import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleMotorConstants;
-import frc.robot.robot1.arm.constants.ArmConstants.MaxErrors;
+
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 
