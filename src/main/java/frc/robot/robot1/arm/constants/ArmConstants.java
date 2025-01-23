@@ -32,13 +32,13 @@ public class ArmConstants {
         public static final double KI = 0;
         public static final double KD = 0;
         public static final double KS = 1;
-        public static final double KV = 20;
-        public static final double KA = 1.0118533303602197;
+        public static final double KV = 4.464266414545468;
+        public static final double KA = 0.006126974960575891;
         public static final double KG = 0;
 
-        public static final double MOTION_MAGIC_VELOCITY = 0.25;
-        public static final double MOTION_MAGIC_ACCELERATION = 0.5;
-        public static final double MOTION_MAGIC_JERK = 1;
+        public static final double MOTION_MAGIC_VELOCITY = 1.5;
+        public static final double MOTION_MAGIC_ACCELERATION = 3;
+        public static final double MOTION_MAGIC_JERK = 6;
 
         public static final int LIMIT_SWITCH_CHANNEL = 1;
 
@@ -47,9 +47,9 @@ public class ArmConstants {
         public static final double GEAR_RATIO = 36.0 * (105.0 / 16.0);
 
         /* The angle where the limit switch */
-        public static final double BASE_ANGLE = 0.1048 * 2 * Math.PI;
-        public static final double BACK_LIMIT = 0.1048 * 2 * Math.PI;
-        public static final double FWD_LIMIT = 0.38 * 2 * Math.PI;
+        public static final double BASE_ANGLE = Math.toRadians(33.7);
+        public static final double BACK_LIMIT = Math.toRadians(31);
+        public static final double FWD_LIMIT = Math.toRadians(130);
 
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
                 .withPID(KP, KI, KD, KS, KV, KA, KG)
