@@ -26,6 +26,7 @@ public class ArmCalibration extends Command {
   @Override
   public void initialize() {
     timer.start();
+    arm.armAngleNeutralMode(true);
     arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_START_POWER);
   }
 
