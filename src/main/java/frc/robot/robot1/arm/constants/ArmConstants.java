@@ -46,6 +46,8 @@ public class ArmConstants {
         public static final boolean IS_INVERTED = false;
         public static final double GEAR_RATIO = 36.0 * (105.0 / 16.0);
 
+        public static final double RAMP_TIME = 0.5;
+
         /* The angle where the limit switch */
         public static final double BASE_ANGLE = Math.toRadians(33.7);
         public static final double BACK_LIMIT = Math.toRadians(31);
@@ -56,7 +58,8 @@ public class ArmConstants {
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)
-                .withMotorRatio(GEAR_RATIO).withRadiansMotor();
+                .withMotorRatio(GEAR_RATIO).withRadiansMotor()
+                .withRampTime(RAMP_TIME);
     }
 
     public static class GripperAngleStarting {
