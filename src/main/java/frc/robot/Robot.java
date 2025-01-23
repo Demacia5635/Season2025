@@ -17,6 +17,7 @@ public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
   private Command m_disableInitCommand;
   private Command m_enableInitCommand;
+  private boolean m_hasScheduled;
 
   private final RobotContainer m_robotContainer;
 
@@ -28,6 +29,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_hasScheduled = false;
   }
 
   /**
@@ -83,10 +85,13 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-
-    m_enableInitCommand = m_robotContainer.getEnableInitCommand();
-    if (m_enableInitCommand != null) {
-      m_enableInitCommand.schedule();
+    
+    if (!m_hasScheduled) {
+      m_enableInitCommand = m_robotContainer.getEnableInitCommand();
+      if (m_enableInitCommand != null) {
+        m_enableInitCommand.schedule();
+        m_hasScheduled = true;
+      }
     }
   }
 
