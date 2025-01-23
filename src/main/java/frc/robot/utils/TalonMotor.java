@@ -239,10 +239,8 @@ public class TalonMotor extends TalonFX {
   * @param feedForward wanted feed forward to add to the ks kv ka and kg defaults to 0
   */
 	public void setMotionMagic(double position, double feedForward) {
-    if (Math.abs(position - getCurrentPosition()) > 0.015) {
-      setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
-      positionEntry.log(position);
-    } else stopMotor();
+		setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
+		positionEntry.log(position);
 	}
 
 	public void setMotionMagic(double position) {
@@ -250,10 +248,8 @@ public class TalonMotor extends TalonFX {
 	}
 
   public void setPositionVoltage(double position, double feedForward) {
-    if (Math.abs(position - getCurrentPosition()) > 0.015) {
-      setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
-      positionEntry.log(position);
-    } else stopMotor();
+    setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
+    positionEntry.log(position);
   }
 
   public void setPositionVoltage(double position) {
