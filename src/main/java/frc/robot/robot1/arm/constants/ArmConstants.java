@@ -80,8 +80,8 @@ public class ArmConstants {
         public static final int ENCODER_CHANNEL = 3;
 
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = true;
-        public static final double GEAR_RATIO = 1.0 / 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
+        public static final boolean IS_INVERTED = false;
+        public static final double GEAR_RATIO = 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
 
         /* The angle in the limit switch */
         public static final double ENCODER_BASE_ANGLE = 5.0970676249256735384626433832795;
