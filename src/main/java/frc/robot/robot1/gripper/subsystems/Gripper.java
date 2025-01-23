@@ -5,7 +5,6 @@
 package frc.robot.robot1.gripper.subsystems;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -20,7 +19,6 @@ import static frc.robot.robot1.gripper.constants.GripperConstants.*;
 
 public class Gripper extends SubsystemBase {
   private final TalonSRX motor;
-  private final DigitalInput sensor;
 
   public Gripper() {
     setName(NAME);
@@ -28,8 +26,6 @@ public class Gripper extends SubsystemBase {
     motor = new TalonSRX(MotorConstants.MOTOR_ID);
     motor.setInverted(MotorConstants.INVERT ? InvertType.InvertMotorOutput : InvertType.None);
     motor.setNeutralMode(MotorConstants.BRAKE ? NeutralMode.Brake : NeutralMode.Coast);
-
-    sensor = new DigitalInput(SensorConstants.SENSOR_CHANNEL);
 
     addNT();
   }
@@ -58,7 +54,7 @@ public class Gripper extends SubsystemBase {
   }
 
   public boolean getSensor() {
-    return sensor.get();
+    return motor.getSensorCollection().getAnalogIn() >= SensorConstants.VOLTS_IF_CORAL_IN_SENSOR;
   }
 
   @Override
