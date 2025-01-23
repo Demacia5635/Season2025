@@ -8,18 +8,23 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.PathFollow.Util.PathPoint;
-import frc.robot.chassis.commands.auto.AutoUtils.FIELD_ELEMENTS;
+import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
+import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class goToPlace extends Command {
 
 
   private PathPoint dummyPoint = new PathPoint(new Translation2d(), new Rotation2d());
-  FIELD_ELEMENTS element;
+  FIELD_POSITION position;
+  ELEMENT element;
   double maxVel;
-  public goToPlace(FIELD_ELEMENTS element, double maxVel) {
+  boolean isFeeder;
+  public goToPlace(FIELD_POSITION position, ELEMENT element, double maxVel) {
+    this.position = position;
     this.element = element;
     this.maxVel = maxVel;
+    this.isFeeder = position == FIELD_POSITION.FEEDER_LEFT || position == FIELD_POSITION.FEEDER_RIGHT;
     
   }
 
@@ -27,12 +32,12 @@ public class goToPlace extends Command {
   @Override
   public void initialize() {
     AutoUtils.goToMultiple(new PathPoint[]
-    {dummyPoint, AutoUtils.fieldElements.get(element)}, maxVel, fieldElements.get(element).getRotation(),
-     false, false, element, new AlignToTag(chassis, !AutoUtils.isLeft(element),
-     element != FIELD_ELEMENTS.FEEDER_LEFT || element != FIELD_ELEMENTS.FEEDER_RIGHT, false))
+    {dummyPoint, AutoUtils.fieldElements.get(position)}, maxVel, fieldElements.get(position).getRotation(),
+     false, false, position, new AlignToTag(chassis,  element != ELEMENT.CORAL_LEFT,
+     position != FIELD_POSITION.FEEDER_LEFT || position != FIELD_POSITION.FEEDER_RIGHT, false))
      
-    .andThen(new AlignToTag(chassis, !AutoUtils.isLeft(element),
-      element != FIELD_ELEMENTS.FEEDER_LEFT || element != FIELD_ELEMENTS.FEEDER_RIGHT, false)).schedule();
+    .andThen(new AlignToTag(chassis, element != ELEMENT.CORAL_LEFT,
+      position != FIELD_POSITION.FEEDER_LEFT || position != FIELD_POSITION.FEEDER_RIGHT, false)).schedule();
 
   }
 

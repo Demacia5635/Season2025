@@ -10,8 +10,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.PathFollow.PathFollow;
 import frc.robot.PathFollow.Util.PathPoint;
+import frc.robot.PathFollow.Util.Segment;
+
 import static frc.robot.chassis.ChassisConstants.*;
-import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
 import static frc.robot.vision.utils.VisionConstants.*;
 
 import java.util.HashMap;
@@ -26,60 +27,64 @@ public class AutoUtils {
     static double maxAceel = DRIVE_ACCELERATION;
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
-    static Translation2d offset = new Translation2d(1, 0);
+    static Translation2d strateOffset = new Translation2d(1.5, 0);
+    static Translation2d cornerOffsetLeft = new Translation2d(0.5, 0.75);
+    static Translation2d cornerOffsetRight = new Translation2d(0.5, -0.75);
     
     
     // for red
-    public enum FIELD_ELEMENTS{
-        FEEDER_LEFT, FEEDER_RIGHT, A_LEFT, A_RIGHT, A_CENTER, B_LEFT, B_RIGHT, B_CENTER, C_LEFT, C_RIGHT, C_CENTER, D_LEFT, D_RIGHT, D_CENTER, E_LEFT, E_RIGHT, E_CENTER, F_LEFT, F_RIGHT, F_CENTER
-
+    public enum FIELD_POSITION{
+        FEEDER_LEFT, FEEDER_RIGHT, A, B, C, D, E, F
     }
-    public static boolean isLeft(FIELD_ELEMENTS element){
-        return element == FIELD_ELEMENTS.FEEDER_LEFT || element == FIELD_ELEMENTS.A_LEFT
-         || element == FIELD_ELEMENTS.B_LEFT || element == FIELD_ELEMENTS.C_LEFT
-         || element == FIELD_ELEMENTS.D_LEFT || element == FIELD_ELEMENTS.E_LEFT
-         || element == FIELD_ELEMENTS.F_LEFT;
+    public enum REEF_SEGMENTS{
+        A,B,C,D,E,F
+    }
+    public enum ELEMENT{
+        ALGAE, CORAL_RIGHT, CORAL_LEFT, FEEDER
     }
     
-    public static HashMap<FIELD_ELEMENTS, PathPoint> fieldElements = new HashMap<>();
+    public static HashMap<FIELD_POSITION, PathPoint> fieldElements = new HashMap<>();
     static {
-        fieldElements.put(FIELD_ELEMENTS.FEEDER_LEFT, getElement(1, offset));
-        fieldElements.put(FIELD_ELEMENTS.FEEDER_RIGHT, getElement(2, offset));
-        fieldElements.put(FIELD_ELEMENTS.A_LEFT, getElement(6, offset));
-        fieldElements.put(FIELD_ELEMENTS.A_RIGHT, getElement(6, offset));
-        fieldElements.put(FIELD_ELEMENTS.A_CENTER, getElement(6, offset));
-        fieldElements.put(FIELD_ELEMENTS.B_LEFT, getElement(7, offset));
-        fieldElements.put(FIELD_ELEMENTS.B_RIGHT, getElement(7, offset));
-        fieldElements.put(FIELD_ELEMENTS.B_CENTER, getElement(7, offset));
-        fieldElements.put(FIELD_ELEMENTS.C_LEFT, getElement(8, offset));
-        fieldElements.put(FIELD_ELEMENTS.C_RIGHT, getElement(8, offset));
-        fieldElements.put(FIELD_ELEMENTS.C_CENTER, getElement(8, offset));
-        fieldElements.put(FIELD_ELEMENTS.D_LEFT, getElement(9, offset));
-        fieldElements.put(FIELD_ELEMENTS.D_RIGHT, getElement(9, offset));
-        fieldElements.put(FIELD_ELEMENTS.D_CENTER, getElement(9, offset));
-        fieldElements.put(FIELD_ELEMENTS.E_LEFT, getElement(10, offset));
-        fieldElements.put(FIELD_ELEMENTS.E_RIGHT, getElement(10, offset));
-        fieldElements.put(FIELD_ELEMENTS.E_CENTER, getElement(10, offset));
-        fieldElements.put(FIELD_ELEMENTS.F_LEFT, getElement(11, offset));
-        fieldElements.put(FIELD_ELEMENTS.F_RIGHT, getElement(11, offset));
-        fieldElements.put(FIELD_ELEMENTS.F_CENTER, getElement(11, offset));
-
+        fieldElements.put(FIELD_POSITION.FEEDER_LEFT, getElement(1, strateOffset));
+        fieldElements.put(FIELD_POSITION.FEEDER_RIGHT, getElement(2, strateOffset));
+        fieldElements.put(FIELD_POSITION.A, getElement(6, strateOffset));
+        fieldElements.put(FIELD_POSITION.B, getElement(7, strateOffset));
+        fieldElements.put(FIELD_POSITION.C, getElement(8, strateOffset));
+        fieldElements.put(FIELD_POSITION.D, getElement(9, strateOffset));
+        fieldElements.put(FIELD_POSITION.E, getElement(10, strateOffset));
+        fieldElements.put(FIELD_POSITION.F, getElement(11, strateOffset));
     }
+    public static Segment[] REEF_SEGMENTS = {
+        getSegments(6),
+        getSegments(7),
+        getSegments(8),
+        getSegments(9),
+        getSegments(10),
+        getSegments(11)
+    };
 
-    public static PathPoint[] REEF_POINTS = new PathPoint[]{
-        fieldElements.get(FIELD_ELEMENTS.A_LEFT), fieldElements.get(FIELD_ELEMENTS.B_LEFT), 
-        fieldElements.get(FIELD_ELEMENTS.C_LEFT), fieldElements.get(FIELD_ELEMENTS.D_LEFT),
-        fieldElements.get(FIELD_ELEMENTS.E_LEFT), fieldElements.get(FIELD_ELEMENTS.F_LEFT)  
+    public static PathPoint[] REEF_POINTS = {
+        fieldElements.get(FIELD_POSITION.A),
+        fieldElements.get(FIELD_POSITION.B),
+        fieldElements.get(FIELD_POSITION.C),
+        fieldElements.get(FIELD_POSITION.D),
+        fieldElements.get(FIELD_POSITION.E),  
+        fieldElements.get(FIELD_POSITION.F)
     };
 
     public static PathPoint getElement(int elementTag, Translation2d ofset){
         Translation2d originToTag = O_TO_TAG[elementTag];
         ofset = ofset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(ofset), TAG_ANGLE[elementTag], 0.2);
+        return new PathPoint(originToTag.plus(ofset), TAG_ANGLE[elementTag].plus(Rotation2d.k180deg), 0.2);
     }
 
+    public static Segment getSegments(int elementTag){
+        return new Segment(O_TO_TAG[elementTag].plus(cornerOffsetRight.rotateBy(TAG_ANGLE[elementTag])), O_TO_TAG[elementTag].plus(cornerOffsetLeft.rotateBy(TAG_ANGLE[elementTag])), false);
+    }
+
+
     public AutoUtils(){
-        fieldElements.put(FIELD_ELEMENTS.FEEDER_LEFT, new PathPoint(new Translation2d(15.5, 1.8), Rotation2d.fromDegrees(-55)));
+        fieldElements.put(FIELD_POSITION.FEEDER_LEFT, new PathPoint(new Translation2d(15.5, 1.8), Rotation2d.fromDegrees(-55)));
     }
 
 
@@ -109,7 +114,7 @@ public class AutoUtils {
     public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise){
         return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise);
     }
-    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise, FIELD_ELEMENTS toGoElement, AlignToTag alignToTag){
+    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag){
         return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise, toGoElement, alignToTag);
     }
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker) {

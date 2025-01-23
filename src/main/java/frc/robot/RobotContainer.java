@@ -22,7 +22,8 @@ import frc.robot.chassis.commands.auto.AlignToTag;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.Auto_3Coral;
 import frc.robot.chassis.commands.auto.goToPlace;
-import frc.robot.chassis.commands.auto.AutoUtils.FIELD_ELEMENTS;
+import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
+import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.chassis.subsystems.SwerveModule;
 import frc.robot.utils.LogManager;
@@ -58,12 +59,15 @@ public class RobotContainer implements Sendable{
 
 
   private void configureBindings() {
-    controller.a().onTrue(new AlignToTag(chassis, true , true, false));
-    controller.b().onTrue(new AlignToTag(chassis, false, true, false));
-    controller.y().onTrue(new goToPlace(FIELD_ELEMENTS.FEEDER_LEFT, 3.5));
+    controller.y().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5));
     controller.x().onTrue(new InstantCommand(()->chassis.setGyroAngle(chassis.tag.alignRobot())));
 
-    controller.leftBumper().onTrue(new AlignToTag(chassis, false, false, false));
+    controller.leftBumper().onTrue(new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, 3.5));
+    controller.rightBumper().onTrue(new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_RIGHT, 3.5));
+
+    controller.a().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, 3.5));
+    controller.b().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_RIGHT, 3.5));
+
 
 
   }

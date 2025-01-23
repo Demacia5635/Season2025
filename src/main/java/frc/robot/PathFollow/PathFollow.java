@@ -9,11 +9,15 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.utils.LogManager;
 
 
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
+import static frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import frc.robot.RobotContainer;
@@ -22,7 +26,9 @@ import frc.robot.PathFollow.Util.RoundedPoint;
 import frc.robot.PathFollow.Util.Segment;
 import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.chassis.commands.auto.AlignToTag;
-import frc.robot.chassis.commands.auto.AutoUtils.FIELD_ELEMENTS;
+import frc.robot.chassis.commands.auto.AutoUtils;
+import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
+import frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.TrapezoidNoam;
 
@@ -69,9 +75,10 @@ public class PathFollow extends Command {
   boolean isPrecise = false;
   double reefRadius = 3;
   Translation2d reefCenter = new Translation2d(fieldLength-4.5,fieldHeight-4); 
-  FIELD_ELEMENTS toGoElement;
+  FIELD_POSITION toGoElement;
   boolean stop = false;
   AlignToTag alignToTag;
+  boolean isFirstTry;
   
   /**
    * Creates a new path follower using the given points.
@@ -96,10 +103,11 @@ public class PathFollow extends Command {
     this.maxVel = maxVel;
     this.isConstVel = isConstVel;
     this.isPrecise = isPrecise;
+    this.stop = false;
   
   }
 
-  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise, FIELD_ELEMENTS toGoElement, AlignToTag alignToTag) {
+  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag) {
     this(RobotContainer.robotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
@@ -142,57 +150,167 @@ public class PathFollow extends Command {
   private boolean isIntersectingSegment(Segment segment){
     // Extract coordinates of the segment
     Translation2d segmentVector = segment.getPoints()[0].minus(segment.getPoints()[1]);
-    Translation2d startToCenter = reefCenter.minus(segment.getPoints()[0]);
-    Translation2d endToCenter = reefCenter.minus(segment.getPoints()[1]);
+    Translation2d startToCenter = segment.getPoints()[0].minus(reefCenter);
+    Translation2d   endToCenter = segment.getPoints()[1].minus(reefCenter);
+
 
     if (startToCenter.getNorm() > segmentVector.getNorm()) {
+      LogManager.log("len1");
       return false;
     }
     if (endToCenter.getNorm() > segmentVector.getNorm()) {
+      LogManager.log("len2");
       return false;
     }
-
+    if(distTranslationToSegment(reefCenter, segment)>reefRadius){
+      LogManager.log("len3");
+      return false;
+    }
+    LogManager.log("len7");
     Translation2d vectorA = new Translation2d(reefRadius, startToCenter.getAngle().plus(Rotation2d.fromDegrees(90)));
-    //Translation2d vectorB = new Translation2d(reefRadius, startToCenter.getAngle().plus(Rotation2d.fromDegrees(90))); // may need vector B 
     Rotation2d highBound = startToCenter.plus(vectorA).getAngle();
     Rotation2d segmentAngle = segmentVector.getAngle().minus(startToCenter.getAngle());
     
     return Math.abs(segmentAngle.getRadians()) < Math.abs(highBound.getRadians());
   }
-
-
-  private Translation2d getShortenPoint(Segment segment){
-    double x0 = segment.getPoints()[0].getX();
-    double y0 = segment.getPoints()[0].getY();
-    double x1 = segment.getPoints()[1].getX();
-    double y1 = segment.getPoints()[1].getY();
+  
+  private double distTranslationToSegment(Translation2d translation2d, Segment segment){
+    double x0 = translation2d.getX();
+    double y0 = translation2d.getY();
     
-    double m = (y1 - y0) / (x1 - x0);
+    double x1 = segment.getPoints()[0].getX();
+    double y1 = segment.getPoints()[0].getY();
+    double x2 = segment.getPoints()[1].getX();
+    double y2 = segment.getPoints()[1].getY();
+
+    double m = ((y1-y2)/(x1-x2));
     
-    double opM = -1 / m;
-    
-    double x1Intersection = (x0 + x1) / 2 + 1;
-    double y1Intersection = opM * (x1Intersection - (x0 + x1) / 2) + (y0 + y1) / 2;
-    
-    double x2Intersection = (x0 + x1) / 2 - 1;
-    double y2Intersection = opM * (x2Intersection - (x0 + x1) / 2) + (y0 + y1) / 2;
+    double dist = Math.abs((m*x0 - y0 - m*x0 + y1)/(Math.sqrt(m*m + 1)));
 
-    Translation2d intersection1 = new Translation2d(x1Intersection, y1Intersection);
-    Translation2d intersection2 = new Translation2d(x2Intersection, y2Intersection);
-
-    Translation2d centerToIntersection1 = intersection1.minus(reefCenter);
-    Translation2d centerToIntersection2 = intersection2.minus(reefCenter);
-
-    Translation2d centerToIntersection = intersection1.getNorm() > intersection2.getNorm() ? centerToIntersection2 : centerToIntersection1;
-
-    return reefCenter.plus(centerToIntersection);
+    return dist;
   }
-  /*private boolean getClosetPoint(Pose2d startingPose){
-    double closetDistance = Integer.MAX_VALUE;
-    for(int i = 0; i < AutoUtils.fieldElements.size(); i++){
-      
+
+  private boolean isIntersecting (Segment segment1, Segment segment2){
+    double x0 = segment1.getPoints()[0].getX();
+    double y0 = segment1.getPoints()[0].getY();
+    double x1 = segment1.getPoints()[1].getX();
+    double y1 = segment1.getPoints()[1].getY();
+    double x2 = segment2.getPoints()[0].getX();
+    double y2 = segment2.getPoints()[0].getY();
+    double x3 = segment2.getPoints()[1].getX();
+    double y3 = segment2.getPoints()[1].getY();
+
+    double m1 = (y0 - y1) / (x0 - x1);
+    double m2 = (y2 - y3) / (x2 - x3);
+
+    if (m1 == m2){
+      return false;
     }
-  }*/
+
+    double x = (m2*x2 - m1*x1 + y1 - y2) / (m2 - m1);
+    double y = m2*x - m2*x2 + y2;
+
+    boolean withinSegment1 = (x >= Math.min(x0, x1) && x <= Math.max(x0, x1)) &&
+                             (y >= Math.min(y0, y1) && y <= Math.max(y0, y1));
+
+    boolean withinSegment2 = (x >= Math.min(x2, x3) && x <= Math.max(x2, x3)) &&
+                             (y >= Math.min(y2, y3) && y <= Math.max(y2, y3));
+
+    return withinSegment1 && withinSegment2;
+  }
+  private boolean isBumpingReef(Segment segment){
+    for (int i = 0; i < REEF_SEGMENTS.length; i++){
+      if(isIntersecting(segment, REEF_SEGMENTS[i])){
+        LogManager.log("bump");
+        return true;
+      }
+    }
+    LogManager.log("unbump");
+    return false;
+  }
+
+  private void getPathPoint(Segment segment){
+    ArrayList<PathPoint> points = new ArrayList<>();
+
+    PathPoint entryPoint = getClosetPoint(segment.getPoints()[0]);
+    PathPoint leavePoint = getClosetPoint(segment.getPoints()[1]);
+    
+      boolean isWithIndexs = Math.abs(findIndex(entryPoint) - findIndex(leavePoint))
+       > Math.abs(findIndex(leavePoint) - findIndex(entryPoint));
+       boolean isEntrySmaller = findIndex(leavePoint) > findIndex(entryPoint);
+
+      points.add(entryPoint);
+      if(isWithIndexs){
+        if(isEntrySmaller){
+          for(int j = findIndex(entryPoint); j < findIndex(leavePoint); j++){
+            points.add(AutoUtils.REEF_POINTS[j]);
+          }
+        }
+        else{
+          
+          for(int j = 0; j < Math.abs(findIndex(entryPoint) - findIndex(leavePoint) - 1); j++){
+            int curIndex = findIndex(entryPoint) + j + 1;
+            if(curIndex == 6) curIndex = 0;
+            points.add(AutoUtils.REEF_POINTS[curIndex]);
+          }
+          
+        }
+      }
+      else{
+        if(!isEntrySmaller){
+          
+          for(int j = findIndex(entryPoint) - 1; j > findIndex(leavePoint); j--){
+            if(j == -1) j = 5;
+            points.add(AutoUtils.REEF_POINTS[j]);
+          }
+        }
+        else{
+          for(int j = findIndex(entryPoint); j < findIndex(leavePoint); j--){
+            if(j == -1) j = 5;
+            points.add(AutoUtils.REEF_POINTS[j]);
+          }
+        }
+
+      }
+      points.add(new PathPoint(segment.getPoints()[1], new Rotation2d()));
+      
+    
+    PathPoint[] pathPoints = new PathPoint[points.size()];
+    for(int i = 0; i < pathPoints.length; i++){
+      pathPoints[i] = points.get(i);
+    }
+
+    new PathFollow(pathPoints, Rotation2d.fromDegrees(180).minus(leavePoint.getRotation()), 3.5, false, true).andThen(alignToTag).schedule();
+
+
+
+
+
+
+  }
+  private int findIndex(PathPoint point){
+    
+    for(int i = 0; i < AutoUtils.REEF_POINTS.length; i++){
+      if(point == AutoUtils.REEF_POINTS[i]) return i;
+    }
+    return -1;
+  }
+
+  private boolean getIsClock(){
+      return true;
+  }
+  private PathPoint getClosetPoint(Translation2d startingPos){
+    double closetDistance = Integer.MAX_VALUE;
+    int index = -1;
+    for(int i = 0; i < AutoUtils.REEF_POINTS.length; i++){
+      if(AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance){
+        index = i;
+        closetDistance = AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos);
+      }
+    }
+    return AutoUtils.REEF_POINTS[index];
+  }
+ 
 
   /*
    * public String currentSegmentInfo() {
@@ -205,7 +323,7 @@ public class PathFollow extends Command {
 
   @Override
   public void initialize() {
-    
+    LogManager.log("is in inishekis");
     isRed = false;//RobotContainer.isRed();
     // sets first point to chassis pose to prevent bugs with red and blue alliance
     points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(), chassis.getPose().getRotation(),
@@ -232,13 +350,9 @@ public class PathFollow extends Command {
 
     if (points.length < 3) {
       Segment cur = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
-      System.out.println(isIntersectingSegment(cur));
-      if(isIntersectingSegment(cur)){
-        new PathFollow(
-          new PathPoint[]{new PathPoint(new Translation2d(), new Rotation2d()),
-          new PathPoint(getShortenPoint(cur), new Rotation2d()),
-            points[points.length - 1]}, points[points.length -1].getRotation(),
-             2, false, true).andThen(alignToTag).schedule();
+      LogManager.log(""+isIntersectingSegment(cur));
+      if(isBumpingReef(cur)){
+        getPathPoint(cur);
         stop = true;
       }
       segments.add(cur);
@@ -358,6 +472,7 @@ public class PathFollow extends Command {
 
   @Override
   public void end(boolean interrupted) {
+    LogManager.log("END_-------------------");
     if(finishVel == 0) chassis.setVelocities(new ChassisSpeeds(0,0,0));
     driveTrapezoid.debug = false;
     // .useAcceleration = true;
@@ -365,7 +480,7 @@ public class PathFollow extends Command {
 
   @Override
   public boolean isFinished() {
-    return totalLeft <= (isPrecise ? 0.1 : 0.6) || stop;
+    return totalLeft <= (isPrecise ? 0.1 : 0.6);
   }
 
   @Override
