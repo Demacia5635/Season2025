@@ -126,8 +126,6 @@ public class Arm extends SubsystemBase {
       angle = GripperAngleMotorConstants.FWD_LIMIT;
     }
 
-    gripperAngleMotor.setPosition(getGripperAngle());
-
     gripperAngleMotor.setMotionMagic(angle);
   }
 
@@ -200,5 +198,7 @@ public class Arm extends SubsystemBase {
     }
 
     checkIfIsReady();
+
+    gripperAngleMotor.setPosition(getGripperAngle());
   }
 }
