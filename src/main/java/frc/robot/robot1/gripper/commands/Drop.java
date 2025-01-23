@@ -13,38 +13,39 @@ import frc.robot.robot1.gripper.subsystems.Gripper;
 public class Drop extends Command {
 
   Gripper gripper;
-  Timer timer;
+  boolean hasSeenCoral;
 
   /** Creates a new Drop. */
   public Drop(Gripper gripper) {
     this.gripper = gripper;
-    timer = new Timer();
+    hasSeenCoral = false;
     addRequirements(gripper);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    timer.start();
+    hasSeenCoral = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     gripper.setPower(DropConstants.DROP_POWER);
+    if (gripper.isCoral()) {
+      hasSeenCoral = true;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
-    timer.stop();
-    timer.reset();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return timer.hasElapsed(DropConstants.DROP_DURATION);
+    return !gripper.isCoral() && hasSeenCoral;
   }
 }
