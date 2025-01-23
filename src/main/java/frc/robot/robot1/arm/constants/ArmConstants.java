@@ -91,6 +91,8 @@ public class ArmConstants {
         public static final boolean IS_INVERTED = false;
         public static final double GEAR_RATIO = 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
 
+        public static final double RAMP_TIME = 0.8;
+
         /* The angle in the limit switch */
         public static final double ENCODER_BASE_ANGLE = -1.6270964174482998;
         public static final double BACK_LIMIT = 3.6362957660963287;
@@ -101,7 +103,8 @@ public class ArmConstants {
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)
-                .withMotorRatio(GEAR_RATIO).withRadiansMotor();
+                .withMotorRatio(GEAR_RATIO).withRadiansMotor()
+                .withRampTime(RAMP_TIME);
     }
 
     public static class CalibrationConstants {
