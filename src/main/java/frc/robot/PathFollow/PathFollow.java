@@ -1,6 +1,5 @@
 package frc.robot.PathFollow;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,31 +8,22 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import static frc.robot.chassis.ChassisConstants.*;
-import static frc.robot.chassis.commands.auto.AutoUtils.REEF_POINTS;
-import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
-import static frc.robot.chassis.commands.auto.AutoUtils.isLeft;
 
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.SubmissionPublisher;
 
 import frc.robot.RobotContainer;
 import frc.robot.PathFollow.Util.Leg;
 import frc.robot.PathFollow.Util.RoundedPoint;
 import frc.robot.PathFollow.Util.Segment;
 import frc.robot.PathFollow.Util.PathPoint;
-import frc.robot.chassis.ChassisConstants;
 import frc.robot.chassis.commands.auto.AlignToTag;
-import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_ELEMENTS;
 import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.utils.LogManager;
 import frc.robot.utils.TrapezoidNoam;
 
 public class PathFollow extends Command {
@@ -152,20 +142,22 @@ public class PathFollow extends Command {
   private boolean isIntersectingSegment(Segment segment){
     // Extract coordinates of the segment
     Translation2d segmentVector = segment.getPoints()[0].minus(segment.getPoints()[1]);
-    Translation2d startToCenter = segment.getPoints()[0].minus(reefCenter);
+    Translation2d startToCenter = reefCenter.minus(segment.getPoints()[0]);
+    Translation2d endToCenter = reefCenter.minus(segment.getPoints()[1]);
 
     if (startToCenter.getNorm() > segmentVector.getNorm()) {
       return false;
     }
+    if (endToCenter.getNorm() > segmentVector.getNorm()) {
+      return false;
+    }
+
     Translation2d vectorA = new Translation2d(reefRadius, startToCenter.getAngle().plus(Rotation2d.fromDegrees(90)));
+    //Translation2d vectorB = new Translation2d(reefRadius, startToCenter.getAngle().plus(Rotation2d.fromDegrees(90))); // may need vector B 
     Rotation2d highBound = startToCenter.plus(vectorA).getAngle();
     Rotation2d segmentAngle = segmentVector.getAngle().minus(startToCenter.getAngle());
     
-
     return Math.abs(segmentAngle.getRadians()) < Math.abs(highBound.getRadians());
-
-
-    
   }
 
 
@@ -193,9 +185,7 @@ public class PathFollow extends Command {
 
     Translation2d centerToIntersection = intersection1.getNorm() > intersection2.getNorm() ? centerToIntersection2 : centerToIntersection1;
 
-    centerToIntersection = centerToIntersection.plus(centerToIntersection.div(centerToIntersection.getNorm()).times(1.5));
     return reefCenter.plus(centerToIntersection);
-
   }
   /*private boolean getClosetPoint(Pose2d startingPose){
     double closetDistance = Integer.MAX_VALUE;
@@ -259,7 +249,6 @@ public class PathFollow extends Command {
       // creates the first leg
       segments.add(0, corners[0].getAtoCurveLeg());
 
-      int segmentIndexCreator = 1;
       // creates arc than leg
       for (int i = 0; i < corners.length - 1; i += 1) {
 
@@ -333,8 +322,7 @@ public class PathFollow extends Command {
 
     chassisPose = chassis.getPose();
   
-    Translation2d currentVelocity = new Translation2d(chassis.getChassisSpeeds().vxMetersPerSecond,
-        chassis.getChassisSpeeds().vyMetersPerSecond);
+
     distancePassed = totalLeft - segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());
 
     if (segments.get(segmentIndex).distancePassed(chassisPose.getTranslation()) >= segments.get(segmentIndex).getLength()
