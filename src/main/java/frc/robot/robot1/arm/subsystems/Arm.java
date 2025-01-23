@@ -11,7 +11,10 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
+import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleMotorConstants;
+import frc.robot.robot1.arm.constants.ArmConstants.MaxErrors;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 
@@ -124,6 +127,10 @@ public class Arm extends SubsystemBase {
     }
     if (angle > GripperAngleMotorConstants.FWD_LIMIT) {
       angle = GripperAngleMotorConstants.FWD_LIMIT;
+    }
+
+    if (armAngleMotor.getCurrentClosedLoopSP() <= GripperAngleStarting.WHEN_MOVING_GRIPPER) {
+      angle = GripperAngleStarting.ANGLE_TO_GRIPPER;
     }
 
     gripperAngleMotor.setPositionVoltage(angle);

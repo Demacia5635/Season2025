@@ -59,6 +59,11 @@ public class ArmConstants {
                 .withMotorRatio(GEAR_RATIO).withRadiansMotor();
     }
 
+    public static class GripperAngleStarting {
+        public static final double WHEN_MOVING_GRIPPER = Math.toRadians(38);
+        public static final double ANGLE_TO_GRIPPER = 3.64;
+    }
+
     public static class GripperAngleMotorConstants {
         public static final int ID = 21;
         /* TODO: change to canbus at constants when merging the branch */
