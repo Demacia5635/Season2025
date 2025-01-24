@@ -42,7 +42,7 @@ public class ArmCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    switch (arm.state) {
+    switch (arm.getState()) {
       case L2_CALC:
         wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(), FieldConstants.L2_HEIGHT);
         break;
