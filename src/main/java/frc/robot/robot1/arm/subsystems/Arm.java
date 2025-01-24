@@ -68,6 +68,10 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData(this);
   }
 
+  public void hadCalibrated() {
+    isCalibrated = true;
+  }
+
   public void setState(ARM_ANGLE_STATES state) {
     this.state = state;
   }

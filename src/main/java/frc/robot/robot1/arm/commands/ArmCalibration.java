@@ -44,7 +44,7 @@ public class ArmCalibration extends Command {
     arm.stop();
 
     arm.armAngleSetPosition(ArmAngleMotorConstants.BASE_ANGLE);
-    arm.isCalibrated = true;
+    arm.hadCalibrated();
 
     timer.stop();
     timer.reset();
