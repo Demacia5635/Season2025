@@ -182,7 +182,7 @@ public class Chassis extends SubsystemBase {
     double angleError = angle.minus(getGyroAngle()).getRadians();
     double angleErrorabs = Math.abs(angleError);
     if (angleErrorabs>Math.toRadians(1.5)){
-        speeds.omegaRadiansPerSecond = angleError * 3;
+        speeds.omegaRadiansPerSecond = angleError * 3.5;
     }
     setVelocities(speeds);
   }

@@ -28,8 +28,8 @@ public class AutoUtils {
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
     static Translation2d strateOffset = new Translation2d(1.5, 0);
-    static Translation2d cornerOffsetLeft = new Translation2d(0.5, 0.75);
-    static Translation2d cornerOffsetRight = new Translation2d(0.5, -0.75);
+    static Translation2d cornerOffsetLeft = new Translation2d(0., 0.48);
+    static Translation2d cornerOffsetRight = new Translation2d(0., -0.48);
     
     
     // for red
@@ -54,6 +54,7 @@ public class AutoUtils {
         fieldElements.put(FIELD_POSITION.E, getElement(10, strateOffset));
         fieldElements.put(FIELD_POSITION.F, getElement(11, strateOffset));
     }
+
     public static Segment[] REEF_SEGMENTS = {
         getSegments(6),
         getSegments(7),
@@ -61,6 +62,25 @@ public class AutoUtils {
         getSegments(9),
         getSegments(10),
         getSegments(11)
+    };
+    public static FIELD_POSITION[] FIELD_POSITIONS = {
+        FIELD_POSITION.A,
+        FIELD_POSITION.A,
+        FIELD_POSITION.B,
+        FIELD_POSITION.C,
+        FIELD_POSITION.D,
+        FIELD_POSITION.E,
+        FIELD_POSITION.F,
+        FIELD_POSITION.FEEDER_LEFT,
+        FIELD_POSITION.FEEDER_RIGHT
+
+    };
+
+    public static ELEMENT[] ELEMENTS = {
+        ELEMENT.CORAL_LEFT,
+        ELEMENT.CORAL_RIGHT,
+        ELEMENT.ALGAE,
+        ELEMENT.FEEDER
     };
 
     public static PathPoint[] REEF_POINTS = {
@@ -75,7 +95,7 @@ public class AutoUtils {
     public static PathPoint getElement(int elementTag, Translation2d ofset){
         Translation2d originToTag = O_TO_TAG[elementTag];
         ofset = ofset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(ofset), TAG_ANGLE[elementTag].plus(Rotation2d.k180deg), 0.2);
+        return new PathPoint(originToTag.plus(ofset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)), 0.2);
     }
 
     public static Segment getSegments(int elementTag){

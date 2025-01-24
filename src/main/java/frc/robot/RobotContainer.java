@@ -8,7 +8,8 @@ import java.util.function.Consumer;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.proto.System;
+import edu.wpi.first.math.geometry.Translation2d;
+// import edu.wpi.first.math.proto.System; // Removed to avoid conflict with java.lang.System
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -16,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.KeepSpinning;
 import frc.robot.chassis.commands.auto.AlignToTag;
@@ -27,12 +29,16 @@ import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.chassis.subsystems.SwerveModule;
 import frc.robot.utils.LogManager;
+import static frc.robot.chassis.commands.auto.AutoUtils.*;
+
 
 
 public class RobotContainer implements Sendable{
   public static RobotContainer robotContainer;
   LogManager logManager;
   public static Boolean isRed = false;
+  public int id = 0;
+  public int elementid = 0;
   public Chassis chassis;
   Drive drive;
   double num = 0;
@@ -59,14 +65,15 @@ public class RobotContainer implements Sendable{
 
 
   private void configureBindings() {
-    controller.y().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5));
+    Trigger controllerOverride = new Trigger(
+      ()->new Translation2d(controller.getLeftX(), controller.getLeftY()).getNorm() <= 0.1);
+
+    controllerOverride.onTrue(drive);
+    controller.y().onTrue(new goToPlace(FIELD_POSITION.D, ELEMENT.ALGAE, 3.5));
     controller.x().onTrue(new InstantCommand(()->chassis.setGyroAngle(chassis.tag.alignRobot())));
 
-    controller.leftBumper().onTrue(new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, 3.5));
-    controller.rightBumper().onTrue(new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_RIGHT, 3.5));
 
-    controller.a().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, 3.5));
-    controller.b().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_RIGHT, 3.5));
+    controller.start().onTrue(new AlignToTag(chassis, false, true, false));
 
 
 
@@ -79,10 +86,24 @@ public class RobotContainer implements Sendable{
   public static boolean isRed() {
     return isRed;
   }
+  public void setID(int id) {
+    this.id = id;
+  }
+  public int getID() {
+    return this.id;
+  }
+  public void setElementID(int id) {
+    this.elementid = id;
+  }
+  public int getElementID() {
+    return this.elementid;
+  }
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.addDoubleProperty("NUM", ()->getNum(), (double num)->setNum(num));
     builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::isRed);
+    builder.addDoubleProperty("ID", this::getID, (double id)->setID((int) id));
+    builder.addDoubleProperty("ElementID", this::getElementID, (double id)->setElementID((int) id));
   }
 
   public Command getAutonomousCommand() {

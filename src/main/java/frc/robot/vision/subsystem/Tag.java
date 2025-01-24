@@ -308,7 +308,7 @@ public class Tag extends SubsystemBase {
           Tables[(int)cameraID.doubleValue()].getEntry("pipeline").setNumber(1);
           try{
             Yaw3d = -Tables[(int)cameraID.doubleValue()].getEntry("camerapose_targetspace").getDoubleArray(new double[]{0,0,0,0,0,0})[4];
-            LogManager.log(" " + Yaw3d);
+            //LogManager.log(" " + Yaw3d);
             Tables[(int)cameraID.doubleValue()].getEntry("pipeline").setNumber(0);
             yaw3dRotation2d = Rotation2d.fromDegrees(Yaw3d).rotateBy(TAG_ANGLE[(int)tagID]).rotateBy(Rotation2d.fromDegrees(180));
             //LogManager.log(" " + yaw3dRotation2d.getDegrees());

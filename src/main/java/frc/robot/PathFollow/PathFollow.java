@@ -145,52 +145,10 @@ public class PathFollow extends Command {
     this(chassis, points, maxVel, maxAcc, finishVel);
     this.rotateToSpeaker = rotateToSpeaker;
   }
-  
-
-  private boolean isIntersectingSegment(Segment segment){
-    // Extract coordinates of the segment
-    Translation2d segmentVector = segment.getPoints()[0].minus(segment.getPoints()[1]);
-    Translation2d startToCenter = segment.getPoints()[0].minus(reefCenter);
-    Translation2d   endToCenter = segment.getPoints()[1].minus(reefCenter);
-
-
-    if (startToCenter.getNorm() > segmentVector.getNorm()) {
-      LogManager.log("len1");
-      return false;
-    }
-    if (endToCenter.getNorm() > segmentVector.getNorm()) {
-      LogManager.log("len2");
-      return false;
-    }
-    if(distTranslationToSegment(reefCenter, segment)>reefRadius){
-      LogManager.log("len3");
-      return false;
-    }
-    LogManager.log("len7");
-    Translation2d vectorA = new Translation2d(reefRadius, startToCenter.getAngle().plus(Rotation2d.fromDegrees(90)));
-    Rotation2d highBound = startToCenter.plus(vectorA).getAngle();
-    Rotation2d segmentAngle = segmentVector.getAngle().minus(startToCenter.getAngle());
-    
-    return Math.abs(segmentAngle.getRadians()) < Math.abs(highBound.getRadians());
-  }
-  
-  private double distTranslationToSegment(Translation2d translation2d, Segment segment){
-    double x0 = translation2d.getX();
-    double y0 = translation2d.getY();
-    
-    double x1 = segment.getPoints()[0].getX();
-    double y1 = segment.getPoints()[0].getY();
-    double x2 = segment.getPoints()[1].getX();
-    double y2 = segment.getPoints()[1].getY();
-
-    double m = ((y1-y2)/(x1-x2));
-    
-    double dist = Math.abs((m*x0 - y0 - m*x0 + y1)/(Math.sqrt(m*m + 1)));
-
-    return dist;
-  }
 
   private boolean isIntersecting (Segment segment1, Segment segment2){
+    System.out.println("segment1" + segment1);
+    System.out.println("segment2" + segment2);
     double x0 = segment1.getPoints()[0].getX();
     double y0 = segment1.getPoints()[0].getY();
     double x1 = segment1.getPoints()[1].getX();
@@ -219,18 +177,19 @@ public class PathFollow extends Command {
     return withinSegment1 && withinSegment2;
   }
   private boolean isBumpingReef(Segment segment){
+    LogManager.log("starttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
     for (int i = 0; i < REEF_SEGMENTS.length; i++){
       if(isIntersecting(segment, REEF_SEGMENTS[i])){
-        LogManager.log("bump");
+        LogManager.log("bumppppppppppppppppppppppppppppppppppppppppppppppppppp");
         return true;
       }
     }
-    LogManager.log("unbump");
+    LogManager.log("unbump--------------------------------------------------------");
     return false;
   }
 
   private void getPathPoint(Segment segment){
-    ArrayList<PathPoint> points = new ArrayList<>();
+    ArrayList<PathPoint> pointsList = new ArrayList<>();
 
     PathPoint entryPoint = getClosetPoint(segment.getPoints()[0]);
     PathPoint leavePoint = getClosetPoint(segment.getPoints()[1]);
@@ -239,11 +198,11 @@ public class PathFollow extends Command {
        > Math.abs(findIndex(leavePoint) - findIndex(entryPoint));
        boolean isEntrySmaller = findIndex(leavePoint) > findIndex(entryPoint);
 
-      points.add(entryPoint);
+      pointsList.add(entryPoint);
       if(isWithIndexs){
         if(isEntrySmaller){
           for(int j = findIndex(entryPoint); j < findIndex(leavePoint); j++){
-            points.add(AutoUtils.REEF_POINTS[j]);
+            pointsList.add(AutoUtils.REEF_POINTS[j]);
           }
         }
         else{
@@ -251,7 +210,7 @@ public class PathFollow extends Command {
           for(int j = 0; j < Math.abs(findIndex(entryPoint) - findIndex(leavePoint) - 1); j++){
             int curIndex = findIndex(entryPoint) + j + 1;
             if(curIndex == 6) curIndex = 0;
-            points.add(AutoUtils.REEF_POINTS[curIndex]);
+            pointsList.add(AutoUtils.REEF_POINTS[curIndex]);
           }
           
         }
@@ -261,26 +220,26 @@ public class PathFollow extends Command {
           
           for(int j = findIndex(entryPoint) - 1; j > findIndex(leavePoint); j--){
             if(j == -1) j = 5;
-            points.add(AutoUtils.REEF_POINTS[j]);
+            pointsList.add(AutoUtils.REEF_POINTS[j]);
           }
         }
         else{
           for(int j = findIndex(entryPoint); j < findIndex(leavePoint); j--){
             if(j == -1) j = 5;
-            points.add(AutoUtils.REEF_POINTS[j]);
+            pointsList.add(AutoUtils.REEF_POINTS[j]);
           }
         }
 
       }
-      points.add(new PathPoint(segment.getPoints()[1], new Rotation2d()));
+      pointsList.add(new PathPoint(segment.getPoints()[1], new Rotation2d()));
       
     
-    PathPoint[] pathPoints = new PathPoint[points.size()];
+    PathPoint[] pathPoints = new PathPoint[pointsList.size()];
     for(int i = 0; i < pathPoints.length; i++){
-      pathPoints[i] = points.get(i);
+      pathPoints[i] = pointsList.get(i);
     }
 
-    new PathFollow(pathPoints, Rotation2d.fromDegrees(180).minus(leavePoint.getRotation()), 3.5, false, true).andThen(alignToTag).schedule();
+    new PathFollow(pathPoints, points[points.length-1].getRotation(), 3.5, false, true).andThen(alignToTag).schedule();
 
 
 
@@ -323,7 +282,6 @@ public class PathFollow extends Command {
 
   @Override
   public void initialize() {
-    LogManager.log("is in inishekis");
     isRed = false;//RobotContainer.isRed();
     // sets first point to chassis pose to prevent bugs with red and blue alliance
     points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(), chassis.getPose().getRotation(),
@@ -350,7 +308,6 @@ public class PathFollow extends Command {
 
     if (points.length < 3) {
       Segment cur = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
-      LogManager.log(""+isIntersectingSegment(cur));
       if(isBumpingReef(cur)){
         getPathPoint(cur);
         stop = true;
@@ -472,7 +429,6 @@ public class PathFollow extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    LogManager.log("END_-------------------");
     if(finishVel == 0) chassis.setVelocities(new ChassisSpeeds(0,0,0));
     driveTrapezoid.debug = false;
     // .useAcceleration = true;
