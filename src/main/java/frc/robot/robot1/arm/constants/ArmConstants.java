@@ -27,9 +27,9 @@ public class ArmConstants {
      * All the constnats of the calculation
      */
     public static class CalculationsConstants {
-        public static final double BASE_HEIGHT = 0.846;
-        public static final double ARM_1_LEN = 0.410;
-        public static final double ARM_2_LEN = 0.255;
+        public static final double BASE_HEIGHT = 0.75;
+        public static final double ARM_1_LEN = 0.53;
+        public static final double ARM_2_LEN = 0.32;
     }
 
     /**
