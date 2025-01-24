@@ -124,6 +124,7 @@ public class ArmConstants {
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double,Double>(0.0, 0.0);
         public static final Pair<Double, Double> ALGAE_UNDER = new Pair<Double,Double>(0.0, 0.0);
         public static final Pair<Double, Double> ALGAE_OVER = new Pair<Double,Double>(0.0, 0.0);
+        public static final Pair<Double, Double> STARTING = new Pair<Double,Double>(Math.toRadians(33.7), 3.64);
     }
     
     public static enum ARM_ANGLE_STATES {
@@ -135,6 +136,7 @@ public class ArmConstants {
         ALGAE_OVER,
         CORAL_STATION,
         TESTING,
+        STARTING,
         IDLE;
 
         ARM_ANGLE_STATES() {
