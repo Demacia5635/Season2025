@@ -50,7 +50,7 @@ public class ArmConstants {
 
         /* The angle where the limit switch */
         public static final double BASE_ANGLE = Math.toRadians(33.7);
-        public static final double BACK_LIMIT = Math.toRadians(31);
+        public static final double BACK_LIMIT = Math.toRadians(33.7);
         public static final double FWD_LIMIT = Math.toRadians(130);
 
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
