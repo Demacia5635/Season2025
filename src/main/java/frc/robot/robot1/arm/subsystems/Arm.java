@@ -28,7 +28,6 @@ public class Arm extends SubsystemBase {
   public boolean isCalibrated;
   
   public ARM_ANGLE_STATES state;
-  private boolean isReady;
 
   public Arm() {
     setName(NAME);
@@ -43,8 +42,6 @@ public class Arm extends SubsystemBase {
     isCalibrated = false;
 
     state = ARM_ANGLE_STATES.IDLE;
-    isReady = true;
-
 
     addNT();
   }
@@ -150,13 +147,8 @@ public class Arm extends SubsystemBase {
     gripperAngleMotor.stopMotor();
   }
 
-  private void checkIfIsReady() {
-    isReady = armAngleMotor.getCurrentClosedLoopError() <= MaxErrors.ARM_ANGLE_ERROR
-    && gripperAngleMotor.getCurrentClosedLoopError() <= MaxErrors.GRIPPER_ANGLE_ERROR;
-  }
-
   public boolean isReady() {
-    return isReady;
+    return armAngleMotor.getCurrentClosedLoopError() <= MaxErrors.ARM_ANGLE_ERROR && gripperAngleMotor.getCurrentClosedLoopError() <= MaxErrors.GRIPPER_ANGLE_ERROR;
   }
 
   public double getArmAngle() {
@@ -186,8 +178,6 @@ public class Arm extends SubsystemBase {
     if (!gripperAngleAbsoluteSensor.isConnected()) {
       LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
     }
-
-    checkIfIsReady();
 
     gripperAngleMotor.setPosition(getGripperAngle());
   }
