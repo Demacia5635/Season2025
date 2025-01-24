@@ -43,17 +43,17 @@ import static frc.robot.robot1.arm.constants.ArmConstants.*;
 public class Arm extends SubsystemBase {
 
   /** The motor that change the angle of the arm */
-  private TalonMotor armAngleMotor;
+  private final TalonMotor armAngleMotor;
   /** The motor that change the angle of the gripper */
-  private TalonMotor gripperAngleMotor;
+  private final TalonMotor gripperAngleMotor;
 
   /** The digital sensor that help with calibrate the arm */
-  private DigitalInput armAngleLimit;
+  private final DigitalInput armAngleLimit;
   /**
    * The absolute sensor that tells the gripper angle motor what is the real angle
    * of the gripper
    */
-  private DutyCycleEncoder gripperAngleAbsoluteSensor;
+  private final DutyCycleEncoder gripperAngleAbsoluteSensor;
 
   /**
    * A variable that tells the arm if it was calibrated if it wasn't its will not

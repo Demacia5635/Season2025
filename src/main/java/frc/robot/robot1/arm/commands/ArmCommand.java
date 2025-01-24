@@ -27,7 +27,7 @@ import static frc.robot.robot1.arm.constants.ArmConstants.*;
 public class ArmCommand extends Command {
 
   /* the arm subsytem */
-  private Arm arm;
+  private final Arm arm;
   /*
    * test arm angle for the testing state (take variables out of network tables)
    */

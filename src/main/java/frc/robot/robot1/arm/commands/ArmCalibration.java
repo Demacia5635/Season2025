@@ -20,12 +20,12 @@ import frc.robot.robot1.arm.subsystems.Arm;
 public class ArmCalibration extends Command {
 
   /** The arm subsytem */
-  private Arm arm;
+  private final Arm arm;
   /**
    * timer to check if at the start the wanted seconds have elapsed and can the
    * arm move down
    */
-  Timer timer;
+  private final Timer timer;
 
   /**
    * creates a new calibration command

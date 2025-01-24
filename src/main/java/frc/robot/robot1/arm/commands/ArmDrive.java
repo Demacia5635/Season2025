@@ -13,14 +13,14 @@ import frc.robot.robot1.arm.subsystems.Arm;
 public class ArmDrive extends Command {
 
     /** the controller */
-    CommandXboxController controller;
+    private final CommandXboxController controller;
     /** the arm subsystem */
-    Arm arm;
+    private final Arm arm;
 
     /** the arm angle motor power later changed by the controller */
-    double armAnglePower;
+    private double armAnglePower;
     /** the gripper angle motor power later changed by the controller */
-    double gripperAnglePower;
+    private double gripperAnglePower;
 
     /**
      * creates a new arm drive command
