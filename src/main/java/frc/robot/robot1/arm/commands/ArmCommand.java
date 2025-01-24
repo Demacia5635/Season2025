@@ -75,6 +75,10 @@ public class ArmCommand extends Command {
         wantedAngle = new Pair<Double,Double>(testArmAngle, testGripperAngle);
         break;
 
+      case STARTING:
+        wantedAngle = ANGLES.STARTING;
+        break;
+
       case IDLE:
         wantedAngle = new Pair<Double,Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
