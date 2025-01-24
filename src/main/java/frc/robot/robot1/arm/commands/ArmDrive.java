@@ -8,9 +8,16 @@ public class ArmDrive extends Command{
     CommandXboxController controller;
     Arm arm;
 
+    double armAnglePower;
+    double gripperAnglePower;
+
     public ArmDrive(Arm arm, CommandXboxController controller) {
         this.arm = arm;
         this.controller = controller;
+        
+        armAnglePower = 0;
+        gripperAnglePower = 0;
+
         addRequirements(arm);
     }
 
@@ -20,7 +27,10 @@ public class ArmDrive extends Command{
 
     @Override
     public void execute() {
-        arm.armAngleMotorSetPower(controller.getLeftY() * -0.5);
+        armAnglePower = Math.abs(controller.getLeftY()) <= 0.2 ? 0 : controller.getLeftY() * -0.5;
+        gripperAnglePower = Math.abs(controller.getRightY()) <= 0.2 ? 0 : controller.getRightY() * -0.3;
+        
+        arm.setPower(armAnglePower, gripperAnglePower);
     }
     
     @Override
