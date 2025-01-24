@@ -51,7 +51,7 @@ public class Gripper extends SubsystemBase {
   }
 
   public void stop() {
-    setPower(0);
+    motor.neutralOutput();
   }
 
   public void setNeutralMode(boolean isBrake) {
