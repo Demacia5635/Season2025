@@ -13,11 +13,13 @@ import frc.robot.utils.TalonConfig;
 
 /**
  * The arm constants
- * <br></br>
- * This class is divided to couple of diffrent static class for each part in the arm
+ * <br>
+ * </br>
+ * This class is divided to couple of diffrent static class for each part in the
+ * arm
  */
 public class ArmConstants {
-    
+
     /** The name of the Subsystem */
     public static final String NAME = "Arm";
 
@@ -65,7 +67,7 @@ public class ArmConstants {
         /* the ramp time of the motor */
         public static final double RAMP_TIME = 0.5;
 
-        /* 
+        /*
          * all the angles of the motor
          * base -> where the limit switch
          * back limit -> the minimum angle
@@ -85,7 +87,10 @@ public class ArmConstants {
                 .withRampTime(RAMP_TIME);
     }
 
-    /** the constants for the gripper going automaticly to a specific angle when the arm is less than a specific angle */
+    /**
+     * the constants for the gripper going automaticly to a specific angle when the
+     * arm is less than a specific angle
+     */
     public static class GripperAngleStarting {
         public static final double WHEN_MOVING_GRIPPER = Math.toRadians(38);
         public static final double ANGLE_TO_GRIPPER = 3.64;
@@ -112,7 +117,7 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_VELOCITY = 0;
         public static final double MOTION_MAGIC_ACCELERATION = 0;
         public static final double MOTION_MAGIC_JERK = 0;
-    
+
         /* the channel of the absolute sensor */
         public static final int ABSOLUTE_SENSOR_CHANNEL = 1;
 
@@ -124,7 +129,7 @@ public class ArmConstants {
         /* the ramp time of the motor */
         public static final double RAMP_TIME = 0.8;
 
-        /* 
+        /*
          * all the angles of the motor
          * base -> where the limit switch
          * back limit -> the minimum angle
@@ -156,17 +161,17 @@ public class ArmConstants {
         public static final double ARM_ANGLE_ERROR = 0.05;
         public static final double GRIPPER_ANGLE_ERROR = 0.05;
     }
-    
+
     /** all the constants angles */
     public static class ANGLES {
-        public static final Pair<Double, Double> L2 = new Pair<Double,Double>(0.0, 0.0);
-        public static final Pair<Double, Double> L3 = new Pair<Double,Double>(0.0, 0.0);
-        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double,Double>(0.0, 0.0);
-        public static final Pair<Double, Double> ALGAE_UNDER = new Pair<Double,Double>(0.0, 0.0);
-        public static final Pair<Double, Double> ALGAE_OVER = new Pair<Double,Double>(0.0, 0.0);
-        public static final Pair<Double, Double> STARTING = new Pair<Double,Double>(Math.toRadians(33.7), 3.64);
+        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> ALGAE_UNDER = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> ALGAE_OVER = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(Math.toRadians(33.7), 3.64);
     }
-    
+
     /** the arm angle states */
     public static enum ARM_ANGLE_STATES {
         L2_CALC,
@@ -185,13 +190,14 @@ public class ArmConstants {
     }
 
     /**
-     * the field objects used for calculating what angles the arm needs to be even if its not perfectly in the field objects
+     * the field objects used for calculating what angles the arm needs to be even
+     * if its not perfectly in the field objects
      * TODO: needs to remove this class after class of the field is created
      */
     public static class FieldConstants {
         public static final Translation2d REEF = new Translation2d();
         public static final Translation2d CORAL_STATION = new Translation2d();
-        
+
         public static final double L2_HEIGHT = 0;
         public static final double L3_HEIGHT = 0;
         public static final double CORAL_STATION_HEIGHT = 0;

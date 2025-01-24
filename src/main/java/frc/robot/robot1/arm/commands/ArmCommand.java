@@ -19,16 +19,23 @@ import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
 /**
  * the main command of the arm
- * <br></br>
- * the command checks the arm state and based on that gives the arm the wanted angles
+ * <br>
+ * </br>
+ * the command checks the arm state and based on that gives the arm the wanted
+ * angles
  */
 public class ArmCommand extends Command {
-  
+
   /* the arm subsytem */
   private Arm arm;
-  /* test arm angle for the testing state (take variables out of network tables) */
+  /*
+   * test arm angle for the testing state (take variables out of network tables)
+   */
   private double testArmAngle;
-  /* test gripper angle for the testing state (take variables out of network tables) */
+  /*
+   * test gripper angle for the testing state (take variables out of network
+   * tables)
+   */
   private double testGripperAngle;
   /* the wanted angles */
   private Pair<Double, Double> wantedAngle;
@@ -38,8 +45,11 @@ public class ArmCommand extends Command {
 
   /**
    * creates a new arm command
-   * <br></br>
-   * this function also configure the test angles to the current angles, put the command in the smart dashboard and add the arm to the requirments
+   * <br>
+   * </br>
+   * this function also configure the test angles to the current angles, put the
+   * command in the smart dashboard and add the arm to the requirments
+   * 
    * @param arm the wanted arm
    */
   public ArmCommand(Arm arm) {
@@ -54,7 +64,8 @@ public class ArmCommand extends Command {
 
   /**
    * this function is called at the start of the command
-   * <br></br>
+   * <br>
+   * </br>
    * the function does nothing
    */
   @Override
@@ -63,7 +74,9 @@ public class ArmCommand extends Command {
 
   /**
    * this function is called every cycle of the command
-   * <br></br>
+   * <br>
+   * </br>
+   * 
    * <pre>
    * the function checks the state of the arm and then choosing what angles the arm needs to be
    * L2_CALC -> the calculated angles to score at L2
@@ -83,17 +96,19 @@ public class ArmCommand extends Command {
   public void execute() {
     switch (arm.getState()) {
       case L2_CALC:
-        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(), FieldConstants.L2_HEIGHT);
+        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
+            FieldConstants.L2_HEIGHT);
         break;
 
       case L3_CALC:
-        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(), FieldConstants.L3_HEIGHT);
+        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
+            FieldConstants.L3_HEIGHT);
         break;
 
       case L2_TOUCHING:
         wantedAngle = ANGLES.L2;
         break;
-      
+
       case L3_TOUCHING:
         wantedAngle = ANGLES.L3;
         break;
@@ -111,7 +126,7 @@ public class ArmCommand extends Command {
         break;
 
       case TESTING:
-        wantedAngle = new Pair<Double,Double>(testArmAngle, testGripperAngle);
+        wantedAngle = new Pair<Double, Double>(testArmAngle, testGripperAngle);
         break;
 
       case STARTING:
@@ -119,13 +134,13 @@ public class ArmCommand extends Command {
         break;
 
       case IDLE:
-        wantedAngle = new Pair<Double,Double>(arm.getArmAngle(), arm.getGripperAngle());
+        wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
 
       default:
         LogManager.log("Arm state is illegal", AlertType.kError);
         arm.setState(ARM_ANGLE_STATES.IDLE);
-        wantedAngle = new Pair<Double,Double>(arm.getArmAngle(), arm.getGripperAngle());
+        wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
     }
 
@@ -134,7 +149,8 @@ public class ArmCommand extends Command {
 
   /**
    * the init sendable of the command
-   * <br></br>
+   * <br>
+   * </br>
    * putting the test arm angle and test gripper angle inside
    */
   @Override
@@ -147,7 +163,8 @@ public class ArmCommand extends Command {
 
   /**
    * This function is called after the command had finished
-   * <br></br>
+   * <br>
+   * </br>
    * the function stop the arm
    */
   @Override
@@ -157,7 +174,8 @@ public class ArmCommand extends Command {
 
   /**
    * the function that is called to check if the command have finished
-   * <br></br
+   * <br>
+   * </br
    * there is no condition so the command will go all the time after calibration
    */
   @Override

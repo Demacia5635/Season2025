@@ -16,7 +16,8 @@ public class ArmUtils {
 
     /**
      * this function calculate the needed angles of the arm
-     * @param dist distance from the wanted target in meters
+     * 
+     * @param dist   distance from the wanted target in meters
      * @param height height of the target in meters
      * @return pair of double that are the needed angles in radians
      */
