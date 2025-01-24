@@ -8,9 +8,18 @@ import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
 import edu.wpi.first.math.Pair;
 
-/** Add your docs here. */
+/**
+ * The arm utils
+ * here all the calculation of the arm
+ */
 public class ArmUtils {
 
+    /**
+     * this function calculate the needed angles of the arm
+     * @param dist distance from the wanted target in meters
+     * @param height height of the target in meters
+     * @return pair of double that are the needed angles in radians
+     */
     public static Pair<Double, Double> calcAngles(double dist, double height) {
         height = height - CalculationsConstants.BASE_HEIGHT;
         double angleToPoint = Math.toDegrees(Math.atan(height / dist));
