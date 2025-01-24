@@ -8,6 +8,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -120,6 +121,17 @@ public class Arm extends SubsystemBase {
         new InstantCommand(() -> gripperAngleNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME + "/gripper angle set coast",
         new InstantCommand(() -> gripperAngleNeutralMode(false)).ignoringDisable(true));
+
+    /* add state chooser through the netwrok tables */
+    SendableChooser<ARM_ANGLE_STATES> stateChooser = new SendableChooser<>();
+    stateChooser.addOption("L2", ARM_ANGLE_STATES.L2_TOUCHING);
+    stateChooser.addOption("L3", ARM_ANGLE_STATES.L3_TOUCHING);
+    stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);
+    stateChooser.addOption("Starting", ARM_ANGLE_STATES.STARTING);
+    stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
+    stateChooser.addOption("Idle", ARM_ANGLE_STATES.IDLE);
+    stateChooser.onChange(state -> this.state = state);
+    SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
 
     /* add the arm itself to the network tables */
     SmartDashboard.putData(this);
