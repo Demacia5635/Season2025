@@ -93,7 +93,7 @@ public class ArmConstants {
      */
     public static class GripperAngleStarting {
         public static final double WHEN_MOVING_GRIPPER = Math.toRadians(38);
-        public static final double ANGLE_TO_GRIPPER = 3.64;
+        public static final double ANGLE_TO_GRIPPER = 3.75;
     }
 
     /** All the constants for the gripper angle motor */
@@ -136,7 +136,7 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         public static final double ENCODER_BASE_ANGLE = -1.6270964174482998;
-        public static final double BACK_LIMIT = 3.6362957660963287;
+        public static final double BACK_LIMIT = 3.7;
         public static final double FWD_LIMIT = 5.3824149977630915;
 
         /* The config of the motor based on the constants above */
