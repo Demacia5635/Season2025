@@ -198,8 +198,8 @@ public class ArmConstants {
         public static final Translation2d REEF = new Translation2d();
         public static final Translation2d CORAL_STATION = new Translation2d();
 
-        public static final double L2_HEIGHT = 0;
-        public static final double L3_HEIGHT = 0;
+        public static final double L2_HEIGHT = 0.54;
+        public static final double L3_HEIGHT = 1.02;
         public static final double CORAL_STATION_HEIGHT = 0;
     }
 }
