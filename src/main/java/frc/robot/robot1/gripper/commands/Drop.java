@@ -18,9 +18,9 @@ import frc.robot.robot1.gripper.subsystems.Gripper;
 public class Drop extends Command {
 
   /** the gripper subsystem */
-  Gripper gripper;
+  private final Gripper gripper;
   /** a variable to check if the sensor has seen the coral */
-  boolean hasSeenCoral;
+  private boolean hasSeenCoral;
 
   /**
    * creates a new Drop command

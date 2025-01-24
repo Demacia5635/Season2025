@@ -18,7 +18,7 @@ import frc.robot.robot1.gripper.subsystems.Gripper;
 public class Grab extends Command {
 
   /** the gripper subsystem */
-  Gripper gripper;
+  private Gripper gripper;
 
   /**
    * creates a new grab command,
