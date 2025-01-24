@@ -127,7 +127,7 @@ public class ArmConstants {
         public static final double GEAR_RATIO = 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
 
         /* the ramp time of the motor */
-        public static final double RAMP_TIME = 0.8;
+        public static final double RAMP_TIME = 0.5;
 
         /*
          * all the angles of the motor
