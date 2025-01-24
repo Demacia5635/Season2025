@@ -31,9 +31,9 @@ public class ArmConstants {
         public static final double KP = 20;
         public static final double KI = 0.75;
         public static final double KD = 0.5;
-        public static final double KS = 1;
-        public static final double KV = 4.464266414545468;
-        public static final double KA = 0.006126974960575891;
+        public static final double KS = 0;
+        public static final double KV = 0;
+        public static final double KA = 0;
         public static final double KG = 0;
 
         public static final double MOTION_MAGIC_VELOCITY = 1.5;
