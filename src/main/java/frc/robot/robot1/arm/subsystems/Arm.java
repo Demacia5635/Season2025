@@ -104,7 +104,6 @@ public class Arm extends SubsystemBase {
     /* add to log the important stuff */
     LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle);
     LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle);
-    LogManager.addEntry(getName() + "/Gripper Angle Motor", this::getGripperAngleMotor);
     LogManager.addEntry(getName() + "/Arm Angle Limit Switch", () -> getArmAngleLimit() ? 1 : 0);
     LogManager.addEntry(getName() + "/IsReady", () -> isReady() ? 1 : 0);
 
