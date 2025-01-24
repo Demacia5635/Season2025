@@ -85,7 +85,7 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_ACCELERATION = 0;
         public static final double MOTION_MAGIC_JERK = 0;
     
-        public static final int ENCODER_CHANNEL = 1;
+        public static final int ABSOLUTE_SENSOR_CHANNEL = 1;
 
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERTED = false;

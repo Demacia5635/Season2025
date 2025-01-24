@@ -23,7 +23,7 @@ public class Arm extends SubsystemBase {
   private TalonMotor gripperAngleMotor;
 
   private DigitalInput armAngleLimit;
-  private DutyCycleEncoder gripperAngleEncoder;
+  private DutyCycleEncoder gripperAngleAbsoluteSensor;
 
   public boolean isCalibrated;
   
@@ -37,15 +37,14 @@ public class Arm extends SubsystemBase {
     gripperAngleMotor = new TalonMotor(GripperAngleMotorConstants.CONFIG);
 
     armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
+    gripperAngleAbsoluteSensor = new DutyCycleEncoder(GripperAngleMotorConstants.ABSOLUTE_SENSOR_CHANNEL);
 
-    gripperAngleEncoder = new DutyCycleEncoder(GripperAngleMotorConstants.ENCODER_CHANNEL);
 
     isCalibrated = false;
 
     state = ARM_ANGLE_STATES.IDLE;
     isReady = true;
 
-    gripperAngleMotor.setPosition(getGripperAngle());
 
     addNT();
   }
@@ -169,7 +168,7 @@ public class Arm extends SubsystemBase {
   }
 
   public double getGripperAngle() {
-    return (gripperAngleEncoder.get() * 2 * Math.PI) - GripperAngleMotorConstants.ENCODER_BASE_ANGLE;
+    return (gripperAngleAbsoluteSensor.get() * 2 * Math.PI) - GripperAngleMotorConstants.ENCODER_BASE_ANGLE;
   }
 
   public boolean getArmAngleLimit() {
@@ -184,7 +183,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (!gripperAngleEncoder.isConnected()) {
+    if (!gripperAngleAbsoluteSensor.isConnected()) {
       LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
     }
 
