@@ -16,6 +16,9 @@ import frc.robot.robot1.arm.commands.ArmDrive;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.gripper.commands.Drop;
+import frc.robot.robot1.gripper.commands.Grab;
+import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.utils.LogManager;
 
 /**
@@ -29,12 +32,16 @@ public class RobotContainer {
   LogManager logManager;
   CommandXboxController controller;
 
-  Arm arm;
+  public static Arm arm;
+  public static Gripper gripper;
 
-  ArmCalibration armCalibration;
-  ArmCommand armCommand;
-  ArmDrive armDrive;
-  Command armSetStateTesting;
+  public static ArmCalibration armCalibration;
+  public static ArmCommand armCommand;
+  public static ArmDrive armDrive;
+  public static Command armSetStateTesting;
+
+  public static Grab grab;
+  public static Drop drop;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -55,6 +62,7 @@ public class RobotContainer {
    */
   private void configureSubsytems() {
     arm = new Arm();
+    gripper = new Gripper();
   }
 
   /**
@@ -67,6 +75,9 @@ public class RobotContainer {
     armCommand = new ArmCommand(arm);
     armDrive = new ArmDrive(arm, controller);
     armSetStateTesting = new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.TESTING)).ignoringDisable(true);
+
+    grab = new Grab(gripper);
+    drop = new Drop(gripper);
   }
 
   /**
@@ -92,6 +103,9 @@ public class RobotContainer {
     controller.y().onTrue(armSetStateTesting);
     controller.x().onTrue(armCalibration);
     controller.leftBumper().onTrue(getDisableInitCommand());
+    controller.a().onTrue(grab);
+    controller.b().onTrue(drop);
+    controller.leftBumper().onTrue(getDisableInitCommand());
   }
 
   /**
@@ -113,7 +127,8 @@ public class RobotContainer {
   public Command getDisableInitCommand() {
     Command initDisableCommand = new InstantCommand(()-> {
       arm.stop();
-    }, arm
+      gripper.stop();
+    }, arm, gripper
     ).ignoringDisable(true);
     initDisableCommand.setName("Init Disable Command");
     return initDisableCommand;
