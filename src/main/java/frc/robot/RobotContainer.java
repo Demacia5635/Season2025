@@ -29,8 +29,8 @@ import frc.robot.utils.LogManager;
  */
 public class RobotContainer {
 
-  LogManager logManager;
-  CommandXboxController controller;
+  private final LogManager logManager;
+  public static CommandXboxController controller;
 
   public static Arm arm;
   public static Gripper gripper;
