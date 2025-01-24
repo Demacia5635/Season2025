@@ -8,26 +8,45 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot1.gripper.constants.GripperConstants.DropConstants;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * the drop command.
+ * <br></br>
+ * this command move the gripper at specific speed until the coral was passed by the sensor and then was not in the gripper
+ */
 public class Drop extends Command {
 
+  /** the gripper subsystem */
   Gripper gripper;
+  /** a variable to check if the sensor has seen the coral */
   boolean hasSeenCoral;
 
-  /** Creates a new Drop. */
+  /**
+   * creates a new Drop command
+   * <br></br>
+   * the function configure has seen coral to false and add the gripper to requirments
+   * @param gripper
+   */
   public Drop(Gripper gripper) {
     this.gripper = gripper;
     hasSeenCoral = false;
     addRequirements(gripper);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * this function is called at the start of the command
+   * <br></br>
+   * this function is initializing the has seen coral to false
+   */
   @Override
   public void initialize() {
     hasSeenCoral = false;
   }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * this funcition is called every cycle of the command
+   * <br></br>
+   * this function is giving the gripper motor a specific power and check if the gripper seeing coral
+   */
   @Override
   public void execute() {
     gripper.setPower(DropConstants.DROP_POWER);
@@ -36,13 +55,22 @@ public class Drop extends Command {
     }
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * this function is called after the command have finished
+   * <br></br>
+   * this function stop the gripper
+   */
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
   }
 
-  // Returns true when the command should end.
+  /**
+   * this function checks if the command have finished
+   * <br></br>
+   * the condition is if the gripepr is not seeing coral and had seen coral
+   * @return the condition
+   */
   @Override
   public boolean isFinished() {
     return !gripper.isCoral() && hasSeenCoral;

@@ -8,34 +8,62 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot1.gripper.constants.GripperConstants.GrabConstants;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
-/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+/**
+ * the grab command.
+ * <br></br>
+ * this command move the gripper at a sepcific power until the coral is inside the gripper
+ */
 public class Grab extends Command {
   
+  /** the gripper subsystem */
   Gripper gripper;
 
-  /** Creates a new Feed. */
+  /**
+   * creates a new grab command,
+   * <br></br>
+   * this function add the gripper to requirments
+   * @param gripper the wanted gripper
+   */
   public Grab(Gripper gripper) {
     this.gripper = gripper;
     addRequirements(gripper);
   }
 
-  // Called when the command is initially scheduled.
+  /**
+   * this function is called at the start of the command
+   * <br></br>
+   * this function does nothing
+   */
   @Override
-  public void initialize() {}
+  public void initialize() {
+  }
 
-  // Called every time the scheduler runs while the command is scheduled.
+  /**
+   * this function is called every cycle of the command
+   * <br></br>
+   * the function move the gripper at a specific speed
+   */
   @Override
   public void execute() {
     gripper.setPower(GrabConstants.FEED_POWER);
   }
 
-  // Called once the command ends or is interrupted.
+  /**
+   * this function is called after the command had finished
+   * <br></br>
+   * the function stop the gripper
+   */
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
   }
 
-  // Returns true when the command should end.
+  /**
+   * this function is called after the command had finished
+   * <br></br>
+   * the condition is if the coral is in the gripper
+   * @return the condition to finish the command
+   */
   @Override
   public boolean isFinished() {
     return gripper.isCoral();
