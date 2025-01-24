@@ -12,7 +12,7 @@ public class GripperConstants {
     public static class MotorConstants {
         public static final int MOTOR_ID = 30;
         public static final boolean INVERT = false;
-        public static final boolean BRAKE = true;
+        public static final boolean START_NEUTRAL_MODE = true;
     }
 
     public static class SensorConstants {

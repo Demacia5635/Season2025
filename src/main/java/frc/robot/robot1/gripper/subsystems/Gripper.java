@@ -27,7 +27,7 @@ public class Gripper extends SubsystemBase {
 
     motor = new TalonSRX(MotorConstants.MOTOR_ID);
     motor.setInverted(MotorConstants.INVERT ? InvertType.InvertMotorOutput : InvertType.None);
-    motor.setNeutralMode(MotorConstants.BRAKE ? NeutralMode.Brake : NeutralMode.Coast);
+    motor.setNeutralMode(MotorConstants.START_NEUTRAL_MODE ? NeutralMode.Brake : NeutralMode.Coast);
 
     sensor = new AnalogInput(SensorConstants.SENSOR_CHANNEL);
 
