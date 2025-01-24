@@ -11,7 +11,7 @@ package frc.robot.robot1.gripper.constants;
 public class GripperConstants {
 
     /** the name of the subsystem */
-    public static final String NAME = "Gripepr";
+    public static final String NAME = "Gripper";
 
     /** All the motor constants */
     public static class MotorConstants {
