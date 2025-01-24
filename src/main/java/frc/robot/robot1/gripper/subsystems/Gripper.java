@@ -38,8 +38,6 @@ public class Gripper extends SubsystemBase {
     LogManager.addEntry(getName() + "/get Sensor", ()-> getSensor());
     LogManager.addEntry(getName() + "/Is Coral", ()-> isCoral() ? 1 : 0);
     
-    LogManager.addEntry(getName() + "/Motor" + "/Velocity", motor::getSelectedSensorVelocity);
-    
     SmartDashboard.putData(getName() + "/Motor" + "/set Brake", new InstantCommand(()-> setNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/Motor" + "/set Coast", new InstantCommand(()-> setNeutralMode(false)).ignoringDisable(true));
 
