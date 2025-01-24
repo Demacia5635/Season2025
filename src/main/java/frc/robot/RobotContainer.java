@@ -30,7 +30,6 @@ import frc.robot.utils.LogManager;
  */
 public class RobotContainer {
 
-  private final LogManager logManager;
   public static CommandXboxController controller;
 
   public static Arm arm;
@@ -46,7 +45,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    logManager = new LogManager();
+    new LogManager();
     controller = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
 
