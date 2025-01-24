@@ -10,18 +10,22 @@ import frc.robot.robot1.gripper.subsystems.Gripper;
 
 /**
  * the grab command.
- * <br></br>
- * this command move the gripper at a sepcific power until the coral is inside the gripper
+ * <br>
+ * </br>
+ * this command move the gripper at a sepcific power until the coral is inside
+ * the gripper
  */
 public class Grab extends Command {
-  
+
   /** the gripper subsystem */
   Gripper gripper;
 
   /**
    * creates a new grab command,
-   * <br></br>
+   * <br>
+   * </br>
    * this function add the gripper to requirments
+   * 
    * @param gripper the wanted gripper
    */
   public Grab(Gripper gripper) {
@@ -31,7 +35,8 @@ public class Grab extends Command {
 
   /**
    * this function is called at the start of the command
-   * <br></br>
+   * <br>
+   * </br>
    * this function does nothing
    */
   @Override
@@ -40,7 +45,8 @@ public class Grab extends Command {
 
   /**
    * this function is called every cycle of the command
-   * <br></br>
+   * <br>
+   * </br>
    * the function move the gripper at a specific speed
    */
   @Override
@@ -50,7 +56,8 @@ public class Grab extends Command {
 
   /**
    * this function is called after the command had finished
-   * <br></br>
+   * <br>
+   * </br>
    * the function stop the gripper
    */
   @Override
@@ -60,8 +67,10 @@ public class Grab extends Command {
 
   /**
    * this function is called after the command had finished
-   * <br></br>
+   * <br>
+   * </br>
    * the condition is if the coral is in the gripper
+   * 
    * @return the condition to finish the command
    */
   @Override

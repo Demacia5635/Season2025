@@ -20,12 +20,16 @@ import static frc.robot.robot1.gripper.constants.GripperConstants.*;
 
 /**
  * The gripper subsytem.
- * <br></br>
+ * <br>
+ * </br>
  * the gripper contains one motor and one sensor.
- * <br></br>
+ * <br>
+ * </br>
  * the motor is a red line motor that powers the gripper
- * <br></br>
- * the sensor is an analog sensor that at the end of the gripper telling when a coral is inside the gripper
+ * <br>
+ * </br>
+ * the sensor is an analog sensor that at the end of the gripper telling when a
+ * coral is inside the gripper
  */
 public class Gripper extends SubsystemBase {
   /** The motor of the gripper */
@@ -35,8 +39,10 @@ public class Gripper extends SubsystemBase {
 
   /**
    * creates a new gripper, supposed to be only one.
-   * <br></br>
-   * the function confiure the motor and sensor and then send to network tables staff
+   * <br>
+   * </br>
+   * the function confiure the motor and sensor and then send to network tables
+   * staff
    */
   public Gripper() {
     /* set the name of the subsystem */
@@ -59,12 +65,14 @@ public class Gripper extends SubsystemBase {
    */
   private void addNT() {
     /* put the sensor */
-    LogManager.addEntry(getName() + "/get Sensor", ()-> getSensor());
-    LogManager.addEntry(getName() + "/Is Coral", ()-> isCoral() ? 1 : 0);
-    
+    LogManager.addEntry(getName() + "/get Sensor", () -> getSensor());
+    LogManager.addEntry(getName() + "/Is Coral", () -> isCoral() ? 1 : 0);
+
     /* put function to put the motor at brake and coast */
-    SmartDashboard.putData(getName() + "/Motor" + "/set Brake", new InstantCommand(()-> setNeutralMode(true)).ignoringDisable(true));
-    SmartDashboard.putData(getName() + "/Motor" + "/set Coast", new InstantCommand(()-> setNeutralMode(false)).ignoringDisable(true));
+    SmartDashboard.putData(getName() + "/Motor" + "/set Brake",
+        new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
+    SmartDashboard.putData(getName() + "/Motor" + "/set Coast",
+        new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
 
     /* put the gripper itself in the smart dashboard */
     SmartDashboard.putData(this);
@@ -72,6 +80,7 @@ public class Gripper extends SubsystemBase {
 
   /**
    * set power to the motor
+   * 
    * @param power the wanted power from -1 to 1
    */
   public void setPower(double power) {
@@ -87,7 +96,9 @@ public class Gripper extends SubsystemBase {
 
   /**
    * set the neutral mode of the motor
-   * @param isBrake is the motor needs to be in brake (true -> brake; false -> coast)
+   * 
+   * @param isBrake is the motor needs to be in brake (true -> brake; false ->
+   *                coast)
    */
   public void setNeutralMode(boolean isBrake) {
     motor.setNeutralMode(isBrake ? NeutralMode.Brake : NeutralMode.Coast);
@@ -95,6 +106,7 @@ public class Gripper extends SubsystemBase {
 
   /**
    * get the sensor voltage
+   * 
    * @return the sensor voltage
    */
   public double getSensor() {
@@ -103,8 +115,10 @@ public class Gripper extends SubsystemBase {
 
   /**
    * get is a coral inside the gripper.
-   * <br></br>
+   * <br>
+   * </br>
    * if the sensor voltage is below a specific voltage
+   * 
    * @return is a coral inside the gripper
    */
   public boolean isCoral() {
@@ -113,6 +127,7 @@ public class Gripper extends SubsystemBase {
 
   /**
    * the init sendable of the gripper
+   * 
    * @param builder the sendable builder of the function
    */
   @Override
@@ -122,7 +137,8 @@ public class Gripper extends SubsystemBase {
 
   /**
    * the function that runs every cycle of the subsystem
-   * <br></br>
+   * <br>
+   * </br>
    * does nothing
    */
   @Override

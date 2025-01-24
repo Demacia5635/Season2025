@@ -4,9 +4,12 @@
 
 package frc.robot.robot1.gripper.constants;
 
-/** All gripper constants divided to diffrent static class based on all the features of the gripper */
+/**
+ * All gripper constants divided to diffrent static class based on all the
+ * features of the gripper
+ */
 public class GripperConstants {
-    
+
     /** the name of the subsystem */
     public static final String NAME = "Gripepr";
 
