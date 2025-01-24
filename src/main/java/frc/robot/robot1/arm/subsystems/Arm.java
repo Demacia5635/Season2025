@@ -357,7 +357,8 @@ public class Arm extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-
+    
+    builder.addStringProperty("state", () -> getState().name(), null);
   }
 
   /**
