@@ -136,6 +136,7 @@ public class ArmCommand extends Command {
       case IDLE:
         wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
+        break;
 
       default:
         LogManager.log("Arm state is illegal", AlertType.kError);
