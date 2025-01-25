@@ -99,10 +99,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    controller.a().onTrue(armDrive);
-    controller.y().onTrue(armSetStateTesting);
     controller.x().onTrue(armCalibration);
-    controller.leftBumper().onTrue(getDisableInitCommand());
     controller.a().onTrue(grab);
     controller.b().onTrue(drop);
     controller.leftBumper().onTrue(getDisableInitCommand());
