@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -12,6 +14,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.chassis.commands.Drive;
+import frc.robot.chassis.commands.auto.Auto_3Coral;
+import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmDrive;
 import frc.robot.robot1.arm.commands.ArmCalibration;
@@ -28,12 +33,17 @@ import frc.robot.utils.LogManager;
  * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
  * subsystems, commands, and trigger mappings) should be declared here.
  */
-public class RobotContainer {
+public class RobotContainer implements Sendable{
 
+  public static RobotContainer robotContainer;
   public static CommandXboxController controller;
+  public static boolean isRed;
 
+  public static Chassis chassis;  
   public static Arm arm;
   public static Gripper gripper;
+
+  public static Drive drive;
 
   public static ArmCalibration armCalibration;
   public static ArmCommand armCommand;
@@ -48,6 +58,7 @@ public class RobotContainer {
     new LogManager();
     controller = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData("RC", this);
 
     configureSubsytems();
     configureCommands();
@@ -61,6 +72,7 @@ public class RobotContainer {
    * This function is called at the robot container constractor.
    */
   private void configureSubsytems() {
+    chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();
   }
@@ -71,6 +83,8 @@ public class RobotContainer {
    * This function is called at the robot container constractor.
    */
   private void configureCommands() {
+    drive = new Drive(chassis, controller);
+
     armCalibration = new ArmCalibration(arm);
     armCommand = new ArmCommand(arm);
     armDrive = new ArmDrive(arm, controller);
@@ -86,6 +100,7 @@ public class RobotContainer {
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
+    chassis.setDefaultCommand(drive);
     arm.setDefaultCommand(armCommand);
   }
 
@@ -103,6 +118,19 @@ public class RobotContainer {
     controller.a().onTrue(grab);
     controller.b().onTrue(drop);
     controller.leftBumper().onTrue(getDisableInitCommand());
+  }
+
+  public static boolean isRed() {
+    return isRed;
+  }
+
+  public static void isRed(boolean isRed) {
+    RobotContainer.isRed = isRed;
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::isRed);
   }
 
   /**
@@ -123,9 +151,10 @@ public class RobotContainer {
    */
   public Command getDisableInitCommand() {
     Command initDisableCommand = new InstantCommand(()-> {
+      chassis.stop();
       arm.stop();
       gripper.stop();
-    }, arm, gripper
+    }, chassis, arm, gripper
     ).ignoringDisable(true);
     initDisableCommand.setName("Init Disable Command");
     return initDisableCommand;
@@ -137,6 +166,6 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return new Auto_3Coral();
   }
 }
