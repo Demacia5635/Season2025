@@ -38,7 +38,6 @@ public class ArmConstants {
     public static class ArmAngleMotorConstants {
         /* all the main configs of the motor */
         public static final int ID = 20;
-        /* TODO: change to canbus at constants when merging the branch */
         public static final CANBus CAN_BUS = Constants.CAN_BUS;
         public static final String NAME = "Arm Angle Motor";
 
@@ -100,7 +99,6 @@ public class ArmConstants {
     public static class GripperAngleMotorConstants {
         /* All the main configs of the motor */
         public static final int ID = 21;
-        /* TODO: change to canbus at constants when merging the branch */
         public static final CANBus CAN_BUS = Constants.CAN_BUS;
         public static final String NAME = "Gripper Angle Motor";
 
