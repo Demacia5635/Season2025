@@ -6,7 +6,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.chassis.ChassisConstants.SwerveModuleConfigs;
+import frc.robot.chassis.Constants.ChassisConstants.SwerveModuleConfigs;
 import frc.robot.utils.Cancoder;
 import frc.robot.utils.ConsoleAlert;
 import frc.robot.utils.LogManager;

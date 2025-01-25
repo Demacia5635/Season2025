@@ -3,7 +3,7 @@ package frc.robot.chassis.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.chassis.ChassisConstants;
+import frc.robot.chassis.Constants.ChassisConstants;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.Utils;
 
