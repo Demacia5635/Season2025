@@ -5,7 +5,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.chassis.ChassisConstants.SwerveModuleConfigs;
+import frc.robot.chassis.constants.ChassisConstants.SwerveModuleConfigs;
 import frc.robot.utils.Cancoder;
 import frc.robot.utils.TalonMotor;
 
@@ -98,4 +98,9 @@ public class SwerveModule {
         return new SwerveModuleState(getDriveVel(), getSteerRotation());
     }
 
+
+    public void stop() {
+        steerMotor.stopMotor();
+        driveMotor.stopMotor();
+    }
 }

@@ -12,7 +12,7 @@ import frc.robot.PathFollow.PathFollow;
 import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.PathFollow.Util.Segment;
 
-import static frc.robot.chassis.ChassisConstants.*;
+import static frc.robot.chassis.constants.ChassisConstants.*;
 import static frc.robot.vision.utils.VisionConstants.*;
 
 import java.util.HashMap;

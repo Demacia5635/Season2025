@@ -1,4 +1,4 @@
-package frc.robot.chassis;
+package frc.robot.chassis.constants;
 
 import com.ctre.phoenix6.CANBus;
 

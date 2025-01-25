@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.chassis.ChassisConstants;
+import frc.robot.chassis.constants.ChassisConstants;
 import frc.robot.utils.Utils;
 import frc.robot.vision.subsystem.Tag;
 
@@ -193,4 +193,10 @@ public class Chassis extends SubsystemBase {
     }
   }
 
+
+    public void stop() {
+        for (SwerveModule i : modules) {
+            i.stop();
+        }
+    }
 }

@@ -5,7 +5,7 @@
 package frc.robot.utils;
 
 import edu.wpi.first.wpilibj.Timer;
-import static frc.robot.chassis.ChassisConstants.*;
+import static frc.robot.chassis.constants.ChassisConstants.*;
 
 /** Add your docs here. */
 public class TrapezoidNoam {
