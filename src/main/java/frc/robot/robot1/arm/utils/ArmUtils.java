@@ -7,6 +7,7 @@ package frc.robot.robot1.arm.utils;
 import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Translation2d;
 
 /**
  * The arm utils
@@ -15,44 +16,36 @@ import edu.wpi.first.math.Pair;
 public class ArmUtils {
 
     /**
-     * this function calculate the needed angles of the arm
-     * 
-     * @param dist   distance from the wanted target in meters
-     * @param height height of the target in meters
-     * @return pair of double that are the needed angles in radians
+     * function to calculate the angles of the arms by distance and height
+     * @param distance the distance from the target to the robot in meters
+     * @param height the height of the target to the floor in meters
+     * @exception math if the calculation is bigger than 1 or less than -1 return base angle for the arm angle and back limit for the gripper angle
+     * @return the needed angles of the arm the first angle is the arm angle and the second is the gripper angle both in radians
      */
-    public static Pair<Double, Double> calcAngles(double dist, double height) {
-        height = height - CalculationsConstants.BASE_HEIGHT;
-        double angleToPoint = Math.toDegrees(Math.atan(height / dist));
-        double hypotenuse = height / Math.sin(Math.toRadians(angleToPoint));
-        if (hypotenuse > (CalculationsConstants.ARM_1_LEN + CalculationsConstants.ARM_2_LEN)
-                || hypotenuse < (CalculationsConstants.ARM_1_LEN - CalculationsConstants.ARM_2_LEN)) {
-            return null;
-        }
-        double jointA = 90 - angleToPoint
-                - Math.toDegrees(Math.acos(
-                        ((CalculationsConstants.ARM_1_LEN * CalculationsConstants.ARM_1_LEN) + (hypotenuse * hypotenuse)
-                                - (CalculationsConstants.ARM_2_LEN * CalculationsConstants.ARM_2_LEN))
-                                / (2 * CalculationsConstants.ARM_1_LEN * hypotenuse)));
-        double jointB = 180
-                - Math.toDegrees(Math.acos(((CalculationsConstants.ARM_1_LEN * CalculationsConstants.ARM_1_LEN)
-                        + (CalculationsConstants.ARM_2_LEN * CalculationsConstants.ARM_2_LEN)
-                        - (hypotenuse * hypotenuse))
-                        / (2 * CalculationsConstants.ARM_1_LEN * CalculationsConstants.ARM_2_LEN)));
-        return new Pair<Double, Double>(jointA, jointB);
-    }
+    public static Pair<Double, Double> calculateAngles(double distance, double height) {
 
-    // public double[] calcAngles(double dist, double hight){
-    // hight = hight-HEIGHT;
-    // angleToPoint = Math.toDegrees(Math.atan(hight/dist));
-    // arm3 = hight/Math.sin(Math.toRadians(angleToPoint));
-    // if (arm3 > (ARM1 + ARM2) || arm3 < (ARM1 - ARM2)){
-    // return null;
-    // }
-    // jointA = 90 - angleToPoint - Math.toDegrees(Math.acos(((ARM1*ARM1) +
-    // (arm3*arm3) - (ARM2*ARM2))/(2*ARM1*arm3)));
-    // jointB = 180 - Math.toDegrees(Math.acos(((ARM1*ARM1) + (ARM2*ARM2) -
-    // (arm3*arm3))/(2*ARM1*ARM2)));
-    // return new double[]{jointA,jointB};
-    // }
+        /* set the hypotenuse of the triangle */
+        double relativeHeight = CalculationsConstants.BASE_HEIGHT - height;
+        Translation2d hypotenuse = new Translation2d(distance, relativeHeight);
+
+        /* check if the calculation is not acos of more and than 1 and not less than -1 */
+        if (Math.abs(
+            (Math.pow(CalculationsConstants.ARM_2_LEN, 2) + Math.pow(CalculationsConstants.ARM_1_LEN, 2) - Math.pow(hypotenuse.getNorm(), 2)) /
+            (2 * CalculationsConstants.ARM_1_LEN * CalculationsConstants.ARM_2_LEN)
+        ) >= 1) {
+            return new Pair<Double,Double>(ArmAngleMotorConstants.BASE_ANGLE, GripperAngleMotorConstants.BACK_LIMIT);
+        }
+
+        /* using cosines law calculate both angles and modify them to match the needed angles for the motors  */
+        return new Pair<Double,Double>(
+            Math.acos(
+                (Math.pow(CalculationsConstants.ARM_1_LEN, 2) + Math.pow(hypotenuse.getNorm(), 2) - Math.pow(CalculationsConstants.ARM_2_LEN, 2)) / 
+                (2 * CalculationsConstants.ARM_1_LEN * hypotenuse.getNorm())) +
+                0.5 * Math.PI - hypotenuse.getAngle().getRadians(),
+            2 * Math.PI - 
+            Math.acos(
+                (Math.pow(CalculationsConstants.ARM_2_LEN, 2) + Math.pow(CalculationsConstants.ARM_1_LEN, 2) - Math.pow(hypotenuse.getNorm(), 2)) / 
+                (2 * CalculationsConstants.ARM_2_LEN * CalculationsConstants.ARM_1_LEN))
+        );
+    }
 }

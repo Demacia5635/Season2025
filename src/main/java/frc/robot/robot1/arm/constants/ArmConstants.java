@@ -27,9 +27,9 @@ public class ArmConstants {
      * All the constnats of the calculation
      */
     public static class CalculationsConstants {
-        public static final double BASE_HEIGHT = 0.846;
-        public static final double ARM_1_LEN = 0.410;
-        public static final double ARM_2_LEN = 0.255;
+        public static final double BASE_HEIGHT = 0.75;
+        public static final double ARM_1_LEN = 0.53;
+        public static final double ARM_2_LEN = 0.32;
     }
 
     /**
@@ -38,7 +38,6 @@ public class ArmConstants {
     public static class ArmAngleMotorConstants {
         /* all the main configs of the motor */
         public static final int ID = 20;
-        /* TODO: change to canbus at constants when merging the branch */
         public static final CANBus CAN_BUS = Constants.CAN_BUS;
         public static final String NAME = "Arm Angle Motor";
 
@@ -93,21 +92,20 @@ public class ArmConstants {
      */
     public static class GripperAngleStarting {
         public static final double WHEN_MOVING_GRIPPER = Math.toRadians(38);
-        public static final double ANGLE_TO_GRIPPER = 3.64;
+        public static final double ANGLE_TO_GRIPPER = 3.75;
     }
 
     /** All the constants for the gripper angle motor */
     public static class GripperAngleMotorConstants {
         /* All the main configs of the motor */
         public static final int ID = 21;
-        /* TODO: change to canbus at constants when merging the branch */
         public static final CANBus CAN_BUS = Constants.CAN_BUS;
         public static final String NAME = "Gripper Angle Motor";
 
         /* the pid and ff of the motor */
         public static final double KP = 8;
-        public static final double KI = 1.5;
-        public static final double KD = 0;
+        public static final double KI = 1.75;
+        public static final double KD = 0.25;
         public static final double KS = 0;
         public static final double KV = 0;
         public static final double KA = 0;
@@ -127,7 +125,7 @@ public class ArmConstants {
         public static final double GEAR_RATIO = 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
 
         /* the ramp time of the motor */
-        public static final double RAMP_TIME = 0.8;
+        public static final double RAMP_TIME = 0.5;
 
         /*
          * all the angles of the motor
@@ -136,7 +134,7 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         public static final double ENCODER_BASE_ANGLE = -1.6270964174482998;
-        public static final double BACK_LIMIT = 3.6362957660963287;
+        public static final double BACK_LIMIT = 3.7;
         public static final double FWD_LIMIT = 5.3824149977630915;
 
         /* The config of the motor based on the constants above */
@@ -198,8 +196,8 @@ public class ArmConstants {
         public static final Translation2d REEF = new Translation2d();
         public static final Translation2d CORAL_STATION = new Translation2d();
 
-        public static final double L2_HEIGHT = 0;
-        public static final double L3_HEIGHT = 0;
+        public static final double L2_HEIGHT = 0.54;
+        public static final double L3_HEIGHT = 1.02;
         public static final double CORAL_STATION_HEIGHT = 0;
     }
 }

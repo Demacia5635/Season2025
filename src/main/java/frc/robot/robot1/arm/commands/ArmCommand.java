@@ -96,12 +96,12 @@ public class ArmCommand extends Command {
   public void execute() {
     switch (arm.getState()) {
       case L2_CALC:
-        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
+        wantedAngle = ArmUtils.calculateAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
             FieldConstants.L2_HEIGHT);
         break;
 
       case L3_CALC:
-        wantedAngle = ArmUtils.calcAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
+        wantedAngle = ArmUtils.calculateAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
             FieldConstants.L3_HEIGHT);
         break;
 
@@ -136,6 +136,7 @@ public class ArmCommand extends Command {
       case IDLE:
         wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
+        break;
 
       default:
         LogManager.log("Arm state is illegal", AlertType.kError);
