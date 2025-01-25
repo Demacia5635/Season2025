@@ -130,4 +130,10 @@ public class Chassis extends SubsystemBase {
     public boolean isRed() {
         return RobotContainer.isRed();
     }
+
+    public void stop() {
+        for (SwerveModule i : modules) {
+            i.stop();
+        }
+    }
 }

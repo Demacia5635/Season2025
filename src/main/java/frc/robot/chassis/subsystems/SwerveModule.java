@@ -88,4 +88,9 @@ public class SwerveModule {
     public SwerveModulePosition getModulePosition() {
         return new SwerveModulePosition(driveMotor.getCurrentPosition(), Rotation2d.fromRadians(steerMotor.getCurrentPosition()));
     }
+
+    public void stop() {
+        steerMotor.stopMotor();
+        driveMotor.stopMotor();
+    }
 }
