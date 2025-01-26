@@ -17,6 +17,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
+import frc.robot.chassis.commands.auto.AlignToTag;
 import frc.robot.chassis.commands.auto.Auto_3Coral;
 import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.subsystems.Chassis;
@@ -120,11 +121,15 @@ public class RobotContainer implements Sendable{
    */
   private void configureBindings() {
     controller.x().onTrue(armCalibration);
-    controller.a().onTrue(grab);
+    // .alongWith(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5), new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))
+    controller.a().onTrue(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION))));
     controller.b().onTrue(drop);
     controller.leftBumper().onTrue(getDisableInitCommand());
-    controller.povRight().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, 3.5));
-    controller.povLeft().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5));
+    controller.povLeft().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, 3.5));
+    controller.povRight().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5));
+    controller.y().onTrue(new AlignToTag(chassis, false, true, false));
+    controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
+    controller.povDown().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)));
   }
 
   public static boolean isRed() {

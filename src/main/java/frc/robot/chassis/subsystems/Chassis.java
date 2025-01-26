@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CANBuses;
 import frc.robot.RobotContainer;
 import frc.robot.chassis.constants.ChassisConstants;
 import frc.robot.utils.Utils;
@@ -42,7 +43,7 @@ public class Chassis extends SubsystemBase {
             new SwerveModule(ChassisConstants.BACK_LEFT),
             new SwerveModule(ChassisConstants.BACK_RIGHT),
         };
-        gyro = new Pigeon2(ChassisConstants.GYRO_ID, ChassisConstants.CAN_BUS);
+        gyro = new Pigeon2(ChassisConstants.GYRO_ID, CANBuses.ARM_CAN_BUS);
         addStatus();
         kinematics = new SwerveDriveKinematics(
             ChassisConstants.FRONT_LEFT.POSITION,
@@ -55,6 +56,7 @@ public class Chassis extends SubsystemBase {
         field = new Field2d();
         tag = new Tag(()->getGyroAngle());
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> setGyroAngle(Rotation2d.fromDegrees(0))));
+        SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("goToVision", new InstantCommand(()-> poseEstimator.resetPose(tag.getPose())));
         SmartDashboard.putData("field", field);
 

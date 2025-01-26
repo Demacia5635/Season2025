@@ -25,7 +25,7 @@ public class AlignToTag extends Command {
   private Translation2d tagToTarget;
   private Rotation2d targetAngle;
   private Translation2d robotToTarget = new Translation2d(10,10);
-  private double maxVel = 2.5;
+  private double maxVel = 2;
   private Integer tagID = null;
   private Timer timer;
   private boolean isAuto;

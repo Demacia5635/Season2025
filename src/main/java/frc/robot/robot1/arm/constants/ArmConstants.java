@@ -56,7 +56,7 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_JERK = 6;
 
         /* the channel of the limit switch of the arm angle motor */
-        public static final int LIMIT_SWITCH_CHANNEL = 2;
+        public static final int LIMIT_SWITCH_CHANNEL = 0;
 
         /* the basic configues of the motor */
         public static final boolean IS_BRAKE = true;
@@ -74,7 +74,7 @@ public class ArmConstants {
          */
         public static final double BASE_ANGLE = Math.toRadians(33.7);
         public static final double BACK_LIMIT = Math.toRadians(33.7);
-        public static final double FWD_LIMIT = Math.toRadians(130);
+        public static final double FWD_LIMIT = 2.501220703125;
 
         /* The config of the motors based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -135,7 +135,7 @@ public class ArmConstants {
          */
         public static final double ENCODER_BASE_ANGLE = -1.6270964174482998;
         public static final double BACK_LIMIT = 3.7;
-        public static final double FWD_LIMIT = 5.3824149977630915;
+        public static final double FWD_LIMIT = 5.4;
 
         /* The config of the motor based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -151,7 +151,7 @@ public class ArmConstants {
     public static class CalibrationConstants {
         public static final double ARM_ANGLE_POWER = -0.2;
         public static final double ARM_ANGLE_START_POWER = 0.2;
-        public static final double TIME_TO_CHANGE_POWER = 0.5;
+        public static final double TIME_TO_CHANGE_POWER = 0.75;
     }
 
     /** The max errors of the arm and gripper angles */
@@ -162,9 +162,9 @@ public class ArmConstants {
 
     /** all the constants angles */
     public static class ANGLES {
-        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(0.872665, 5d);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(1.570796, 4d);
-        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.919862, 5.3824149977630915);
+        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.75, 4.35);
+        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.4, 4.4);
+        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.35);
         public static final Pair<Double, Double> ALGAE_UNDER = new Pair<Double, Double>(0.0, 0.0);
         public static final Pair<Double, Double> ALGAE_OVER = new Pair<Double, Double>(0.0, 0.0);
         public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(Math.toRadians(33.7), 3.64);
