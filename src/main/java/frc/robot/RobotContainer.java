@@ -15,7 +15,10 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.chassis.commands.Drive;
+import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
+import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.commands.auto.Auto_3Coral;
+import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmDrive;
@@ -49,6 +52,8 @@ public class RobotContainer implements Sendable{
   public static ArmCommand armCommand;
   public static ArmDrive armDrive;
   public static Command armSetStateTesting;
+  public static goToPlace goToOutake;
+  public static goToPlace goToIntake;
 
   public static Grab grab;
   public static Drop drop;
@@ -118,6 +123,8 @@ public class RobotContainer implements Sendable{
     controller.a().onTrue(grab);
     controller.b().onTrue(drop);
     controller.leftBumper().onTrue(getDisableInitCommand());
+    controller.povRight().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, 3.5));
+    controller.povLeft().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5));
   }
 
   public static boolean isRed() {

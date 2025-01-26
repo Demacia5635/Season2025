@@ -147,8 +147,6 @@ public class PathFollow extends Command {
   }
 
   private boolean isIntersecting (Segment segment1, Segment segment2){
-    System.out.println("segment1" + segment1);
-    System.out.println("segment2" + segment2);
     double x0 = segment1.getPoints()[0].getX();
     double y0 = segment1.getPoints()[0].getY();
     double x1 = segment1.getPoints()[1].getX();
@@ -177,14 +175,11 @@ public class PathFollow extends Command {
     return withinSegment1 && withinSegment2;
   }
   private boolean isBumpingReef(Segment segment){
-    LogManager.log("starttttttttttttttttttttttttttttttttttttttttttttttttttttttttttttt");
     for (int i = 0; i < REEF_SEGMENTS.length; i++){
       if(isIntersecting(segment, REEF_SEGMENTS[i])){
-        LogManager.log("bumppppppppppppppppppppppppppppppppppppppppppppppppppp");
         return true;
       }
     }
-    LogManager.log("unbump--------------------------------------------------------");
     return false;
   }
 
@@ -240,13 +235,8 @@ public class PathFollow extends Command {
     }
 
     new PathFollow(pathPoints, points[points.length-1].getRotation(), 3.5, false, true).andThen(alignToTag).schedule();
-
-
-
-
-
-
   }
+  
   private int findIndex(PathPoint point){
     
     for(int i = 0; i < AutoUtils.REEF_POINTS.length; i++){
