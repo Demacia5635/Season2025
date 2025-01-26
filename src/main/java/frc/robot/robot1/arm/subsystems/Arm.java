@@ -12,7 +12,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
+import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleMotorConstants;
+import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleStarting;
+import frc.robot.robot1.arm.constants.ArmConstants.MaxErrors;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 
@@ -134,6 +138,9 @@ public class Arm extends SubsystemBase {
     stateChooser.addOption("Idle", ARM_ANGLE_STATES.IDLE);
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
+
+    SmartDashboard.putData("Disable Arm Angle Supply Limits", new InstantCommand(()-> armAngleMotor.disableSupplyLimit()).ignoringDisable(true));
+    SmartDashboard.putData("Clear Sticky Fault Static Brake Disabled", new InstantCommand(()-> armAngleMotor.disableStaticBrakeDisable()).ignoringDisable(true));
 
     /* add the arm itself to the network tables */
     SmartDashboard.putData(this);
