@@ -164,9 +164,29 @@ public class TalonMotor extends TalonFX {
     LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward());
     LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal);
 
+    LogManager.addEntry(name + "/Fault Field", getFaultField());
+    LogManager.addEntry(name + "/Sticky Fault Field", getStickyFaultField());
+    LogManager.addEntry(name + "/Fault Static Brake Disabled", getFault_StaticBrakeDisabled());
+    LogManager.addEntry(name + "/Sticky Fault Static Brake Disabled", getStickyFault_StaticBrakeDisabled());
+    LogManager.addEntry(name + "/Fault Hardware", getFault_Hardware());
+    LogManager.addEntry(name + "/Sticky Fault Hardware limit", getStickyFault_Hardware());
+    LogManager.addEntry(name + "/Fault Stator Current Limit", getFault_StatorCurrLimit());
+
+    LogManager.addEntry(name + "/Bridgeoutput", getBridgeOutput());
+
     dutyCycleEntry = LogManager.getEntry(name + "/SetDutyCycle");
     velocityEntry = LogManager.getEntry(name + "/SetVelocity");
     positionEntry = LogManager.getEntry(name + "/SetPosition");
+  }
+
+  public void disableSupplyLimit() {
+    cfg.CurrentLimits.SupplyCurrentLimitEnable = false;
+    cfg.CurrentLimits.StatorCurrentLimitEnable = false;
+    getConfigurator().apply(cfg.CurrentLimits);
+  }
+
+  public void disableStaticBrakeDisable() {
+    clearStickyFault_StaticBrakeDisabled();
   }
 
   /**

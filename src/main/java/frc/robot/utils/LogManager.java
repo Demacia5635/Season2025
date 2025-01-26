@@ -4,6 +4,8 @@
 
 package frc.robot.utils;
 
+import static frc.robot.utils.constants.UtilsContants.*;
+
 import java.util.ArrayList;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
@@ -21,8 +23,6 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import static frc.robot.utils.UtilsContants.*;
 
 public class LogManager extends SubsystemBase {
 
