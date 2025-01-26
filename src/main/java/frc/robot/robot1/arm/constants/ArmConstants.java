@@ -56,7 +56,7 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_JERK = 6;
 
         /* the channel of the limit switch of the arm angle motor */
-        public static final int LIMIT_SWITCH_CHANNEL = 2;
+        public static final int LIMIT_SWITCH_CHANNEL = 0;
 
         /* the basic configues of the motor */
         public static final boolean IS_BRAKE = true;
