@@ -255,8 +255,19 @@ public class PathFollow extends Command {
     return -1;
   }
 
-  private boolean getIsClock(){
-      return true;
+  private boolean getIsGoUp(int startId, int endId){
+    int counter = 0;
+    for(int i = 0; i < 5; i++){
+      if(startId != endId){
+        counter++;
+      }
+      else{
+        break;
+      }
+      startId ++;
+      if (startId == 6) startId = 0;
+    }
+    return counter < 3;
   }
   private PathPoint getClosetPoint(Translation2d startingPos){
     double closetDistance = Integer.MAX_VALUE;
