@@ -3,7 +3,7 @@ package frc.robot.chassis.constants;
 import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.Constants;
+import frc.robot.Constants.CANBuses;
 import frc.robot.utils.CancoderConfig;
 import frc.robot.utils.TalonConfig;
 
@@ -13,7 +13,7 @@ public class ChassisConstants {
     public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
     public static final double DRIVE_ACCELERATION = 50;
     public static final int GYRO_ID = 14;
-    public static final CANBus CANBus = Constants.CAN_BUS;
+    public static final CANBus CAN_BUS = CANBuses.CHASSIS_CAN_BUS;
     public static final double WHEEL_DIAMETER = 0.1016; // 4 inch
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     public static final double STEER_GEAR_RATIO = 151.0/7.0;
@@ -75,18 +75,18 @@ public class ChassisConstants {
                     NAME = "";
                     break;
             }
-            STEER_CONFIG = new TalonConfig(swerveId * 3 + 2, CANBus, NAME + " Steer")
+            STEER_CONFIG = new TalonConfig(swerveId * 3 + 2, CAN_BUS, NAME + " Steer")
                 .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
                 .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
                 .withBrake(true)
                 .withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
                 .withRampTime(RAMP_TIME_STEER);
-            DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CANBus, NAME + " Drive")
+            DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CAN_BUS, NAME + " Drive")
                 .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
                 .withBrake(true)
                 .withInvert(true)
                 .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE);
-            CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CANBus, NAME + " Cancoder");
+            CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CAN_BUS, NAME + " Cancoder");
             POSITION = new Translation2d(
                 swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
                 swerveId == 0 || swerveId == 2 ? 0.29 : -0.29
