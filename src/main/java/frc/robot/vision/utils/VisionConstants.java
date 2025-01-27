@@ -121,12 +121,12 @@ public class VisionConstants {
     
     // 0 is LEFT TAG(ll2), 1 is RIGHT TAG, 2 is SIDE TAG, 3 is NOTE.
     //TAG Camera mounting configuration
-    public static final double[] CAM_HIGHT = {0.491,0.905,0.91};
+    public static final double[] CAM_HIGHT = {0.187,0.9,0.9};
     public static final double[] CAM_PITHC = {67.886,30,45};
     public static final double[] CAM_YAW = {0,0,90};
 
     // Camera to Tag position relative to robot center
-    public static final Translation2d[] ROBOT_TO_CAM = {new Translation2d(0.4-0.335,0.35-0.224),new Translation2d(0.4-0.27, 0.35-0.425),new Translation2d(0.04760,0.11884)};
+    public static final Translation2d[] ROBOT_TO_CAM = {new Translation2d(0.11900924, -0.28956334),new Translation2d(0.1043341, -0.287903),new Translation2d(0.95199,-0.287903)};
 
 
     // NetworkTables key for AprilTag vision data
