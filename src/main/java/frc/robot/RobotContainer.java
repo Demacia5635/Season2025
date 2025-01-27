@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.robot2.elevator.commands.ElevatorCalibration;
+import frc.robot.robot2.elevator.commands.ElevatorCommand;
+import frc.robot.robot2.elevator.subsystem.Elevator;
 import frc.robot.utils.LogManager;
 
 /**
@@ -27,6 +30,11 @@ public class RobotContainer implements Sendable{
   public static RobotContainer robotContainer;
   public static CommandXboxController controller;
   public static boolean isRed;
+
+  public static Elevator elevator;
+
+  public static ElevatorCalibration elevatorCalibration;
+  public static ElevatorCommand elevatorCommand;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -47,7 +55,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor.
    */
   private void configureSubsytems() {
-    
+    elevator = new Elevator();
   }
 
   /**
@@ -56,6 +64,8 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor.
    */
   private void configureCommands() {
+    elevatorCalibration = new ElevatorCalibration(elevator);
+    elevatorCommand = new ElevatorCommand(elevator);
   }
 
   /**
@@ -64,6 +74,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
+    elevator.setDefaultCommand(elevatorCommand);
   }
 
   /**
@@ -76,6 +87,7 @@ public class RobotContainer implements Sendable{
    * joysticks}.
    */
   private void configureBindings() {
+    controller.x().onTrue(elevatorCalibration);
   }
 
   public static boolean isRed() {
@@ -97,7 +109,7 @@ public class RobotContainer implements Sendable{
    * @return the ommand that start at the start at enable
    */
   public Command getEnableInitCommand() {
-    return null;
+    return elevatorCalibration;
   }
 
   /**
@@ -109,7 +121,8 @@ public class RobotContainer implements Sendable{
    */
   public Command getDisableInitCommand() {
     Command initDisableCommand = new InstantCommand(()-> {
-    }, null
+      elevator.stop();
+    }, elevator
     ).ignoringDisable(true);
     initDisableCommand.setName("Init Disable Command");
     return initDisableCommand;
