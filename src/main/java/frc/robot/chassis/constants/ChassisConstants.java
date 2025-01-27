@@ -14,8 +14,10 @@ public class ChassisConstants {
     public static final double DRIVE_ACCELERATION = 50;
     public static final int GYRO_ID = 14;
     public static final CANBus CAN_BUS = CANBuses.CHASSIS_CAN_BUS;
-    public static final double WHEEL_DIAMETER = 0.1016; // 4 inch
+    public static final CANBus GYRO_CAN_BUS = CANBuses.ARM_CAN_BUS;
+    public static final double WHEEL_DIAMETER = 0.095; // 4 inch
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
+    public static final double FRONT_LEFT_WHEEL_CIRCUMFERENCE = 0.0975 * Math.PI;
     public static final double STEER_GEAR_RATIO = 151.0/7.0;
     public static final double DRIVE_GEAR_RATIO = 8.14;
     
@@ -29,9 +31,9 @@ public class ChassisConstants {
     public static final double DRIVE_KP = 19;
     public static final double DRIVE_KI = 0;
     public static final double DRIVE_KD = 0;
-    public static final double DRIVE_KS = 0.85;
-    public static final double DRIVE_KV = 0.75;
-    public static final double DRIVE_KA = 0.004;
+    public static final double DRIVE_KS = 0.14677232883614777;
+    public static final double DRIVE_KV = 2.947;
+    public static final double DRIVE_KA = 0.08058;
 
     public static final double MOTION_MAGIC_VEL = 15 * 2 * Math.PI;
     public static final double MOTION_MAGIC_ACCEL = 8 * 2 * Math.PI;
@@ -85,7 +87,11 @@ public class ChassisConstants {
                 .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
                 .withBrake(true)
                 .withInvert(true)
-                .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE);
+                .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(
+                    swerveId != 0 
+                    ? WHEEL_CIRCUMFERENCE
+                    : FRONT_LEFT_WHEEL_CIRCUMFERENCE
+                );
             CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CAN_BUS, NAME + " Cancoder");
             POSITION = new Translation2d(
                 swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
@@ -97,21 +103,21 @@ public class ChassisConstants {
 
     public static final SwerveModuleConfigs FRONT_LEFT = new SwerveModuleConfigs(
         0,
-        -0.65961173879082572877877766348154
+        -0.66601764256103616655408039725525
     );
 
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
         1,
-        0.06749515466696821410759585393765
+        0.06283185307179586476925286766559
     );
 
     public static final SwerveModuleConfigs BACK_LEFT = new SwerveModuleConfigs(
         2,
-        -3.4775344461367486677709045653782
+        2.8023006470020955687086778978853
     );
 
     public static final SwerveModuleConfigs BACK_RIGHT = new SwerveModuleConfigs(
         3,
-        -0.68108746982122470599483088973442
+        -0.69115038378975451246178154432149
     );
 }

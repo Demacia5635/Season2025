@@ -43,7 +43,7 @@ public class Chassis extends SubsystemBase {
             new SwerveModule(ChassisConstants.BACK_LEFT),
             new SwerveModule(ChassisConstants.BACK_RIGHT),
         };
-        gyro = new Pigeon2(ChassisConstants.GYRO_ID, CANBuses.ARM_CAN_BUS);
+        gyro = new Pigeon2(ChassisConstants.GYRO_ID, ChassisConstants.GYRO_CAN_BUS);
         addStatus();
         kinematics = new SwerveDriveKinematics(
             ChassisConstants.FRONT_LEFT.POSITION,
