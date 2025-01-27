@@ -114,4 +114,7 @@ public class Elevator extends SubsystemBase {
     motor.stopMotor();
   }
 
+  @Override
+  public void periodic() {
+  }
 }
