@@ -40,6 +40,11 @@ public class ElevatorConstants {
         public static final int BOTTOM_SWITCH_ID = -1;
     }
 
+    public static class CalibrationConstants {
+        public static final double POWER = 0.2;
+        public static final double HEIGHT = -1;
+    }
+
     public enum ELEVATOR_STATE {
         L4(-1),
         L3(-1),
