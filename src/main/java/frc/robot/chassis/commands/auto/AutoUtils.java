@@ -42,6 +42,10 @@ public class AutoUtils {
     public enum ELEMENT{
         ALGAE, CORAL_RIGHT, CORAL_LEFT, FEEDER
     }
+
+    public enum LEVEL{
+        L2, L3, ALGAE_BOTTOM, ALGAE_TOP, FEEDER
+    }
     
     public static HashMap<FIELD_POSITION, PathPoint> fieldElements = new HashMap<>();
     static {
@@ -101,6 +105,13 @@ public class AutoUtils {
     public static Segment getSegments(int elementTag){
         return new Segment(O_TO_TAG[elementTag].plus(cornerOffsetRight.rotateBy(TAG_ANGLE[elementTag])), O_TO_TAG[elementTag].plus(cornerOffsetLeft.rotateBy(TAG_ANGLE[elementTag])), false);
     }
+
+    public static double L2DIST = 0;
+    public static double L3DIST = 0;
+    public static double ALGAE_TOP_DIST = 0;
+    public static double ALGAE_BOTTOM_DIST = 0;
+    public static double FEEDER_DIST = 0;
+    public static double SIDE_DIST = 0;
 
 
     public AutoUtils(){

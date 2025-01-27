@@ -26,6 +26,7 @@ import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.Drop;
+import frc.robot.robot1.gripper.commands.FixGrab;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.utils.LogManager;
@@ -57,6 +58,7 @@ public class RobotContainer implements Sendable{
 
   public static Grab grab;
   public static Drop drop;
+  public static FixGrab fix;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -97,6 +99,7 @@ public class RobotContainer implements Sendable{
 
     grab = new Grab(gripper);
     drop = new Drop(gripper);
+    fix = new FixGrab(gripper);
   }
 
   /**
@@ -122,6 +125,7 @@ public class RobotContainer implements Sendable{
     controller.x().onTrue(armCalibration);
     controller.a().onTrue(grab);
     controller.b().onTrue(drop);
+    controller.povDown().onTrue(fix);
     controller.leftBumper().onTrue(getDisableInitCommand());
     controller.povRight().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, 3.5));
     controller.povLeft().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5));

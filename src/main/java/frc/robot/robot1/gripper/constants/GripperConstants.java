@@ -37,4 +37,8 @@ public class GripperConstants {
         public static final double DROP_DURATION = 3;
     }
 
+    public static class FixConstants {
+        public static final double FIX_POWER = 0.1;        
+    }
+
 }
