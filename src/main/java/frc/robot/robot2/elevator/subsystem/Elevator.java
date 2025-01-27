@@ -15,10 +15,13 @@ import frc.robot.utils.LogManager;
 public class Elevator extends SubsystemBase {
 
   TalonMotor motor;
+  boolean isCalibrated;
+
   public Elevator() {
     setName(ElevatorConstants.NAME);
 
     this.motor = new TalonMotor(ElevatorConstants.motorConfig);
+    this.isCalibrated = false;
 
     addNT();
   }
@@ -27,6 +30,10 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putData(getName() + "/Motor", motor);
 
     SmartDashboard.putData(this);
+  }
+
+  public void calibrated() {
+    isCalibrated = true;
   }
 
   }
