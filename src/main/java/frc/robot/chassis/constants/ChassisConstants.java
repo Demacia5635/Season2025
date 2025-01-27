@@ -17,6 +17,7 @@ public class ChassisConstants {
     public static final CANBus GYRO_CAN_BUS = new CANBus("rio");
     public static final double WHEEL_DIAMETER = 0.095; // 4 inch
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
+    public static final double FRONT_LEFT_WHEEL_CIRCUMFERENCE = 0.0975 * Math.PI;
     public static final double STEER_GEAR_RATIO = 151.0/7.0;
     public static final double DRIVE_GEAR_RATIO = 8.14;
     
@@ -86,7 +87,11 @@ public class ChassisConstants {
                 .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
                 .withBrake(true)
                 .withInvert(true)
-                .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(WHEEL_CIRCUMFERENCE);
+                .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(
+                    swerveId != 0 
+                    ? WHEEL_CIRCUMFERENCE
+                    : FRONT_LEFT_WHEEL_CIRCUMFERENCE
+                );
             CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CANBus, NAME + " Cancoder");
             POSITION = new Translation2d(
                 swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
