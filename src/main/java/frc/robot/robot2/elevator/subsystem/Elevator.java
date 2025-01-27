@@ -4,6 +4,7 @@
 
 package frc.robot.robot2.elevator.subsystem;
 
+import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -30,6 +31,10 @@ public class Elevator extends SubsystemBase {
     setName(ElevatorConstants.NAME);
 
     this.motor = new TalonMotor(ElevatorConstants.motorConfig);
+    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
+    softwareLimitSwitchConfigs.withForwardSoftLimitEnable(hasReachedTop());
+    softwareLimitSwitchConfigs.withForwardSoftLimitEnable(hasReachedBottom());
+    this.motor.getConfigurator().apply(softwareLimitSwitchConfigs);
 
     this.topLimitSwitch = new DigitalInput(ElevatorConstants.ElevatorLimits.TOP_SWITCH_ID);
     this.bottomLimitSwitch = new DigitalInput(ElevatorConstants.ElevatorLimits.BOTTOM_SWITCH_ID);
