@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.TalonMotor;
@@ -63,7 +64,14 @@ public class Elevator extends SubsystemBase {
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/State Chooser", stateChooser);
 
+    SmartDashboard.putData(getName() + "/Motor" + "/Set Brake", new InstantCommand(()-> motor.setNeutralMode(true)).ignoringDisable(true));
+    SmartDashboard.putData(getName() + "/Motor" + "/Set Coast", new InstantCommand(()-> motor.setNeutralMode(false)).ignoringDisable(true));
+
     SmartDashboard.putData(this);
+  }
+
+  public void setNeutalMode(boolean isBrake) {
+    motor.setNeutralMode(isBrake);
   }
 
   public void calibrated() {
