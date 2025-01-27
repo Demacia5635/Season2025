@@ -4,6 +4,8 @@
 
 package frc.robot.robot2.elevator.subsystem;
 
+
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,17 +17,25 @@ import frc.robot.utils.LogManager;
 public class Elevator extends SubsystemBase {
 
   TalonMotor motor;
+  DigitalInput topLimitSwitch;
+  DigitalInput bottomLimitSwitch;
+
   boolean isCalibrated;
 
   public Elevator() {
     setName(ElevatorConstants.NAME);
 
     this.motor = new TalonMotor(ElevatorConstants.motorConfig);
+
+    this.topLimitSwitch = new DigitalInput(ElevatorConstants.ElevatorLimits.TOP_SWITCH_ID);
+    this.bottomLimitSwitch = new DigitalInput(ElevatorConstants.ElevatorLimits.BOTTOM_SWITCH_ID);
     this.isCalibrated = false;
 
     addNT();
   }
   private void addNT() {
+    LogManager.addEntry(getName() + "/Top Limit Switch", () -> hasReachedTop() ? 1 : 0);
+    LogManager.addEntry(getName() + "/Bottom Limit Switch", () -> hasReachedBottom() ? 1 : 0);
 
     SmartDashboard.putData(getName() + "/Motor", motor);
 
@@ -36,6 +46,17 @@ public class Elevator extends SubsystemBase {
     isCalibrated = true;
   }
 
+
+  private boolean hasLimitSwitch(DigitalInput input){
+    return !input.get();
+  }
+
+  public boolean hasReachedBottom(){
+    return hasLimitSwitch(bottomLimitSwitch);
+  }
+
+  public boolean hasReachedTop(){
+    return hasLimitSwitch(topLimitSwitch);
   }
   
   /*

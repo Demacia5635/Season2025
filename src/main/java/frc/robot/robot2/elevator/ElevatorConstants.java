@@ -32,4 +32,12 @@ public class ElevatorConstants {
     .withPID(kP, kI, kD, 0, kV, 0, kG)
     .withBrake(NETURAL_MODE).withRampTime(RAMP_TIME).withInvert(IS_INVERTED)
     .withMeterMotor(CIRCUMFERENCE);
+
+    public class ElevatorLimits{
+        public static final double TOP_LIMIT_POSITION = -1;
+        public static final double BOTTOM_LIMIT_POSITION = -1;
+        public static final int TOP_SWITCH_ID = -1;
+        public static final int BOTTOM_SWITCH_ID = -1;
+    }
+
 }
