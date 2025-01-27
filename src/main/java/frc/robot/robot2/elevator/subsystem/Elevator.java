@@ -7,6 +7,7 @@ package frc.robot.robot2.elevator.subsystem;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -45,6 +46,17 @@ public class Elevator extends SubsystemBase {
     LogManager.addEntry(getName() + "/Bottom Limit Switch", () -> hasReachedBottom() ? 1 : 0);
 
     SmartDashboard.putData(getName() + "/Motor", motor);
+
+    SendableChooser<ELEVATOR_STATE> stateChooser = new SendableChooser<ELEVATOR_STATE>();
+    stateChooser.addOption("L4", ELEVATOR_STATE.L4);
+    stateChooser.addOption("L3", ELEVATOR_STATE.L3);
+    stateChooser.addOption("L2", ELEVATOR_STATE.L2);
+    stateChooser.addOption("Coral Station", ELEVATOR_STATE.CORAL_STATION);
+    stateChooser.addOption("Starting", ELEVATOR_STATE.STARTING);
+    stateChooser.addOption("Testing", ELEVATOR_STATE.TESTING);
+    stateChooser.addOption("Idle", ELEVATOR_STATE.IDLE);
+    stateChooser.onChange(state -> this.state = state);
+    SmartDashboard.putData(getName() + "/State Chooser", stateChooser);
 
     SmartDashboard.putData(this);
   }
