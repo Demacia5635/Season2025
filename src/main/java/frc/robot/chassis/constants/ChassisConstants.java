@@ -14,7 +14,8 @@ public class ChassisConstants {
     public static final double DRIVE_ACCELERATION = 50;
     public static final int GYRO_ID = 14;
     public static final CANBus CANBus = Constants.CAN_BUS;
-    public static final double WHEEL_DIAMETER = 0.1016; // 4 inch
+    public static final CANBus GYRO_CAN_BUS = new CANBus("rio");
+    public static final double WHEEL_DIAMETER = 0.095; // 4 inch
     public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
     public static final double STEER_GEAR_RATIO = 151.0/7.0;
     public static final double DRIVE_GEAR_RATIO = 8.14;
