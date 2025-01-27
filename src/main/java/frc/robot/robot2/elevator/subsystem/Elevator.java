@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.TalonMotor;
 import frc.robot.robot2.elevator.ElevatorConstants;
+import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
 import frc.robot.utils.LogManager;
 
 public class Elevator extends SubsystemBase {
@@ -19,6 +20,8 @@ public class Elevator extends SubsystemBase {
   TalonMotor motor;
   DigitalInput topLimitSwitch;
   DigitalInput bottomLimitSwitch;
+
+  ELEVATOR_STATE state;
 
   boolean isCalibrated;
 
@@ -29,10 +32,14 @@ public class Elevator extends SubsystemBase {
 
     this.topLimitSwitch = new DigitalInput(ElevatorConstants.ElevatorLimits.TOP_SWITCH_ID);
     this.bottomLimitSwitch = new DigitalInput(ElevatorConstants.ElevatorLimits.BOTTOM_SWITCH_ID);
+
+    this.state = ELEVATOR_STATE.IDLE;
+
     this.isCalibrated = false;
 
     addNT();
   }
+  
   private void addNT() {
     LogManager.addEntry(getName() + "/Top Limit Switch", () -> hasReachedTop() ? 1 : 0);
     LogManager.addEntry(getName() + "/Bottom Limit Switch", () -> hasReachedBottom() ? 1 : 0);
@@ -46,6 +53,13 @@ public class Elevator extends SubsystemBase {
     isCalibrated = true;
   }
 
+  public ELEVATOR_STATE getState() {
+    return state;
+  }
+
+  public void setState(ELEVATOR_STATE state) {
+    this.state = state;
+  }
 
   private boolean hasLimitSwitch(DigitalInput input){
     return !input.get();

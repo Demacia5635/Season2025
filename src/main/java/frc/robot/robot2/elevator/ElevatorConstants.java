@@ -40,4 +40,19 @@ public class ElevatorConstants {
         public static final int BOTTOM_SWITCH_ID = -1;
     }
 
+    public enum ELEVATOR_STATE {
+        L4(-1),
+        L3(-1),
+        L2(-1),
+        CORAL_STATION(-1),
+        STARTING(-1),
+        TESTING(-1),
+        IDLE(-1);
+
+        public final double HEIGHT;
+
+        private ELEVATOR_STATE(double height) {
+            this.HEIGHT = height;
+        }
+    }
 }
