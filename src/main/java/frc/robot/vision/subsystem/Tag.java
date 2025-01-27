@@ -125,7 +125,7 @@ public class Tag extends SubsystemBase {
         for (NetworkTable t : Tables) {
             if (t.getEntry("tv").getDouble(0.0) != 0) {
                 camToTagPitch = t.getEntry("ty").getDouble(0.0);
-                camToTagYaw = -t.getEntry("tx").getDouble(0.0);
+                camToTagYaw = (-t.getEntry("tx").getDouble(0.0)) + CAM_YAW[camId];
                 id = t.getEntry("tid").getDouble(0.0);
                 cropEntry = t.getEntry("crop");
                 crop();
@@ -183,15 +183,10 @@ public class Tag extends SubsystemBase {
      * @return Distance in meters
      */
     public double GetDistFromCamera(int cam) {
-      if (cam == 0){
-        alpha = camToTagPitch + CAM_PITHC[cam];
-        dist = (Math.abs(height - CAM_HIGHT[cam])) * (Math.tan(Math.toRadians(alpha)));
-        dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-        return dist;
-      }
       alpha = camToTagPitch + CAM_PITHC[cam];
       dist = (Math.abs(height - CAM_HIGHT[cam])) / (Math.tan(Math.toRadians(alpha)));
-      dist = dist/Math.cos(Math.toRadians(camToTagYaw));
+      //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
+      LogManager.log(""+dist);
       return dist;
     }
 
@@ -286,7 +281,7 @@ public class Tag extends SubsystemBase {
         return count;
       }
       private void crop(){
-        double YawCrop = -camToTagYaw/31.25;
+        double YawCrop = ((-camToTagYaw) + CAM_YAW[camId])/31.25;
         double PitchCrop = camToTagPitch/24.45;
         double[] crop = {YawCrop-CROP_OFSET,YawCrop+CROP_OFSET,PitchCrop-CROP_OFSET,PitchCrop+CROP_OFSET};
         cropEntry.setDoubleArray(crop);

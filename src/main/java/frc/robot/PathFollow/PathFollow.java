@@ -1,5 +1,6 @@
 package frc.robot.PathFollow;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -19,6 +20,8 @@ import static frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.opencv.objdetect.BarcodeDetector;
 
 import frc.robot.RobotContainer;
 import frc.robot.PathFollow.Util.Leg;
@@ -74,7 +77,6 @@ public class PathFollow extends Command {
   boolean isConstVel = false;
   boolean isPrecise = false;
   double reefRadius = 3;
-  Translation2d reefCenter = new Translation2d(fieldLength-4.5,fieldHeight-4); 
   FIELD_POSITION toGoElement;
   boolean stop = false;
   AlignToTag alignToTag;
@@ -181,13 +183,50 @@ public class PathFollow extends Command {
       }
     }
     return false;
-  }
+    }
+    private boolean isPathAscending(int startid, int endId){
+    int counter = 0;
+    int id = startid;
+    while (id != endId) {
+      counter++;
+      id = id + 1;
+      if (id == 6) id = 0;
+    }
+    return counter < 3;
+    }
 
+    private void evasion(Segment segment) {
+    ArrayList<PathPoint> pointsList = new ArrayList<>();
+
+    PathPoint entryPoint = get2ClosestPoints(segment.getPoints()[0])[0];
+    PathPoint leavePoint = get2ClosestPoints(segment.getPoints()[1])[0];
+
+    int id = findIndex(entryPoint);
+    int leaveId = findIndex(leavePoint);
+    boolean ascending = isPathAscending(id, leaveId);
+
+    while (id != leaveId) {
+        pointsList.add(AutoUtils.REEF_POINTS[id]);
+        id = ascending ? id + 1 : id - 1;
+        if (id == -1) id = 5;
+        if (id == 6) id = 0;
+    }
+
+    pointsList.add(leavePoint);
+
+    PathPoint[] pathPoints = new PathPoint[pointsList.size()];
+    for (int i = 0; i < pathPoints.length; i++) {
+        pathPoints[i] = pointsList.get(i);
+    }
+
+    new PathFollow(pathPoints, points[points.length - 1].getRotation(), 3.5, false, true).andThen(alignToTag).schedule();
+  }
+  
   private void getPathPoint(Segment segment){
     ArrayList<PathPoint> pointsList = new ArrayList<>();
 
-    PathPoint entryPoint = getClosetPoint(segment.getPoints()[0]);
-    PathPoint leavePoint = getClosetPoint(segment.getPoints()[1]);
+    PathPoint entryPoint = get2ClosestPoints(segment.getPoints()[0])[0];
+    PathPoint leavePoint = get2ClosestPoints(segment.getPoints()[1])[0];
     
       boolean isWithIndexs = Math.abs(findIndex(entryPoint) - findIndex(leavePoint))
        > Math.abs(findIndex(leavePoint) - findIndex(entryPoint));
@@ -259,18 +298,21 @@ public class PathFollow extends Command {
     }
     return counter < 3;
   }
-  private PathPoint getClosetPoint(Translation2d startingPos){
+  private PathPoint[] get2ClosestPoints(Translation2d startingPos){
     double closetDistance = Integer.MAX_VALUE;
-    int index = -1;
+    int closestIndex = -1;
+    int secondClosestIndex = -1;
+    int thirdClosestIndex = -1;
     for(int i = 0; i < AutoUtils.REEF_POINTS.length; i++){
       if(AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance){
-        index = i;
+        thirdClosestIndex = secondClosestIndex;
+        secondClosestIndex = closestIndex;
+        closestIndex = i;
         closetDistance = AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos);
       }
     }
-    return AutoUtils.REEF_POINTS[index];
-  }
- 
+    return new PathPoint[]{AutoUtils.REEF_POINTS[closestIndex], AutoUtils.REEF_POINTS[secondClosestIndex], AutoUtils.REEF_POINTS[thirdClosestIndex]};
+  } 
 
   /*
    * public String currentSegmentInfo() {
@@ -290,7 +332,6 @@ public class PathFollow extends Command {
 
     // case for red alliance (blue is the default)
     if (isRed) {
-      reefCenter = new Translation2d(fieldLength - reefCenter.getX(), fieldHeight - reefCenter.getY());
 
       points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(),
           Rotation2d.fromDegrees(180).minus(chassis.getPose().getRotation()), points[0].getRadius(), false);
@@ -310,7 +351,8 @@ public class PathFollow extends Command {
     if (points.length < 3) {
       Segment cur = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
       if(isBumpingReef(cur)){
-        getPathPoint(cur);
+        //getPathPoint(cur);
+        evasion(cur);
         stop = true;
       }
       segments.add(cur);
