@@ -14,21 +14,6 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.chassis.commands.Drive;
-import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
-import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
-import frc.robot.chassis.commands.auto.AlignToTag;
-import frc.robot.chassis.commands.auto.Auto_3Coral;
-import frc.robot.chassis.commands.auto.goToPlace;
-import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.robot1.arm.commands.ArmCommand;
-import frc.robot.robot1.arm.commands.ArmDrive;
-import frc.robot.robot1.arm.commands.ArmCalibration;
-import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
-import frc.robot.robot1.arm.subsystems.Arm;
-import frc.robot.robot1.gripper.commands.Drop;
-import frc.robot.robot1.gripper.commands.Grab;
-import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.utils.LogManager;
 
 /**
@@ -42,22 +27,6 @@ public class RobotContainer implements Sendable{
   public static RobotContainer robotContainer;
   public static CommandXboxController controller;
   public static boolean isRed;
-
-  public static Chassis chassis;  
-  public static Arm arm;
-  public static Gripper gripper;
-
-  public static Drive drive;
-
-  public static ArmCalibration armCalibration;
-  public static ArmCommand armCommand;
-  public static ArmDrive armDrive;
-  public static Command armSetStateTesting;
-  public static goToPlace goToOutake;
-  public static goToPlace goToIntake;
-
-  public static Grab grab;
-  public static Drop drop;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -78,9 +47,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor.
    */
   private void configureSubsytems() {
-    chassis = new Chassis();
-    arm = new Arm();
-    gripper = new Gripper();
+    
   }
 
   /**
@@ -89,15 +56,6 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor.
    */
   private void configureCommands() {
-    drive = new Drive(chassis, controller);
-
-    armCalibration = new ArmCalibration(arm);
-    armCommand = new ArmCommand(arm);
-    armDrive = new ArmDrive(arm, controller);
-    armSetStateTesting = new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.TESTING)).ignoringDisable(true);
-
-    grab = new Grab(gripper);
-    drop = new Drop(gripper);
   }
 
   /**
@@ -106,8 +64,6 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
-    chassis.setDefaultCommand(drive);
-    arm.setDefaultCommand(armCommand);
   }
 
   /**
@@ -120,16 +76,6 @@ public class RobotContainer implements Sendable{
    * joysticks}.
    */
   private void configureBindings() {
-    controller.x().onTrue(armCalibration);
-    // .alongWith(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5), new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))
-    controller.a().onTrue(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION))));
-    controller.b().onTrue(drop);
-    controller.leftBumper().onTrue(getDisableInitCommand());
-    controller.povLeft().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, 3.5));
-    controller.povRight().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5));
-    controller.y().onTrue(new AlignToTag(chassis, false, true, false));
-    controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
-    controller.povDown().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)));
   }
 
   public static boolean isRed() {
@@ -151,7 +97,7 @@ public class RobotContainer implements Sendable{
    * @return the ommand that start at the start at enable
    */
   public Command getEnableInitCommand() {
-    return armCalibration;
+    return null;
   }
 
   /**
@@ -163,10 +109,7 @@ public class RobotContainer implements Sendable{
    */
   public Command getDisableInitCommand() {
     Command initDisableCommand = new InstantCommand(()-> {
-      chassis.stop();
-      arm.stop();
-      gripper.stop();
-    }, chassis, arm, gripper
+    }, null
     ).ignoringDisable(true);
     initDisableCommand.setName("Init Disable Command");
     return initDisableCommand;
@@ -178,6 +121,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new Auto_3Coral();
+    return null;
   }
 }
