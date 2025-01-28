@@ -151,15 +151,15 @@ public class PathFollow extends Command {
     this.rotateToSpeaker = rotateToSpeaker;
   }
 
-  private boolean isIntersecting (Segment segment1, Segment segment2){
-    double x0 = segment1.getPoints()[0].getX();
-    double y0 = segment1.getPoints()[0].getY();
-    double x1 = segment1.getPoints()[1].getX();
-    double y1 = segment1.getPoints()[1].getY();
-    double x2 = segment2.getPoints()[0].getX();
-    double y2 = segment2.getPoints()[0].getY();
-    double x3 = segment2.getPoints()[1].getX();
-    double y3 = segment2.getPoints()[1].getY();
+  private boolean isIntersecting (Segment segment, double segmentWidth, Segment segmentBase){
+    double x0 = segment.getPoints()[0].getX();
+    double y0 = segment.getPoints()[0].getY();
+    double x1 = segment.getPoints()[1].getX();
+    double y1 = segment.getPoints()[1].getY();
+    double x2 = segmentBase.getPoints()[0].getX();
+    double y2 = segmentBase.getPoints()[0].getY();
+    double x3 = segmentBase.getPoints()[1].getX();
+    double y3 = segmentBase.getPoints()[1].getY();
 
     double m1 = (y0 - y1) / (x0 - x1);
     double m2 = (y2 - y3) / (x2 - x3);
@@ -179,26 +179,34 @@ public class PathFollow extends Command {
 
     return withinSegment1 && withinSegment2;
   }
+
   private boolean isBumpingReef(Segment segment){
     for (int i = 0; i < REEF_SEGMENTS.length; i++){
-      if(isIntersecting(segment, REEF_SEGMENTS[i])){
+      if(isIntersecting(segment, Math.sqrt(2)/2 ,REEF_SEGMENTS[i])){
         return true;
       }
     }
     return false;
-    }
-    private boolean isPathAscending(int startid, int endId){
+  }
+
+  private boolean isPathAscending(int startid, int endId){
     int counter = 0;
     int id = startid;
     while (id != endId) {
       counter++;
       id = id + 1;
-      if (id == 6) id = 0;
+      id = normalis(id);
     }
     return counter < 3;
-    }
+  }
 
-    private void evasion(Segment segment) {
+  private int normalis(int id){
+    if (id == -1) id = 5;
+    if (id == 6) id = 0;
+    return id;
+  }
+
+  private void evasion(Segment segment) {
     ArrayList<PathPoint> pointsList = new ArrayList<>();
 
     PathPoint entryPoint = getClosetPoint(segment.getPoints()[0]);
@@ -208,14 +216,25 @@ public class PathFollow extends Command {
     int leaveId = findIndex(leavePoint);
     boolean ascending = isPathAscending(id, leaveId);
 
+    int nextPointId = ascending ? id + 1 : id - 1;
+    nextPointId = normalis(nextPointId);
+    PathPoint nextPoint = AutoUtils.REEF_POINTS[nextPointId];
+
+    id = (isBumpingReef(new Segment(entryPoint.getTranslation(), nextPoint.getTranslation(), false))) ? id : nextPointId;
     while (id != leaveId) {
-      if (id == -1) id = 5;
-      if (id == 6) id = 0;
+      id = normalis(id);
       pointsList.add(AutoUtils.REEF_POINTS[id]);
       id = ascending ? id + 1 : id - 1;
     }
 
-    pointsList.add(leavePoint);
+    int pervPointId = ascending ? id - 1 : id + 1;
+    pervPointId = normalis(pervPointId);
+    PathPoint pervPoint = AutoUtils.REEF_POINTS[pervPointId];
+    if (!isBumpingReef(new Segment(entryPoint.getTranslation(), pervPoint.getTranslation(), false))){
+      pointsList.remove(pointsList.size() - 1);
+    }
+
+    pointsList.add(new PathPoint(segment.getPoints()[1], new Rotation2d()));
 
     PathPoint[] pathPoints = new PathPoint[pointsList.size()];
     for (int i = 0; i < pathPoints.length; i++) {
