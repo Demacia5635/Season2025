@@ -4,6 +4,8 @@
 
 package frc.robot.PathFollow.Util;
 
+import static frc.robot.PathFollow.Util.PathsConstants.STATION_RADIUS;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,7 +24,7 @@ class PathsConstants {
     public final static double MIN_SEGMENT_LENGTH = 0.15;
     public final static double MAX_RADIAL_ACCEL = -1;
 
-    public final static Translation2d STATION_CENTER = new Translation2d(4,4);
+    public final static Translation2d STATION_CENTER = new Translation2d((1.57 + 1.8)/Math.sqrt(2),(1.57 + 1.8)/Math.sqrt(2));
 
     private PathsConstants()
     {
@@ -35,7 +37,7 @@ class PathsConstants {
     }
 
     
-    public final static double STATION_RADIUS = 4;
+    public final static double STATION_RADIUS = 1.2 + 0.6;
     public static Pose2d[] STATIONS; //please arrange it clockwise
 
     public static double dot_prod(Translation2d v1,Translation2d v2)

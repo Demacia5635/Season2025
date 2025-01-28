@@ -16,6 +16,14 @@ public class RoundedPoint{
 
     boolean aprilTagMode;
 
+    public void setMinRadius(double velocity)
+    {
+        double angularVel = 2 * Math.PI; // THIS IS TEMPORARY
+        double minRadius = (velocity)/angularVel;
+
+        this.radius = Math.min(getMaxRadius(), minRadius);
+    }
+    
     public RoundedPoint(PathPoint aPoint, PathPoint bPoint, PathPoint cPoint, boolean aprilTagMode){
         this.radius = bPoint.getRadius();
         this.aPoint = aPoint.getTranslation();
