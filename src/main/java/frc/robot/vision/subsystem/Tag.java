@@ -183,6 +183,12 @@ public class Tag extends SubsystemBase {
      * @return Distance in meters
      */
     public double GetDistFromCamera(int cam) {
+      if (cam == 0 && cam == 3){
+        alpha = camToTagPitch + CAM_PITHC[cam];
+        dist = (Math.abs(height - CAM_HIGHT[cam])) * (Math.tan(Math.toRadians(alpha)));
+        dist = dist/Math.cos(Math.toRadians(camToTagYaw));
+        return dist;
+      }
       alpha = camToTagPitch + CAM_PITHC[cam];
       dist = (Math.abs(height - CAM_HIGHT[cam])) / (Math.tan(Math.toRadians(alpha)));
       //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
