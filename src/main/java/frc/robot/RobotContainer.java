@@ -125,7 +125,7 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     controller.x().onTrue(armCalibration);
     // .alongWith(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5), new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))
-    controller.a().onTrue(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION))));
+    controller.a().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 2).alongWith(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
     controller.b().onTrue(drop);
     controller.povDown().onTrue(fix);
     controller.leftBumper().onTrue(getDisableInitCommand());
@@ -134,6 +134,8 @@ public class RobotContainer implements Sendable{
     controller.y().onTrue(new AlignToTag(chassis, false, true, false));
     controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
     controller.povDown().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)));
+    
+    controller.start().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
   }
 
   public static boolean isRed() {

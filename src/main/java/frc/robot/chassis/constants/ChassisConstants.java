@@ -15,9 +15,6 @@ public class ChassisConstants {
     public static final int GYRO_ID = 14;
     public static final CANBus CAN_BUS = CANBuses.CHASSIS_CAN_BUS;
     public static final CANBus GYRO_CAN_BUS = CANBuses.ARM_CAN_BUS;
-    public static final double WHEEL_DIAMETER = 0.095; // 4 inch
-    public static final double WHEEL_CIRCUMFERENCE = WHEEL_DIAMETER * Math.PI;
-    public static final double FRONT_LEFT_WHEEL_CIRCUMFERENCE = 0.0975 * Math.PI;
     public static final double STEER_GEAR_RATIO = 151.0/7.0;
     public static final double DRIVE_GEAR_RATIO = 8.14;
     
@@ -58,7 +55,7 @@ public class ChassisConstants {
             NAME = name;
         }
         
-        public SwerveModuleConfigs(int swerveId, double steerOffset) {
+        public SwerveModuleConfigs(int swerveId, double steerOffset, double wheelDiameter) {
             switch (swerveId) {
                 case 0:
                     NAME = "Front Left";
@@ -87,11 +84,7 @@ public class ChassisConstants {
                 .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
                 .withBrake(true)
                 .withInvert(true)
-                .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(
-                    swerveId != 0 
-                    ? WHEEL_CIRCUMFERENCE
-                    : FRONT_LEFT_WHEEL_CIRCUMFERENCE
-                );
+                .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(wheelDiameter * Math.PI);
             CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CAN_BUS, NAME + " Cancoder");
             POSITION = new Translation2d(
                 swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
@@ -103,21 +96,25 @@ public class ChassisConstants {
 
     public static final SwerveModuleConfigs FRONT_LEFT = new SwerveModuleConfigs(
         0,
-        -0.66601764256103616655408039725525
+        -0.66601764256103616655408039725525,
+        0.096
     );
 
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
         1,
-        0.06283185307179586476925286766559
+        0.06283185307179586476925286766559,
+        0.0955
     );
 
     public static final SwerveModuleConfigs BACK_LEFT = new SwerveModuleConfigs(
         2,
-        2.8023006470020955687086778978853
+        2.8023006470020955687086778978853,
+        0.097
     );
 
     public static final SwerveModuleConfigs BACK_RIGHT = new SwerveModuleConfigs(
         3,
-        -0.69115038378975451246178154432149
+        -0.69115038378975451246178154432149,
+        0.096
     );
 }
