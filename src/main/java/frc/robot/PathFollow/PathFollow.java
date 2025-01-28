@@ -10,6 +10,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.utils.LogManager;
 
 
@@ -33,6 +34,7 @@ import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.utils.TrapezoidNoam;
 
 public class PathFollow extends Command {
@@ -81,6 +83,7 @@ public class PathFollow extends Command {
   boolean stop = false;
   AlignToTag alignToTag;
   boolean isFirstTry;
+  double minVel = 0.5;
   
   /**
    * Creates a new path follower using the given points.
@@ -198,18 +201,18 @@ public class PathFollow extends Command {
     private void evasion(Segment segment) {
     ArrayList<PathPoint> pointsList = new ArrayList<>();
 
-    PathPoint entryPoint = get2ClosestPoints(segment.getPoints()[0])[0];
-    PathPoint leavePoint = get2ClosestPoints(segment.getPoints()[1])[0];
+    PathPoint entryPoint = getClosetPoint(segment.getPoints()[0]);
+    PathPoint leavePoint = getClosetPoint(segment.getPoints()[1]);
 
     int id = findIndex(entryPoint);
     int leaveId = findIndex(leavePoint);
     boolean ascending = isPathAscending(id, leaveId);
 
     while (id != leaveId) {
-        pointsList.add(AutoUtils.REEF_POINTS[id]);
-        id = ascending ? id + 1 : id - 1;
-        if (id == -1) id = 5;
-        if (id == 6) id = 0;
+      if (id == -1) id = 5;
+      if (id == 6) id = 0;
+      pointsList.add(AutoUtils.REEF_POINTS[id]);
+      id = ascending ? id + 1 : id - 1;
     }
 
     pointsList.add(leavePoint);
@@ -219,14 +222,17 @@ public class PathFollow extends Command {
         pathPoints[i] = pointsList.get(i);
     }
 
-    new PathFollow(pathPoints, points[points.length - 1].getRotation(), 3.5, false, true).andThen(alignToTag).schedule();
+    new PathFollow(pathPoints, points[points.length - 1].getRotation(),
+     3, false, true)
+     .alongWith(new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)))
+     .andThen(alignToTag).schedule();
   }
   
   private void getPathPoint(Segment segment){
     ArrayList<PathPoint> pointsList = new ArrayList<>();
 
-    PathPoint entryPoint = get2ClosestPoints(segment.getPoints()[0])[0];
-    PathPoint leavePoint = get2ClosestPoints(segment.getPoints()[1])[0];
+    PathPoint entryPoint = getClosetPoint(segment.getPoints()[0]);
+    PathPoint leavePoint = getClosetPoint(segment.getPoints()[1]);
     
       boolean isWithIndexs = Math.abs(findIndex(entryPoint) - findIndex(leavePoint))
        > Math.abs(findIndex(leavePoint) - findIndex(entryPoint));
@@ -298,21 +304,17 @@ public class PathFollow extends Command {
     }
     return counter < 3;
   }
-  private PathPoint[] get2ClosestPoints(Translation2d startingPos){
+  private PathPoint getClosetPoint(Translation2d startingPos){
     double closetDistance = Integer.MAX_VALUE;
-    int closestIndex = -1;
-    int secondClosestIndex = -1;
-    int thirdClosestIndex = -1;
+    int index = -1;
     for(int i = 0; i < AutoUtils.REEF_POINTS.length; i++){
       if(AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance){
-        thirdClosestIndex = secondClosestIndex;
-        secondClosestIndex = closestIndex;
-        closestIndex = i;
+        index = i;
         closetDistance = AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos);
       }
     }
-    return new PathPoint[]{AutoUtils.REEF_POINTS[closestIndex], AutoUtils.REEF_POINTS[secondClosestIndex], AutoUtils.REEF_POINTS[thirdClosestIndex]};
-  } 
+    return AutoUtils.REEF_POINTS[index];
+  }
 
   /*
    * public String currentSegmentInfo() {
@@ -450,14 +452,16 @@ public class PathFollow extends Command {
         currentVelocity.getNorm(), finishVel);*/
 
     driveVelocity = isConstVel ? maxVel : Math.min((totalLeft - segments.get(segmentIndex).distancePassed(chassis.getPose().getTranslation())) * 3, maxVel) ;
-
+    driveVelocity = Math.max(driveVelocity, minVel);
+    
     Translation2d velVector = segments.get(segmentIndex).calc(chassisPose.getTranslation(), driveVelocity);
 
    
 
-    if (totalLeft <= 0.1)
-      velVector = new Translation2d(0, 0);
+    if (totalLeft <= 0.1) velVector = new Translation2d(0, 0);
     ChassisSpeeds speed = new ChassisSpeeds(velVector.getX(), velVector.getY(), 0);
+    
+    
     
       chassis.setVelocitiesRotateToAngle(speed, finalAngle);
   

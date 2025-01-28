@@ -183,8 +183,8 @@ public class Chassis extends SubsystemBase {
   public void setVelocitiesRotateToAngle(ChassisSpeeds speeds, Rotation2d angle) {
     double angleError = angle.minus(getGyroAngle()).getRadians();
     double angleErrorabs = Math.abs(angleError);
-    if (angleErrorabs>Math.toRadians(1.5)){
-        speeds.omegaRadiansPerSecond = angleError * 3.5;
+    if (angleErrorabs>Math.toRadians(1)){
+        speeds.omegaRadiansPerSecond = angleError * 3;
     }
     setVelocities(speeds);
   }
