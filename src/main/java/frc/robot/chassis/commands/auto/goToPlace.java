@@ -20,12 +20,15 @@ public class goToPlace extends Command {
   private PathPoint dummyPoint = new PathPoint(new Translation2d(), new Rotation2d());
   FIELD_POSITION position;
   ELEMENT element;
+  LEVEL level;
   double maxVel;
   boolean isFeeder;
-  public goToPlace(FIELD_POSITION position, ELEMENT element, double maxVel) {
+  Command cmd;
+  public goToPlace(FIELD_POSITION position, ELEMENT element, LEVEL level, double maxVel) {
     this.position = position;
     this.element = element;
     this.maxVel = maxVel;
+    this.level = level;
     this.isFeeder = position == FIELD_POSITION.FEEDER_LEFT || position == FIELD_POSITION.FEEDER_RIGHT;
     
   }
@@ -33,17 +36,18 @@ public class goToPlace extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    AutoUtils.goToMultiple(new PathPoint[]
+    cmd = AutoUtils.goToMultiple(new PathPoint[]
     {dummyPoint, AutoUtils.fieldElements.get(position)}, maxVel, fieldElements.get(position).getRotation(),
      false, true, position, new AlignToTag(chassis,  element != ELEMENT.CORAL_LEFT,
      position != FIELD_POSITION.FEEDER_LEFT || position != FIELD_POSITION.FEEDER_RIGHT, false))
     .andThen(new AutoAlign(chassis, position,
-      element, LEVEL.FEEDER)).schedule();
+      element, level));
+    cmd.schedule();
 
   }
 
   @Override
   public boolean isFinished() {
-    return true;
+    return !cmd.isScheduled();
   }
 }

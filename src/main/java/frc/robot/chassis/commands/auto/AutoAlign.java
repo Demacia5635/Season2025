@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.subsystems.Chassis;
-
+import frc.robot.utils.LogManager;
 
 import static frc.robot.chassis.commands.auto.AutoUtils.*;
 
@@ -21,13 +21,13 @@ public class AutoAlign extends Command {
   private Chassis chassis;
   private Rotation2d targetAngle;
   private Translation2d robotToTarget;
+  private Translation2d target;
   private double maxVel = 0.7;
   private FIELD_POSITION position;
   private ELEMENT element;
   private LEVEL level;
   private Translation2d offset;
   private Timer timer = new Timer();
-  private double cycleCount = 0;
   double kP = 3;
   
 
@@ -52,10 +52,11 @@ public class AutoAlign extends Command {
     targetAngle = fieldElements.get(position).getRotation();
     offset = new Translation2d(
       (level == LEVEL.FEEDER) ? FEEDER_DIST : ((level == LEVEL.L2) ? L2DIST : L3DIST),
-      (element == ELEMENT.FEEDER || element == ELEMENT.ALGAE) ? 0 : (element == ELEMENT.CORAL_LEFT) ? SIDE_DIST : SIDE_DIST
+      (element == ELEMENT.FEEDER || element == ELEMENT.ALGAE) ? 0 : (element == ELEMENT.CORAL_LEFT) ? -SIDE_DIST : SIDE_DIST
     );
     offset = offset.rotateBy(targetAngle.rotateBy(Rotation2d.fromDegrees(180)));
-    robotToTarget = fieldElements.get(position).getTranslation().minus(chassis.getPose().getTranslation()).plus(offset);
+    target = fieldElements.get(position).getTranslation().plus(offset);
+    robotToTarget = target.minus(chassis.getPose().getTranslation());
     
     double vel = robotToTarget.getNorm() * kP;
 

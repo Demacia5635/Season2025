@@ -47,7 +47,7 @@ public class Robot1Strip extends LedStrip {
                 break;
         
             default:
-                turnOff();
+                setSolidGay();
                 break;
         }
 
@@ -55,22 +55,22 @@ public class Robot1Strip extends LedStrip {
             setColor(Color.kPurple);
         }
 
-        if (gripper.getCurrentCommand() instanceof Grab) {
+        if (gripper.getCurrentCommand() instanceof Grab && !grabTimer.isRunning()) {
             grabTimer.start();
         }
 
-        if (gripper.getCurrentCommand() instanceof Drop) {
+        if (gripper.getCurrentCommand() instanceof Drop && !dropTimer.isRunning()) {
             dropTimer.start();
         }
 
-        if (!grabTimer.hasElapsed(2) && grabTimer.isRunning()) {
+        if (!grabTimer.hasElapsed(2) && grabTimer.get() != 0) {
             setBlink(Color.kRed);
         } else {
             grabTimer.stop();
             grabTimer.reset();
         }
 
-        if (!dropTimer.hasElapsed(2) && dropTimer.isRunning()) {
+        if (!dropTimer.hasElapsed(2) && dropTimer.get() != 0) {
             setBlink(Color.kOrange);
         } else {
             dropTimer.stop();

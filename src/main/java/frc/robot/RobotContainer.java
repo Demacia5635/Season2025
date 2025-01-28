@@ -4,12 +4,15 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -17,6 +20,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
+import frc.robot.chassis.commands.auto.AutoUtils.LEVEL;
 import frc.robot.chassis.commands.auto.AlignToTag;
 import frc.robot.chassis.commands.auto.Auto_3Coral;
 import frc.robot.chassis.commands.auto.goToPlace;
@@ -27,7 +31,6 @@ import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.Drop;
-import frc.robot.robot1.gripper.commands.FixGrab;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.leds.Robot1Strip;
@@ -63,7 +66,6 @@ public class RobotContainer implements Sendable{
 
   public static Grab grab;
   public static Drop drop;
-  public static FixGrab fix;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -107,7 +109,6 @@ public class RobotContainer implements Sendable{
 
     grab = new Grab(gripper);
     drop = new Drop(gripper);
-    fix = new FixGrab(gripper);
   }
 
   /**
@@ -132,18 +133,17 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     controller.x().onTrue(armCalibration);
     // .alongWith(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5), new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))
-    controller.a().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 2).alongWith(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
+    controller.a().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 2).alongWith(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
     controller.b().onTrue(drop);
-    controller.povDown().onTrue(fix);
     controller.leftBumper().onTrue(getDisableInitCommand());
-    controller.povLeft().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, 3.5));
-    controller.povRight().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5));
+    controller.povLeft().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, LEVEL.L2, 3.5));
+    controller.povRight().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 3.5));
     controller.y().onTrue(new AlignToTag(chassis, false, true, false));
     controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
     controller.povDown().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)));
     
     controller.start().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
-    controller.back().onTrue(new goToPlace(FIELD_POSITION.D, ELEMENT.CORAL_RIGHT, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING))).andThen(drop));
+    controller.back().onTrue((new goToPlace(FIELD_POSITION.F, ELEMENT.CORAL_RIGHT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
   }
 
   public static boolean isRed() {

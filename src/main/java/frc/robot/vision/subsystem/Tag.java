@@ -118,7 +118,6 @@ public class Tag extends SubsystemBase {
         ids = new double[Tables.length];
         RobotsToTagsRR = new Translation2d[Tables.length];
        
-        // Reset camId to -1
         camId = 0;
        
         // Process data from each camera
@@ -183,7 +182,7 @@ public class Tag extends SubsystemBase {
      * @return Distance in meters
      */
     public double GetDistFromCamera(int cam) {
-      if (cam == 0 && cam == 3){
+      if (cam == 0 || cam == 3){
         alpha = camToTagPitch + CAM_PITHC[cam];
         dist = (Math.abs(height - CAM_HIGHT[cam])) * (Math.tan(Math.toRadians(alpha)));
         dist = dist/Math.cos(Math.toRadians(camToTagYaw));
@@ -226,10 +225,10 @@ public class Tag extends SubsystemBase {
     public Translation2d getOriginToRobot(int cam, Rotation2d Angle) {
 
 
-      origintoTag = O_TO_TAG[(int)this.id];
+      origintoTag = O_TO_TAG[(int)this.id == -1 ? 0 : (int)this.id];
 
 
-      height = TAG_HIGHT[(int)this.id];
+      height = TAG_HIGHT[(int)this.id == -1 ? 0 : (int)this.id];
       if(origintoTag != null) {
         // Get vector from robot to tag
         robotToTagRR = getRobotToTagRR(cam);

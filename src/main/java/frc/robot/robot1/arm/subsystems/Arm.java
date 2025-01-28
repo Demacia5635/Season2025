@@ -248,18 +248,18 @@ public class Arm extends SubsystemBase {
       return;
     }
 
-    if (lastArmAngleTarget != targetAngle) {
-      hasArmAngleReachedTarget = false;
-      lastArmAngleTarget = targetAngle;
-    }
+    // if (lastArmAngleTarget != targetAngle) {
+    //   hasArmAngleReachedTarget = false;
+    //   lastArmAngleTarget = targetAngle;
+    // }
 
-    if (targetAngle > getArmAngle()) {
-      targetAngle += MaxErrors.ARM_ANGLE_DOWN_ERROR;
-    }
+    // if (targetAngle > getArmAngle()) {
+    //   targetAngle += MaxErrors.ARM_ANGLE_DOWN_ERROR;
+    // }
 
-    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
-      hasArmAngleReachedTarget = true;
-    }
+    // if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+    //   hasArmAngleReachedTarget = true;
+    // }
 
     if (targetAngle > getArmAngle()) {
       targetAngle += MaxErrors.ARM_ANGLE_DOWN_ERROR;
@@ -272,25 +272,27 @@ public class Arm extends SubsystemBase {
       targetAngle = ArmAngleMotorConstants.FWD_LIMIT;
     }
 
-    if (hasArmAngleReachedTarget) {
-      if (getArmAngle() > targetAngle) {
-        if (getArmAngle() - targetAngle > MaxErrors.ARM_ANGLE_UP_ERROR) {
-          armAngleMotor.setPositionVoltage(targetAngle);
-          hasArmAngleReachedTarget = false;
-        } else {
-          armAngleMotor.stopMotor();
-        }
-      } else {
-        if (targetAngle - getArmAngle() > MaxErrors.ARM_ANGLE_DOWN_ERROR) {
-          armAngleMotor.setPosition(targetAngle);
-          hasArmAngleReachedTarget = false;
-        } else {
-          armAngleMotor.stopMotor();
-        }
-      }
-    } else {
-      armAngleMotor.setPositionVoltage(targetAngle);
-    }
+    // if (hasArmAngleReachedTarget) {
+    //   if (getArmAngle() > targetAngle) {
+    //     if (getArmAngle() - targetAngle > MaxErrors.ARM_ANGLE_UP_ERROR) {
+    //       armAngleMotor.setPositionVoltage(targetAngle);
+    //       hasArmAngleReachedTarget = false;
+    //     } else {
+    //       armAngleMotor.stopMotor();
+    //     }
+    //   } else {
+    //     if (targetAngle - getArmAngle() > MaxErrors.ARM_ANGLE_DOWN_ERROR) {
+    //       armAngleMotor.setPosition(targetAngle);
+    //       hasArmAngleReachedTarget = false;
+    //     } else {
+    //       armAngleMotor.stopMotor();
+    //     }
+    //   }
+    // } else {
+    //   armAngleMotor.setPositionVoltage(targetAngle);
+    // }
+
+    armAngleMotor.setPositionVoltage(targetAngle);
   }
 
   /**
@@ -315,14 +317,14 @@ public class Arm extends SubsystemBase {
       return;
     }
 
-    if (lastGripperAngleTarget != targetAngle) {
-      hasGripperAngleReachedTarget = false;
-      lastGripperAngleTarget = targetAngle;
-    }
+    // if (lastGripperAngleTarget != targetAngle) {
+    //   hasGripperAngleReachedTarget = false;
+    //   lastGripperAngleTarget = targetAngle;
+    // }
 
-    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
-      hasGripperAngleReachedTarget = true;
-    }
+    // if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+    //   hasGripperAngleReachedTarget = true;
+    // }
 
     if (armAngleMotor.getCurrentClosedLoopSP() <= GripperAngleStarting.WHEN_MOVING_GRIPPER) {
       targetAngle = GripperAngleStarting.ANGLE_TO_GRIPPER;
@@ -335,25 +337,27 @@ public class Arm extends SubsystemBase {
       targetAngle = GripperAngleMotorConstants.FWD_LIMIT;
     }
 
-    if (hasGripperAngleReachedTarget) {
-      if (getGripperAngle() > targetAngle) {
-        if (getGripperAngle() - targetAngle > MaxErrors.GRIPPER_ANGLE_UP_ERROR) {
-          gripperAngleMotor.setPositionVoltage(targetAngle);
-          hasGripperAngleReachedTarget = false;
-        } else {
-          gripperAngleMotor.stopMotor();
-        }
-      } else {
-        if (targetAngle - getGripperAngle() > MaxErrors.GRIPPER_ANGLE_DOWN_ERROR) {
-          gripperAngleMotor.setPosition(targetAngle);
-          hasGripperAngleReachedTarget = false;
-        } else {
-          gripperAngleMotor.stopMotor();
-        }
-      }
-    } else {
-      gripperAngleMotor.setPositionVoltage(targetAngle);
-    }
+    // if (hasGripperAngleReachedTarget) {
+    //   if (getGripperAngle() > targetAngle) {
+    //     if (getGripperAngle() - targetAngle > MaxErrors.GRIPPER_ANGLE_UP_ERROR) {
+    //       gripperAngleMotor.setPositionVoltage(targetAngle);
+    //       hasGripperAngleReachedTarget = false;
+    //     } else {
+    //       gripperAngleMotor.stopMotor();
+    //     }
+    //   } else {
+    //     if (targetAngle - getGripperAngle() > MaxErrors.GRIPPER_ANGLE_DOWN_ERROR) {
+    //       gripperAngleMotor.setPosition(targetAngle);
+    //       hasGripperAngleReachedTarget = false;
+    //     } else {
+    //       gripperAngleMotor.stopMotor();
+    //     }
+    //   }
+    // } else {
+    //   gripperAngleMotor.setPositionVoltage(targetAngle);
+    // }
+
+    gripperAngleMotor.setPositionVoltage(targetAngle);
   }
 
   /**
