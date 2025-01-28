@@ -89,7 +89,7 @@ public class RobotContainer implements Sendable{
     chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();
-    robot1Strip = new Robot1Strip(controller);
+    robot1Strip = new Robot1Strip(arm, gripper);
   }
 
   /**
