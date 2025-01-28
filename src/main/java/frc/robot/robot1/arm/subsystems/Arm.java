@@ -15,7 +15,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
-import pabeles.concurrency.IntOperatorTask.Max;
 
 import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
@@ -70,6 +69,12 @@ public class Arm extends SubsystemBase {
    */
   public ARM_ANGLE_STATES state;
 
+  private boolean hasArmAngleReachedTarget;
+  private double lastArmAngleTarget;
+
+  private boolean hasGripperAngleReachedTarget;
+  private double lastGripperAngleTarget;
+
   /**
    * creates a new Arm, should only be one
    * <br>
@@ -94,6 +99,12 @@ public class Arm extends SubsystemBase {
 
     /* make the default state to idle */
     state = ARM_ANGLE_STATES.IDLE;
+
+    hasArmAngleReachedTarget = false;
+    lastArmAngleTarget = Double.MAX_VALUE;
+
+    hasGripperAngleReachedTarget = false;
+    lastGripperAngleTarget = Double.MAX_VALUE;
 
     /* add to network tables everything that needed */
     addNT();
@@ -232,6 +243,27 @@ public class Arm extends SubsystemBase {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
     }
+    if (Double.isNaN(targetAngle)) {
+      LogManager.log("arm target Angle is NaN", AlertType.kError);
+      return;
+    }
+
+    if (lastArmAngleTarget != targetAngle) {
+      hasArmAngleReachedTarget = false;
+      lastArmAngleTarget = targetAngle;
+    }
+
+    if (targetAngle > getArmAngle()) {
+      targetAngle += MaxErrors.ARM_ANGLE_DOWN_ERROR;
+    }
+
+    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+      hasArmAngleReachedTarget = true;
+    }
+
+    if (targetAngle > getArmAngle()) {
+      targetAngle += MaxErrors.ARM_ANGLE_DOWN_ERROR;
+    }
 
     if (targetAngle < ArmAngleMotorConstants.BACK_LIMIT) {
       targetAngle = ArmAngleMotorConstants.BACK_LIMIT;
@@ -240,12 +272,25 @@ public class Arm extends SubsystemBase {
       targetAngle = ArmAngleMotorConstants.FWD_LIMIT;
     }
 
-    if (Math.abs(targetAngle - getArmAngle()) >= MaxErrors.ARM_ANGLE_ERROR) {
-      armAngleMotor.setPositionVoltage(targetAngle);
+    if (hasArmAngleReachedTarget) {
+      if (getArmAngle() > targetAngle) {
+        if (getArmAngle() - targetAngle > MaxErrors.ARM_ANGLE_UP_ERROR) {
+          armAngleMotor.setPositionVoltage(targetAngle);
+          hasArmAngleReachedTarget = false;
+        } else {
+          armAngleMotor.stopMotor();
+        }
+      } else {
+        if (targetAngle - getArmAngle() > MaxErrors.ARM_ANGLE_DOWN_ERROR) {
+          armAngleMotor.setPosition(targetAngle);
+          hasArmAngleReachedTarget = false;
+        } else {
+          armAngleMotor.stopMotor();
+        }
+      }
     } else {
-      armAngleMotor.stopMotor();
+      armAngleMotor.setPositionVoltage(targetAngle);
     }
-
   }
 
   /**
@@ -260,29 +305,55 @@ public class Arm extends SubsystemBase {
    * @see if the arm angle is below a specific angle the gripepr will always want
    *      to go to the back limit
    */
-  public void gripperAngleMotorSetPositionVoltage(double angle) {
+  public void gripperAngleMotorSetPositionVoltage(double targetAngle) {
     if (!isCalibrated) {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
     }
-
-    if (angle < GripperAngleMotorConstants.BACK_LIMIT) {
-      angle = GripperAngleMotorConstants.BACK_LIMIT;
+    if (Double.isNaN(targetAngle)) {
+      LogManager.log("gripper target Angle is NaN", AlertType.kError);
+      return;
     }
-    if (angle > GripperAngleMotorConstants.FWD_LIMIT) {
-      angle = GripperAngleMotorConstants.FWD_LIMIT;
+
+    if (lastGripperAngleTarget != targetAngle) {
+      hasGripperAngleReachedTarget = false;
+      lastGripperAngleTarget = targetAngle;
+    }
+
+    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+      hasGripperAngleReachedTarget = true;
     }
 
     if (armAngleMotor.getCurrentClosedLoopSP() <= GripperAngleStarting.WHEN_MOVING_GRIPPER) {
-      angle = GripperAngleStarting.ANGLE_TO_GRIPPER;
+      targetAngle = GripperAngleStarting.ANGLE_TO_GRIPPER;
     }
 
-    if (Math.abs(angle - getGripperAngle()) >= MaxErrors.GRIPPER_ANGLE_ERROR) {
-      gripperAngleMotor.setPositionVoltage(angle);
+    if (targetAngle < GripperAngleMotorConstants.BACK_LIMIT) {
+      targetAngle = GripperAngleMotorConstants.BACK_LIMIT;
+    }
+    if (targetAngle > GripperAngleMotorConstants.FWD_LIMIT) {
+      targetAngle = GripperAngleMotorConstants.FWD_LIMIT;
+    }
+
+    if (hasGripperAngleReachedTarget) {
+      if (getGripperAngle() > targetAngle) {
+        if (getGripperAngle() - targetAngle > MaxErrors.GRIPPER_ANGLE_UP_ERROR) {
+          gripperAngleMotor.setPositionVoltage(targetAngle);
+          hasGripperAngleReachedTarget = false;
+        } else {
+          gripperAngleMotor.stopMotor();
+        }
+      } else {
+        if (targetAngle - getGripperAngle() > MaxErrors.GRIPPER_ANGLE_DOWN_ERROR) {
+          gripperAngleMotor.setPosition(targetAngle);
+          hasGripperAngleReachedTarget = false;
+        } else {
+          gripperAngleMotor.stopMotor();
+        }
+      }
     } else {
-      gripperAngleMotor.stopMotor();
+      gripperAngleMotor.setPositionVoltage(targetAngle);
     }
-
   }
 
   /**
@@ -319,8 +390,7 @@ public class Arm extends SubsystemBase {
    * @return is the motors at the right angles
    */
   public boolean isReady() {
-    return armAngleMotor.getCurrentClosedLoopError() <= MaxErrors.ARM_ANGLE_ERROR
-        && gripperAngleMotor.getCurrentClosedLoopError() <= MaxErrors.GRIPPER_ANGLE_ERROR;
+    return hasArmAngleReachedTarget && hasGripperAngleReachedTarget;
   }
 
   /**

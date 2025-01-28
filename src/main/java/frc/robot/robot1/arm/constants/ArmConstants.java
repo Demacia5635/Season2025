@@ -156,8 +156,10 @@ public class ArmConstants {
 
     /** The max errors of the arm and gripper angles */
     public static class MaxErrors {
-        public static final double ARM_ANGLE_ERROR = 0.05;
-        public static final double GRIPPER_ANGLE_ERROR = 0.05;
+        public static final double ARM_ANGLE_UP_ERROR = 0.017;
+        public static final double ARM_ANGLE_DOWN_ERROR = 0.03;
+        public static final double GRIPPER_ANGLE_UP_ERROR = 0.017;
+        public static final double GRIPPER_ANGLE_DOWN_ERROR = 0.03;
     }
 
     /** all the constants angles */

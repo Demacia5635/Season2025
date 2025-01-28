@@ -30,6 +30,8 @@ import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.FixGrab;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.robot1.gripper.subsystems.Gripper;
+import frc.robot.leds.Robot1Strip;
+import frc.robot.leds.subsystems.LedManager;
 import frc.robot.utils.LogManager;
 
 /**
@@ -41,12 +43,14 @@ import frc.robot.utils.LogManager;
 public class RobotContainer implements Sendable{
 
   public static RobotContainer robotContainer;
+  public static LedManager ledManager;
   public static CommandXboxController controller;
   public static boolean isRed;
 
   public static Chassis chassis;  
   public static Arm arm;
   public static Gripper gripper;
+  public static Robot1Strip robot1Strip;
 
   public static Drive drive;
 
@@ -61,9 +65,11 @@ public class RobotContainer implements Sendable{
   public static Drop drop;
   public static FixGrab fix;
 
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     new LogManager();
+    ledManager = new LedManager();
     controller = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
@@ -83,6 +89,7 @@ public class RobotContainer implements Sendable{
     chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();
+    robot1Strip = new Robot1Strip(controller);
   }
 
   /**
