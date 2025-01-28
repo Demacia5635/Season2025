@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.leds.Robot1Strip;
+import frc.robot.leds.subsystems.LedManager;
 import frc.robot.utils.LogManager;
 
 /**
@@ -23,11 +25,15 @@ import frc.robot.utils.LogManager;
 public class RobotContainer {
 
   LogManager logManager;
+  public static LedManager ledManager;
   CommandXboxController controller;
+
+  public static Robot1Strip robot1Strip;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     logManager = new LogManager();
+    ledManager = new LedManager();
     controller = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
 
@@ -43,6 +49,7 @@ public class RobotContainer {
    * This function is called at the robot container constractor.
    */
   private void configureSubsytems() {
+    robot1Strip = new Robot1Strip(controller);
   }
 
   /**
