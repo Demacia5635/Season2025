@@ -143,6 +143,7 @@ public class RobotContainer implements Sendable{
     controller.povDown().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)));
     
     controller.start().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
+    controller.back().onTrue(new goToPlace(FIELD_POSITION.D, ELEMENT.CORAL_RIGHT, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING))).andThen(drop));
   }
 
   public static boolean isRed() {
