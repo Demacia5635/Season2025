@@ -52,7 +52,7 @@ public class AutoAlign extends Command {
     targetAngle = fieldElements.get(position).getRotation();
     offset = new Translation2d(
       (level == LEVEL.FEEDER) ? FEEDER_DIST : ((level == LEVEL.L2) ? L2DIST : L3DIST),
-      (element == ELEMENT.FEEDER || element == ELEMENT.ALGAE) ? 0 : (element == ELEMENT.CORAL_LEFT) ? -SIDE_DIST : SIDE_DIST
+      (element == ELEMENT.FEEDER || element == ELEMENT.ALGAE) ? 0 : (element == ELEMENT.CORAL_LEFT) ? LEFT_SIDE_DIST : RIGHT_SIDE_DIST
     );
     offset = offset.rotateBy(targetAngle.rotateBy(Rotation2d.fromDegrees(180)));
     target = fieldElements.get(position).getTranslation().plus(offset);
