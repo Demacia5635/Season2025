@@ -193,30 +193,36 @@ public class StationNav {
         int lowest_diff = Math.min(Math.min(diff_closeclose, diff_tanclose),Math.min(diff_closetan, diff_tantan));
 
         int[] gates = new int[2];
-        if(lowest_diff == diff_closeclose){
-            System.out.println("closeclose");
-            gates[0] = closeInit;
-            gates[1] = closeFin;
+        if(lowest_diff == diff_tantan)
+        {
+            System.out.println("tantan");
+            gates[0] = tanInit;
+            gates[1] = tanFin;
+            return gates;
         }
+
         if(lowest_diff == diff_tanclose)
         {  
             System.out.println("tanclose");
             gates[0] = tanInit;
             gates[1] = closeFin;
+            return gates;
         }
         if(lowest_diff == diff_closetan)
         {
             System.out.println("closetan");
             gates[0] = closeInit;
             gates[1] = tanFin;
-        }
-        if(lowest_diff == diff_tantan)
-        {
-            System.out.println("tantan");
-            gates[0] = tanInit;
-            gates[1] = tanFin;
+            return gates;
         }
 
+        if(lowest_diff == diff_closeclose){
+            System.out.println("closeclose");
+            gates[0] = closeInit;
+            gates[1] = closeFin;
+            return gates;
+        }
+        
         return gates;
 
     }

@@ -65,6 +65,8 @@ public class RobotContainer implements Sendable{
 
     this.follow = new PathFollow(StationNav.genLineByDis(new Translation2d(0,0), new Pose2d(6,6, new Rotation2d(0)), 2),2,true,true);
 
+    this.follow.initialize();
+
     PathPoint[] points = this.follow.getPoints();
     double[] radius = this.follow.getRadius();
 
@@ -80,7 +82,7 @@ public class RobotContainer implements Sendable{
       System.out.println(i + " : " + radius[i]);
     }
 
-    
+
 
     configureBindings();
   }
