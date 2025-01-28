@@ -67,6 +67,7 @@ public class PathFollow extends Command {
   PathPoint[] points;
   double finishVel;
 
+  boolean minRadius = false;
   boolean autoRotate = false;
   double autoRotateVel = 2;
   Pose2d[] aprilTagsPositions = new Pose2d[]{new Pose2d()};
@@ -95,6 +96,15 @@ public class PathFollow extends Command {
         0, RobotContainer.isRed());
         this.maxVel = velocity;
   }
+
+  public PathFollow(PathPoint[] points, double velocity,boolean isConstVel,boolean minRadius) {
+    this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,
+        0, RobotContainer.isRed());
+        this.maxVel = velocity;
+        this.minRadius = minRadius;
+        this.isConstVel = isConstVel;
+  }
+
   public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise) {
     this(RobotContainer.robotContainer.chassis, points, maxVel,
         8,
@@ -313,6 +323,14 @@ public class PathFollow extends Command {
     corners = new RoundedPoint[points.length - 2];
     for (int i = 0; i < points.length - 2; i++) {
       corners[i] = new RoundedPoint(points[i], points[i + 1], points[i + 2], points[i].isAprilTag());
+    }
+
+    if(this.isConstVel && this.minRadius)
+    {
+      for(int i = 0; i< corners.length; i++)
+      {
+        corners[i].setMinRadius(this.maxVel);
+      }
     }
     
     System.out.println();
