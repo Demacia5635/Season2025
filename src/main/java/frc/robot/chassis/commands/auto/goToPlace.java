@@ -37,9 +37,8 @@ public class goToPlace extends Command {
     {dummyPoint, AutoUtils.fieldElements.get(position)}, maxVel, fieldElements.get(position).getRotation(),
      false, true, position, new AlignToTag(chassis,  element != ELEMENT.CORAL_LEFT,
      position != FIELD_POSITION.FEEDER_LEFT || position != FIELD_POSITION.FEEDER_RIGHT, false))
-     
-    .andThen(new AutoAlign(chassis, FIELD_POSITION.FEEDER_LEFT,
-      ELEMENT.FEEDER, LEVEL.FEEDER)).schedule();
+    .andThen(new AutoAlign(chassis, position,
+      element, LEVEL.FEEDER)).schedule();
 
   }
 
