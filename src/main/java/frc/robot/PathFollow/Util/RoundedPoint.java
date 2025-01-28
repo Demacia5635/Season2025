@@ -55,6 +55,10 @@ public class RoundedPoint{
 
     }
     
+    public double getRadius()
+    {
+        return this.radius;
+    }
     
     public double getMaxRadius()
     {

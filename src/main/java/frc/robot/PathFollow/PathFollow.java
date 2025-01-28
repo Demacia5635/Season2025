@@ -97,6 +97,23 @@ public class PathFollow extends Command {
         this.maxVel = velocity;
   }
 
+  public PathPoint[] getPoints()
+  {
+    return this.points;
+  }
+
+  public double[] getRadius()
+  {
+    double[] radius = new double[corners.length];
+
+    for(int i = 0; i < corners.length; i++)
+    {
+      radius[i] = corners[i].getRadius();
+    }
+
+    return radius;
+  }
+
   public PathFollow(PathPoint[] points, double velocity,boolean isConstVel,boolean minRadius) {
     this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,
         0, RobotContainer.isRed());
