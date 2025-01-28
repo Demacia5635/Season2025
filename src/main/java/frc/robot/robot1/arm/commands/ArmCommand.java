@@ -98,39 +98,48 @@ public class ArmCommand extends Command {
       case L2_CALC:
         wantedAngle = ArmUtils.calculateAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
             FieldConstants.L2_HEIGHT);
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case L3_CALC:
         wantedAngle = ArmUtils.calculateAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
             FieldConstants.L3_HEIGHT);
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case L2_TOUCHING:
         wantedAngle = ANGLES.L2;
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case L3_TOUCHING:
         wantedAngle = ANGLES.L3;
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case ALGAE_UNDER:
         wantedAngle = ANGLES.ALGAE_UNDER;
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case ALGAE_OVER:
         wantedAngle = ANGLES.ALGAE_OVER;
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case CORAL_STATION:
         wantedAngle = ANGLES.CORAL_STATION;
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case TESTING:
         wantedAngle = new Pair<Double, Double>(testArmAngle, testGripperAngle);
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case STARTING:
         wantedAngle = ANGLES.STARTING;
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
       case IDLE:
@@ -145,7 +154,6 @@ public class ArmCommand extends Command {
         arm.stop();
     }
 
-    arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
   }
 
   /**

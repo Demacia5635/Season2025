@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
+import pabeles.concurrency.IntOperatorTask.Max;
 
 import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
@@ -239,7 +240,12 @@ public class Arm extends SubsystemBase {
       targetAngle = ArmAngleMotorConstants.FWD_LIMIT;
     }
 
-    armAngleMotor.setPositionVoltage(targetAngle);
+    if (Math.abs(targetAngle - getArmAngle()) >= MaxErrors.ARM_ANGLE_ERROR) {
+      armAngleMotor.setPositionVoltage(targetAngle);
+    } else {
+      armAngleMotor.stopMotor();
+    }
+
   }
 
   /**
@@ -271,7 +277,12 @@ public class Arm extends SubsystemBase {
       angle = GripperAngleStarting.ANGLE_TO_GRIPPER;
     }
 
-    gripperAngleMotor.setPositionVoltage(angle);
+    if (Math.abs(angle - getGripperAngle()) >= MaxErrors.GRIPPER_ANGLE_ERROR) {
+      gripperAngleMotor.setPositionVoltage(angle);
+    } else {
+      gripperAngleMotor.stopMotor();
+    }
+
   }
 
   /**
