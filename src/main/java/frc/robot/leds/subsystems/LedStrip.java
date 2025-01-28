@@ -88,7 +88,7 @@ public class LedStrip extends SubsystemBase{
   /**
    * turn the strip off
    */
-  public void turnoff() {
+  public void turnOff() {
     setColor(Color.kBlack);
   }
   
