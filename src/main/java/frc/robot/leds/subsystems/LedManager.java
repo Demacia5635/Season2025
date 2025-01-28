@@ -6,7 +6,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import static frc.robot.leds.constants.LedConstants.*;
+import static frc.robot.leds.LedConstants.*;
 
 import java.util.Arrays;
 
