@@ -18,6 +18,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.PathFollow.PathFollow;
+import frc.robot.PathFollow.Util.PathPoint;
+import frc.robot.PathFollow.Util.StationNav;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.KeepSpinning;
 import frc.robot.chassis.commands.auto.AlignToTag;
@@ -44,6 +47,7 @@ public class RobotContainer implements Sendable{
   double num = 0;
   private System sysid;
   private CommandXboxController controller;
+  PathFollow follow;
 
 
   public RobotContainer() {
@@ -58,6 +62,9 @@ public class RobotContainer implements Sendable{
     chassis.setDefaultCommand(drive);
     SmartDashboard.putData("RC", this);
     controller = new CommandXboxController(0);
+
+    this.follow = new PathFollow(StationNav.genLineByDis(new Translation2d(0,0), new Pose2d(16,16, new Rotation2d(0)), 2),2);
+
     configureBindings();
   }
   public double getNum(){ return num;}
@@ -107,6 +114,6 @@ public class RobotContainer implements Sendable{
   }
 
   public Command getAutonomousCommand() {
-    return new Auto_3Coral();  
+    return this.follow;  
   }
 }
