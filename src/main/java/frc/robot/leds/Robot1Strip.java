@@ -63,14 +63,14 @@ public class Robot1Strip extends LedStrip {
             dropTimer.start();
         }
 
-        if (!grabTimer.hasElapsed(2) && grabTimer.isRunning()) {
+        if (!grabTimer.hasElapsed(2) && grabTimer.get() != 0) {
             setBlink(Color.kRed);
         } else if (grabTimer.hasElapsed(2)){
             grabTimer.stop();
             grabTimer.reset();
         }
 
-        if (!dropTimer.hasElapsed(2) && dropTimer.isRunning()) {
+        if (!dropTimer.hasElapsed(2) && dropTimer.get() != 0) {
             setBlink(Color.kOrange);
         } else if (grabTimer.hasElapsed(2)){
             dropTimer.stop();

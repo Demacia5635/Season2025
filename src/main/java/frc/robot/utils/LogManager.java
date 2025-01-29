@@ -65,9 +65,6 @@ public class LogManager extends SubsystemBase {
       if (getterBoolean != null || (phoenix6Status != null && phoenix6Status.getTypeClass().equals(Boolean.class))) {
         this.booleanEntry = new BooleanLogEntry(log, name);
       } else {
-        if (phoenix6Status != null) {
-          LogManager.log(phoenix6Status.getTypeClass());
-        }
         this.doubleEntry = new DoubleLogEntry(log, name);
       }
       this.phoenix6Status = phoenix6Status;

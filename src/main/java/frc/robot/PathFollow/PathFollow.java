@@ -17,6 +17,7 @@ import frc.robot.utils.LogManager;
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
 import static frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
+import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,7 @@ import frc.robot.PathFollow.Util.Segment;
 import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.chassis.commands.auto.AlignToTag;
 import frc.robot.chassis.commands.auto.AutoUtils;
+import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
 import frc.robot.chassis.subsystems.Chassis;
@@ -216,89 +218,36 @@ public class PathFollow extends Command {
     int leaveId = findIndex(leavePoint);
     boolean ascending = isPathAscending(id, leaveId);
 
-    int nextPointId = ascending ? id + 1 : id - 1;
-    nextPointId = normalis(nextPointId);
-    PathPoint nextPoint = AutoUtils.REEF_POINTS[nextPointId];
+    pointsList.add(new PathPoint(segment.getPoints()[0], segment.getPoints()[0].getAngle()));
+    // int nextPointId = ascending ? id + 1 : id - 1;
+    // nextPointId = normalis(nextPointId);
+    // PathPoint nextPoint = AutoUtils.REEF_POINTS[nextPointId];
 
-    id = (isBumpingReef(new Segment(entryPoint.getTranslation(), nextPoint.getTranslation(), false))) ? id : nextPointId;
+    // id = (isBumpingReef(new Segment(entryPoint.getTranslation(), nextPoint.getTranslation(), false))) ? id : nextPointId;
     while (id != leaveId) {
-      id = normalis(id);
       pointsList.add(AutoUtils.REEF_POINTS[id]);
       id = ascending ? id + 1 : id - 1;
+      id = normalis(id);
     }
 
-    int pervPointId = ascending ? id - 1 : id + 1;
-    pervPointId = normalis(pervPointId);
-    PathPoint pervPoint = AutoUtils.REEF_POINTS[pervPointId];
-    if (!isBumpingReef(new Segment(entryPoint.getTranslation(), pervPoint.getTranslation(), false))){
-      pointsList.remove(pointsList.size() - 1);
-    }
+    // int pervPointId = ascending ? id - 1 : id + 1;
+    // pervPointId = normalis(pervPointId);
+    // PathPoint pervPoint = AutoUtils.REEF_POINTS[pervPointId];
+    // if (!isBumpingReef(new Segment(entryPoint.getTranslation(), pervPoint.getTranslation(), false))){
+    //   pointsList.remove(pointsList.size() - 1);
+    // }
 
-    pointsList.add(new PathPoint(segment.getPoints()[1], new Rotation2d()));
-
+    pointsList.add(new PathPoint(segment.getPoints()[1], fieldElements.get(toGoElement).getRotation()));
+    LogManager.log(fieldElements.get(toGoElement).getRotation());
     PathPoint[] pathPoints = new PathPoint[pointsList.size()];
     for (int i = 0; i < pathPoints.length; i++) {
         pathPoints[i] = pointsList.get(i);
     }
 
-    new PathFollow(pathPoints, points[points.length - 1].getRotation(),
-     3, false, true)
+    new PathFollow(pathPoints, fieldElements.get(toGoElement).getRotation(),
+     maxVel, isConstVel, isPrecise)
      .alongWith(new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)))
-     .andThen(alignToTag).schedule();
-  }
-  
-  private void getPathPoint(Segment segment){
-    ArrayList<PathPoint> pointsList = new ArrayList<>();
-
-    PathPoint entryPoint = getClosetPoint(segment.getPoints()[0]);
-    PathPoint leavePoint = getClosetPoint(segment.getPoints()[1]);
-    
-      boolean isWithIndexs = Math.abs(findIndex(entryPoint) - findIndex(leavePoint))
-       > Math.abs(findIndex(leavePoint) - findIndex(entryPoint));
-       boolean isEntrySmaller = findIndex(leavePoint) > findIndex(entryPoint);
-
-      pointsList.add(entryPoint);
-      if(isWithIndexs){
-        if(isEntrySmaller){
-          for(int j = findIndex(entryPoint); j < findIndex(leavePoint); j++){
-            pointsList.add(AutoUtils.REEF_POINTS[j]);
-          }
-        }
-        else{
-          
-          for(int j = 0; j < Math.abs(findIndex(entryPoint) - findIndex(leavePoint) - 1); j++){
-            int curIndex = findIndex(entryPoint) + j + 1;
-            if(curIndex == 6) curIndex = 0;
-            pointsList.add(AutoUtils.REEF_POINTS[curIndex]);
-          }
-          
-        }
-      }
-      else{
-        if(!isEntrySmaller){
-          
-          for(int j = findIndex(entryPoint) - 1; j > findIndex(leavePoint); j--){
-            if(j == -1) j = 5;
-            pointsList.add(AutoUtils.REEF_POINTS[j]);
-          }
-        }
-        else{
-          for(int j = findIndex(entryPoint); j < findIndex(leavePoint); j--){
-            if(j == -1) j = 5;
-            pointsList.add(AutoUtils.REEF_POINTS[j]);
-          }
-        }
-
-      }
-      pointsList.add(new PathPoint(segment.getPoints()[1], new Rotation2d()));
-      
-    
-    PathPoint[] pathPoints = new PathPoint[pointsList.size()];
-    for(int i = 0; i < pathPoints.length; i++){
-      pathPoints[i] = pointsList.get(i);
-    }
-
-    new PathFollow(pathPoints, points[points.length-1].getRotation(), 3.5, false, true).andThen(alignToTag).schedule();
+     .schedule();
   }
   
   private int findIndex(PathPoint point){
@@ -309,20 +258,6 @@ public class PathFollow extends Command {
     return -1;
   }
 
-  private boolean getIsGoUp(int startId, int endId){
-    int counter = 0;
-    for(int i = 0; i < 5; i++){
-      if(startId != endId){
-        counter++;
-      }
-      else{
-        break;
-      }
-      startId ++;
-      if (startId == 6) startId = 0;
-    }
-    return counter < 3;
-  }
   private PathPoint getClosetPoint(Translation2d startingPos){
     double closetDistance = Integer.MAX_VALUE;
     int index = -1;
@@ -366,8 +301,6 @@ public class PathFollow extends Command {
     for (int i = 0; i < points.length - 2; i++) {
       corners[i] = new RoundedPoint(points[i], points[i + 1], points[i + 2], points[i].isAprilTag());
     }
-    
-    System.out.println();
 
     if (points.length < 3) {
       Segment cur = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
@@ -497,12 +430,13 @@ public class PathFollow extends Command {
   public void end(boolean interrupted) {
     if(finishVel == 0) chassis.setVelocities(new ChassisSpeeds(0,0,0));
     driveTrapezoid.debug = false;
+    LogManager.log("ended");
     // .useAcceleration = true;
   }
 
   @Override
   public boolean isFinished() {
-    return totalLeft <= (isPrecise ? 0.1 : 0.6);
+    return totalLeft <= (isPrecise ? 0.1 : 0.25) || stop;
   }
 
   @Override
