@@ -5,7 +5,6 @@ import frc.robot.utils.LogManager;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
-import com.ctre.phoenix6.swerve.jni.SwerveJNI.ModuleState;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -19,10 +18,8 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CANBuses;
 import frc.robot.RobotContainer;
 import frc.robot.chassis.constants.ChassisConstants;
-import frc.robot.utils.Utils;
 import frc.robot.vision.subsystem.Tag;
 
 public class Chassis extends SubsystemBase {
@@ -31,7 +28,12 @@ public class Chassis extends SubsystemBase {
     private SwerveDriveKinematics kinematics;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
-    public Tag tag;
+    public Tag reefTag;
+    public Tag fiderTag;
+    public Tag bargeTag;
+    public Tag backTag;
+
+
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
@@ -54,14 +56,16 @@ public class Chassis extends SubsystemBase {
         );
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
         field = new Field2d();
-        tag = new Tag(()->getGyroAngle());
+        reefTag = new Tag(()->getGyroAngle(), 0);
+        fiderTag = new Tag(()->getGyroAngle(), 1);
+        bargeTag = new Tag(()->getGyroAngle(), 2);
+        backTag = new Tag(()->getGyroAngle(), 3);
+
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> setGyroAngle(Rotation2d.fromDegrees(0))));
         SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
-        SmartDashboard.putData("goToVision", new InstantCommand(()-> poseEstimator.resetPose(tag.getPose())));
+        SmartDashboard.putData("goToVision", new InstantCommand(()-> poseEstimator.resetPose(getVisionEstematedPose())));
         SmartDashboard.putData("field", field);
 
-        
-        
     }
 
     public void resetPose(Pose2d pose){
@@ -150,8 +154,8 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
 
-        if(tag.getPose()!=null){
-            updateVision(new Pose2d(tag.getPose().getTranslation(), getGyroAngle()));
+        if(getVisionEstematedPose() !=null){
+            updateVision(new Pose2d(getVisionEstematedPose().getTranslation(), getGyroAngle()));
         }
         poseEstimator.update(getGyroAngle(), getModulePositions());
             
@@ -200,5 +204,28 @@ public class Chassis extends SubsystemBase {
         for (SwerveModule i : modules) {
             i.stop();
         }
+    }
+
+    public Pose2d getVisionEstematedPose() {
+        // Array of all tags and their poses/confidences
+        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
+        Pose2d bestPose = null;
+        double highestConfidence = 0.0;
+    
+        // Find the tag with highest confidence
+        for (Tag tag : tags) {
+            Pose2d currentPose = tag.getPose();
+            double currentConfidence = tag.getPoseEstemationConfidence();
+    
+            // Only consider poses with confidence above minimum threshold
+            if (currentPose != null && currentConfidence > 0.1) {  // 10% minimum confidence threshold
+                if (currentConfidence > highestConfidence) {
+                    highestConfidence = currentConfidence;
+                    bestPose = currentPose;
+                }
+            }
+        }
+    
+        return bestPose;  // Will return null if no tags meet confidence threshold
     }
 }
