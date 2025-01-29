@@ -142,8 +142,8 @@ public class RobotContainer implements Sendable{
     controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
     
     controller.start().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
-    controller.back().onTrue((new goToPlace(FIELD_POSITION.F, ELEMENT.CORAL_RIGHT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
-    controller.povDown().onTrue((new goToPlace(FIELD_POSITION.F, ELEMENT.CORAL_LEFT, LEVEL.L3, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
+    controller.back().onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
+    controller.povDown().onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L3, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
 
   }
 

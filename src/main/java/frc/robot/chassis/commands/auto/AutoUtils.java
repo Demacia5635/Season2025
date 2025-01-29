@@ -111,8 +111,8 @@ public class AutoUtils {
     public static double ALGAE_TOP_DIST = 0;
     public static double ALGAE_BOTTOM_DIST = 0;
     public static double FEEDER_DIST = -(0.8);
-    public static double RIGHT_SIDE_DIST = 0.16*2;
-    public static double LEFT_SIDE_DIST = -0.16/2;
+    public static double RIGHT_SIDE_DIST = 0.20;
+    public static double LEFT_SIDE_DIST = -0.20;
 
 
 
