@@ -145,7 +145,7 @@ public class LedManager extends SubsystemBase{
    */
   public void update() {
     for (int i = 0; i < ledColors.length; i++) {
-      buffer.setLED(i, ledColors[i]);
+      buffer.setLED(i, new Color(ledColors[i].green, ledColors[i].red, ledColors[i].blue));
     }
 
     led.setData(buffer);
