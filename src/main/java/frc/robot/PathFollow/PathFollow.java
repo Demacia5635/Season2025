@@ -404,7 +404,7 @@ public class PathFollow extends Command {
 
   public void printSegments() {
     for (Segment s : segments) {
-     System.out.println(s);
+      LogManager.log(s);
     }
   }
 }
