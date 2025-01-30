@@ -233,5 +233,9 @@ public class Tag extends SubsystemBase {
       return 1.0 - ((currentDist - MAX_RELIABLE_DISTANCE) 
              / (MAX_DETECTION_DISTANCE - MAX_RELIABLE_DISTANCE));
   }
+
+  public boolean isSeeTag(int id, double distance){
+    return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagRR().getNorm() <= distance;
+  }
 }
 

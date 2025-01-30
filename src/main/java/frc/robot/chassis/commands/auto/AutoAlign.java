@@ -32,13 +32,13 @@ public class AutoAlign extends Command {
   private Rotation2d targetAngle;
   private Translation2d robotToTarget;
   private Translation2d target;
-  private double maxVel = 0.7;
+  private double maxVel = 1.5;
   private FIELD_POSITION position;
   private ELEMENT element;
   private LEVEL level;
   private Translation2d offset;
   private Timer timer = new Timer();
-  double kP = 3;
+  double kP = 2.5;
   
 
   public AutoAlign(Chassis chassis, Arm arm, Gripper gripper, FIELD_POSITION position, ELEMENT element, LEVEL level) {

@@ -5,6 +5,7 @@ import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
@@ -48,7 +49,7 @@ public class goToPlace extends Command {
      false, true, position, new AlignToTag(chassis,  element != ELEMENT.CORAL_LEFT,
      position != FIELD_POSITION.FEEDER_LEFT || position != FIELD_POSITION.FEEDER_RIGHT, false)).alongWith(new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)))
     .andThen(new AutoAlign(chassis, arm, gripper, position,
-      element, level));
+      element, level).alongWith(new InstantCommand(()-> {if (position == FIELD_POSITION.FEEDER_LEFT) chassis.setRobotRelVelocities(new ChassisSpeeds(1, 0, 0));}, chassis)));
     cmd.schedule();
 
   }

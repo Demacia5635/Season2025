@@ -73,7 +73,7 @@ public class PathFollow extends Command {
   double reefRadius = 3;
   FIELD_POSITION toGoElement;
   AlignToTag alignToTag;
-  double minVel = 0.5;
+  double minVel = 0.2;
 
   public PathFollow(PathPoint[] points, double velocity) {
     this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,

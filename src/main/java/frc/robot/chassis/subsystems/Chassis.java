@@ -5,9 +5,12 @@ import frc.robot.utils.LogManager;
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
+
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -32,8 +35,6 @@ public class Chassis extends SubsystemBase {
     public Tag fiderTag;
     public Tag bargeTag;
     public Tag backTag;
-
-
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
@@ -61,7 +62,7 @@ public class Chassis extends SubsystemBase {
         bargeTag = new Tag(()->getGyroAngle(), 2);
         backTag = new Tag(()->getGyroAngle(), 3);
 
-        SmartDashboard.putData("reset gyro", new InstantCommand(()-> setGyroAngle(Rotation2d.fromDegrees(0))));
+        SmartDashboard.putData("reset gyro", new InstantCommand(()-> setYaw(Rotation2d.fromDegrees(0))));
         SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("goToVision", new InstantCommand(()-> poseEstimator.resetPose(getVisionEstematedPose())));
         SmartDashboard.putData("field", field);
@@ -183,20 +184,38 @@ public class Chassis extends SubsystemBase {
     }
     return res;
   }
+  public void setYaw(Rotation2d angle) {
+    if (angle != null){
+        gyro.setYaw(angle.getDegrees());
+    }
+  }
 
+
+
+  PIDController rotationPid = new PIDController(2, 0.2, 0);
   public void setVelocitiesRotateToAngle(ChassisSpeeds speeds, Rotation2d angle) {
     double angleError = angle.minus(getGyroAngle()).getRadians();
-    double angleErrorabs = Math.abs(angleError);
-    if (angleErrorabs>Math.toRadians(1)){
-        speeds.omegaRadiansPerSecond = angleError * 3;
+    if (Math.abs(angleError)>Math.toRadians(1)){
+        speeds.omegaRadiansPerSecond = rotationPid.calculate(getPose().getRotation().getRadians(), angle.getRadians());
     }
     setVelocities(speeds);
   }
 
-  public void setGyroAngle(Rotation2d angle) {
-    if (angle != null){
-        gyro.setYaw(angle.getDegrees());
+
+  PIDController drivePid = new PIDController(1.3, 0.08, 0);
+  public void goTo(Pose2d pose, double maxVel, double threshold){
+    Translation2d diffVector = pose.getTranslation().minus(getPose().getTranslation());
+    
+    double distance = diffVector.getNorm();
+    if(distance <= threshold) stop();
+    else{
+        setVelocitiesRotateToAngle(
+        new ChassisSpeeds(Math.min(maxVel, drivePid.calculate(-diffVector.getX(), 0)),
+        Math.min(maxVel, drivePid.calculate(-diffVector.getY(), 0)), 0),
+        pose.getRotation());
     }
+    
+
   }
 
 
@@ -208,7 +227,7 @@ public class Chassis extends SubsystemBase {
 
     public Pose2d getVisionEstematedPose() {
         // Array of all tags and their poses/confidences
-        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
+        Tag[] tags = {reefTag, fiderTag, bargeTag};
         Pose2d bestPose = null;
         double highestConfidence = 0.0;
     
@@ -227,5 +246,11 @@ public class Chassis extends SubsystemBase {
         }
     
         return bestPose;  // Will return null if no tags meet confidence threshold
+    }
+
+    public boolean isSeeTag(int id, int cameraId, double distance){
+        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
+        
+        return tags[cameraId].isSeeTag(id, distance);
     }
 }

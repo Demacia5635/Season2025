@@ -23,7 +23,7 @@ public class GripperConstants {
     /** All the sensor constants */
     public static class SensorConstants {
         public static final int SENSOR_CHANNEL = 0;
-        public static final double CORAL_IN_SENSOR = 3.9;
+        public static final double CORAL_IN_SENSOR = 3.3;
     }
 
     /** All the constants for the grab command */
