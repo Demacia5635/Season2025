@@ -10,7 +10,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
-import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.RobotContainer;
 
@@ -37,9 +36,7 @@ public class Utils {
       return new Translation2d(deadband(controller.getRightX(), 0.13), deadband(controller.getRightY(), 0.13));
     }
 
-    public static Translation2d getStickVectorPs5(PS5Controller controller){
-      return new Translation2d(deadband(controller.getRightX(), 0.13), deadband(controller.getRightY(), 0.07));
-    }
+  
     
   public static double deadband(double x, double threshold) {
     return Math.abs(x) < threshold ? 0 :x;
