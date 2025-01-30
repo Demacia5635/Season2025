@@ -9,9 +9,17 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
+import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
+import frc.robot.chassis.commands.auto.AutoUtils.LEVEL;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.gripper.commands.Drop;
+import frc.robot.robot1.gripper.commands.Grab;
+import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.utils.LogManager;
 
 import static frc.robot.chassis.commands.auto.AutoUtils.*;
@@ -19,6 +27,8 @@ import static frc.robot.chassis.commands.auto.AutoUtils.*;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoAlign extends Command {
   private Chassis chassis;
+  private Arm arm;
+  private Gripper gripper;
   private Rotation2d targetAngle;
   private Translation2d robotToTarget;
   private Translation2d target;
@@ -31,8 +41,10 @@ public class AutoAlign extends Command {
   double kP = 3;
   
 
-  public AutoAlign(Chassis chassis, FIELD_POSITION position, ELEMENT element, LEVEL level) {
+  public AutoAlign(Chassis chassis, Arm arm, Gripper gripper, FIELD_POSITION position, ELEMENT element, LEVEL level) {
     this.chassis = chassis;
+    this.arm = arm;
+    this.gripper = gripper;
     this.position = position;
     this.element = element;
     this.level = level;
@@ -41,6 +53,21 @@ public class AutoAlign extends Command {
   @Override
   public void initialize() {
     timer.start();
+    if(level == LEVEL.FEEDER){
+      new Grab(gripper).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)));
+    }
+    else if(level == LEVEL.L2){
+      new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING));
+    }
+    else if(level == LEVEL.L3){
+      new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING));
+    }
+    else if(level == LEVEL.ALGAE_BOTTOM){
+      new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.ALGAE_OVER));
+    }
+    else if(level == LEVEL.ALGAE_TOP){
+      new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.ALGAE_UNDER));
+    }
   }
 
   @Override
@@ -72,6 +99,9 @@ public class AutoAlign extends Command {
   @Override
   public void end(boolean interrupted) {
     chassis.setVelocities(new ChassisSpeeds(0, 0, 0));
+    if(level == LEVEL.L2 || level == LEVEL.L3){
+      new Drop(gripper);
+    }
   }
 
   @Override

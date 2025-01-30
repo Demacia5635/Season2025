@@ -136,17 +136,17 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     controller.x().onTrue(armCalibration);
     // .alongWith(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5), new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))
-    controller.a().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 2).alongWith(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
+    controller.a().onTrue(new goToPlace(arm, gripper, FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 2).alongWith(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
     controller.b().onTrue(drop);
     controller.leftBumper().onTrue(getDisableInitCommand());
-    controller.povLeft().onTrue(new goToPlace(FIELD_POSITION.B, ELEMENT.CORAL_LEFT, LEVEL.L2, 3.5));
-    controller.povRight().onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 3.5));
+    controller.povLeft().onTrue(new goToPlace(arm, gripper, FIELD_POSITION.B, ELEMENT.CORAL_LEFT, LEVEL.L2, 3.5));
+    controller.povRight().onTrue(new goToPlace(arm, gripper, FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 3.5));
     controller.y().onTrue(new AlignToTag(chassis, false, true, false));
     controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
     
     controller.start().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
-    controller.back().onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
-    controller.povDown().onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L3, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
+    controller.back().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
+    controller.povDown().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L3, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
 
     Trigger circle = new Trigger(driverController::getCircleButtonPressed);
     Trigger square = new Trigger(driverController::getSquareButtonPressed);
@@ -167,9 +167,9 @@ public class RobotContainer implements Sendable{
     
     cross.onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
     
-    triangle.onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 2).alongWith(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
-    povDown.onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
-    povUp.onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L3, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
+    triangle.onTrue(new goToPlace(arm, gripper, FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 2).alongWith(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
+    povDown.onTrue((new goToPlace(arm, gripper, FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
+    povUp.onTrue((new goToPlace(arm, gripper, FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L3, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
 
   }
   

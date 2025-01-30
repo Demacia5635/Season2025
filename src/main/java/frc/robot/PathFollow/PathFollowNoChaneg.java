@@ -1,5 +1,6 @@
 package frc.robot.PathFollow;
 
+import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -9,14 +10,20 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.utils.LogManager;
+
+
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
 import static frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
 import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import org.opencv.objdetect.BarcodeDetector;
 
 import frc.robot.RobotContainer;
 import frc.robot.PathFollow.Util.Leg;
@@ -25,11 +32,14 @@ import frc.robot.PathFollow.Util.Segment;
 import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.chassis.commands.auto.AlignToTag;
 import frc.robot.chassis.commands.auto.AutoUtils;
+import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
+import frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.utils.TrapezoidNoam;
 
-public class PathFollow extends Command {
+public class PathFollowNoChaneg extends Command {
   Timer timer = new Timer();
   double maxVel;
 
@@ -72,16 +82,27 @@ public class PathFollow extends Command {
   boolean isPrecise = false;
   double reefRadius = 3;
   FIELD_POSITION toGoElement;
+  boolean stop = false;
   AlignToTag alignToTag;
+  boolean isFirstTry;
   double minVel = 0.5;
+  
+  /**
+   * Creates a new path follower using the given points.
+   * 
+   * @param chassis
+   * @param points   from blue alliance
+   * @param maxVel   the max velocity in m/s
+   * @param maxAccel the max accel in m/s2 (squared)
+   * 
+   */
 
-  public PathFollow(PathPoint[] points, double velocity) {
+  public PathFollowNoChaneg(PathPoint[] points, double velocity) {
     this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,
         0, RobotContainer.isRed());
-    this.maxVel = velocity;
+        this.maxVel = velocity;
   }
-
-  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise) {
+  public PathFollowNoChaneg(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise) {
     this(RobotContainer.robotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
@@ -89,9 +110,11 @@ public class PathFollow extends Command {
     this.maxVel = maxVel;
     this.isConstVel = isConstVel;
     this.isPrecise = isPrecise;
+    this.stop = false;
+  
   }
 
-  public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag) {
+  public PathFollowNoChaneg(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag) {
     this(RobotContainer.robotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
@@ -100,28 +123,37 @@ public class PathFollow extends Command {
     this.isConstVel = isConstVel;
     this.isPrecise = isPrecise;
     this.toGoElement = toGoElement;
+  
     this.alignToTag = alignToTag;
   }
 
-  public PathFollow(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel) {
+  public PathFollowNoChaneg(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel) {
     this.points = points;
     this.finishVel = finishVel;
+
     this.chassis = chassis;
+
+    // gets the wanted angle for the robot to finish the path in
+
+    // creates new coreners array of the "arc points" in the path
     addRequirements(chassis);
-    
+
+    // creates trapezoid object for drive and rotation
     driveTrapezoid = new TrapezoidNoam(maxVel, maxAcc);
     rotationTrapezoid = new TrapezoidNoam(180, 360);
-    
+
+    // calculate the total length of the path
     segments = new ArrayList<Segment>();
+
   }
 
-  public PathFollow(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel,
+  public PathFollowNoChaneg(Chassis chassis, PathPoint[] points, double maxVel, double maxAcc, double finishVel,
       boolean rotateToSpeaker) {
     this(chassis, points, maxVel, maxAcc, finishVel);
     this.rotateToSpeaker = rotateToSpeaker;
   }
 
-  private boolean isIntersecting(Segment segment, double segmentWidth, Segment segmentBase) {
+  private boolean isIntersecting (Segment segment, double segmentWidth, Segment segmentBase){
     double x0 = segment.getPoints()[0].getX();
     double y0 = segment.getPoints()[0].getY();
     double x1 = segment.getPoints()[1].getX();
@@ -134,32 +166,32 @@ public class PathFollow extends Command {
     double m1 = (y0 - y1) / (x0 - x1);
     double m2 = (y2 - y3) / (x2 - x3);
 
-    if (m1 == m2) {
+    if (m1 == m2){
       return false;
     }
 
-    double x = (m2 * x2 - m1 * x1 + y1 - y2) / (m2 - m1);
-    double y = m2 * x - m2 * x2 + y2;
+    double x = (m2*x2 - m1*x1 + y1 - y2) / (m2 - m1);
+    double y = m2*x - m2*x2 + y2;
 
     boolean withinSegment1 = (x >= Math.min(x0, x1) && x <= Math.max(x0, x1)) &&
-        (y >= Math.min(y0, y1) && y <= Math.max(y0, y1));
+                             (y >= Math.min(y0, y1) && y <= Math.max(y0, y1));
 
     boolean withinSegment2 = (x >= Math.min(x2, x3) && x <= Math.max(x2, x3)) &&
-        (y >= Math.min(y2, y3) && y <= Math.max(y2, y3));
+                             (y >= Math.min(y2, y3) && y <= Math.max(y2, y3));
 
     return withinSegment1 && withinSegment2;
   }
 
-  private boolean isBumpingReef(Segment segment) {
-    for (int i = 0; i < REEF_SEGMENTS.length; i++) {
-      if (isIntersecting(segment, Math.sqrt(2) / 2, REEF_SEGMENTS[i])) {
+  private boolean isBumpingReef(Segment segment){
+    for (int i = 0; i < REEF_SEGMENTS.length; i++){
+      if(isIntersecting(segment, Math.sqrt(2)/2 ,REEF_SEGMENTS[i])){
         return true;
       }
     }
     return false;
   }
 
-  private boolean isPathAscending(int startid, int endId) {
+  private boolean isPathAscending(int startid, int endId){
     int counter = 0;
     int id = startid;
     while (id != endId) {
@@ -170,11 +202,9 @@ public class PathFollow extends Command {
     return counter < 3;
   }
 
-  private int normalis(int id) {
-    if (id == -1)
-      id = 5;
-    if (id == 6)
-      id = 0;
+  private int normalis(int id){
+    if (id == -1) id = 5;
+    if (id == 6) id = 0;
     return id;
   }
 
@@ -189,66 +219,50 @@ public class PathFollow extends Command {
     boolean ascending = isPathAscending(id, leaveId);
 
     pointsList.add(new PathPoint(segment.getPoints()[0], segment.getPoints()[0].getAngle()));
+    // int nextPointId = ascending ? id + 1 : id - 1;
+    // nextPointId = normalis(nextPointId);
+    // PathPoint nextPoint = AutoUtils.REEF_POINTS[nextPointId];
 
+    // id = (isBumpingReef(new Segment(entryPoint.getTranslation(), nextPoint.getTranslation(), false))) ? id : nextPointId;
     while (id != leaveId) {
       pointsList.add(AutoUtils.REEF_POINTS[id]);
       id = ascending ? id + 1 : id - 1;
       id = normalis(id);
     }
 
+    // int pervPointId = ascending ? id - 1 : id + 1;
+    // pervPointId = normalis(pervPointId);
+    // PathPoint pervPoint = AutoUtils.REEF_POINTS[pervPointId];
+    // if (!isBumpingReef(new Segment(entryPoint.getTranslation(), pervPoint.getTranslation(), false))){
+    //   pointsList.remove(pointsList.size() - 1);
+    // }
+
     pointsList.add(new PathPoint(segment.getPoints()[1], fieldElements.get(toGoElement).getRotation()));
-
-    // Update current path instead of creating new PathFollow
-    this.points = pointsList.toArray(new PathPoint[0]);
-    
-    // Reset segments
-    segments.clear();
-    
-    // Reinitialize path with new points
-    if (points.length < 3) {
-      Segment cur = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
-      segments.add(cur);
-    } else {
-      corners = new RoundedPoint[points.length - 2];
-      for (int i = 0; i < points.length - 2; i++) {
-        corners[i] = new RoundedPoint(points[i], points[i + 1], points[i + 2], points[i].isAprilTag());
-      }
-
-      segments.add(0, corners[0].getAtoCurveLeg());
-
-      for (int i = 0; i < corners.length - 1; i += 1) {
-        segments.add(corners[i].getArc());
-        segments.add(new Leg(corners[i].getCurveEnd(), corners[i + 1].getCurveStart(),
-            points[i].isAprilTag()));
-      }
-
-      segments.add(corners[corners.length - 1].getArc());
-      segments.add(corners[corners.length - 1].getCtoCurveLeg());
+    LogManager.log(fieldElements.get(toGoElement).getRotation());
+    PathPoint[] pathPoints = new PathPoint[pointsList.size()];
+    for (int i = 0; i < pathPoints.length; i++) {
+        pathPoints[i] = pointsList.get(i);
     }
 
-    // Recalculate path length
-    double segmentSum = 0;
-    for (Segment s : segments) {
-      segmentSum += s.getLength();
-    }
-    pathLength = segmentSum;
-    totalLeft = pathLength;
-    segmentIndex = 0;
+    new PathFollowNoChaneg(pathPoints, fieldElements.get(toGoElement).getRotation(),
+     maxVel, isConstVel, isPrecise)
+     .alongWith(new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)))
+     .schedule();
   }
-
-  private int findIndex(PathPoint point) {
-    for (int i = 0; i < AutoUtils.REEF_POINTS.length; i++) {
-      if (point == AutoUtils.REEF_POINTS[i])
-        return i;
+  
+  private int findIndex(PathPoint point){
+    
+    for(int i = 0; i < AutoUtils.REEF_POINTS.length; i++){
+      if(point == AutoUtils.REEF_POINTS[i]) return i;
     }
     return -1;
   }
 
-  private PathPoint getClosetPoint(Translation2d startingPos) {
+  private PathPoint getClosetPoint(Translation2d startingPos){
     double closetDistance = Integer.MAX_VALUE;
     int index = -1;
-    for (int i = 0; i < AutoUtils.REEF_POINTS.length; i++) {
-      if (AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance) {
+    for(int i = 0; i < AutoUtils.REEF_POINTS.length; i++){
+      if(AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance){
         index = i;
         closetDistance = AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos);
       }
@@ -256,13 +270,25 @@ public class PathFollow extends Command {
     return AutoUtils.REEF_POINTS[index];
   }
 
+  /*
+   * public String currentSegmentInfo() {
+   * 
+   * if (segments == null)
+   * return "";
+   * return segments[segmentIndex].toString();
+   * }
+   */
+
   @Override
   public void initialize() {
-    isRed = false;
+    isRed = false;//RobotContainer.isRed();
+    // sets first point to chassis pose to prevent bugs with red and blue alliance
     points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(), chassis.getPose().getRotation(),
         points[0].getRadius(), false);
 
+    // case for red alliance (blue is the default)
     if (isRed) {
+
       points[0] = new PathPoint(chassis.getPose().getX(), chassis.getPose().getY(),
           Rotation2d.fromDegrees(180).minus(chassis.getPose().getRotation()), points[0].getRadius(), false);
       for (int i = 1; i < points.length; i++) {
@@ -271,9 +297,47 @@ public class PathFollow extends Command {
             points[i].getRadius(), points[i].isAprilTag());
       }
     }
+    corners = new RoundedPoint[points.length - 2];
+    for (int i = 0; i < points.length - 2; i++) {
+      corners[i] = new RoundedPoint(points[i], points[i + 1], points[i + 2], points[i].isAprilTag());
+    }
 
-    // Initialize path
-    initializePath();
+    if (points.length < 3) {
+      Segment cur = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
+      if(isBumpingReef(cur)){
+        //getPathPoint(cur);
+        evasion(cur);
+        stop = true;
+      }
+      segments.add(cur);
+      
+    }
+    // case for more then 1 segment
+    else {
+      // creates the first leg
+      segments.add(0, corners[0].getAtoCurveLeg());
+
+      // creates arc than leg
+      for (int i = 0; i < corners.length - 1; i += 1) {
+
+        segments.add(corners[i].getArc());
+
+        segments.add(new Leg(corners[i].getCurveEnd(), corners[i + 1].getCurveStart(),
+            points[i].isAprilTag()));
+      }
+      // creates the last arc and leg
+      segments.add(corners[corners.length - 1].getArc());
+      segments.add(corners[corners.length - 1].getCtoCurveLeg());
+    }
+
+    // calculates the length of the entire path
+    double segmentSum = 0;
+    for (Segment s : segments) {
+      segmentSum += s.getLength();
+    }
+    pathLength = segmentSum;
+    totalLeft = pathLength;
+    segmentIndex = 0;
 
     List<State> list = new ArrayList<>();
     for (int i = 0; i < points.length; i++) {
@@ -282,48 +346,45 @@ public class PathFollow extends Command {
       list.add(temp);
     }
 
+    // System.out.println("LIST: " + list);
+
     traj = new Trajectory(list);
     trajField.getObject("TrajTEST").setTrajectory(traj);
 
     vecVel = new Translation2d(0, 0);
   }
 
-  private void initializePath() {
-    corners = new RoundedPoint[points.length - 2];
-    for (int i = 0; i < points.length - 2; i++) {
-      corners[i] = new RoundedPoint(points[i], points[i + 1], points[i + 2], points[i].isAprilTag());
-    }
+  // calculates the position of the closet april tag and returns it's position
+  boolean foundAprilTag = false;
 
-    if (points.length < 3) {
-      Segment cur = new Leg(points[0].getTranslation(), points[1].getTranslation(), points[1].isAprilTag());
-      if (isBumpingReef(cur)) {
-        evasion(cur);
-        return;
+  public Rotation2d getAngleApriltag() {
+    Translation2d finalVector = new Translation2d(Integer.MAX_VALUE, Integer.MAX_VALUE);
+    // checks the distance from each april tag and finds
+    for (int i = 0; i < aprilTagsPositions.length; i++) {
+
+      Translation2d currentAprilTagVector = chassis.getPose().minus(aprilTagsPositions[i]).getTranslation();
+
+      if (currentAprilTagVector.getNorm() < finalVector.getNorm()) {
+        finalVector = currentAprilTagVector;
       }
-      segments.add(cur);
-    } else {
-      segments.add(0, corners[0].getAtoCurveLeg());
 
-      for (int i = 0; i < corners.length - 1; i += 1) {
-        segments.add(corners[i].getArc());
-        segments.add(new Leg(corners[i].getCurveEnd(), corners[i + 1].getCurveStart(),
-            points[i].isAprilTag()));
-      }
-      segments.add(corners[corners.length - 1].getArc());
-      segments.add(corners[corners.length - 1].getCtoCurveLeg());
     }
+    foundAprilTag = true;
 
-    double segmentSum = 0;
-    for (Segment s : segments) {
-      segmentSum += s.getLength();
-    }
-    pathLength = segmentSum;
-    totalLeft = pathLength;
-    segmentIndex = 0;
+    return finalVector.getAngle();
+  }
+
+  public static double convertAlliance(double x) {
+    return fieldLength - x;
+  }
+
+  public static double fixY(double y) {
+    return fieldHeight - y;
   }
 
   @Override
   public void execute() {
+    if(stop) return;
 
     trajField.setRobotPose(chassis.getPose());
 
@@ -359,7 +420,7 @@ public class PathFollow extends Command {
 
   }
 
-  public PathFollow setAutoRotate(double rate) {
+  public PathFollowNoChaneg setAutoRotate(double rate) {
     autoRotate = true;
     autoRotateVel = rate;
     return this;
@@ -375,7 +436,7 @@ public class PathFollow extends Command {
 
   @Override
   public boolean isFinished() {
-    return totalLeft <= (isPrecise ? 0.1 : 0.25);
+    return totalLeft <= (isPrecise ? 0.1 : 0.25) || stop;
   }
 
   @Override
