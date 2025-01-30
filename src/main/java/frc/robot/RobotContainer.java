@@ -4,20 +4,19 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.PS5Controller;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.chassis.commands.Drive;
+import frc.robot.chassis.commands.DrivePs5;
 import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils.LEVEL;
@@ -47,6 +46,7 @@ public class RobotContainer implements Sendable{
 
   public static RobotContainer robotContainer;
   public static LedManager ledManager;
+  public static PS5Controller driverController;
   public static CommandXboxController controller;
   public static boolean isRed;
 
@@ -56,6 +56,7 @@ public class RobotContainer implements Sendable{
   public static Robot1Strip robot1Strip;
 
   public static Drive drive;
+  public static DrivePs5 drivePs5;
 
   public static ArmCalibration armCalibration;
   public static ArmCommand armCommand;
@@ -73,6 +74,7 @@ public class RobotContainer implements Sendable{
     new LogManager();
     ledManager = new LedManager();
     controller = new CommandXboxController(OperatorConstants.DRIVER_CONTROLLER_PORT);
+    driverController = new PS5Controller(OperatorConstants.DRIVER_CONTROLLER_PORT);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
 
@@ -101,6 +103,7 @@ public class RobotContainer implements Sendable{
    */
   private void configureCommands() {
     drive = new Drive(chassis, controller);
+    drivePs5 = new DrivePs5(chassis, driverController);
 
     armCalibration = new ArmCalibration(arm);
     armCommand = new ArmCommand(arm);
@@ -117,7 +120,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
-    chassis.setDefaultCommand(drive);
+    chassis.setDefaultCommand(drivePs5);
     arm.setDefaultCommand(armCommand);
   }
 
@@ -145,7 +148,31 @@ public class RobotContainer implements Sendable{
     controller.back().onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
     controller.povDown().onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L3, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
 
+    Trigger circle = new Trigger(driverController::getCircleButtonPressed);
+    Trigger square = new Trigger(driverController::getSquareButtonPressed);
+    Trigger triangle = new Trigger(driverController::getTriangleButtonPressed);
+    Trigger cross = new Trigger(driverController::getCrossButtonPressed);
+    Trigger r1 = new Trigger(driverController::getR1ButtonPressed);
+    Trigger r3 = new Trigger(driverController::getR3ButtonPressed);
+    Trigger povUp = new Trigger(()-> driverController.getPOV() == 0);
+    Trigger povRight = new Trigger(()-> driverController.getPOV() == 90);
+    Trigger povDown = new Trigger(()-> driverController.getPOV() == 180);
+    Trigger povLeft = new Trigger(()-> driverController.getPOV() == 270);
+    Trigger l1 = new Trigger(driverController::getL1ButtonPressed);
+    Trigger options = new Trigger(driverController::getOptionsButtonPressed);
+
+    circle.onTrue(armCalibration);
+    r3.onTrue(drop);
+    r1.onTrue(getDisableInitCommand());
+    
+    cross.onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
+    
+    triangle.onTrue(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, LEVEL.FEEDER, 2).alongWith(grab.alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
+    povDown.onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L2, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
+    povUp.onTrue((new goToPlace(FIELD_POSITION.A, ELEMENT.CORAL_LEFT, LEVEL.L3, 2).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
+
   }
+  
 
   public static boolean isRed() {
     return isRed;
