@@ -1,3 +1,4 @@
+
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
@@ -28,8 +29,8 @@ import frc.robot.utils.LogManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoIntake extends SequentialCommandGroup {
-  ParallelCommandGroup goNearIntake;
-  ParallelCommandGroup alignToIntake;
+  Command goNearIntake;
+  Command alignToIntake;
 
   BooleanSupplier isSeeTag;
   Chassis chassis;
@@ -38,16 +39,15 @@ public class AutoIntake extends SequentialCommandGroup {
   
 
   public AutoIntake(Chassis chassis, Arm arm, Gripper gripper, boolean isRight) {
-    LogManager.log(AutoUtils.fieldElements.get(isRight ? AutoUtils.FIELD_POSITION.FEEDER_RIGHT : AutoUtils.FIELD_POSITION.FEEDER_LEFT));
     this.goNearIntake = new RunCommand(
       ()->chassis.goTo(
-      AutoUtils.fieldElements.get(isRight ?  FIELD_POSITION.FEEDER_RIGHT : FIELD_POSITION.FEEDER_LEFT), 4, 0.2), chassis)
+      AutoUtils.fieldElements.get(isRight ?  FIELD_POSITION.FEEDER_RIGHT : FIELD_POSITION.FEEDER_LEFT),  0.1), chassis)
         .alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)));  
 
 
     this.alignToIntake = new RunCommand(()->chassis.goTo(
-      AutoUtils.fieldElementsPractical.get(isRight ?  FIELD_POSITION.FEEDER_RIGHT : FIELD_POSITION.FEEDER_LEFT), 2, 0.05), chassis)
-      .alongWith(new Grab(gripper));    
+      AutoUtils.fieldElementsPractical.get(isRight ?  FIELD_POSITION.FEEDER_RIGHT : FIELD_POSITION.FEEDER_LEFT),  0.05), chassis)
+      .withDeadline(new Grab(gripper));    
     
 
     isSeeTag = ()->chassis.isSeeTag(isRight ? 2 : 1, 1, distanceFromTag);
