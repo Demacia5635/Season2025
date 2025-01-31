@@ -291,4 +291,12 @@ public class CommandController extends CommandGenericHID{
                 return null;
         }
     }
+
+    public Trigger getLeftStickMove() {
+        return new Trigger(()-> getLeftX() != 0 || getLeftY() != 0);
+    }
+
+    public Trigger getRightStickkMove() {
+        return new Trigger(()-> getRightX() != 0 || getRightY() != 0);
+    }
 }
