@@ -1,8 +1,8 @@
 package frc.robot.robot1.arm.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.utils.CommandController;
 
 /**
  * command to control the arm with controller
@@ -13,7 +13,7 @@ import frc.robot.robot1.arm.subsystems.Arm;
 public class ArmDrive extends Command {
 
     /** the controller */
-    private final CommandXboxController controller;
+    private final CommandController controller;
     /** the arm subsystem */
     private final Arm arm;
 
@@ -32,7 +32,7 @@ public class ArmDrive extends Command {
      * @param arm        the wanted arm to drive
      * @param controller the controller to drive with
      */
-    public ArmDrive(Arm arm, CommandXboxController controller) {
+    public ArmDrive(Arm arm, CommandController controller) {
         this.arm = arm;
         this.controller = controller;
 
@@ -61,8 +61,8 @@ public class ArmDrive extends Command {
      */
     @Override
     public void execute() {
-        armAnglePower = Math.abs(controller.getLeftY()) <= 0.2 ? 0 : controller.getLeftY() * -0.5;
-        gripperAnglePower = Math.abs(controller.getRightY()) <= 0.2 ? 0 : controller.getRightY() * -0.3;
+        armAnglePower = controller.getLeftY() * -0.5;
+        gripperAnglePower = controller.getRightY() * -0.3;
 
         arm.setPower(armAnglePower, gripperAnglePower);
     }
