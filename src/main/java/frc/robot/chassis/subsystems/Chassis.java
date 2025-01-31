@@ -88,6 +88,28 @@ public class Chassis extends SubsystemBase {
         setModuleStates(states);
     }
 
+    public void setVelocitiesAccelLim(ChassisSpeeds speeds, double maxDriveAccel, double maxRotAccel) {
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
+        ChassisSpeeds currentSpeeds = getChassisSpeeds();
+
+        double dvx = speeds.vxMetersPerSecond - currentSpeeds.vxMetersPerSecond;
+        double dvy = speeds.vyMetersPerSecond - currentSpeeds.vyMetersPerSecond;
+        double domega = speeds.omegaRadiansPerSecond - currentSpeeds.omegaRadiansPerSecond;
+        
+        dvx = Math.max(Math.min(dvx, maxDriveAccel), -maxDriveAccel);
+        dvy = Math.max(Math.min(dvy, maxDriveAccel), -maxDriveAccel);
+        domega = Math.max(Math.min(domega, maxRotAccel), -maxRotAccel);
+
+        speeds = new ChassisSpeeds(
+            currentSpeeds.vxMetersPerSecond + dvx,
+            currentSpeeds.vyMetersPerSecond + dvy,
+            currentSpeeds.omegaRadiansPerSecond + domega
+        );
+
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        setModuleStates(states);
+    }
+
     public void setSteerPositions(double[] positions) {
         for (int i = 0; i < positions.length; i++) {
             modules[i].setSteerPosition(positions[i]);
