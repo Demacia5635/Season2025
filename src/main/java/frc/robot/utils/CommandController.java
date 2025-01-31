@@ -9,7 +9,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.button.CommandGenericHID;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
-public class Controller extends CommandGenericHID{
+import static frc.robot.utils.constants.UtilsContants.ControllerConstants.*;
+
+public class CommandController extends CommandGenericHID{
 
     public enum ControllerType {
         kXbox,
@@ -18,13 +20,13 @@ public class Controller extends CommandGenericHID{
 
     private final ControllerType controllerType;
 
-    public Controller(int port, ControllerType controllerType) {
+    public CommandController(int port, ControllerType controllerType) {
         super(port);
         this.controllerType = controllerType;
         HAL.report(tResourceType.kResourceType_Controller, port + 1, 0, "Driver Controller");
     }
 
-    public Trigger buttonUp() {
+    public Trigger upButton() {
         switch(controllerType) {
             case kXbox:
                 return button(XboxController.Button.kY.value, CommandScheduler.getInstance().getDefaultButtonLoop());
@@ -35,7 +37,7 @@ public class Controller extends CommandGenericHID{
         }
     }
 
-    public Trigger buttonLeft() {
+    public Trigger leftButton() {
         switch(controllerType) {
             case kXbox:
                 return button(XboxController.Button.kX.value, CommandScheduler.getInstance().getDefaultButtonLoop());
@@ -46,7 +48,7 @@ public class Controller extends CommandGenericHID{
         }
     }
 
-    public Trigger buttonDown() {
+    public Trigger downButton() {
         switch(controllerType) {
             case kXbox:
                 return button(XboxController.Button.kA.value, CommandScheduler.getInstance().getDefaultButtonLoop());
@@ -57,7 +59,7 @@ public class Controller extends CommandGenericHID{
         }
     }
 
-    public Trigger buttonRight() {
+    public Trigger rightButton() {
         switch (controllerType) {
             case kXbox:
                 return button(XboxController.Button.kB.value, CommandScheduler.getInstance().getDefaultButtonLoop());
@@ -138,9 +140,9 @@ public class Controller extends CommandGenericHID{
     public double getLeftX() {
         switch (controllerType) {
             case kXbox:
-                return getRawAxis(XboxController.Axis.kLeftX.value);
+                return Utils.deadband(getRawAxis(XboxController.Axis.kLeftX.value), XBOX_STICK_DEADBAND);
             case kPS5:
-                return getRawAxis(PS5Controller.Axis.kLeftX.value);
+                return Utils.deadband(getRawAxis(PS5Controller.Axis.kLeftX.value), PS5_STICK_DEADBAND);
             default:
                 return 0;
         }
@@ -149,9 +151,9 @@ public class Controller extends CommandGenericHID{
     public double getLeftY() {
         switch (controllerType) {
             case kXbox:
-                return getRawAxis(XboxController.Axis.kLeftY.value);
+                return Utils.deadband(getRawAxis(XboxController.Axis.kLeftY.value), XBOX_STICK_DEADBAND);
             case kPS5:
-                return getRawAxis(PS5Controller.Axis.kLeftY.value);
+                return Utils.deadband(getRawAxis(PS5Controller.Axis.kLeftY.value), PS5_STICK_DEADBAND);
             default:
                 return 0;
         }
@@ -160,9 +162,9 @@ public class Controller extends CommandGenericHID{
     public double getRightX() {
         switch (controllerType) {
             case kXbox:
-                return getRawAxis(XboxController.Axis.kRightX.value);
+                return Utils.deadband(getRawAxis(XboxController.Axis.kRightX.value), XBOX_STICK_DEADBAND);
             case kPS5:
-                return getRawAxis(PS5Controller.Axis.kRightX.value);
+                return Utils.deadband(getRawAxis(PS5Controller.Axis.kRightX.value), PS5_STICK_DEADBAND);
             default:
                 return 0;
         }
@@ -171,9 +173,9 @@ public class Controller extends CommandGenericHID{
     public double getRightY() {
         switch (controllerType) {
             case kXbox:
-                return getRawAxis(XboxController.Axis.kRightY.value);
+                return Utils.deadband(getRawAxis(XboxController.Axis.kRightY.value), XBOX_STICK_DEADBAND);
             case kPS5:
-                return getRawAxis(PS5Controller.Axis.kRightY.value);
+                return Utils.deadband(getRawAxis(PS5Controller.Axis.kRightY.value), PS5_STICK_DEADBAND);
             default:
                 return 0;
         }
@@ -182,9 +184,9 @@ public class Controller extends CommandGenericHID{
     public double getLeftTrigger() {
         switch (controllerType) {
             case kXbox:
-                return getRawAxis(XboxController.Axis.kLeftTrigger.value);
+                return Utils.deadband(getRawAxis(XboxController.Axis.kLeftTrigger.value), XBOX_TRIGGER_DEADBAND);
             case kPS5:
-                return (getRawAxis(PS5Controller.Axis.kL2.value) + 1) / 2;
+                return Utils.deadband((getRawAxis(PS5Controller.Axis.kL2.value) + 1) / 2, PS5_TRIGGER_DEADBAND);
             default:
                 return 0;
         }
@@ -193,9 +195,9 @@ public class Controller extends CommandGenericHID{
     public double getRightTrigger() {
         switch (controllerType) {
             case kXbox:
-                return getRawAxis(XboxController.Axis.kRightTrigger.value);
+                return Utils.deadband(getRawAxis(XboxController.Axis.kRightTrigger.value), XBOX_TRIGGER_DEADBAND);
             case kPS5:
-                return (getRawAxis(PS5Controller.Axis.kR2.value) + 1) / 2;
+                return Utils.deadband((getRawAxis(PS5Controller.Axis.kR2.value) + 1) / 2, PS5_TRIGGER_DEADBAND);
             default:
                 return 0;
         }
