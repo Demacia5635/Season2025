@@ -63,8 +63,8 @@ public class Chassis extends SubsystemBase {
         backTag = new Tag(()->getGyroAngle(), 3);
 
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> setYaw(Rotation2d.fromDegrees(0))));
+        SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(getVisionEstematedAngle())));
         SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
-        SmartDashboard.putData("goToVision", new InstantCommand(()-> poseEstimator.resetPose(getVisionEstematedPose())));
         SmartDashboard.putData("field", field);
 
     }
@@ -225,31 +225,38 @@ public class Chassis extends SubsystemBase {
         }
     }
 
-    public Pose2d getVisionEstematedPose() {
-        // Array of all tags and their poses/confidences
+    public Integer getBestCamera(){
         Tag[] tags = {reefTag, fiderTag, bargeTag};
-        Pose2d bestPose = null;
+        Integer bestCamera = null;
         double highestConfidence = 0.0;
     
-        // Find the tag with highest confidence
-        for (Tag tag : tags) {
-            Pose2d currentPose = tag.getPose();
-            double currentConfidence = tag.getPoseEstemationConfidence();
+        for (int i = 0; i < tags.length; i++) {
+            double currentConfidence = tags[i].getPoseEstemationConfidence();
     
-            // Only consider poses with confidence above minimum threshold
-            if (currentPose != null && currentConfidence > 0.1) {  // 10% minimum confidence threshold
-                if (currentConfidence > highestConfidence) {
-                    highestConfidence = currentConfidence;
-                    bestPose = currentPose;
-                }
+            if (currentConfidence > highestConfidence && currentConfidence > 0.1) {
+                highestConfidence = currentConfidence;
+                bestCamera = i;
             }
         }
     
-        return bestPose;  // Will return null if no tags meet confidence threshold
+        return bestCamera;
+    }
+
+    public Pose2d getVisionEstematedPose() {
+        // Array of all tags and their poses/confidences
+        Tag[] tags = {reefTag, fiderTag, bargeTag};
+        
+        return getBestCamera() != null ? tags[getBestCamera()].getPose() : null;
+    }
+
+    public Rotation2d getVisionEstematedAngle() {
+        Tag[] tags = {reefTag, fiderTag, bargeTag};
+
+        return getBestCamera() != null ? tags[getBestCamera()].getRobotAngle() : null;
     }
 
     public boolean isSeeTag(int id, int cameraId, double distance){
-        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
+        Tag[] tags = {reefTag, fiderTag, bargeTag};
         
         return tags[cameraId].isSeeTag(id, distance);
     }

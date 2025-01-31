@@ -188,23 +188,20 @@ public class Tag extends SubsystemBase {
       public double getTimestamp() {
         return latency;
       }
-      public Rotation2d alignRobot(){
-        if (Table.getEntry("tv").getDouble(0.0) != 0){
-          Table.getEntry("pipeline").setNumber(1);
-          try{
-            Yaw3d = -Table.getEntry("camerapose_targetspace").getDoubleArray(new double[]{0,0,0,0,0,0})[4];
-            //LogManager.log(" " + Yaw3d);
-            Table.getEntry("pipeline").setNumber(0);
-            yaw3dRotation2d = Rotation2d.fromDegrees(Yaw3d).rotateBy(TAG_ANGLE[(int)tagID]).rotateBy(Rotation2d.fromDegrees(180));
-            //LogManager.log(" " + yaw3dRotation2d.getDegrees());
-            return yaw3dRotation2d;
+      public Rotation2d getRobotAngle(){
+        Table.getEntry("pipeline").setNumber(1);
+        try{
+          Yaw3d = Table.getEntry("camerapose_targetspace").getDoubleArray(new double[]{0,0,0,0,0,0})[4];
+          tagID = Table.getEntry("tid").getDouble(0.0);
+          Table.getEntry("pipeline").setNumber(0);
+          yaw3dRotation2d = Rotation2d.fromDegrees(Yaw3d).rotateBy(Rotation2d.fromDegrees(CAM_YAW[cameraId])).rotateBy(TAG_ANGLE[(int)tagID]).rotateBy(Rotation2d.fromDegrees(180));
+          return yaw3dRotation2d;
 
-          }catch(Exception E){
-            alignRobot();
-          }
-
+        }catch(Exception E){
+          getRobotAngle();
         }
-        return null;
+
+      return null;
     }
 
     public double getPoseEstemationConfidence(){
