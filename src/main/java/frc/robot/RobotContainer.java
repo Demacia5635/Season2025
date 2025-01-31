@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
@@ -53,7 +54,7 @@ public class RobotContainer implements Sendable{
   public static RobotContainer robotContainer;
   public static LedManager ledManager;
   public static CommandController controller;
-  public static boolean isRed;
+  public static boolean isRed = true;
 
   public static Chassis chassis;  
   public static Arm arm;
@@ -78,7 +79,7 @@ public class RobotContainer implements Sendable{
     new AutoUtils();
     new LogManager();
     ledManager = new LedManager();
-    controller = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+    controller = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
 
@@ -142,17 +143,16 @@ public class RobotContainer implements Sendable{
     controller.leftButton().onTrue(new ArmCalibration(arm));
     // .alongWith(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5), new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))
     controller.rightButton().onTrue(new Drop(gripper));
-    controller.rightBumper().onTrue(getDisableInitCommand());
-    controller.povLeft().onTrue(new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L2, 3.5));
-    controller.povRight().onTrue(new goToPlace(arm, gripper, FIELD_POSITION.FEEDER_RIGHT, ELEMENT.FEEDER, LEVEL.FEEDER, 3.5));
-    controller.upButton().onTrue(new AlignToTag(chassis, false, true, false));
+    controller.leftBumper().onTrue(getDisableInitCommand());
+
     controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
     controller.rightBumper().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)));
+    controller.rightSetting().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
 
-    controller.leftSettings().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
+    controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
 
-    controller.downButton().onTrue(new goToPlace(arm, gripper, FIELD_POSITION.FEEDER_RIGHT, ELEMENT.FEEDER, LEVEL.FEEDER, 2.8).alongWith(new Grab(gripper).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))));
-    controller.rightSetting().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L2, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
+    controller.downButton().onTrue(new AutoIntake(chassis, arm, gripper, true));
+    controller.leftSettings().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L2, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
     controller.povDown().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L3, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
 
   }

@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
@@ -33,19 +34,19 @@ public class AutoIntake extends SequentialCommandGroup {
   BooleanSupplier isSeeTag;
   Chassis chassis;
   
-  double distanceFromTag = 2.5;
+  double distanceFromTag = 2;
   
 
   public AutoIntake(Chassis chassis, Arm arm, Gripper gripper, boolean isRight) {
     LogManager.log(AutoUtils.fieldElements.get(isRight ? AutoUtils.FIELD_POSITION.FEEDER_RIGHT : AutoUtils.FIELD_POSITION.FEEDER_LEFT));
     this.goNearIntake = new RunCommand(
-      ()->chassis.goTo(AutoUtils.fieldElements.get(
-        isRight ? AutoUtils.FIELD_POSITION.FEEDER_RIGHT : AutoUtils.FIELD_POSITION.FEEDER_LEFT), 2.5, 0.15), chassis)
+      ()->chassis.goTo(
+      AutoUtils.fieldElements.get(isRight ?  FIELD_POSITION.FEEDER_RIGHT : FIELD_POSITION.FEEDER_LEFT), 4, 0.2), chassis)
         .alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)));  
 
 
     this.alignToIntake = new RunCommand(()->chassis.goTo(
-      AutoUtils.fieldElementsPractical.get(isRight ?  FIELD_POSITION.FEEDER_RIGHT : FIELD_POSITION.FEEDER_LEFT), 1, 0.05), chassis)
+      AutoUtils.fieldElementsPractical.get(isRight ?  FIELD_POSITION.FEEDER_RIGHT : FIELD_POSITION.FEEDER_LEFT), 2, 0.05), chassis)
       .alongWith(new Grab(gripper));    
     
 

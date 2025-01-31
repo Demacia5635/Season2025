@@ -44,13 +44,13 @@ public class goToPlace extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    cmd = AutoUtils.goToMultiple(new PathPoint[]
+    /*cmd = AutoUtils.goToMultiple(new PathPoint[]
     {dummyPoint, AutoUtils.fieldElements.get(position)}, maxVel, fieldElements.get(position).getRotation(),
      false, true, position, new AlignToTag(chassis,  element != ELEMENT.CORAL_LEFT,
-     position != FIELD_POSITION.FEEDER_LEFT || position != FIELD_POSITION.FEEDER_RIGHT, false)).alongWith(new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)))
+     position != FIELD_POSITION.FEEDER_LEFT || position != FIELD_POSITION.FEEDER_RIGHT, false)) // .alongWith(new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)))
     .andThen(new AutoAlign(chassis, arm, gripper, position,
       element, level).alongWith(new InstantCommand(()-> {if (position == FIELD_POSITION.FEEDER_LEFT) chassis.setRobotRelVelocities(new ChassisSpeeds(1, 0, 0));}, chassis)));
-    cmd.schedule();
+    cmd.schedule();*/
 
   }
 

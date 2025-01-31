@@ -2,10 +2,13 @@ package frc.robot.chassis.subsystems;
 
 import frc.robot.utils.LogManager;
 
+import org.ejml.simple.SimpleMatrix;
+
 import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,6 +18,9 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -22,6 +28,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.constants.ChassisConstants;
 import frc.robot.vision.subsystem.Tag;
 
@@ -56,6 +63,9 @@ public class Chassis extends SubsystemBase {
 
         );
         poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
+        
+        //SimpleMatrix std = new SimpleMatrix(new double[]{0.00, 0.00, 0});
+        //poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
         field = new Field2d();
         reefTag = new Tag(()->getGyroAngle(), 0);
         fiderTag = new Tag(()->getGyroAngle(), 1);
@@ -84,6 +94,28 @@ public class Chassis extends SubsystemBase {
 
     public void setVelocities(ChassisSpeeds speeds) {
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
+        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        setModuleStates(states);
+    }
+
+    public void setVelocitiesAccelLim(ChassisSpeeds speeds, double maxDriveAccel, double maxRotAccel) {
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
+        ChassisSpeeds currentSpeeds = getChassisSpeeds();
+
+        double dvx = speeds.vxMetersPerSecond - currentSpeeds.vxMetersPerSecond;
+        double dvy = speeds.vyMetersPerSecond - currentSpeeds.vyMetersPerSecond;
+        double domega = speeds.omegaRadiansPerSecond - currentSpeeds.omegaRadiansPerSecond;
+        
+        dvx = Math.max(Math.min(dvx, maxDriveAccel), -maxDriveAccel);
+        dvy = Math.max(Math.min(dvy, maxDriveAccel), -maxDriveAccel);
+        domega = Math.max(Math.min(domega, maxRotAccel), -maxRotAccel);
+
+        speeds = new ChassisSpeeds(
+            currentSpeeds.vxMetersPerSecond + dvx,
+            currentSpeeds.vyMetersPerSecond + dvy,
+            currentSpeeds.omegaRadiansPerSecond + domega
+        );
+
         SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
@@ -152,9 +184,36 @@ public class Chassis extends SubsystemBase {
     private void updateVision(Pose2d pose){
         poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
     }
+
+    private Matrix getSTD(){
+        double x = 0.05;
+        double y = 0.05;
+        double theta = 0.05;
+        Translation2d velocityVector = new Translation2d(getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond);
+        if(velocityVector.getNorm() <= 1.5){
+            x-= 0.02;
+            y-=0.02;
+            theta -= 0.02;
+        }
+        if (velocityVector.getNorm() > 3.5) {
+           x+= 0.02;
+           y+= 0.02;
+           theta += 0.02;
+        }
+        if (Math.abs(getChassisSpeeds().omegaRadiansPerSecond) >= 4) {
+            theta += 0.02;
+        }
+        if(Math.abs(getChassisSpeeds().omegaRadiansPerSecond) <= 1){
+            theta -= 0.02;
+        }
+
+        return new Matrix(new SimpleMatrix(new double[]{x, y, theta}));
+    }
+
     @Override
     public void periodic() {
 
+        //poseEstimator.setVisionMeasurementStdDevs(getSTD());
         if(getVisionEstematedPose() !=null){
             updateVision(new Pose2d(getVisionEstematedPose().getTranslation(), getGyroAngle()));
         }
@@ -187,12 +246,13 @@ public class Chassis extends SubsystemBase {
   public void setYaw(Rotation2d angle) {
     if (angle != null){
         gyro.setYaw(angle.getDegrees());
+        poseEstimator.resetPose(new Pose2d(poseEstimator.getEstimatedPosition().getTranslation(), gyro.getRotation2d()));
     }
   }
 
 
 
-  PIDController rotationPid = new PIDController(2, 0.2, 0);
+  PIDController rotationPid = new PIDController(3, 0.4, 0);
   public void setVelocitiesRotateToAngle(ChassisSpeeds speeds, Rotation2d angle) {
     double angleError = angle.minus(getGyroAngle()).getRadians();
     if (Math.abs(angleError)>Math.toRadians(1)){
@@ -201,18 +261,26 @@ public class Chassis extends SubsystemBase {
     setVelocities(speeds);
   }
 
-
-  PIDController drivePid = new PIDController(1.3, 0.08, 0);
+  TrapezoidProfile driveTrapezoid = new TrapezoidProfile(new Constraints(2, 4));
   public void goTo(Pose2d pose, double maxVel, double threshold){
+     
     Translation2d diffVector = pose.getTranslation().minus(getPose().getTranslation());
+
     
     double distance = diffVector.getNorm();
     if(distance <= threshold) stop();
     else{
         setVelocitiesRotateToAngle(
-        new ChassisSpeeds(Math.min(maxVel, drivePid.calculate(-diffVector.getX(), 0)),
-        Math.min(maxVel, drivePid.calculate(-diffVector.getY(), 0)), 0),
-        pose.getRotation());
+        new ChassisSpeeds(Math.min(maxVel,
+            driveTrapezoid.calculate(distance / maxVel, new State(getPose().getX(),
+            getChassisSpeeds().vxMetersPerSecond), new State(pose.getX(), 0)).velocity),
+
+            Math.min(maxVel,
+            driveTrapezoid.calculate(distance / maxVel, new State(getPose().getY(),
+            getChassisSpeeds().vyMetersPerSecond), new State(pose.getY(), 0)).velocity),
+        
+            0),
+            pose.getRotation());
     }
     
 
@@ -226,7 +294,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public Integer getBestCamera(){
-        Tag[] tags = {reefTag, fiderTag, bargeTag};
+        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
         Integer bestCamera = null;
         double highestConfidence = 0.0;
     
@@ -244,19 +312,19 @@ public class Chassis extends SubsystemBase {
 
     public Pose2d getVisionEstematedPose() {
         // Array of all tags and their poses/confidences
-        Tag[] tags = {reefTag, fiderTag, bargeTag};
+        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
         
         return getBestCamera() != null ? tags[getBestCamera()].getPose() : null;
     }
 
     public Rotation2d getVisionEstematedAngle() {
-        Tag[] tags = {reefTag, fiderTag, bargeTag};
+        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
 
         return getBestCamera() != null ? tags[getBestCamera()].getRobotAngle() : null;
     }
 
     public boolean isSeeTag(int id, int cameraId, double distance){
-        Tag[] tags = {reefTag, fiderTag, bargeTag};
+        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
         
         return tags[cameraId].isSeeTag(id, distance);
     }

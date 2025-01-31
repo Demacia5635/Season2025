@@ -112,8 +112,8 @@ public class Tag extends SubsystemBase {
       if (cameraId == 0 || cameraId == 3){
         alpha = camToTagPitch + CAM_PITHC[cameraId];
         dist = (Math.abs(height - CAM_HIGHT[cameraId])) * (Math.tan(Math.toRadians(alpha)));
-        dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-        return dist;
+        //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
+        return Math.abs(dist);
       }
       alpha = camToTagPitch + CAM_PITHC[cameraId];
       dist = (Math.abs(height - CAM_HIGHT[cameraId])) / (Math.tan(Math.toRadians(alpha)));
@@ -135,7 +135,7 @@ public class Tag extends SubsystemBase {
       // Add camera offset to get robot center to tag vector
       robotToTag = ROBOT_TO_CAM[cameraId].plus(cameraToTag);
       if (cameraId == 3){
-        robotToTag = robotToTag.rotateBy(Rotation2d.fromDegrees(CAM_YAW[cameraId]));
+        //robotToTag = robotToTag.rotateBy(Rotation2d.fromDegrees(CAM_YAW[cameraId]));
       }
 
 

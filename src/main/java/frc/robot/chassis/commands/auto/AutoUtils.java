@@ -27,8 +27,8 @@ public class AutoUtils {
     static double maxAceel = DRIVE_ACCELERATION;
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
-    static Translation2d strateOffset = new Translation2d(2, 0);
-    static Translation2d practicalOffsetFeeder = new Translation2d(0.9, 0);
+    static Translation2d strateOffset = new Translation2d(1.5, 0);
+    static Translation2d practicalOffsetFeeder = new Translation2d(0.87, 0);
     static Translation2d cornerOffsetLeft = new Translation2d(0., 0.48);
     static Translation2d cornerOffsetRight = new Translation2d(0., -0.48);
     
@@ -105,7 +105,7 @@ public class AutoUtils {
     public static double ALGAE_TOP_DIST = 0;
     public static double ALGAE_BOTTOM_DIST = 0;
 
-    public static double FEEDER_DIST = -(0.73);
+    public static double FEEDER_DIST = -(0.93);
     public static double RIGHT_SIDE_DIST = 0.20;
     public static double LEFT_SIDE_DIST = -0.20;
 
@@ -164,7 +164,7 @@ public class AutoUtils {
     public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise){
         return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise);
     }
-    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag){
+    public static Command HasgoToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag){
         return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise, toGoElement, alignToTag);
     }
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker) {

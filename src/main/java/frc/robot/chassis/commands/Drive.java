@@ -31,7 +31,7 @@ public class Drive extends Command {
         double joyY = controller.getLeftX() * direction;
         
         // Calculate r]otation from trigger axes
-        double rot = controller.getRightTrigger() - controller.getRightTrigger();
+        double rot = controller.getLeftTrigger() - controller.getRightTrigger();
         
         double velX = Math.pow(joyX, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyX);
         double velY = Math.pow(joyY, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyY);

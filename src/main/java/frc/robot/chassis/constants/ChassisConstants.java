@@ -11,6 +11,7 @@ public class ChassisConstants {
     public static final double CYCLE_DT = 0.02;
     public static final double MAX_DRIVE_VELOCITY = 3.6;
     public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
+
     public static final double DRIVE_ACCELERATION = 50;
     public static final int GYRO_ID = 14;
     public static final CANBus CAN_BUS = CANBuses.CHASSIS_CAN_BUS;
@@ -108,7 +109,7 @@ public class ChassisConstants {
 
     public static final SwerveModuleConfigs BACK_LEFT = new SwerveModuleConfigs(
         2,
-        2.8023006470020955687086778978853,
+        -0.438476+Math.PI,
         0.097
     );
 
