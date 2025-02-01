@@ -34,8 +34,10 @@ import static frc.robot.robot1.gripper.constants.GripperConstants.*;
 public class Gripper extends SubsystemBase {
   /** The motor of the gripper */
   private final TalonSRX motor;
+
+  private final AnalogInput upSensor;
   /** The sensor that tells if a coral is inside */
-  private final AnalogInput sensor;
+  private final AnalogInput downSensor;
 
   /**
    * creates a new gripper, supposed to be only one.
@@ -53,8 +55,9 @@ public class Gripper extends SubsystemBase {
     motor.setInverted(MotorConstants.INVERT ? InvertType.InvertMotorOutput : InvertType.None);
     motor.setNeutralMode(MotorConstants.START_NEUTRAL_MODE ? NeutralMode.Brake : NeutralMode.Coast);
 
-    /* configure the sensor */
-    sensor = new AnalogInput(SensorConstants.SENSOR_CHANNEL);
+    /* configure the sensors */
+    upSensor = new AnalogInput(SensorConstants.UP_SENSOR_CHANNEL);
+    downSensor = new AnalogInput(SensorConstants.DOWN_SENSOR_CHANNEL);
 
     /* send to network tables staff */
     addNT();
@@ -64,8 +67,9 @@ public class Gripper extends SubsystemBase {
    * add to network tables staff
    */
   private void addNT() {
-    /* put the sensor */
-    LogManager.addEntry(getName() + "/get Sensor", this::getSensor);
+    /* put the sensors */
+    LogManager.addEntry(getName() + "/get up sensor", this::getUpSensor);
+    LogManager.addEntry(getName() + "/get down sensor", this::getDownSensor);
     LogManager.addEntry(getName() + "/Is Coral", this::isCoral);
 
     /* put function to put the motor at brake and coast */
@@ -104,13 +108,25 @@ public class Gripper extends SubsystemBase {
     motor.setNeutralMode(isBrake ? NeutralMode.Brake : NeutralMode.Coast);
   }
 
+  public double getUpSensor() {
+    return upSensor.getVoltage();
+  }
+
   /**
    * get the sensor voltage
    * 
    * @return the sensor voltage
    */
-  public double getSensor() {
-    return sensor.getVoltage();
+  public double getDownSensor() {
+    return downSensor.getVoltage();
+  }
+
+  public boolean isCoralUpSensor() {
+    return getUpSensor() < SensorConstants.CORAL_IN_SENSOR;
+  }
+
+  public boolean isCoralDownSensor() {
+    return getDownSensor() < SensorConstants.CORAL_IN_SENSOR;
   }
 
   /**
@@ -122,7 +138,7 @@ public class Gripper extends SubsystemBase {
    * @return is a coral inside the gripper
    */
   public boolean isCoral() {
-    return getSensor() < SensorConstants.CORAL_IN_SENSOR;
+    return isCoralUpSensor() && isCoralDownSensor();
   }
 
   /**

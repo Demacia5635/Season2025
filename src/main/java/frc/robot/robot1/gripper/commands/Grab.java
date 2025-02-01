@@ -19,7 +19,7 @@ public class Grab extends Command {
 
   /** the gripper subsystem */
   private Gripper gripper;
-  private boolean hasSeen;
+  // private boolean hasSeen;
 
   /**
    * creates a new grab command,
@@ -31,7 +31,7 @@ public class Grab extends Command {
    */
   public Grab(Gripper gripper) {
     this.gripper = gripper;
-    this.hasSeen = false;
+    // this.hasSeen = false;
     addRequirements(gripper);
   }
 
@@ -43,7 +43,7 @@ public class Grab extends Command {
    */
   @Override
   public void initialize() {
-    hasSeen = false;
+    // hasSeen = false;
   }
 
   /**
@@ -54,13 +54,14 @@ public class Grab extends Command {
    */
   @Override
   public void execute() {
-    if (!hasSeen) {
-      gripper.setPower(0.3);
-      if (gripper.isCoral()) {
-        hasSeen = true;
-      }
+    if (gripper.isCoralUpSensor() && gripper.isCoralDownSensor()) {
+      gripper.stop();
+    } else if (gripper.isCoralUpSensor()) {
+      gripper.setPower(GrabConstants.DOWN_POWER);
+    } else if (gripper.isCoralDownSensor()) {
+      gripper.setPower(GrabConstants.UP_POWER);
     } else {
-      gripper.setPower(-0.05);
+      gripper.setPower(GrabConstants.FEED_POWER);
     }
   }
 
@@ -85,7 +86,8 @@ public class Grab extends Command {
    */
   @Override
   public boolean isFinished() {
-    return gripper.isCoral();
+    return false;
+    // return gripper.isCoral();
     // return !gripper.isCoral() && hasSeen;
   }
 }
