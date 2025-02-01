@@ -253,6 +253,9 @@ public class StationNav {
             double d_finclose = fin.getTranslation().minus(
                 STATIONS[closeFin].getTranslation()).getNorm();
 
+            Translation2d initToStation = initial.minus(station.getTranslation());
+            
+            
             double dot_init = PathsConstants.dot_prod(initial.minus(station.getTranslation()), station.getTranslation().minus(PathsConstants.STATION_CENTER));
             double dot_initclose = PathsConstants.dot_prod(initial.minus(STATIONS[tanInit].getTranslation()), STATIONS[tanInit].getTranslation().minus(PathsConstants.STATION_CENTER));
 
