@@ -29,10 +29,10 @@ class PathsConstants {
     private PathsConstants()
     {
         PathsConstants.pc = this;
-        STATIONS = new Pose2d[12];
-        for(int i = 0; i < 12; i++)
+        STATIONS = new Pose2d[6];
+        for(int i = 0; i < 6; i++)
         {
-            STATIONS[i] = new Pose2d(new Translation2d(Math.cos((-(Math.PI*2)/12)* i - Math.PI/2) ,Math.sin((-(Math.PI*2)/12)* i - Math.PI/2)).times(STATION_RADIUS).plus(new Translation2d(4,4)),new Rotation2d(0));
+            STATIONS[i] = new Pose2d(new Translation2d(Math.cos((-(Math.PI*2)/6)* i - Math.PI/2) ,Math.sin((-(Math.PI*2)/6)* i - Math.PI/2)).times(STATION_RADIUS).plus(new Translation2d((1.57 + 1.8)/Math.sqrt(2),(1.57 + 1.8)/Math.sqrt(2))),new Rotation2d(0));
         }
     }
 
@@ -49,6 +49,14 @@ class PathsConstants {
     {
         return v1.getX()*v2.getY() - v1.getY()*v2.getX();
     }
+
+    public static double calc_cos(Translation2d v1, Translation2d center, Translation2d v2)
+    {
+        Translation2d v1ToCenter = v1.minus(center);
+        Translation2d v2ToCenter = v2.minus(center);
+        return dot_prod(v1ToCenter, v2ToCenter) / (v1ToCenter.getNorm() *v2ToCenter.getNorm());
+    }
+
 
     public static double proj_scalar_pow2(Translation2d v1, Translation2d v2){
         double dot1 = dot_prod(v1, v2);

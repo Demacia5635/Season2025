@@ -243,6 +243,7 @@ public class StationNav {
         
         for(int i = 1; i < STATIONS.length; i++)
         {
+            System.out.println(i);
             Pose2d station = STATIONS[i];//TODO:optimize this loop
 
             double d_init = station.getTranslation().minus(initial).getNorm();
@@ -252,55 +253,34 @@ public class StationNav {
             double d_fin = station.getTranslation().minus(fin.getTranslation()).getNorm();
             double d_finclose = fin.getTranslation().minus(
                 STATIONS[closeFin].getTranslation()).getNorm();
-
-            Translation2d initToStation = initial.minus(station.getTranslation());
-            Translation2d stationToCenter = station.getTranslation().minus(PathsConstants.STATION_CENTER);
             
-            double dot_init = PathsConstants.dot_prod(initToStation, stationToCenter) / (initToStation.getNorm() * stationToCenter.getNorm()); //cos(a)
+            double dot_init = PathsConstants.calc_cos(initial, station.getTranslation(), PathsConstants.STATION_CENTER); //cos(a)
 
+            double dot_initclose = PathsConstants.calc_cos(initial, STATIONS[tanInit].getTranslation(), PathsConstants.STATION_CENTER);
 
-            Translation2d initToTan = initial.minus(STATIONS[tanInit].getTranslation());
-            Translation2d tanToCenter = STATIONS[tanInit].getTranslation().minus(PathsConstants.STATION_CENTER);
+            double dot_initclose2 = PathsConstants.calc_cos(initial, STATIONS[tanInit2].getTranslation(), PathsConstants.STATION_CENTER);
 
-            double dot_initclose = PathsConstants.dot_prod(initToTan, tanToCenter) / (initToTan.getNorm() * tanToCenter.getNorm());
-
-
-            Translation2d initToTan2 = initial.minus(STATIONS[tanInit2].getTranslation());
-            Translation2d tanToCenter2 = STATIONS[tanInit2].getTranslation().minus(PathsConstants.STATION_CENTER);
-
-            double dot_initclose2 = PathsConstants.dot_prod(initToTan2, tanToCenter2) / (initToTan2.getNorm() * tanToCenter2.getNorm());
-
-
-            Translation2d finToStation = fin.getTranslation().minus(station.getTranslation());
             
-            double dot_fin = PathsConstants.dot_prod(finToStation, stationToCenter);
+            
+            double dot_fin = PathsConstants.calc_cos(fin.getTranslation(), station.getTranslation(), PathsConstants.STATION_CENTER);
 
-            Translation2d finToTan = fin.getTranslation().minus(STATIONS[tanFin].getTranslation());
-            Translation2d tanFinToCenter = STATIONS[tanFin].getTranslation().minus(PathsConstants.STATION_CENTER);
+            double dot_finclose = PathsConstants.calc_cos(fin.getTranslation(), STATIONS[tanFin].getTranslation(), PathsConstants.STATION_CENTER);
 
-            double dot_finclose = PathsConstants.dot_prod(finToTan, tanFinToCenter) / (finToTan.getNorm() * tanFinToCenter.getNorm());
-
-            Translation2d finToTan2 = fin.getTranslation().minus(STATIONS[tanFin2].getTranslation());
-            Translation2d tanFinToCenter2 = STATIONS[tanFin2].getTranslation().minus(PathsConstants.STATION_CENTER);
-
-            double dot_finclose2 = PathsConstants.dot_prod(finToTan2, tanFinToCenter2) / (finToTan2.getNorm() * tanFinToCenter2.getNorm());
+            double dot_finclose2 = PathsConstants.calc_cos(fin.getTranslation(), STATIONS[tanFin2].getTranslation(), PathsConstants.STATION_CENTER);
             
             if(Math.abs(dot_init) < Math.abs(dot_initclose))
                 tanInit = i;
-            else
-            {
-                if(Math.abs(dot_init) <= Math.abs(dot_initclose2))
-                    tanInit2 = i;
-            }
+            
+            if(Math.abs(dot_init) < Math.abs(dot_initclose2) && Math.abs(dot_init) > Math.abs(dot_initclose))
+                tanInit2 = i;
+            
+            
 
             if(Math.abs(dot_fin) < Math.abs(dot_finclose))
                 tanFin = i;
-            else
-            {
-                if(Math.abs(dot_fin) <= Math.abs(dot_finclose2))
-                    tanFin2 = i;
 
-            }
+            if(Math.abs(dot_fin) < Math.abs(dot_finclose2) && Math.abs(dot_fin) > Math.abs(dot_finclose))
+                tanFin2 = i;
 
             if (d_init < d_initclose)
                 closeInit = i;
@@ -308,115 +288,34 @@ public class StationNav {
                 closeFin = i;
         }
 
-        Translation2d tanToInit = initial.minus(STATIONS[tanInit].getTranslation());
-        Translation2d tanToFin = fin.getTranslation().minus(STATIONS[tanInit].getTranslation());
+        
+        System.out.println("tanInit : " + STATIONS[tanInit]);
+        System.out.println("tanFin : " + STATIONS[tanFin]);
 
-        Translation2d tanToInit2 = initial.minus(STATIONS[tanInit2].getTranslation());
-        Translation2d tanToFin2 = fin.getTranslation().minus(STATIONS[tanInit2].getTranslation());
+        System.out.println("tanInit2 : " + STATIONS[tanInit2]);
+        System.out.println("tanFin2 : " + STATIONS[tanFin2]);
 
-        if(PathsConstants.dot_prod(tanToInit2, tanToFin2) / (tanToInit2.getNorm() * tanToFin2.getNorm()) < PathsConstants.dot_prod(tanToInit, tanToFin) / (tanToInit.getNorm() * tanToFin.getNorm()))
+        if(PathsConstants.calc_cos(initial, STATIONS[tanInit2].getTranslation(), fin.getTranslation()) < PathsConstants.calc_cos(initial, STATIONS[tanInit].getTranslation(), fin.getTranslation()))
             tanInit = tanInit2;
 
-        tanToInit = initial.minus(STATIONS[tanFin].getTranslation());
-        tanToFin = fin.getTranslation().minus(STATIONS[tanFin].getTranslation());
-
-        tanToInit2 = initial.minus(STATIONS[tanFin2].getTranslation());
-        tanToFin2 = fin.getTranslation().minus(STATIONS[tanFin2].getTranslation());
-
-        if(PathsConstants.dot_prod(tanToInit2, tanToFin2) / (tanToInit2.getNorm() * tanToFin2.getNorm()) < PathsConstants.dot_prod(tanToInit, tanToFin) / (tanToInit.getNorm() * tanToFin.getNorm()))
+        if(PathsConstants.calc_cos(initial, STATIONS[tanFin2].getTranslation(), fin.getTranslation()) < PathsConstants.calc_cos(initial, STATIONS[tanFin].getTranslation(), fin.getTranslation()))
             tanFin = tanFin2;
 
+        System.out.println("After");
         System.out.println("tanInit : " + STATIONS[tanInit]);
         System.out.println("tanFin : " + STATIONS[tanFin]);
 
         tanFin = shiftTan(tanFin,closeFin,fin.getTranslation());
         tanInit = shiftTan(tanInit, closeInit, initial);
 
-        int[] gates = optimzeGates(tanInit, tanFin, closeInit, closeFin);
+        // int[] gates = optimzeGates(tanInit, tanFin, closeInit, closeFin);
         
-        if(decideCounter(gates[0], gates[1]))
-            return bridgeCounter(gates[0], gates[1], initial, fin);
+        if(decideCounter(tanInit, tanFin))
+            return bridgeCounter(tanInit, tanFin, initial, fin);
         else
-            return bridgeClock(gates[0], gates[1], initial, fin);
-
-        // int diff = Math.abs(tanFin-tanInit);
-        // if (tanInit < tanFin)
-        // {
-        //     if(diff < STATIONS.length/2)
-        //     {
-        //         System.out.println("small diff, init - fin");
-
-        //         //intersections counter
-        //         tanFin = shiftClock(tanFin,closeFin,fin.getTranslation());
-
-        //         tanInit = shiftCounter(tanInit, closeInit, initial);
-
-
-        //         int[] gates = optimzeGates(tanInit, tanFin, closeInit, closeFin);
-
-
-        //         return bridgeClock(gates[0], gates[1], initial, fin);
-
-        //     }
-        //     else
-        //     {
-        //         System.out.println("big diff, init - fin");
-                
-        //         //intersections counter
-        //         tanFin = shiftCounter(tanFin,closeFin,fin.getTranslation());
-
-        //         tanInit = shiftClock(tanInit, closeInit, initial);
-
-        //         int[] gates = optimzeGates(tanInit, tanFin, closeInit, closeFin);
-
-        //         return bridgeCounter(gates[0], gates[1], initial, fin);
-        //     }
-        // }
-        // else{
-        //     if(tanFin == tanInit)
-        //     {
-        //         PathPoint[] points = new PathPoint[3];
-        //         points[0] = new PathPoint(initial, fin.getRotation());
-        //         points[1] = new PathPoint(STATIONS[tanInit].getTranslation(),fin.getRotation());
-        //         points[2] = new PathPoint(fin.getTranslation(), fin.getRotation());
-        //         return points;
-        //     }
-        //     else{
-
-        //         if(diff < STATIONS.length/2)
-        //         {
-        //             System.out.println("small diff, fin - init");
-
-                    
-        //             //intersections counter
-        //             tanFin = shiftCounter(tanFin,closeFin,fin.getTranslation());
-
-        //             tanInit = shiftClock(tanInit, closeInit, initial);
-
-        //             int[] gates = optimzeGates(tanInit, tanFin, closeInit, closeFin);
-
-        //             return bridgeCounter(gates[0], gates[1], initial, fin);
-
-        //         }
-        //         else
-        //         {
-        //             System.out.println("big diff, fin - init");
-        //             int exitStation = tanFin;
-        //             int enterStation = tanInit;
-                
-        //             //intersections counter
-        //             tanFin = shiftClock(tanFin,closeFin,fin.getTranslation());
-
-        //             tanInit = shiftCounter(tanInit, closeInit, initial);
-
-        //             int[] gates = optimzeGates(tanInit, tanFin, closeInit, closeFin);
-
-        //             return bridgeClock(gates[0], gates[1], initial, fin);
-        //         }
-        //     }
-
-           
-        // }
+            return bridgeClock(tanInit, tanFin, initial, fin);
+        
+        
     }
 
     public static void genLineClockwise(Translation2d initial,Pose2d fin,double velocity)
