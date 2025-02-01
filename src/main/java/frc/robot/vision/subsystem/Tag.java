@@ -82,7 +82,7 @@ public class Tag extends SubsystemBase {
       // Process data from each camera
       cropEntry = Table.getEntry("crop");
       camToTagPitch = Table.getEntry("ty").getDouble(0.0);
-      camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) + CAM_YAW[cameraId];
+      camToTagYaw = (-Table.getEntry("tx").getDouble(0.0));// + CAM_YAW[cameraId];
       id = Table.getEntry("tid").getDouble(0.0);
 
       latency = Table.getEntry("tl").getDouble(0.0) + Table.getEntry("cl").getDouble(0.0);
@@ -134,9 +134,8 @@ public class Tag extends SubsystemBase {
          
       // Add camera offset to get robot center to tag vector
       robotToTag = ROBOT_TO_CAM[cameraId].plus(cameraToTag);
-      if (cameraId == 3){
-        //robotToTag = robotToTag.rotateBy(Rotation2d.fromDegrees(CAM_YAW[cameraId]));
-      }
+      robotToTag = robotToTag.rotateBy(Rotation2d.fromDegrees(CAM_YAW[cameraId]));
+      
 
 
       return robotToTag;
@@ -164,6 +163,7 @@ public class Tag extends SubsystemBase {
 
         robotToTagFC = robotToTagRR.rotateBy(Angle);
         originToRobot = origintoTag.plus(robotToTagFC.rotateBy(Rotation2d.fromDegrees(180)));
+
        
         return originToRobot;
       }
@@ -171,7 +171,7 @@ public class Tag extends SubsystemBase {
                
       }
       private void crop(){
-        double YawCrop = ((-camToTagYaw) + CAM_YAW[cameraId])/31.25;
+        double YawCrop = ((-camToTagYaw))/31.25;
         double PitchCrop = camToTagPitch/24.45;
         double[] crop = {YawCrop-CROP_OFSET,YawCrop+CROP_OFSET,PitchCrop-CROP_OFSET,PitchCrop+CROP_OFSET};
         cropEntry.setDoubleArray(crop);
@@ -213,8 +213,8 @@ public class Tag extends SubsystemBase {
       double currentDist = GetDistFromCamera();
       
       // Constants for confidence calculation
-      final double MAX_RELIABLE_DISTANCE = 2.5; // meters - high confidence range
-      final double MAX_DETECTION_DISTANCE = 7.0; // meters - maximum useful detection range
+      final double MAX_RELIABLE_DISTANCE = 1; // meters - high confidence range
+      final double MAX_DETECTION_DISTANCE = 4; // meters - maximum useful detection range
       
       // If we're too far, return 0 confidence
       if (currentDist > MAX_DETECTION_DISTANCE) {
@@ -226,9 +226,12 @@ public class Tag extends SubsystemBase {
           return 1.0;
       }
       
-      // Linear falloff between MAX_RELIABLE_DISTANCE and MAX_DETECTION_DISTANCE
-      return 1.0 - ((currentDist - MAX_RELIABLE_DISTANCE) 
-             / (MAX_DETECTION_DISTANCE - MAX_RELIABLE_DISTANCE));
+      // Calculate how far we are into the falloff range (0 to 1)
+      double normalizedDist = (currentDist - MAX_RELIABLE_DISTANCE) 
+                             / (MAX_DETECTION_DISTANCE - MAX_RELIABLE_DISTANCE);
+      
+      // Apply cubic falloff function
+      return Math.pow(1 - normalizedDist, 3);
   }
 
   public boolean isSeeTag(int id, double distance){

@@ -52,6 +52,6 @@ public class VisionFuse {
             y += tag.getPose().getY() * normalizeConfidence(tag.getPoseEstemationConfidence());
             angle += tag.getPose().getRotation().getRadians() * normalizeConfidence(tag.getPoseEstemationConfidence());
         }
-        return new Pose2d(x, y, new Rotation2d(angle));
+        return (x == 0 && y == 0) ? null : new Pose2d(x, y, new Rotation2d(angle));
     }
 }

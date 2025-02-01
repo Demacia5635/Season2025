@@ -56,10 +56,10 @@ public class AutoAlign extends Command {
     if(level == LEVEL.FEEDER){
       new Grab(gripper).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)));
     }
-    else if(level == LEVEL.L2){
+    else if(level == LEVEL.L2_RIGHT || level == LEVEL.L2_LEFT){
       new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING));
     }
-    else if(level == LEVEL.L3){
+    else if(level == LEVEL.L3_RIGHT || level == LEVEL.L3_LEFT){
       new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING));
     }
     else if(level == LEVEL.ALGAE_BOTTOM){
@@ -78,7 +78,7 @@ public class AutoAlign extends Command {
 
     targetAngle = fieldElements.get(position).getRotation();
     offset = new Translation2d(
-      (level == LEVEL.FEEDER) ? FEEDER_DIST : ((level == LEVEL.L2) ? L2DIST : L3DIST),
+      (level == LEVEL.FEEDER) ? FEEDER_DIST : ((level == LEVEL.L2_RIGHT || level == LEVEL.L2_LEFT) ? L2DIST : L3DIST),
       (element == ELEMENT.FEEDER || element == ELEMENT.ALGAE) ? 0 : (element == ELEMENT.CORAL_LEFT) ? LEFT_SIDE_DIST : RIGHT_SIDE_DIST
     );
     offset = offset.rotateBy(targetAngle.rotateBy(Rotation2d.fromDegrees(180)));
@@ -99,7 +99,7 @@ public class AutoAlign extends Command {
   @Override
   public void end(boolean interrupted) {
     chassis.setVelocities(new ChassisSpeeds(0, 0, 0));
-    if(level == LEVEL.L2 || level == LEVEL.L3){
+    if(level == LEVEL.L2_RIGHT || level == LEVEL.L2_LEFT || level == LEVEL.L3_RIGHT || level == LEVEL.L3_LEFT){
       new Drop(gripper);
     }
   }

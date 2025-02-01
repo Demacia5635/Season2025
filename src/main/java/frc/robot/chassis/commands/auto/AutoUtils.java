@@ -28,7 +28,7 @@ public class AutoUtils {
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
     static Translation2d strateOffset = new Translation2d(1.5, 0);
-    static Translation2d practicalOffsetFeeder = new Translation2d(0.78, 0);
+    static Translation2d practicalOffsetFeeder = new Translation2d(0.76, 0);
     static Translation2d cornerOffsetLeft = new Translation2d(0, 0.48);
     static Translation2d cornerOffsetRight = new Translation2d(0., -0.48);
     

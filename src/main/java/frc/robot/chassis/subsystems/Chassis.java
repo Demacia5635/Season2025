@@ -47,7 +47,7 @@ public class Chassis extends SubsystemBase {
     public Tag fiderTag;
     public Tag bargeTag;
     public Tag backTag;
-    public VisionFuse visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
+    public VisionFuse visionFuse;
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
@@ -77,6 +77,7 @@ public class Chassis extends SubsystemBase {
         fiderTag = new Tag(()->getGyroAngle(), 1);
         bargeTag = new Tag(()->getGyroAngle(), 2);
         backTag = new Tag(()->getGyroAngle(), 3);
+        visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
 
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> setYaw(Rotation2d.fromDegrees(0))));
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(getVisionEstimatedAngle())));
