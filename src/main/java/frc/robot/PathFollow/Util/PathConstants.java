@@ -29,10 +29,10 @@ class PathsConstants {
     private PathsConstants()
     {
         PathsConstants.pc = this;
-        STATIONS = new Pose2d[6];
-        for(int i = 0; i < 6; i++)
+        STATIONS = new Pose2d[12];
+        for(int i = 0; i < 12; i++)
         {
-            STATIONS[i] = new Pose2d(new Translation2d(Math.cos((-(Math.PI*2)/6)* i - Math.PI/2) ,Math.sin((-(Math.PI*2)/6)* i - Math.PI/2)).times(STATION_RADIUS).plus(new Translation2d((1.57 + 1.8)/Math.sqrt(2),(1.57 + 1.8)/Math.sqrt(2))),new Rotation2d(0));
+            STATIONS[i] = new Pose2d(new Translation2d(Math.cos((-(Math.PI*2)/12)* i - Math.PI/2) ,Math.sin((-(Math.PI*2)/12)* i - Math.PI/2)).times(STATION_RADIUS).plus(new Translation2d((1.57 + 1.8)/Math.sqrt(2),(1.57 + 1.8)/Math.sqrt(2))),new Rotation2d(0));
         }
     }
 

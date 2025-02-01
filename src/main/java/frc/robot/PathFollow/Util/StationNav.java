@@ -262,15 +262,15 @@ public class StationNav {
 
             
             
-            double dot_fin = PathsConstants.calc_cos(fin.getTranslation(), station.getTranslation(), PathsConstants.STATION_CENTER);
+            double dot_fin = PathsConstants.calc_cos(PathsConstants.STATION_CENTER, station.getTranslation(), fin.getTranslation());
 
-            double dot_finclose = PathsConstants.calc_cos(fin.getTranslation(), STATIONS[tanFin].getTranslation(), PathsConstants.STATION_CENTER);
+            double dot_finclose = PathsConstants.calc_cos(PathsConstants.STATION_CENTER, STATIONS[tanFin].getTranslation(),fin.getTranslation());
 
-            double dot_finclose2 = PathsConstants.calc_cos(fin.getTranslation(), STATIONS[tanFin2].getTranslation(), PathsConstants.STATION_CENTER);
+            double dot_finclose2 = PathsConstants.calc_cos(PathsConstants.STATION_CENTER, STATIONS[tanFin2].getTranslation(),fin.getTranslation() );
             
             if(Math.abs(dot_init) < Math.abs(dot_initclose))
                 tanInit = i;
-            
+            else
             if(Math.abs(dot_init) < Math.abs(dot_initclose2) && Math.abs(dot_init) > Math.abs(dot_initclose))
                 tanInit2 = i;
             
@@ -278,7 +278,7 @@ public class StationNav {
 
             if(Math.abs(dot_fin) < Math.abs(dot_finclose))
                 tanFin = i;
-
+            else
             if(Math.abs(dot_fin) < Math.abs(dot_finclose2) && Math.abs(dot_fin) > Math.abs(dot_finclose))
                 tanFin2 = i;
 
