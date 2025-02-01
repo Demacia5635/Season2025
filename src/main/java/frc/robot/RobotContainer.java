@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -73,6 +74,9 @@ public class RobotContainer implements Sendable{
   public static Grab grab;
   public static Drop drop;
 
+  public FIELD_POSITION fieldPosition;
+  public LEVEL level;
+
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -87,6 +91,7 @@ public class RobotContainer implements Sendable{
     configureCommands();
     configureDefaultCommands();
     configureBindings();
+    addNT();
   }
 
   /**
@@ -100,6 +105,29 @@ public class RobotContainer implements Sendable{
     gripper = new Gripper();
     robot1Strip = new Robot1Strip(arm, gripper);
   }
+
+  private void addNT() {
+    SendableChooser<FIELD_POSITION> fieldChooser = new SendableChooser<>();
+    fieldChooser.addOption("A", FIELD_POSITION.A);
+    fieldChooser.addOption("B", FIELD_POSITION.B);
+    fieldChooser.addOption("C", FIELD_POSITION.C);
+    fieldChooser.addOption("D", FIELD_POSITION.D);
+    fieldChooser.addOption("E", FIELD_POSITION.E);
+    fieldChooser.addOption("F", FIELD_POSITION.F);
+    fieldChooser.onChange(fieldPosition -> this.fieldPosition = fieldPosition);
+    SmartDashboard.putData("placement field Chooser", fieldChooser);
+
+    SendableChooser<LEVEL> LevelChooser = new SendableChooser<>();
+    LevelChooser.addOption("algea bottom", LEVEL.ALGAE_BOTTOM);
+    LevelChooser.addOption("algea top", LEVEL.ALGAE_TOP);
+    LevelChooser.addOption("L2 right", LEVEL.L2_RIGHT);
+    LevelChooser.addOption("L2 left", LEVEL.L2_LEFT);
+    LevelChooser.addOption("L3 right", LEVEL.L3_RIGHT);
+    LevelChooser.addOption("L3 left", LEVEL.L3_LEFT);
+    LevelChooser.onChange(level -> this.level = level);
+    SmartDashboard.putData("placement field Chooser", fieldChooser);
+  }
+
 
   /**
    * This function start all the commands.

@@ -45,7 +45,7 @@ public class AutoUtils {
     }
 
     public enum LEVEL{
-        L2, L3, ALGAE_BOTTOM, ALGAE_TOP, FEEDER
+        L2_RIGHT,L2_LEFT, L3_RIGHT, L3_LEFT, ALGAE_BOTTOM, ALGAE_TOP, FEEDER
     }
     
     public static HashMap<FIELD_POSITION, PathPoint> fieldElements = new HashMap<>();
