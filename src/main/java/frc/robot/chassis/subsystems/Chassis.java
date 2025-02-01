@@ -34,6 +34,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.constants.ChassisConstants;
+import frc.robot.vision.VisionFuse;
 import frc.robot.vision.subsystem.Tag;
 
 public class Chassis extends SubsystemBase {
@@ -46,6 +47,7 @@ public class Chassis extends SubsystemBase {
     public Tag fiderTag;
     public Tag bargeTag;
     public Tag backTag;
+    public VisionFuse visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
@@ -218,8 +220,8 @@ public class Chassis extends SubsystemBase {
     public void periodic() {
 
         //poseEstimator.setVisionMeasurementStdDevs(getSTD());
-        if(getVisionEstimatedPose() !=null){
-            updateVision(new Pose2d(getVisionEstimatedPose().getTranslation(), getGyroAngle()));
+        if(visionFuse.getPoseEstemation() !=null){
+            updateVision(new Pose2d(visionFuse.getPoseEstemation().getTranslation(), getGyroAngle()));
         }
         poseEstimator.update(getGyroAngle(), getModulePositions());
             
@@ -310,34 +312,6 @@ public class Chassis extends SubsystemBase {
         }
     
         return bestCamera;
-    }
-
-    public Pose2d getVisionEstimatedPose() {
-        // Array of all tags and their poses/confidences
-        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
-        double x = 0;
-        double y = 0;
-        double angle = 0;
-        int count = 0;
-        for(Tag t : tags){
-            if(t.getPose() == null) continue;
-            if(t.getPoseEstemationConfidence() <= 0.3) continue;
-            count++;
-        }
-
-        
-        for(Tag t : tags){
-            if(t.getPose() == null) continue;
-            if(t.getPoseEstemationConfidence() <= 0.3) continue;
-            x+= t.getPose().getX() * ((double)1/count);
-            y+=t.getPose().getY() * ((double)1/count);
-            angle = t.getPose().getRotation().getRadians() * ((double)1/count);
-            
-        }
-        return count == 0 ? null : new Pose2d(x, y, Rotation2d.fromRadians(angle));
-        
-
-        
     }
 
     public Rotation2d getVisionEstimatedAngle() {
