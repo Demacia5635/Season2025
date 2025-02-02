@@ -316,6 +316,9 @@ public class Arm extends SubsystemBase {
       LogManager.log("gripper target Angle is NaN", AlertType.kError);
       return;
     }
+    if (!gripperAngleAbsoluteSensor.isConnected()) {
+      return;
+    }
 
     // if (lastGripperAngleTarget != targetAngle) {
     //   hasGripperAngleReachedTarget = false;
@@ -357,7 +360,7 @@ public class Arm extends SubsystemBase {
     //   gripperAngleMotor.setPositionVoltage(targetAngle);
     // }
 
-    gripperAngleMotor.setPositionVoltage(targetAngle);
+    gripperAngleMotor.setPositionVoltage(getGripperAngleMotor() + targetAngle - getGripperAngle());
   }
 
   /**
@@ -407,10 +410,6 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * @deprecated use the getGripperAngle function instead to get the gripper angle
-   *             from the sensor
-   *             get the gripper angle from the motor instead of the absolute
-   *             sensor
    * @return the gripper angle motor position, position in radians
    */
   public double getGripperAngleMotor() {
@@ -465,6 +464,6 @@ public class Arm extends SubsystemBase {
     }
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */
-    gripperAngleMotor.setPosition(getGripperAngle());
+    // gripperAngleMotor.setPosition(getGripperAngle());
   }
 }
