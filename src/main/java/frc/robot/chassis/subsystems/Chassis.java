@@ -70,7 +70,7 @@ public class Chassis extends SubsystemBase {
         visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
 
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> setYaw(Rotation2d.fromDegrees(0))));
-        SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(getVisionEstimatedAngle())));
+        SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(visionFuse.getVisionEstimatedAngle())));
         SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
 
@@ -179,7 +179,7 @@ public class Chassis extends SubsystemBase {
     }
     
     private void updateVision(Pose2d pose){
-        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
+        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - visionFuse.getVisionTimestamp());
     }
 
     private Matrix getSTD(){
@@ -288,28 +288,6 @@ public class Chassis extends SubsystemBase {
         }
     }
 
-    public Integer getBestCamera(){
-        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
-        Integer bestCamera = null;
-        double highestConfidence = 0.0;
-    
-        for (int i = 0; i < tags.length; i++) {
-            double currentConfidence = tags[i].getPoseEstemationConfidence();
-    
-            if (currentConfidence > highestConfidence && currentConfidence > 0.1) {
-                highestConfidence = currentConfidence;
-                bestCamera = i;
-            }
-        }
-    
-        return bestCamera;
-    }
-
-    public Rotation2d getVisionEstimatedAngle() {
-        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
-
-        return getBestCamera() != null ? tags[getBestCamera()].getRobotAngle() : null;
-    }
 
     public boolean isSeeTag(int id, int cameraId, double distance){
         Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
