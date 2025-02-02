@@ -112,11 +112,11 @@ public class Gripper extends SubsystemBase {
   }
 
   public double getUpFrontSensor() {
-    return upFrontSensor.getAverageVoltage();
+    return upFrontSensor.getVoltage();
   }
 
   public double getUpBackSensor() {
-    return upBackSensor.getAverageVoltage();
+    return upBackSensor.getVoltage();
   }
 
   /**

@@ -55,9 +55,9 @@ public class Robot1Strip extends LedStrip {
             setColor(Color.kPurple);
         }
 
-        if (gripper.getCurrentCommand() instanceof Grab && !grabTimer.isRunning()) {
-            grabTimer.start();
-        }
+        // if (gripper.getCurrentCommand() instanceof Grab && !grabTimer.isRunning()) {
+        //     grabTimer.start();
+        // }
 
         if (gripper.getCurrentCommand() instanceof Drop && !dropTimer.isRunning()) {
             dropTimer.start();

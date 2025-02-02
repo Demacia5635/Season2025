@@ -20,6 +20,8 @@ public class Grab extends Command {
   /** the gripper subsystem */
   private Gripper gripper;
   // private boolean hasSeen;
+  private int upCount = 0;
+  private int downCount = 0;
 
   /**
    * creates a new grab command,
@@ -44,6 +46,8 @@ public class Grab extends Command {
   @Override
   public void initialize() {
     // hasSeen = false;
+    upCount = 0;
+    downCount = 0;
   }
 
   /**
@@ -56,12 +60,23 @@ public class Grab extends Command {
   public void execute() {
     if (gripper.isCoral()) {
       gripper.stop();
+      downCount = 0;
+      upCount = 0;
     } else if (gripper.isCoralUpSensor()) {
-      gripper.setPower(GrabConstants.DOWN_POWER);
+      downCount++;
+      upCount = 0;
     } else if (gripper.isCoralDownSensor()) {
-      gripper.setPower(GrabConstants.UP_POWER);
+      upCount++;
+      downCount = 0;
     } else {
       gripper.setPower(GrabConstants.FEED_POWER);
+    }
+
+    if (upCount >= 10) {
+      gripper.setPower(GrabConstants.UP_POWER);
+    }
+    if (downCount >= 10) {
+      gripper.setPower(GrabConstants.DOWN_POWER);
     }
   }
 
