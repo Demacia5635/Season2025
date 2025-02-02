@@ -1,10 +1,5 @@
 package frc.robot.chassis.subsystems;
 
-import frc.robot.utils.LogManager;
-
-import static frc.robot.chassis.constants.ChassisConstants.MAX_DRIVE_VELOCITY;
-import static frc.robot.chassis.constants.ChassisConstants.MAX_OMEGA_VELOCITY;
-
 import org.ejml.simple.SimpleMatrix;
 
 import com.ctre.phoenix6.StatusCode;
@@ -13,18 +8,13 @@ import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -32,15 +22,15 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.chassis.commands.auto.AutoUtils;
-import frc.robot.chassis.constants.ChassisConstants;
-import frc.robot.vision.VisionFuse;
+import frc.robot.chassis.utils.ChassisConstants;
+import frc.robot.chassis.utils.SwerveKinematics;
 import frc.robot.vision.subsystem.Tag;
+import frc.robot.vision.utils.VisionFuse;
 
 public class Chassis extends SubsystemBase {
     private SwerveModule[] modules;
     private Pigeon2 gyro;
-    private SwerveDriveKinematics kinematics;
+    private SwerveKinematics kinematicsFIx;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
     public Tag reefTag;
@@ -61,14 +51,14 @@ public class Chassis extends SubsystemBase {
         };
         gyro = new Pigeon2(ChassisConstants.GYRO_ID, ChassisConstants.GYRO_CAN_BUS);
         addStatus();
-        kinematics = new SwerveDriveKinematics(
+        kinematicsFIx = new SwerveKinematics(
             ChassisConstants.FRONT_LEFT.POSITION,
             ChassisConstants.FRONT_RIGHT.POSITION,
             ChassisConstants.BACK_LEFT.POSITION,
             ChassisConstants.BACK_RIGHT.POSITION
 
         );
-        poseEstimator = new SwerveDrivePoseEstimator(kinematics, getGyroAngle(), getModulePositions(), new Pose2d());
+        poseEstimator = new SwerveDrivePoseEstimator(kinematicsFIx, getGyroAngle(), getModulePositions(), new Pose2d());
         
         SimpleMatrix std = new SimpleMatrix(new double[]{0.02, 0.02, 0});
         poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
@@ -101,7 +91,7 @@ public class Chassis extends SubsystemBase {
 
     public void setVelocities(ChassisSpeeds speeds) {
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
 
@@ -123,7 +113,7 @@ public class Chassis extends SubsystemBase {
             currentSpeeds.omegaRadiansPerSecond + domega
         );
 
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
 
@@ -152,7 +142,7 @@ public class Chassis extends SubsystemBase {
         return ChassisSpeeds.fromFieldRelativeSpeeds(getChassisSpeeds(), getGyroAngle());
     }
     public void setRobotRelVelocities(ChassisSpeeds speeds){
-        SwerveModuleState[] states = kinematics.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
 
@@ -235,7 +225,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public ChassisSpeeds getChassisSpeeds() {
-        return kinematics.toChassisSpeeds(getModuleStates());
+        return kinematicsFIx.toChassisSpeeds(getModuleStates());
     }
     /**
    * Returns the state of every module

@@ -4,9 +4,7 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -14,8 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -24,10 +20,8 @@ import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils.LEVEL;
-import frc.robot.chassis.commands.auto.AlignToTag;
 import frc.robot.chassis.commands.auto.AutoIntake;
 import frc.robot.chassis.commands.auto.AutoUtils;
-import frc.robot.chassis.commands.auto.Auto_3Coral;
 import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
@@ -125,7 +119,7 @@ public class RobotContainer implements Sendable{
     LevelChooser.addOption("L3 right", LEVEL.L3_RIGHT);
     LevelChooser.addOption("L3 left", LEVEL.L3_LEFT);
     LevelChooser.onChange(level -> this.level = level);
-    SmartDashboard.putData("placement field Chooser", fieldChooser);
+    SmartDashboard.putData("placement field Chooser", LevelChooser);
   }
 
 

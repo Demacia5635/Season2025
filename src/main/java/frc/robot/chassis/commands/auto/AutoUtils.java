@@ -12,8 +12,8 @@ import frc.robot.PathFollow.PathFollow;
 import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.PathFollow.Util.Segment;
 
-import static frc.robot.chassis.constants.ChassisConstants.*;
-import static frc.robot.vision.VisionConstants.*;
+import static frc.robot.chassis.utils.ChassisConstants.*;
+import static frc.robot.vision.utils.VisionConstants.*;
 
 import java.util.HashMap;
 
@@ -22,7 +22,7 @@ import frc.robot.chassis.subsystems.Chassis;
 public class AutoUtils {
 
 
-    static Chassis chassis = RobotContainer.robotContainer.chassis;
+    static Chassis chassis = RobotContainer.chassis;
     static double maxVel = MAX_DRIVE_VELOCITY;
     static double maxAceel = DRIVE_ACCELERATION;
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);

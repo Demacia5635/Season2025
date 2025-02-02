@@ -76,13 +76,13 @@ public class PathFollow extends Command {
   double minVel = 0.2;
 
   public PathFollow(PathPoint[] points, double velocity) {
-    this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,
+    this(RobotContainer.chassis, points, velocity, velocity * 2,
         0, RobotContainer.isRed());
     this.maxVel = velocity;
   }
 
   public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise) {
-    this(RobotContainer.robotContainer.chassis, points, maxVel,
+    this(RobotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
     this.finalAngle = finalAngle;
@@ -92,7 +92,7 @@ public class PathFollow extends Command {
   }
 
   public PathFollow(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag) {
-    this(RobotContainer.robotContainer.chassis, points, maxVel,
+    this(RobotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
     this.finalAngle = finalAngle;

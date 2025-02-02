@@ -5,7 +5,6 @@
 package frc.robot.robot1.gripper.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.robot1.gripper.constants.GripperConstants.GrabConstants;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
 /**

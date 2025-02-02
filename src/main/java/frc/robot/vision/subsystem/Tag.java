@@ -10,9 +10,8 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.utils.LogManager;
 
-import static frc.robot.vision.VisionConstants.*;
+import static frc.robot.vision.utils.VisionConstants.*;
 
 import java.util.function.Supplier;
 

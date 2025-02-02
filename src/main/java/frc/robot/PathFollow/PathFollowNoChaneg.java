@@ -1,6 +1,5 @@
 package frc.robot.PathFollow;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -13,17 +12,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.utils.LogManager;
 
-
 import edu.wpi.first.math.trajectory.Trajectory.State;
 
 import static frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
 import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-
-import org.opencv.objdetect.BarcodeDetector;
 
 import frc.robot.RobotContainer;
 import frc.robot.PathFollow.Util.Leg;
@@ -32,9 +27,7 @@ import frc.robot.PathFollow.Util.Segment;
 import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.chassis.commands.auto.AlignToTag;
 import frc.robot.chassis.commands.auto.AutoUtils;
-import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
-import frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.utils.TrapezoidNoam;
@@ -98,12 +91,12 @@ public class PathFollowNoChaneg extends Command {
    */
 
   public PathFollowNoChaneg(PathPoint[] points, double velocity) {
-    this(RobotContainer.robotContainer.chassis, points, velocity, velocity * 2,
+    this(RobotContainer.chassis, points, velocity, velocity * 2,
         0, RobotContainer.isRed());
         this.maxVel = velocity;
   }
   public PathFollowNoChaneg(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise) {
-    this(RobotContainer.robotContainer.chassis, points, maxVel,
+    this(RobotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
     this.finalAngle = finalAngle;
@@ -115,7 +108,7 @@ public class PathFollowNoChaneg extends Command {
   }
 
   public PathFollowNoChaneg(PathPoint[] points, Rotation2d finalAngle, double maxVel, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag) {
-    this(RobotContainer.robotContainer.chassis, points, maxVel,
+    this(RobotContainer.chassis, points, maxVel,
         8,
         0, RobotContainer.isRed());
     this.finalAngle = finalAngle;

@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.chassis.constants.ChassisConstants;
+import frc.robot.chassis.utils.ChassisConstants;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.Utils;

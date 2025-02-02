@@ -6,7 +6,7 @@ package frc.robot.PathFollow.Util;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import static frc.robot.chassis.constants.ChassisConstants.*;
+import static frc.robot.chassis.utils.ChassisConstants.*;
 
 /** Add your docs here. */
 public class Arc extends Segment{
