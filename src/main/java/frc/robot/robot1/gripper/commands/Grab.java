@@ -4,9 +4,11 @@
 
 package frc.robot.robot1.gripper.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot1.gripper.constants.GripperConstants.GrabConstants;
 import frc.robot.robot1.gripper.subsystems.Gripper;
+import frc.robot.utils.LogManager;
 
 /**
  * the grab command.
@@ -19,9 +21,11 @@ public class Grab extends Command {
 
   /** the gripper subsystem */
   private Gripper gripper;
-  // private boolean hasSeen;
+  private boolean hasSeen;
   private int upCount = 0;
   private int downCount = 0;
+  private Timer timer;
+  private boolean notSeenAnySensor;
 
   /**
    * creates a new grab command,
@@ -33,7 +37,8 @@ public class Grab extends Command {
    */
   public Grab(Gripper gripper) {
     this.gripper = gripper;
-    // this.hasSeen = false;
+    this.hasSeen = false;
+    this.timer = new Timer();
     addRequirements(gripper);
   }
 
@@ -45,9 +50,10 @@ public class Grab extends Command {
    */
   @Override
   public void initialize() {
-    // hasSeen = false;
+    hasSeen = false;
     upCount = 0;
     downCount = 0;
+    notSeenAnySensor = false;
   }
 
   /**
@@ -58,25 +64,48 @@ public class Grab extends Command {
    */
   @Override
   public void execute() {
-    if (gripper.isCoral()) {
+    if (gripper.isCoralDownSensor() && !timer.isRunning()) {
+      // timer.start();
+      hasSeen = true;
       gripper.stop();
-      downCount = 0;
-      upCount = 0;
-    } else if (gripper.isCoralUpSensor()) {
-      downCount++;
-      upCount = 0;
-    } else if (gripper.isCoralDownSensor()) {
-      upCount++;
-      downCount = 0;
-    } else {
-      gripper.setPower(GrabConstants.FEED_POWER);
     }
 
-    if (upCount >= 10) {
-      gripper.setPower(GrabConstants.UP_POWER);
-    }
-    if (downCount >= 10) {
-      gripper.setPower(GrabConstants.DOWN_POWER);
+    // if (timer.hasElapsed(0.05) && !hasSeen) {
+    //   LogManager.log("hasSeen = true");
+    //   hasSeen = true;
+    // }
+
+    if (!hasSeen) {
+      gripper.setPower(GrabConstants.FEED_POWER);
+    } else {
+      if (gripper.isCoral()) {
+        gripper.stop();
+        downCount = 0;
+        upCount = 0;
+      } else if (gripper.isCoralUpSensor()) {
+        downCount++;
+        upCount = 0;
+        if (notSeenAnySensor) {
+          notSeenAnySensor = false;
+          gripper.stop();
+        }
+      } else if (gripper.isCoralDownSensor()) {
+        upCount++;
+        downCount = 0;
+        if (notSeenAnySensor) {
+          notSeenAnySensor = false;
+          gripper.stop();
+        }
+      } else {
+        gripper.setPower(GrabConstants.DOWN_POWER);
+        notSeenAnySensor = true;
+      }
+      
+      if (upCount >= 4) {
+        gripper.setPower(GrabConstants.UP_POWER);
+      } else if (downCount >= 4) {
+        gripper.setPower(GrabConstants.DOWN_POWER);
+      }
     }
   }
 
@@ -89,6 +118,8 @@ public class Grab extends Command {
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
+    timer.stop();
+    timer.reset();
   }
 
   /**
