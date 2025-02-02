@@ -35,7 +35,8 @@ public class Gripper extends SubsystemBase {
   /** The motor of the gripper */
   private final TalonSRX motor;
 
-  private final AnalogInput upSensor;
+  private final AnalogInput upFrontSensor;
+  private final AnalogInput upBackSensor;
   /** The sensor that tells if a coral is inside */
   private final AnalogInput downSensor;
 
@@ -56,7 +57,8 @@ public class Gripper extends SubsystemBase {
     motor.setNeutralMode(MotorConstants.START_NEUTRAL_MODE ? NeutralMode.Brake : NeutralMode.Coast);
 
     /* configure the sensors */
-    upSensor = new AnalogInput(SensorConstants.UP_SENSOR_CHANNEL);
+    upFrontSensor = new AnalogInput(SensorConstants.UP_FRONT_SENSOR_CHANNEL);
+    upBackSensor = new AnalogInput(SensorConstants.UP_BACK_SENSOR_CHANNEL);
     downSensor = new AnalogInput(SensorConstants.DOWN_SENSOR_CHANNEL);
 
     /* send to network tables staff */
@@ -68,7 +70,8 @@ public class Gripper extends SubsystemBase {
    */
   private void addNT() {
     /* put the sensors */
-    LogManager.addEntry(getName() + "/get up sensor", this::getUpSensor);
+    LogManager.addEntry(getName() + "/get up front sensor", this::getUpFrontSensor);
+    LogManager.addEntry(getName() + "/get up back sensor", this::getUpBackSensor);
     LogManager.addEntry(getName() + "/get down sensor", this::getDownSensor);
     LogManager.addEntry(getName() + "/Is Coral", this::isCoral);
 
@@ -108,8 +111,12 @@ public class Gripper extends SubsystemBase {
     motor.setNeutralMode(isBrake ? NeutralMode.Brake : NeutralMode.Coast);
   }
 
-  public double getUpSensor() {
-    return upSensor.getVoltage();
+  public double getUpFrontSensor() {
+    return upFrontSensor.getAverageVoltage();
+  }
+
+  public double getUpBackSensor() {
+    return upBackSensor.getAverageVoltage();
   }
 
   /**
@@ -122,7 +129,8 @@ public class Gripper extends SubsystemBase {
   }
 
   public boolean isCoralUpSensor() {
-    return getUpSensor() < SensorConstants.CORAL_IN_SENSOR;
+    return getUpFrontSensor() < SensorConstants.CORAL_IN_SENSOR 
+    || getUpBackSensor() < SensorConstants.CORAL_IN_SENSOR;
   }
 
   public boolean isCoralDownSensor() {
