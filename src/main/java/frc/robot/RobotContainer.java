@@ -183,13 +183,13 @@ public class RobotContainer implements Sendable{
     return isRed;
   }
 
-  public static void isRed(boolean isRed) {
+  public static void setIsRed(boolean isRed) {
     RobotContainer.isRed = isRed;
   }
 
   @Override
   public void initSendable(SendableBuilder builder) {
-      builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::isRed);
+      builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::setIsRed);
   }
 
   /**

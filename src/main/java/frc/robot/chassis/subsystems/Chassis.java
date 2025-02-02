@@ -95,25 +95,35 @@ public class Chassis extends SubsystemBase {
         setModuleStates(states);
     }
 
-    public void setVelocitiesAccelLim(ChassisSpeeds speeds, double maxDriveAccel, double maxRotAccel) {
-        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
-        ChassisSpeeds currentSpeeds = getChassisSpeeds();
-
-        double dvx = speeds.vxMetersPerSecond - currentSpeeds.vxMetersPerSecond;
-        double dvy = speeds.vyMetersPerSecond - currentSpeeds.vyMetersPerSecond;
-        double domega = speeds.omegaRadiansPerSecond - currentSpeeds.omegaRadiansPerSecond;
-        
-        dvx = Math.max(Math.min(dvx, maxDriveAccel), -maxDriveAccel);
-        dvy = Math.max(Math.min(dvy, maxDriveAccel), -maxDriveAccel);
-        domega = Math.max(Math.min(domega, maxRotAccel), -maxRotAccel);
-
-        speeds = new ChassisSpeeds(
-            currentSpeeds.vxMetersPerSecond + dvx,
-            currentSpeeds.vyMetersPerSecond + dvy,
-            currentSpeeds.omegaRadiansPerSecond + domega
-        );
+    public void setVelocitiesAccelLim(ChassisSpeeds speeds) {
+        ChassisSpeeds currentSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(getChassisSpeeds(), getGyroAngle());
+        Translation2d wantedVelVector = new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond);
+        Translation2d currentVelVector = new Translation2d(currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);
+        Rotation2d wantedVelAngle = wantedVelVector.getAngle();
+        Rotation2d currentVelAngle = currentVelVector.getAngle();
+        double wantedVelNorm = wantedVelVector.getNorm();
+        double currentVelNorm = currentVelVector.getNorm();
+        double newVel = wantedVelNorm;
+        if(wantedVelNorm > currentVelNorm + ChassisConstants.DRIVE_MAX_VEL_CHNAGE){
+            newVel = currentVelNorm + ChassisConstants.DRIVE_MAX_VEL_CHNAGE;
+        } else if(wantedVelNorm < currentVelNorm - ChassisConstants.DRIVE_MAX_VEL_CHNAGE){
+            newVel = currentVelNorm - ChassisConstants.DRIVE_MAX_VEL_CHNAGE;
+        }
+        double velForAngle = Math.max(ChassisConstants.MIN_DRIVE_VELOCITY_FOR_ROTATION, Math.abs(newVel));
+        double maxAngleChange = ChassisConstants.DRIVE_ACCELERATION / velForAngle * ChassisConstants.CYCLE_DT;
+        Rotation2d angleChange = wantedVelAngle.minus(currentVelAngle);
+        Rotation2d newAngle = wantedVelAngle;
+        if(angleChange.getRadians() > maxAngleChange){
+            newAngle = currentVelAngle.plus(Rotation2d.fromRadians(maxAngleChange));
+        } else if(angleChange.getRadians() < -maxAngleChange){
+            newAngle = currentVelAngle.minus(Rotation2d.fromRadians(maxAngleChange));
+        }
+        wantedVelVector = new Translation2d(newVel, newAngle);
+        ChassisSpeeds newSpeeds = new ChassisSpeeds(wantedVelVector.getX(), wantedVelVector.getY(), speeds.omegaRadiansPerSecond); 
+        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(newSpeeds, getGyroAngle());
 
         SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
+        SwerveKinematics.desaturateWheelSpeeds(states, ChassisConstants.MAX_DRIVE_VELOCITY);
         setModuleStates(states);
     }
 

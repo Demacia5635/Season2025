@@ -12,7 +12,11 @@ public class ChassisConstants {
     public static final double MAX_DRIVE_VELOCITY = 3.6;
     public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
 
-    public static final double DRIVE_ACCELERATION = 50;
+    public static final double DRIVE_ACCELERATION = 7;
+    public static final double DRIVE_MAX_VEL_CHNAGE = 7 * CYCLE_DT;
+    public static final double MIN_DRIVE_VELOCITY_FOR_ROTATION = 0.2;
+
+    
     public static final int GYRO_ID = 14;
     public static final CANBus CAN_BUS = CANBuses.CHASSIS_CAN_BUS;
     public static final CANBus GYRO_CAN_BUS = CANBuses.ARM_CAN_BUS;
