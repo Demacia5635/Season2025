@@ -37,7 +37,7 @@ public class Chassis extends SubsystemBase {
     public Tag fiderTag;
     public Tag bargeTag;
     public Tag backTag;
-    //public VisionFuse visionFuse;
+    public VisionFuse visionFuse;
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
@@ -67,10 +67,10 @@ public class Chassis extends SubsystemBase {
         fiderTag = new Tag(()->getGyroAngle(), 1);
         bargeTag = new Tag(()->getGyroAngle(), 2);
         backTag = new Tag(()->getGyroAngle(), 3);
-      //  visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
+        visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
 
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> setYaw(Rotation2d.fromDegrees(0))));
-      //  SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(visionFuse.getVisionEstimatedAngle())));
+        SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(visionFuse.getVisionEstimatedAngle())));
         SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
 
@@ -189,7 +189,7 @@ public class Chassis extends SubsystemBase {
     }
     
     private void updateVision(Pose2d pose){
-        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
+        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - visionFuse.getVisionTimestamp());
     }
 
     private Matrix getSTD(){
@@ -221,8 +221,8 @@ public class Chassis extends SubsystemBase {
     public void periodic() {
 
         //poseEstimator.setVisionMeasurementStdDevs(getSTD());
-        if(fiderTag.getPose() !=null){
-            updateVision(new Pose2d(fiderTag.getPose().getTranslation(), getGyroAngle()));
+        if(visionFuse.getPoseEstemation() !=null){
+            updateVision(new Pose2d(visionFuse.getPoseEstemation().getTranslation(), getGyroAngle()));
         }
         poseEstimator.update(getGyroAngle(), getModulePositions());
             
