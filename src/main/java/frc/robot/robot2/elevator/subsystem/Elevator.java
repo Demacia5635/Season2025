@@ -4,8 +4,6 @@
 
 package frc.robot.robot2.elevator.subsystem;
 
-import com.ctre.phoenix6.configs.SoftwareLimitSwitchConfigs;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,6 +14,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.TalonMotor;
 import frc.robot.robot2.elevator.ElevatorConstants;
 import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
+import frc.robot.robot2.elevator.ElevatorConstants.ElevatorLimits;
+import frc.robot.robot2.elevator.ElevatorConstants.ElevatorMotorConstants;
 import frc.robot.utils.LogManager;
 
 public class Elevator extends SubsystemBase {
@@ -31,14 +31,10 @@ public class Elevator extends SubsystemBase {
   public Elevator() {
     setName(ElevatorConstants.NAME);
 
-    this.motor = new TalonMotor(ElevatorConstants.motorConfig);
-    SoftwareLimitSwitchConfigs softwareLimitSwitchConfigs = new SoftwareLimitSwitchConfigs();
-    softwareLimitSwitchConfigs.withForwardSoftLimitEnable(hasReachedTop());
-    softwareLimitSwitchConfigs.withForwardSoftLimitEnable(hasReachedBottom());
-    this.motor.getConfigurator().apply(softwareLimitSwitchConfigs);
+    this.motor = new TalonMotor(ElevatorMotorConstants.motorConfig);
 
-    this.topLimitSwitch = new DigitalInput(ElevatorConstants.ElevatorLimits.TOP_SWITCH_ID);
-    this.bottomLimitSwitch = new DigitalInput(ElevatorConstants.ElevatorLimits.BOTTOM_SWITCH_ID);
+    this.topLimitSwitch = new DigitalInput(ElevatorLimits.TOP_SWITCH_ID);
+    this.bottomLimitSwitch = new DigitalInput(ElevatorLimits.BOTTOM_SWITCH_ID);
 
     this.state = ELEVATOR_STATE.IDLE;
 
@@ -105,6 +101,13 @@ public class Elevator extends SubsystemBase {
     if (isCalibrated) {
       LogManager.log("Elevator has not calibrated", AlertType.kError);
       return;
+    }
+
+    if (position > ElevatorLimits.TOP_LIMIT_POSITION) {
+      position = ElevatorLimits.TOP_LIMIT_POSITION;
+    }
+    if (position < ElevatorLimits.BOTTOM_LIMIT_POSITION) {
+      position = ElevatorLimits.BOTTOM_LIMIT_POSITION;
     }
 
     motor.setPositionVoltage(position);
