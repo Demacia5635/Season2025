@@ -303,7 +303,7 @@ public class StationNav {
 
         System.out.println("tanFin : " + STATIONS[tansFin[0]]);
         System.out.println("tanFin2 : " + STATIONS[tansFin[1]]);
-
+        System.out.println("end");
         // if(PathsConstants.calc_cos(initial, STATIONS[tanInit2].getTranslation(), fin.getTranslation()) < PathsConstants.calc_cos(initial, STATIONS[tanInit].getTranslation(), fin.getTranslation()))
         //     tanInit = tanInit2;
 
@@ -315,15 +315,17 @@ public class StationNav {
         // System.out.println("tanFin : " + STATIONS[tanFin]);
 
         tansFin[0] = shiftTan(tansFin[0],closeFin,fin.getTranslation());
-        tansFin[0] = shiftTan(tansFin[0],closeFin,fin.getTranslation());
-        tanInit = shiftTan(tanInit, closeInit, initial);
+        tansFin[1] = shiftTan(tansFin[1],closeFin,fin.getTranslation());
+        tansInit[0] = shiftTan(tansInit[0], closeInit, initial);
+        tansInit[1] = shiftTan(tansInit[1], closeInit, initial);
 
-        // int[] gates = optimzeGates(tanInit, tanFin, closeInit, closeFin);
+
+        int[] gates = optimzeGates(tansInit[0], tansFin[0], tansInit[1], tansFin[1]);
         
-        if(decideCounter(tanInit, tanFin))
-            return bridgeCounter(tanInit, tanFin, initial, fin);
+        if(decideCounter(gates[0], gates[1]))
+            return bridgeCounter(gates[0], gates[1], initial, fin);
         else
-            return bridgeClock(tanInit, tanFin, initial, fin);
+            return bridgeClock(gates[0], gates[1], initial, fin);
         
         
     }
