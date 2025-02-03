@@ -22,19 +22,22 @@ public class GripperConstants {
 
     /** All the sensor constants */
     public static class SensorConstants {
-        public static final int SENSOR_CHANNEL = 0;
-        public static final double CORAL_IN_SENSOR = 3.3;
+        public static final int UP_FRONT_SENSOR_CHANNEL = 1;
+        public static final int UP_BACK_SENSOR_CHANNEL = 2;
+        public static final int DOWN_SENSOR_CHANNEL = 0;
+        public static final double CORAL_IN_SENSOR = 4.7;
     }
 
     /** All the constants for the grab command */
     public static class GrabConstants {
-        public static final double FEED_POWER = 0.2;
+        public static final double FEED_POWER = 0.3;
+        public static final double DOWN_POWER = 0.25;
+        public static final double UP_POWER = -0.25;
     }
 
     /** All the constants for the drop command */
     public static class DropConstants {
         public static final double DROP_POWER = 0.8;
-        public static final double DROP_DURATION = 3;
     }
 
     public static class FixConstants {
