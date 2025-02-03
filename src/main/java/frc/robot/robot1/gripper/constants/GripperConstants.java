@@ -42,9 +42,4 @@ public class GripperConstants {
     public static class DropConstants {
         public static final double DROP_POWER = 0.8;
     }
-
-    public static class FixConstants {
-        public static final double FIX_POWER = 0.1;        
-    }
-
 }
