@@ -1,8 +1,9 @@
 package frc.robot.utils;
 
+import static frc.robot.utils.constants.UtilsContants.*;
+
 import edu.wpi.first.wpilibj.Alert;
 import edu.wpi.first.wpilibj.Timer;
-import static frc.robot.utils.UtilsContants.*;
 
 public class ConsoleAlert extends Alert{
   Timer timer;

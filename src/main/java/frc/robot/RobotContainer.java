@@ -4,136 +4,227 @@
 
 package frc.robot;
 
-import java.util.function.Consumer;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-// import edu.wpi.first.math.proto.System; // Removed to avoid conflict with java.lang.System
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.PathFollow.PathFollow;
-import frc.robot.PathFollow.Util.PathPoint;
-import frc.robot.PathFollow.Util.StationNav;
+
+import frc.robot.Constants.OperatorConstants;
 import frc.robot.chassis.commands.Drive;
-import frc.robot.chassis.commands.KeepSpinning;
-import frc.robot.chassis.commands.auto.AlignToTag;
-import frc.robot.chassis.commands.auto.AutoUtils;
-import frc.robot.chassis.commands.auto.Auto_3Coral;
-import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
+import frc.robot.chassis.commands.auto.AutoUtils.LEVEL;
+import frc.robot.chassis.commands.auto.AutoIntake;
+import frc.robot.chassis.commands.auto.AutoUtils;
+import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.chassis.subsystems.SwerveModule;
+import frc.robot.robot1.arm.commands.ArmCommand;
+import frc.robot.robot1.arm.commands.ArmDrive;
+import frc.robot.robot1.arm.commands.ArmCalibration;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.gripper.commands.Drop;
+import frc.robot.robot1.gripper.commands.Grab;
+import frc.robot.robot1.gripper.subsystems.Gripper;
+import frc.robot.leds.Robot1Strip;
+import frc.robot.leds.subsystems.LedManager;
+import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
-import static frc.robot.chassis.commands.auto.AutoUtils.*;
+import frc.robot.utils.CommandController.ControllerType;
 
-
-
+/**
+ * This class is where the bulk of the robot should be declared. Since Command-based is a
+ * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
+ * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
+ * subsystems, commands, and trigger mappings) should be declared here.
+ */
 public class RobotContainer implements Sendable{
+
   public static RobotContainer robotContainer;
-  LogManager logManager;
-  public static Boolean isRed = false;
-  public int id = 0;
-  public int elementid = 0;
-  public Chassis chassis;
-  Drive drive;
-  double num = 0;
-  private System sysid;
-  private CommandXboxController controller;
-  PathFollow follow;
+  public static LedManager ledManager;
+  public static CommandController controller;
+  public static boolean isRed = true;
+
+  public static Chassis chassis;  
+  public static Arm arm;
+  public static Gripper gripper;
+  public static Robot1Strip robot1Strip;
+
+  public static Drive drive;
+
+  public static ArmCalibration armCalibration;
+  public static ArmCommand armCommand;
+  public static ArmDrive armDrive;
+  public static Command armSetStateTesting;
+  public static goToPlace goToOutake;
+  public static goToPlace goToIntake;
+
+  public static Grab grab;
+  public static Drop drop;
+
+  public FIELD_POSITION fieldPosition;
+  public LEVEL level;
 
 
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    robotContainer = this;
-    logManager = new LogManager();
-    chassis = new Chassis();
-    drive = new Drive(chassis, new CommandXboxController(0));
-
-    
-    AutoUtils a = new AutoUtils(); //no need to use only to update values
-
-    chassis.setDefaultCommand(drive);
+    new AutoUtils();
+    new LogManager();
+    ledManager = new LedManager();
+    controller = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
+    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
-    controller = new CommandXboxController(0);
 
-    this.follow = new PathFollow(StationNav.genLineByDis(new Translation2d(0,0), new Pose2d(6,6, new Rotation2d(0)), 2),2,true,true);
-
-    this.follow.initialize();
-
-    PathPoint[] points = this.follow.getPoints();//StationNav.genLineByDis(new Translation2d(4,0), new Pose2d(0,5, new Rotation2d(0)), 2);
-    double[] radius = this.follow.getRadius();
-
-    System.out.println("Points : ");
-    for(int i = 0; i < points.length; i++)
-    {
-      System.out.println(points[i]);
-    }
-
-
-    System.out.println("Radius : ");
-    for(int i = 0; i < radius.length; i++)
-    {
-      System.out.println(i + " : " + radius[i]);
-    }
-
-
-
+    configureSubsytems();
+    configureCommands();
+    configureDefaultCommands();
     configureBindings();
+    addNT();
   }
-  public double getNum(){ return num;}
-  public void setNum(double num){this.num = num;}
+
+  /**
+   * This function start all the subsytems.
+   * Put here all the subsystems you want to use.
+   * This function is called at the robot container constractor.
+   */
+  private void configureSubsytems() {
+    chassis = new Chassis();
+    arm = new Arm();
+    gripper = new Gripper();
+    robot1Strip = new Robot1Strip(arm, gripper);
+  }
+
+  private void addNT() {
+    SendableChooser<FIELD_POSITION> fieldChooser = new SendableChooser<>();
+    fieldChooser.addOption("A", FIELD_POSITION.A);
+    fieldChooser.addOption("B", FIELD_POSITION.B);
+    fieldChooser.addOption("C", FIELD_POSITION.C);
+    fieldChooser.addOption("D", FIELD_POSITION.D);
+    fieldChooser.addOption("E", FIELD_POSITION.E);
+    fieldChooser.addOption("F", FIELD_POSITION.F);
+    fieldChooser.onChange(fieldPosition -> this.fieldPosition = fieldPosition);
+    SmartDashboard.putData("placement field Chooser", fieldChooser);
+
+    SendableChooser<LEVEL> LevelChooser = new SendableChooser<>();
+    LevelChooser.addOption("algea bottom", LEVEL.ALGAE_BOTTOM);
+    LevelChooser.addOption("algea top", LEVEL.ALGAE_TOP);
+    LevelChooser.addOption("L2 right", LEVEL.L2_RIGHT);
+    LevelChooser.addOption("L2 left", LEVEL.L2_LEFT);
+    LevelChooser.addOption("L3 right", LEVEL.L3_RIGHT);
+    LevelChooser.addOption("L3 left", LEVEL.L3_LEFT);
+    LevelChooser.onChange(level -> this.level = level);
+    SmartDashboard.putData("placement field Chooser", LevelChooser);
+  }
 
 
+  /**
+   * This function start all the commands.
+   * Put here all the commands you want to use.
+   * This function is called at the robot container constractor.
+   */
+  private void configureCommands() {
+    //drive = new Drive(chassis, controller);
+    drive = new Drive(chassis, controller);
+
+    armCalibration = new ArmCalibration(arm);
+    armCommand = new ArmCommand(arm);
+    // armDrive = new ArmDrive(arm, controller);
+    armSetStateTesting = new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.TESTING)).ignoringDisable(true);
+
+    grab = new Grab(gripper);
+    drop = new Drop(gripper);
+  }
+
+  /**
+   * This function set all the default commands to the subsystems.
+   * set all the default commands of the subsytems.
+   * This function is called at the robot container constractor
+   */
+  private void configureDefaultCommands() {
+    chassis.setDefaultCommand(drive);
+    arm.setDefaultCommand(armCommand);
+  }
+
+  /**
+   * Use this method to define your trigger->command mappings. Triggers can be created via the
+   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
+   * predicate, or via the named factories in {@link
+   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
+   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
+   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
+   * joysticks}.
+   */
   private void configureBindings() {
-    Trigger controllerOverride = new Trigger(
-      ()->new Translation2d(controller.getLeftX(), controller.getLeftY()).getNorm() <= 0.1);
 
-    controllerOverride.onTrue(drive);
-    controller.y().onTrue(new goToPlace(FIELD_POSITION.D, ELEMENT.ALGAE, 3.5));
-    controller.x().onTrue(new InstantCommand(()->chassis.setGyroAngle(chassis.tag.alignRobot())));
+    controller.leftButton().onTrue(new ArmCalibration(arm));
+    // .alongWith(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5), new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))
+    controller.rightButton().onTrue(new Drop(gripper));
+    controller.leftBumper().onTrue(getDisableInitCommand());
 
+    controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
+    controller.rightBumper().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)));
+    controller.rightSetting().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
 
-    controller.start().onTrue(new AlignToTag(chassis, false, true, false));
+    controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
 
+    controller.downButton().onTrue(new AutoIntake(chassis, arm, gripper, true));
+    controller.leftSettings().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L2_LEFT, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
+    controller.povDown().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L3_LEFT, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
 
-
-  }
-
-  public static void isRed(boolean isRed) {
-    RobotContainer.isRed = isRed;
   }
 
   public static boolean isRed() {
     return isRed;
   }
-  public void setID(int id) {
-    this.id = id;
-  }
-  public int getID() {
-    return this.id;
-  }
-  public void setElementID(int id) {
-    this.elementid = id;
-  }
-  public int getElementID() {
-    return this.elementid;
-  }
-  @Override
-  public void initSendable(SendableBuilder builder) {
-    builder.addDoubleProperty("NUM", ()->getNum(), (double num)->setNum(num));
-    builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::isRed);
-    builder.addDoubleProperty("ID", this::getID, (double id)->setID((int) id));
-    builder.addDoubleProperty("ElementID", this::getElementID, (double id)->setElementID((int) id));
+
+  public static void setIsRed(boolean isRed) {
+    RobotContainer.isRed = isRed;
   }
 
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::setIsRed);
+  }
+
+  /**
+   * This command is schedules at the start of teleop.
+   * Look in {@link Robot} for more details.
+   * @return the ommand that start at the start at enable
+   */
+  public Command getEnableInitCommand() {
+    return armCalibration;
+  }
+
+  /**
+   * This command is schedules at the start of disable.
+   * Put here all the stop functions of all the subsytems and then add them to the requirments
+   * This insures that the motors do not keep their last control mode earlier and moves uncontrollably.
+   * Look in {@link Robot} for more details.
+   * @return the command that runs at disable
+   */
+  public Command getDisableInitCommand() {
+    Command initDisableCommand = new InstantCommand(()-> {
+      chassis.stop();
+      arm.stop();
+      gripper.stop();
+    }, chassis, arm, gripper
+    ).ignoringDisable(true);
+    initDisableCommand.setName("Init Disable Command");
+    return initDisableCommand;
+  }
+
+  /**
+   * Use this to pass the autonomous command to the main {@link Robot} class.
+   *
+   * @return the command to run in autonomous
+   */
   public Command getAutonomousCommand() {
-    return this.follow;  
+    return new AutoIntake(chassis, arm, gripper, true);
   }
 }

@@ -12,7 +12,7 @@ import frc.robot.PathFollow.PathFollow;
 import frc.robot.PathFollow.Util.PathPoint;
 import frc.robot.PathFollow.Util.Segment;
 
-import static frc.robot.chassis.constants.ChassisConstants.*;
+import static frc.robot.chassis.utils.ChassisConstants.*;
 import static frc.robot.vision.utils.VisionConstants.*;
 
 import java.util.HashMap;
@@ -22,13 +22,14 @@ import frc.robot.chassis.subsystems.Chassis;
 public class AutoUtils {
 
 
-    static Chassis chassis = RobotContainer.robotContainer.chassis;
+    static Chassis chassis = RobotContainer.chassis;
     static double maxVel = MAX_DRIVE_VELOCITY;
     static double maxAceel = DRIVE_ACCELERATION;
     static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
     static boolean isRed = RobotContainer.isRed();
     static Translation2d strateOffset = new Translation2d(1.5, 0);
-    static Translation2d cornerOffsetLeft = new Translation2d(0., 0.48);
+    static Translation2d practicalOffsetFeeder = new Translation2d(0.76, 0);
+    static Translation2d cornerOffsetLeft = new Translation2d(0, 0.48);
     static Translation2d cornerOffsetRight = new Translation2d(0., -0.48);
     
     
@@ -42,18 +43,15 @@ public class AutoUtils {
     public enum ELEMENT{
         ALGAE, CORAL_RIGHT, CORAL_LEFT, FEEDER
     }
+
+    public enum LEVEL{
+        L2_RIGHT,L2_LEFT, L3_RIGHT, L3_LEFT, ALGAE_BOTTOM, ALGAE_TOP, FEEDER
+    }
     
     public static HashMap<FIELD_POSITION, PathPoint> fieldElements = new HashMap<>();
-    static {
-        fieldElements.put(FIELD_POSITION.FEEDER_LEFT, getElement(1, strateOffset));
-        fieldElements.put(FIELD_POSITION.FEEDER_RIGHT, getElement(2, strateOffset));
-        fieldElements.put(FIELD_POSITION.A, getElement(6, strateOffset));
-        fieldElements.put(FIELD_POSITION.B, getElement(7, strateOffset));
-        fieldElements.put(FIELD_POSITION.C, getElement(8, strateOffset));
-        fieldElements.put(FIELD_POSITION.D, getElement(9, strateOffset));
-        fieldElements.put(FIELD_POSITION.E, getElement(10, strateOffset));
-        fieldElements.put(FIELD_POSITION.F, getElement(11, strateOffset));
-    }
+
+    public static HashMap<FIELD_POSITION, PathPoint> fieldElementsPractical = new HashMap<>();
+    
 
     public static Segment[] REEF_SEGMENTS = {
         getSegments(6),
@@ -102,12 +100,44 @@ public class AutoUtils {
         return new Segment(O_TO_TAG[elementTag].plus(cornerOffsetRight.rotateBy(TAG_ANGLE[elementTag])), O_TO_TAG[elementTag].plus(cornerOffsetLeft.rotateBy(TAG_ANGLE[elementTag])), false);
     }
 
+    public static double L2DIST = -0.84;
+    public static double L3DIST = -0.95;
+    public static double ALGAE_TOP_DIST = 0;
+    public static double ALGAE_BOTTOM_DIST = 0;
+
+    public static double FEEDER_DIST = -(0.93);
+    public static double RIGHT_SIDE_DIST = 0.20;
+    public static double LEFT_SIDE_DIST = -0.20;
+
+
 
     public AutoUtils(){
-        fieldElements.put(FIELD_POSITION.FEEDER_LEFT, new PathPoint(new Translation2d(15.5, 1.8), Rotation2d.fromDegrees(-55)));
+        fieldElements.put(FIELD_POSITION.FEEDER_LEFT, getElement(1, strateOffset));
+        fieldElements.put(FIELD_POSITION.FEEDER_RIGHT, getElement(2, strateOffset));
+        fieldElements.put(FIELD_POSITION.A, getElement(6, strateOffset));
+        fieldElements.put(FIELD_POSITION.B, getElement(7, strateOffset));
+        fieldElements.put(FIELD_POSITION.C, getElement(8, strateOffset));
+        fieldElements.put(FIELD_POSITION.D, getElement(9, strateOffset));
+        fieldElements.put(FIELD_POSITION.E, getElement(10, strateOffset));
+        fieldElements.put(FIELD_POSITION.F, getElement(11, strateOffset));
+
+
+        
+        fieldElementsPractical.put(FIELD_POSITION.FEEDER_LEFT, getElement(1, practicalOffsetFeeder));
+        fieldElementsPractical.put(FIELD_POSITION.FEEDER_RIGHT, getElement(2, practicalOffsetFeeder));
+        fieldElementsPractical.put(FIELD_POSITION.A, getElement(6, strateOffset));
+        fieldElementsPractical.put(FIELD_POSITION.B, getElement(7, strateOffset));
+        fieldElementsPractical.put(FIELD_POSITION.C, getElement(8, strateOffset));
+        fieldElementsPractical.put(FIELD_POSITION.D, getElement(9, strateOffset));
+        fieldElementsPractical.put(FIELD_POSITION.E, getElement(10, strateOffset));
+        fieldElementsPractical.put(FIELD_POSITION.F, getElement(11, strateOffset));
+
+
     }
 
-
+    public boolean isSeeTag(int id, int cameraId, double distance){
+        return chassis.isSeeTag(id, cameraId, distance);
+    }
 
     public static void addCommands(Command c, SequentialCommandGroup cmd) {
         cmd.addCommands(c);
@@ -134,7 +164,7 @@ public class AutoUtils {
     public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise){
         return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise);
     }
-    public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag){
+    public static Command HasgoToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise, FIELD_POSITION toGoElement, AlignToTag alignToTag){
         return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise, toGoElement, alignToTag);
     }
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker) {
@@ -153,6 +183,7 @@ public class AutoUtils {
         return new RunCommand(()-> chassis.setVelocities(
             new ChassisSpeeds(1.5, 0, 0)), chassis).withTimeout(3);
     }
+    
 
     
 }

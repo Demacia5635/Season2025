@@ -106,8 +106,8 @@ public class VisionConstants {
         REEF_TAG_HIGHT,//22
     };
 
-    public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-0.52,-0.160);
-    public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-0.52,0.160);
+    public static final Translation2d REEF_TAG_TO_RIGHT_SCORING = new Translation2d(-0.55,-0.160);
+    public static final Translation2d REEF_TAG_TO_LEFT_SCORING = new Translation2d(-0.55,0.160);
     public static final Translation2d INTAKE_TAG_TO_LEFT_SCORING = new Translation2d(-0.85,0.0);
 
     /**
@@ -121,16 +121,16 @@ public class VisionConstants {
     
     // 0 is LEFT TAG(ll2), 1 is RIGHT TAG, 2 is SIDE TAG, 3 is NOTE.
     //TAG Camera mounting configuration
-    public static final double[] CAM_HIGHT = {0.187,0.9,0.9};
-    public static final double[] CAM_PITHC = {67.886,30,45};
-    public static final double[] CAM_YAW = {0,0,90};
+    public static final double[] CAM_HIGHT = {0.788,0.9,0.9,0.79};
+    public static final double[] CAM_PITHC = {61.9,33,38.5,73.1};// check!!!!!!!!!!!!!
+    public static final double[] CAM_YAW = {11,15.46,180+15.46,169};
 
     // Camera to Tag position relative to robot center
-    public static final Translation2d[] ROBOT_TO_CAM = {new Translation2d(0.11900924, -0.28956334),new Translation2d(0.1043341, -0.287903),new Translation2d(0.95199,-0.287903)};
+    public static final Translation2d[] ROBOT_TO_CAM = {new Translation2d(0.13, -0.27),new Translation2d(0.1043341, -0.287903),new Translation2d(0.0093341,-0.287903),new Translation2d(-0.0250,0.284)};
 
 
     // NetworkTables key for AprilTag vision data
-    public static final String[] TABLE = {"limelight-bottom","limelight-front","limelight-back"};
+    public static final String[] TABLE = {"limelight-bottom","limelight-front","limelight-back", "limelight-backup"};
 
     
     // resolution of cam

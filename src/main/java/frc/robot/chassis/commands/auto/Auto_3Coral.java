@@ -11,7 +11,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.PathFollow.Util.PathPoint;
 import static frc.robot.chassis.commands.auto.AutoUtils.*;
-import static frc.robot.PathFollow.PathFollow.*;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Auto_3Coral extends Command {

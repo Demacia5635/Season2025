@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends TimedRobot {
   private Command m_autonomousCommand;
+  private Command m_disableInitCommand;
+  private Command m_enableInitCommand;
+  private boolean m_hasScheduled;
 
   private final RobotContainer m_robotContainer;
 
@@ -26,6 +29,7 @@ public class Robot extends TimedRobot {
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     m_robotContainer = new RobotContainer();
+    m_hasScheduled = false;
   }
 
   /**
@@ -46,7 +50,13 @@ public class Robot extends TimedRobot {
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
-  public void disabledInit() {}
+  public void disabledInit() {
+    m_disableInitCommand = m_robotContainer.getDisableInitCommand();
+
+    if (m_disableInitCommand != null) {
+      m_disableInitCommand.schedule();
+    }
+  }
 
   @Override
   public void disabledPeriodic() {}
@@ -74,6 +84,14 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
+    }
+    
+    if (!m_hasScheduled) {
+      m_enableInitCommand = m_robotContainer.getEnableInitCommand();
+      if (m_enableInitCommand != null) {
+        m_enableInitCommand.schedule();
+        m_hasScheduled = true;
+      }
     }
   }
 
