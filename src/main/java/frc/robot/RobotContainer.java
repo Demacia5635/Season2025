@@ -63,11 +63,11 @@ public class RobotContainer implements Sendable{
     SmartDashboard.putData("RC", this);
     controller = new CommandXboxController(0);
 
-    this.follow = new PathFollow(StationNav.genLineByDis(new Translation2d(6,6), new Pose2d(0,0, new Rotation2d(0)), 2),2,true,true);
+    this.follow = new PathFollow(StationNav.genLineByDis(new Translation2d(0,0), new Pose2d(6,6, new Rotation2d(0)), 2),2,true,true);
 
     this.follow.initialize();
 
-    PathPoint[] points = StationNav.genLineByDis(new Translation2d(4,0), new Pose2d(0,5, new Rotation2d(0)), 2);
+    PathPoint[] points = this.follow.getPoints();//StationNav.genLineByDis(new Translation2d(4,0), new Pose2d(0,5, new Rotation2d(0)), 2);
     double[] radius = this.follow.getRadius();
 
     System.out.println("Points : ");
