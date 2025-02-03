@@ -4,7 +4,12 @@
 
 package frc.robot;
 
+import static frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITIONS;
+import static frc.robot.chassis.commands.auto.AutoUtils.fieldElements;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,6 +21,9 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.PathFollow.PathFollow;
+import frc.robot.PathFollow.Util.PathPoint;
+import frc.robot.PathFollow.Util.StationNav;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
@@ -71,6 +79,7 @@ public class RobotContainer implements Sendable{
   public FIELD_POSITION fieldPosition;
   public LEVEL level;
 
+  PathFollow follow;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -80,6 +89,8 @@ public class RobotContainer implements Sendable{
     controller = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
+
+
 
     configureSubsytems();
     configureCommands();
@@ -225,6 +236,18 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new AutoIntake(chassis, arm, gripper, true);
+    Translation2d first = new Translation2d(16.68,0.65);
+    Translation2d last = new Translation2d(12.64,4.74).plus(new Translation2d(-3,2));
+    this.follow = new PathFollow(StationNav.genLineByDis(first, new Pose2d(last ,new Rotation2d(0)), 1), 1);
+
+    PathPoint[] points = this.follow.getPoints();
+
+    System.out.println("Points: ");
+    for(int i = 0; i < points.length; i++)
+    {
+      System.out.println(points[i]);
+    }
+    System.out.println("Points: ");
+    return this.follow; //AutoIntake(chassis, arm, gripper, true);
   }
 }

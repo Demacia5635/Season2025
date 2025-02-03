@@ -323,6 +323,11 @@ public class PathFollow extends Command {
     segmentIndex = 0;
   }
 
+
+  public PathPoint[] getPoints()
+  {
+    return this.points;
+  }
   @Override
   public void execute() {
 

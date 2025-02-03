@@ -24,7 +24,7 @@ class PathsConstants {
     public final static double MIN_SEGMENT_LENGTH = 0.15;
     public final static double MAX_RADIAL_ACCEL = -1;
 
-    public final static Translation2d STATION_CENTER = new Translation2d((1.57 + 1.8)/Math.sqrt(2),(1.57 + 1.8)/Math.sqrt(2));
+    public final static Translation2d STATION_CENTER = new Translation2d(13.05,4.01);
 
     private PathsConstants()
     {
@@ -32,12 +32,12 @@ class PathsConstants {
         STATIONS = new Pose2d[12];
         for(int i = 0; i < 12; i++)
         {
-            STATIONS[i] = new Pose2d(new Translation2d(Math.cos((-(Math.PI*2)/12)* i - Math.PI/2) ,Math.sin((-(Math.PI*2)/12)* i - Math.PI/2)).times(STATION_RADIUS).plus(new Translation2d((1.57 + 1.8)/Math.sqrt(2),(1.57 + 1.8)/Math.sqrt(2))),new Rotation2d(0));
+            STATIONS[i] = new Pose2d(new Translation2d(Math.cos((-(Math.PI*2)/12)* i - Math.PI/2) ,Math.sin((-(Math.PI*2)/12)* i - Math.PI/2)).times(STATION_RADIUS).plus(new Translation2d(13.05,4.01)),new Rotation2d(0));
         }
     }
 
     
-    public final static double STATION_RADIUS = 1.2 + 0.6;
+    public final static double STATION_RADIUS = 1.185 + 0.55;
     public static Pose2d[] STATIONS; //please arrange it clockwise
 
     public static double dot_prod(Translation2d v1,Translation2d v2)
