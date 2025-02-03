@@ -1,5 +1,5 @@
 
-package frc.robot.PathFollow.Util;
+package frc.robot.Path.Utils;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
@@ -14,15 +14,11 @@ public class RoundedPoint{
     Rotation2d cornerDir;
     Rotation2d cornerAngle;
 
-    boolean aprilTagMode;
-
-    public RoundedPoint(PathPoint aPoint, PathPoint bPoint, PathPoint cPoint, boolean aprilTagMode){
+    public RoundedPoint(PathPoint aPoint, PathPoint bPoint, PathPoint cPoint){
         this.radius = bPoint.getRadius();
         this.aPoint = aPoint.getTranslation();
         this.bPoint = bPoint.getTranslation();
         this.cPoint = cPoint.getTranslation();
-        this.aprilTagMode = aprilTagMode;
-        
         vectorAtoB = this.bPoint.minus(this.aPoint);
         vectorBtoC = this.cPoint.minus(this.bPoint);
 
@@ -154,16 +150,16 @@ public class RoundedPoint{
 
     public Leg getAtoCurveLeg()
     {
-        return new Leg(aPoint, startRange().plus(getCenterCircle()), aprilTagMode);
+        return new Leg(aPoint, startRange().plus(getCenterCircle()));
     }
     public Leg getCtoCurveLeg()
     {
-        return new Leg(endRange().plus(getCenterCircle()), cPoint, aprilTagMode);
+        return new Leg(endRange().plus(getCenterCircle()), cPoint);
     }
 
     public Arc getArc()
     {
         Rotation2d diffAngle = endRange().getAngle().minus(startRange().getAngle());
-        return new Arc(startRange().plus(getCenterCircle()), getCenterCircle(), diffAngle, aprilTagMode);
+        return new Arc(startRange().plus(getCenterCircle()), getCenterCircle(), diffAngle);
     }
 }

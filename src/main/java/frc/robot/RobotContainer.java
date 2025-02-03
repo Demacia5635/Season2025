@@ -4,7 +4,10 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -16,13 +19,14 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Path.Trajectory.FollowTrajectory;
+import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
 import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils.LEVEL;
 import frc.robot.chassis.commands.auto.AutoIntake;
 import frc.robot.chassis.commands.auto.AutoUtils;
-import frc.robot.chassis.commands.auto.goToPlace;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmDrive;
@@ -62,8 +66,6 @@ public class RobotContainer implements Sendable{
   public static ArmCommand armCommand;
   public static ArmDrive armDrive;
   public static Command armSetStateTesting;
-  public static goToPlace goToOutake;
-  public static goToPlace goToIntake;
 
   public static Grab grab;
   public static Drop drop;
@@ -174,9 +176,9 @@ public class RobotContainer implements Sendable{
     controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
 
     controller.downButton().onTrue(new AutoIntake(chassis, arm, gripper, true));
-    controller.leftSettings().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L2_LEFT, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
+   /*controller.leftSettings().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L2_LEFT, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
     controller.povDown().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L3_LEFT, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
-
+ */ 
   }
 
   public static boolean isRed() {
@@ -225,6 +227,9 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new AutoIntake(chassis, arm, gripper, true);
+    ArrayList<PathPoint> points = new ArrayList<PathPoint>();
+    points.add(new PathPoint(new Translation2d(), new Rotation2d()));
+    points.add(new PathPoint(new Translation2d(15, 6.1), new Rotation2d()));
+    return new FollowTrajectory(chassis, points, Rotation2d.fromDegrees(180));
   }
 }

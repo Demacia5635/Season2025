@@ -8,9 +8,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
-import frc.robot.PathFollow.PathFollow;
-import frc.robot.PathFollow.Util.PathPoint;
-import frc.robot.PathFollow.Util.Segment;
+import frc.robot.Path.Utils.PathPoint;
+import frc.robot.Path.Utils.Segment;
 
 import static frc.robot.chassis.utils.ChassisConstants.*;
 import static frc.robot.vision.utils.VisionConstants.*;
@@ -25,7 +24,7 @@ public class AutoUtils {
     static Chassis chassis = RobotContainer.chassis;
     static double maxVel = MAX_DRIVE_VELOCITY;
     static double maxAceel = DRIVE_ACCELERATION;
-    static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0, false);
+    static PathPoint dummyPoint = new PathPoint(0, 0, new Rotation2d(), 0);
     static boolean isRed = RobotContainer.isRed();
     static Translation2d strateOffset = new Translation2d(1.5, 0);
     static Translation2d practicalOffsetFeeder = new Translation2d(0.76, 0);
@@ -97,7 +96,7 @@ public class AutoUtils {
     }
 
     public static Segment getSegments(int elementTag){
-        return new Segment(O_TO_TAG[elementTag].plus(cornerOffsetRight.rotateBy(TAG_ANGLE[elementTag])), O_TO_TAG[elementTag].plus(cornerOffsetLeft.rotateBy(TAG_ANGLE[elementTag])), false);
+        return new Segment(O_TO_TAG[elementTag].plus(cornerOffsetRight.rotateBy(TAG_ANGLE[elementTag])), O_TO_TAG[elementTag].plus(cornerOffsetLeft.rotateBy(TAG_ANGLE[elementTag])));
     }
 
     public static double L2DIST = -0.84;
@@ -148,8 +147,8 @@ public class AutoUtils {
     }
 
     public static PathPoint offset(Translation2d from, double x, double y, double angle, double radius) {
-        return new PathPoint(from.getX()+x, from.getY()+ y, Rotation2d.fromDegrees(angle),radius,false);
-    }
+        return new PathPoint(from.getX()+x, from.getY()+ y, Rotation2d.fromDegrees(angle),radius);
+    }/*
 
     public static  Command goTo(PathPoint point) {
         return goTo(point, maxVel, true);
@@ -157,9 +156,10 @@ public class AutoUtils {
     public static  Command goTo(PathPoint point, double maxV) {
         return goTo(point, maxV, true);
     }
+    
     public static  Command goToRotate(PathPoint point, double maxV, double rate) {
         return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxV, maxAceel,
-         0, false).setAutoRotate(rate);
+         0).setAutoRotate(rate);
     }
     public static Command goToMultiple(PathPoint[] points, double maxVel, Rotation2d finalAngle, boolean isConstVel, boolean isPrecise){
         return new PathFollow(points, finalAngle, maxVel, isConstVel, isPrecise);
@@ -173,11 +173,13 @@ public class AutoUtils {
     public static  Command goTo(PathPoint point, double maxv, boolean toSpeaker, double endV) {
         return new PathFollow(chassis, new PathPoint[] { dummyPoint, point }, maxv, maxAceel, endV, toSpeaker);
     }
+
+     
     public static Command goToLine(Pose2d point, Pose2d pose, double vel){
         Translation2d diff = point.getTranslation().minus(pose.getTranslation());
         return new RunCommand(()->chassis.setVelocitiesRotateToAngle(new ChassisSpeeds(vel * diff.getAngle().getCos(), vel * diff.getAngle().getSin(), 0), point.getRotation()));
     }
-
+*/
 
     public static Command leave() {
         return new RunCommand(()-> chassis.setVelocities(

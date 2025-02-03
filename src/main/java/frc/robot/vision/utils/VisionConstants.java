@@ -130,7 +130,7 @@ public class VisionConstants {
 
 
     // NetworkTables key for AprilTag vision data
-    public static final String[] TABLE = {"limelight-bottom","limelight-front","limelight-back", "limelight-backup"};
+    public static final String[] TABLE = {"","limelight-front","", ""};
 
     
     // resolution of cam

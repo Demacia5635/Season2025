@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.PathFollow.Util;
+package frc.robot.Path.Utils;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -13,7 +13,6 @@ public class Arc extends Segment{
 
     //p1 represents the start point, p2 represents the circle center
     Rotation2d angle;
-    double maxVel = 2;
 
 
     final Translation2d startVector;
@@ -24,10 +23,10 @@ public class Arc extends Segment{
      * @param p2 - Circle center of arc
      * @param angle - Arc's angle
      */
-    public Arc(Translation2d p1, Translation2d p2, Rotation2d angle, boolean isAprilTagMode)
+    public Arc(Translation2d p1, Translation2d p2, Rotation2d angle)
     {
         //start point
-        super(p1,p2, isAprilTagMode);
+        super(p1,p2);
         this.angle = angle;
 
         startVector = p1.minus(p2);
@@ -55,10 +54,8 @@ public class Arc extends Segment{
     }
 
     @Override
-    public Translation2d calc(Translation2d pos,double velocity)
+    public Translation2d calcVector(Translation2d pos,double velocity)
     {
-
-        if(isAprilTagMode()) velocity = Math.min(velocity, 1);
         Translation2d relativePos = pos.minus(p2);
         double dFromCenter = relativePos.getNorm();
 
