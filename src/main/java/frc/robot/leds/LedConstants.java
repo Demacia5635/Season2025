@@ -7,7 +7,7 @@ package frc.robot.leds;
 /**constants for leds */
 public class LedConstants {
   /**the size of every strip for every port */
-  public static final int LENGTH = 500;
+  public static final int LENGTH = 14;
   /**the port of the leds */
   public static final int PORT = 2;
 
