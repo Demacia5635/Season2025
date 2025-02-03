@@ -45,7 +45,8 @@ public class ElevatorCommand extends Command {
         break;
 
       case TESTING:
-          break;
+        elevator.setPositionVoltage(testHeight);
+        break;
 
       case IDLE:
         elevator.stop();
