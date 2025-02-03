@@ -234,12 +234,11 @@ public class StationNav {
         int closeInit = 0;
         int closeFin = 0;
 
-        int tanInit = 0;
-        int tanFin = 0;
+        int[] tansInit = {-1,-1};
+        double[] cosinesInit = {Double.MAX_VALUE,Double.MAX_VALUE};
 
-        //secound tangents
-        int tanInit2 = 0;
-        int tanFin2 = 0;
+        int[] tansFin = {-1,-1};
+        double[] cosinesFin = {Double.MAX_VALUE,Double.MAX_VALUE};
         
         for(int i = 1; i < STATIONS.length; i++)
         {
@@ -254,33 +253,43 @@ public class StationNav {
             double d_finclose = fin.getTranslation().minus(
                 STATIONS[closeFin].getTranslation()).getNorm();
             
-            double dot_init = PathsConstants.calc_cos(initial, station.getTranslation(), PathsConstants.STATION_CENTER); //cos(a)
-
-            double dot_initclose = PathsConstants.calc_cos(initial, STATIONS[tanInit].getTranslation(), PathsConstants.STATION_CENTER);
-
-            double dot_initclose2 = PathsConstants.calc_cos(initial, STATIONS[tanInit2].getTranslation(), PathsConstants.STATION_CENTER);
-
+            double cos_init = PathsConstants.calc_cos(initial, station.getTranslation(), PathsConstants.STATION_CENTER); //cos(a)
             
-            
-            double dot_fin = PathsConstants.calc_cos(PathsConstants.STATION_CENTER, station.getTranslation(), fin.getTranslation());
+            double cos_fin = PathsConstants.calc_cos(PathsConstants.STATION_CENTER, station.getTranslation(), fin.getTranslation());
 
-            double dot_finclose = PathsConstants.calc_cos(PathsConstants.STATION_CENTER, STATIONS[tanFin].getTranslation(),fin.getTranslation());
+            if(Math.abs(cos_init) < cosinesInit[0])
+            {
+                tansInit[1] = tansInit[0];
+                cosinesInit[1] = cosinesInit[0];
 
-            double dot_finclose2 = PathsConstants.calc_cos(PathsConstants.STATION_CENTER, STATIONS[tanFin2].getTranslation(),fin.getTranslation() );
-            
-            if(Math.abs(dot_init) < Math.abs(dot_initclose))
-                tanInit = i;
+                tansInit[0] = i;
+                cosinesInit[0] = Math.abs(cos_init);
+            }
             else
-            if(Math.abs(dot_init) < Math.abs(dot_initclose2) && Math.abs(dot_init) > Math.abs(dot_initclose))
-                tanInit2 = i;
-            
-            
+            {
+                if(Math.abs(cos_init) < cosinesInit[1])
+                {
+                    tansInit[1] = i;
+                    cosinesInit[1] = Math.abs(cos_init);
+                }
+            }
 
-            if(Math.abs(dot_fin) < Math.abs(dot_finclose))
-                tanFin = i;
+            if(Math.abs(cos_fin) < cosinesFin[0])
+            {
+                tansFin[1] = tansFin[0];
+                cosinesFin[1] = cosinesFin[0];
+
+                tansFin[0] = i;
+                cosinesFin[0] = Math.abs(cos_fin);
+            }
             else
-            if(Math.abs(dot_fin) < Math.abs(dot_finclose2) && Math.abs(dot_fin) > Math.abs(dot_finclose))
-                tanFin2 = i;
+            {
+                if(Math.abs(cos_fin) < cosinesFin[1])
+                {
+                    tansFin[1] = i;
+                    cosinesFin[1] = Math.abs(cos_fin);
+                }
+            }
 
             if (d_init < d_initclose)
                 closeInit = i;
@@ -289,23 +298,24 @@ public class StationNav {
         }
 
         
-        System.out.println("tanInit : " + STATIONS[tanInit]);
-        System.out.println("tanFin : " + STATIONS[tanFin]);
+        System.out.println("tanInit : " + STATIONS[tansInit[0]]);
+        System.out.println("tanInit2 : " + STATIONS[tansInit[1]]);
 
-        System.out.println("tanInit2 : " + STATIONS[tanInit2]);
-        System.out.println("tanFin2 : " + STATIONS[tanFin2]);
+        System.out.println("tanFin : " + STATIONS[tansFin[0]]);
+        System.out.println("tanFin2 : " + STATIONS[tansFin[1]]);
 
-        if(PathsConstants.calc_cos(initial, STATIONS[tanInit2].getTranslation(), fin.getTranslation()) < PathsConstants.calc_cos(initial, STATIONS[tanInit].getTranslation(), fin.getTranslation()))
-            tanInit = tanInit2;
+        // if(PathsConstants.calc_cos(initial, STATIONS[tanInit2].getTranslation(), fin.getTranslation()) < PathsConstants.calc_cos(initial, STATIONS[tanInit].getTranslation(), fin.getTranslation()))
+        //     tanInit = tanInit2;
 
-        if(PathsConstants.calc_cos(initial, STATIONS[tanFin2].getTranslation(), fin.getTranslation()) < PathsConstants.calc_cos(initial, STATIONS[tanFin].getTranslation(), fin.getTranslation()))
-            tanFin = tanFin2;
+        // if(PathsConstants.calc_cos(initial, STATIONS[tanFin2].getTranslation(), fin.getTranslation()) < PathsConstants.calc_cos(initial, STATIONS[tanFin].getTranslation(), fin.getTranslation()))
+        //     tanFin = tanFin2;
 
-        System.out.println("After");
-        System.out.println("tanInit : " + STATIONS[tanInit]);
-        System.out.println("tanFin : " + STATIONS[tanFin]);
+        // System.out.println("After");
+        // System.out.println("tanInit : " + STATIONS[tanInit]);
+        // System.out.println("tanFin : " + STATIONS[tanFin]);
 
-        tanFin = shiftTan(tanFin,closeFin,fin.getTranslation());
+        tansFin[0] = shiftTan(tansFin[0],closeFin,fin.getTranslation());
+        tansFin[0] = shiftTan(tansFin[0],closeFin,fin.getTranslation());
         tanInit = shiftTan(tanInit, closeInit, initial);
 
         // int[] gates = optimzeGates(tanInit, tanFin, closeInit, closeFin);
