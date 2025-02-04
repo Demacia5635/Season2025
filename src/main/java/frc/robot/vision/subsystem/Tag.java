@@ -113,7 +113,7 @@ public class Tag extends SubsystemBase {
         alpha = camToTagPitch + CAM_PITHC[cameraId];
         dist = (Math.abs(height - CAM_HIGHT[cameraId])) * (Math.tan(Math.toRadians(alpha)));
         //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-        LogManager.log(dist);
+        LogManager.log("dist" + dist);
         return Math.abs(dist);
       }
       alpha = camToTagPitch + CAM_PITHC[cameraId];
@@ -132,13 +132,11 @@ public class Tag extends SubsystemBase {
       // Convert camera measurements to vector
       cameraToTag = new Translation2d(GetDistFromCamera(),
           Rotation2d.fromDegrees(camToTagYaw));
-         
+      LogManager.log("cameraToTag :" +cameraToTag);
+      LogManager.log("Camera to Tag Yaw :" + camToTagYaw);
       // Add camera offset to get robot center to tag vector
       robotToTag = ROBOT_TO_CAM[cameraId].plus(cameraToTag);
-      if(cameraId == 2 || cameraId == 3){
-        robotToTag = robotToTag.rotateBy(Rotation2d.fromDegrees(180));
-      }      
-
+      LogManager.log("Robot to Tag :" + robotToTag);
       return robotToTag;
     }
 
@@ -156,7 +154,6 @@ public class Tag extends SubsystemBase {
       origintoTag = O_TO_TAG[(int)this.id == -1 ? 0 : (int)this.id];
 
 
-      height = TAG_HIGHT[(int)this.id == -1 ? 0 : (int)this.id];
       if(origintoTag != null) {
         // Get vector from robot to tag
         robotToTagRR = getRobotToTagRR();
@@ -171,6 +168,7 @@ public class Tag extends SubsystemBase {
         return new Translation2d();
                
       }
+
       private void crop(){
         double YawCrop = ((-camToTagYaw)+CAM_YAW[cameraId])/31.25;
         double PitchCrop = camToTagPitch/24.45;
