@@ -279,7 +279,7 @@ public class Chassis extends SubsystemBase {
 
 
 
-  PIDController rotationPid = new PIDController(2.3, 0.35, 0);
+  PIDController rotationPid = new PIDController(2.1, 0.35, 0);
   public void setVelocitiesRotateToAngle(ChassisSpeeds speeds, Rotation2d angle) {
     Rotation2d angleToUse = angle == null ? new Rotation2d() : angle;
     double angleError = angleToUse.minus(getGyroAngle()).getRadians();

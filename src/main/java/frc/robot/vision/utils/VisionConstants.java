@@ -127,9 +127,9 @@ public class VisionConstants {
     
     // 0 is LEFT TAG(ll2), 1 is RIGHT TAG, 2 is SIDE TAG, 3 is NOTE.
     //TAG Camera mounting configuration
-    public static final double[] CAM_HIGHT = {0.788,0.9,0.9,0.79};
-    public static final double[] CAM_PITHC = {61.9,33,38.5,73.1};// check!!!!!!!!!!!!!
-    public static final double[] CAM_YAW = {11,15.46,180+15.46,169};
+    public static final double[] CAM_HIGHT = {0.795,0.9,0.9,0.797   };
+    public static final double[] CAM_PITHC = {62.32,33,38.5,72.43};// check!!!!!!!!!!!!!
+    public static final double[] CAM_YAW = {5,5,15,-15};
 
     // Camera to Tag position relative to robot center
     public static final Translation2d[] ROBOT_TO_CAM = {new Translation2d(0.13, -0.27),new Translation2d(0.1043341, -0.287903),new Translation2d(0.0093341,-0.287903),new Translation2d(-0.0250,0.284)};

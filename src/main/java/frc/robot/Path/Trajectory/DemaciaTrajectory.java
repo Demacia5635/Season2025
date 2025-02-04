@@ -147,14 +147,12 @@ public class DemaciaTrajectory {
             new State(lineDistance * robotToTarget.getAngle().getSin(), currentVelocity.vyMetersPerSecond), 
             new State(0, 0)).velocity;
 
-        double velocity = new Translation2d(vX, vY).getNorm();
+        double velocity = Math.hypot(vX, vY);
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
 
-        double wantedOmega = rotationTrapezoid.calculate(wantedAngle.minus(chassisPose.getRotation()).getRadians() / MAX_ROTATIONAL_VELOCITY, 
-            new State(chassisPose.getRotation().getRadians(), currentVelocity.omegaRadiansPerSecond), 
-            new State(wantedAngle.getRadians(), 0)).velocity;
+        double wantedOmega = rotationPID.calculate(wantedAngle.minus(chassisPose.getRotation()).getRadians(), 0);
 
-        return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), 0);
+        return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
 
     public boolean isFinishedTrajectory(){
