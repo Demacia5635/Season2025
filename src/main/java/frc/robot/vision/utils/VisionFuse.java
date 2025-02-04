@@ -33,7 +33,7 @@ public class VisionFuse {
     }
 
     private double normalizeConfidence(double confidence){
-        return confidence * (1/getColectedConfidence()); 
+        return getColectedConfidence() == 0 ? 0 :confidence * (1/getColectedConfidence()); 
     }
 
     public Pose2d getPoseEstemation(){

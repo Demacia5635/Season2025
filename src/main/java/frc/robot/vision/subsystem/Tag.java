@@ -109,17 +109,24 @@ public class Tag extends SubsystemBase {
      * @return Distance in meters
      */
     public double GetDistFromCamera() {
-      if (cameraId == 0 || cameraId == 3){
+      if(cameraId == 0 || cameraId == 3){
         alpha = camToTagPitch + CAM_PITHC[cameraId];
         dist = (Math.abs(height - CAM_HIGHT[cameraId])) * (Math.tan(Math.toRadians(alpha)));
         //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-        LogManager.log("dist" + dist);
+        LogManager.log(" + 1" + (height - CAM_HIGHT[cameraId]));
+        LogManager.log("alp11ha"+alpha);
+        LogManager.log("dis1t" + dist);
+        //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
         return Math.abs(dist);
       }
       alpha = camToTagPitch + CAM_PITHC[cameraId];
       dist = (Math.abs(height - CAM_HIGHT[cameraId])) / (Math.tan(Math.toRadians(alpha)));
       //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-      return dist;
+      LogManager.log(" + " + (height - CAM_HIGHT[cameraId]));
+      LogManager.log("alpha"+alpha);
+      LogManager.log("dist" + dist);
+      //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
+      return Math.abs(dist);
     }
 
 
@@ -132,11 +139,11 @@ public class Tag extends SubsystemBase {
       // Convert camera measurements to vector
       cameraToTag = new Translation2d(GetDistFromCamera(),
           Rotation2d.fromDegrees(camToTagYaw));
-      LogManager.log("cameraToTag :" +cameraToTag);
-      LogManager.log("Camera to Tag Yaw :" + camToTagYaw);
+      //LogManager.log("cameraToTag :" +cameraToTag);
+      //LogManager.log("Camera to Tag Yaw :" + camToTagYaw);
       // Add camera offset to get robot center to tag vector
       robotToTag = ROBOT_TO_CAM[cameraId].plus(cameraToTag);
-      LogManager.log("Robot to Tag :" + robotToTag);
+      //LogManager.log("Robot to Tag :" + robotToTag);
       return robotToTag;
     }
 
@@ -153,7 +160,7 @@ public class Tag extends SubsystemBase {
 
       origintoTag = O_TO_TAG[(int)this.id == -1 ? 0 : (int)this.id];
 
-
+      height = TAG_HIGHT[(int)this.id];
       if(origintoTag != null) {
         // Get vector from robot to tag
         robotToTagRR = getRobotToTagRR();
