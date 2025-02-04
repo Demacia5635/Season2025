@@ -78,4 +78,8 @@ public class VisionFuse {
     public Rotation2d getVisionEstimatedAngle() {
         return getBestCamera() != null ? tags[getBestCamera()].getRobotAngle() : null;
     }
+
+    public double getVisionConfidence() {
+        return Math.max(getColectedConfidence(),1);
+    }
 }

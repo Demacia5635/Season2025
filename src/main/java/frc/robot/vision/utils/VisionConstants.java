@@ -20,6 +20,12 @@ public class VisionConstants {
     private static double STATION_TAG_HIGHT = inchToMeter(58.50);
     private static double SIDE_TAG_HIGHT = inchToMeter(51.25);
 
+    public static final double BEST_RELIABLE_DISTANCE = 1; // meters - high confidence range
+    public static final double WORST_RELIABLE_DISTANCE = 4; // meters - Low confidence range
+
+    public static final double BEST_RELIABLE_SPEED = 1; // meter a second - high confidence range
+    public static final double WORST_RELIABLE_SPEED = 3; // meter a second - Low confidence range
+
     /**
      * Array of AprilTag positions relative to field origin (0,0).
      * Each Translation2d represents X,Y coordinates in meters.

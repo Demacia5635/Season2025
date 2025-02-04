@@ -1,5 +1,7 @@
 package frc.robot.chassis.subsystems;
 
+import static frc.robot.vision.utils.VisionConstants.*;
+
 import org.ejml.simple.SimpleMatrix;
 
 import com.ctre.phoenix6.StatusCode;
@@ -15,6 +17,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -189,38 +193,54 @@ public class Chassis extends SubsystemBase {
     }
     
     private void updateVision(Pose2d pose){
-        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - visionFuse.getVisionTimestamp());
+        poseEstimator.setVisionMeasurementStdDevs(getSTD());
+        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
     }
 
-    private Matrix getSTD(){
+    private Matrix<N3, N1> getSTD() {
         double x = 0.05;
         double y = 0.05;
-        double theta = 0.05;
-        Translation2d velocityVector = new Translation2d(getChassisSpeeds().vxMetersPerSecond, getChassisSpeeds().vyMetersPerSecond);
-        if(velocityVector.getNorm() <= 1.5){
-            x-= 0.02;
-            y-=0.02;
-            theta -= 0.02;
+        double theta = 0.03;
+        
+        Translation2d velocityVector = new Translation2d(getChassisSpeeds().vxMetersPerSecond, 
+                                                       getChassisSpeeds().vyMetersPerSecond);
+        double speed = velocityVector.getNorm();
+    
+        // Vision confidence adjustment
+        if (visionFuse.getVisionConfidence() < 0.3) {
+            x += 0.3;
+            y += 0.3;
         }
-        if (velocityVector.getNorm() > 3.5) {
-           x+= 0.02;
-           y+= 0.02;
-           theta += 0.02;
+    
+        // Speed-based confidence calculation
+        if (speed > WORST_RELIABLE_SPEED) {
+            // Maximum uncertainty for high speeds
+            x += 0.02;
+            y += 0.02;
+        } else if (speed <= BEST_RELIABLE_SPEED) {
+            // Minimum uncertainty for low speeds
+            x -= 0.02;
+            y -= 0.02;
+        } else {
+            // Calculate normalized speed for the falloff range
+            double normalizedSpeed = (speed - BEST_RELIABLE_SPEED) 
+                                   / (WORST_RELIABLE_SPEED - BEST_RELIABLE_SPEED);
+            
+            // Apply exponential falloff to calculate additional uncertainty
+            double speedConfidence = Math.exp(-3 * normalizedSpeed);
+            
+            // Scale the uncertainty adjustment based on confidence
+            double adjustment = 0.02 * (1 - speedConfidence);
+            x += adjustment;
+            y += adjustment;
         }
-        if (Math.abs(getChassisSpeeds().omegaRadiansPerSecond) >= 4) {
-            theta += 0.02;
-        }
-        if(Math.abs(getChassisSpeeds().omegaRadiansPerSecond) <= 1){
-            theta -= 0.02;
-        }
-
-        return new Matrix(new SimpleMatrix(new double[]{x, y, theta}));
+    
+        return new Matrix<N3, N1>(new SimpleMatrix(new double[]{x, y, theta}));
     }
 
     @Override
     public void periodic() {
 
-        //poseEstimator.setVisionMeasurementStdDevs(getSTD());
         if(visionFuse.getPoseEstemation() !=null){
             updateVision(new Pose2d(visionFuse.getPoseEstemation().getTranslation(), getGyroAngle()));
         }

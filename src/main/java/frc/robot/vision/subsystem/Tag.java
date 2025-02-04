@@ -211,23 +211,20 @@ public class Tag extends SubsystemBase {
       // Get the current distance to tag
       double currentDist = GetDistFromCamera();
       
-      // Constants for confidence calculation
-      final double MAX_RELIABLE_DISTANCE = 1; // meters - high confidence range
-      final double MAX_DETECTION_DISTANCE = 4; // meters - maximum useful detection range
       
       // If we're too far, return 0 confidence
-      if (currentDist > MAX_DETECTION_DISTANCE) {
+      if (currentDist > WORST_RELIABLE_DISTANCE) {
           return 0.0;
       }
       
       // If we're within reliable range, give high confidence
-      if (currentDist <= MAX_RELIABLE_DISTANCE) {
+      if (currentDist <= BEST_RELIABLE_DISTANCE) {
           return 1.0;
       }
       
       // Calculate how far we are into the falloff range (0 to 1)
-      double normalizedDist = (currentDist - MAX_RELIABLE_DISTANCE) 
-                             / (MAX_DETECTION_DISTANCE - MAX_RELIABLE_DISTANCE);
+      double normalizedDist = (currentDist - BEST_RELIABLE_DISTANCE) 
+                             / (WORST_RELIABLE_DISTANCE - BEST_RELIABLE_DISTANCE);
       
       // Apply cubic falloff function
       return Math.pow(1 - normalizedDist, 3);
