@@ -39,13 +39,10 @@ public class AutoAlign extends Command {
   double kP = 2.5;
   
 
-  public AutoAlign(Chassis chassis, Arm arm, Gripper gripper, FIELD_POSITION position, ELEMENT element, LEVEL level) {
+  public AutoAlign(Chassis chassis,FIELD_POSITION position, ELEMENT element) {
     this.chassis = chassis;
-    this.arm = arm;
-    this.gripper = gripper;
     this.position = position;
     this.element = element;
-    this.level = level;
   }
 
   @Override

@@ -113,18 +113,12 @@ public class Tag extends SubsystemBase {
         alpha = camToTagPitch + CAM_PITHC[cameraId];
         dist = (Math.abs(height - CAM_HIGHT[cameraId])) * (Math.tan(Math.toRadians(alpha)));
         //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-        LogManager.log(" + 1" + (height - CAM_HIGHT[cameraId]));
-        LogManager.log("alp11ha"+alpha);
-        LogManager.log("dis1t" + dist);
         //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
         return Math.abs(dist);
       }
       alpha = camToTagPitch + CAM_PITHC[cameraId];
       dist = (Math.abs(height - CAM_HIGHT[cameraId])) / (Math.tan(Math.toRadians(alpha)));
       //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-      LogManager.log(" + " + (height - CAM_HIGHT[cameraId]));
-      LogManager.log("alpha"+alpha);
-      LogManager.log("dist" + dist);
       //dist = dist/Math.cos(Math.toRadians(camToTagYaw));
       return Math.abs(dist);
     }

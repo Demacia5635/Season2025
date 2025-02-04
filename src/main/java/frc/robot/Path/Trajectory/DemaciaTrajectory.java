@@ -33,7 +33,6 @@ public class DemaciaTrajectory {
     Rotation2d wantedAngle;
     TrapezoidProfile driveTrapezoid = new TrapezoidProfile(new Constraints(MAX_DRIVE_VELOCITY, MAX_DRIVE_ACCEL));
     TrapezoidProfile rotationTrapezoid = new TrapezoidProfile(new Constraints(MAX_ROTATIONAL_VELOCITY, MAX_ROTATIONAL_ACCEL));
-    PIDController rotationPID = new PIDController(1.9, 0.3, 0);
 
     /*
      * 
@@ -150,8 +149,10 @@ public class DemaciaTrajectory {
         double velocity = Math.hypot(vX, vY);
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
 
-        double wantedOmega = rotationPID.calculate(wantedAngle.minus(chassisPose.getRotation()).getRadians(), 0);
+        double wantedOmega = Math.abs(wantedAngle.minus(chassisPose.getRotation()).getDegrees()) < 1.5 ? 0
+            : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 1.5;
 
+        LogManager.log("WANTED ANGLE: " + wantedAngle);
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
 
