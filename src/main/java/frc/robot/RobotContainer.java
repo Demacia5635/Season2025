@@ -70,9 +70,10 @@ public class RobotContainer implements Sendable{
   public static Grab grab;
   public static Drop drop;
 
-  public POSITION fieldPosition;
+  
 
-  public FieldTarget fieldTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
+  public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
+  public static FieldTarget feedingTarget = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -87,9 +88,39 @@ public class RobotContainer implements Sendable{
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("Reef");
-        builder.addDoubleProperty("Position", ()-> fieldTarget.position.ordinal(), index-> fieldTarget.position = POSITION.values()[(int)index]);
-        builder.addDoubleProperty("Element Position", ()-> fieldTarget.elementPosition.ordinal(), index-> fieldTarget.elementPosition = ELEMENT_POSITION.values()[(int)index]);
-        builder.addDoubleProperty("Level", ()-> fieldTarget.level.ordinal(), index-> fieldTarget.level = LEVEL.values()[(int)index]);
+        builder.addDoubleProperty("Position", ()-> scoringTarget.position.ordinal(), index-> {
+          if (isFeeding(index, 0)) {
+            feedingTarget.position = POSITION.values()[(int)index];
+          } else {
+            scoringTarget.position = POSITION.values()[(int)index];
+          }});
+        builder.addDoubleProperty("Element Position", ()-> scoringTarget.elementPosition.ordinal(), index-> {
+          if (isFeeding(index, 1)) {
+            feedingTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
+          } else {
+            scoringTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
+          }
+        });
+        builder.addDoubleProperty("Level", ()-> scoringTarget.level.ordinal(), index-> {
+          if (isFeeding(index, 2)) {
+            feedingTarget.level = LEVEL.values()[(int)index];
+          } else {
+            scoringTarget.level = LEVEL.values()[(int)index];
+          }
+        });
+      }
+
+      boolean isFeeding(double index, int element) {
+        switch (element) {
+          case 0:
+            return index == 6 || index == 7;
+          case 1:
+            return index == 3;
+          case 2:
+            return index == 2;
+          default:
+            return false;
+        }
       }
     });
 
@@ -145,18 +176,24 @@ public class RobotContainer implements Sendable{
 
   private void configureBindings() {
 
+
+
     controller.leftButton().onTrue(new ArmCalibration(arm));
    
     controller.rightButton().onTrue(new Drop(gripper));
+    controller.povRight().onTrue(new Grab(gripper));
     controller.leftBumper().onTrue(getDisableInitCommand());
 
-    controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)));
-    controller.rightBumper().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)));
+    controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3)));
     controller.rightSetting().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
 
     controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
+    
 
-    //controller.downButton().onTrue();
+    controller.downButton().onTrue(new FollowTrajectory(chassis, false));
+    controller.rightBumper().onTrue(new FollowTrajectory(chassis, true));
+
+    // controller.getLeftStickMove().onTrue(new Drive(chassis, controller));
     
   }
 

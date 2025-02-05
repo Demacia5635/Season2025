@@ -95,35 +95,23 @@ public class ArmCommand extends Command {
   @Override
   public void execute() {
     switch (arm.getState()) {
-      case L2_CALC:
-        wantedAngle = ArmUtils.calculateAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
-            FieldConstants.L2_HEIGHT);
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case L3_CALC:
-        wantedAngle = ArmUtils.calculateAngles(currentPose2d.getTranslation().minus(FieldConstants.REEF).getNorm(),
-            FieldConstants.L3_HEIGHT);
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case L2_TOUCHING:
+      case L2:
         wantedAngle = ANGLES.L2;
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
-      case L3_TOUCHING:
+      case L3:
         wantedAngle = ANGLES.L3;
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
-      case ALGAE_UNDER:
-        wantedAngle = ANGLES.ALGAE_UNDER;
+      case ALGAE_BOTTOM:
+        wantedAngle = ANGLES.ALGAE_BOTTOM;
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
-      case ALGAE_OVER:
-        wantedAngle = ANGLES.ALGAE_OVER;
+      case ALGAE_TOP:
+        wantedAngle = ANGLES.ALGAE_TOP;
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 

@@ -29,6 +29,7 @@ public class Leg extends Segment{
     @Override
     public Translation2d calcVector(Translation2d position, double velocity)
     {
+       // if (p2.getDistance(position) <= 0.2) return new Translation2d(velocity, position.minus(p2).getAngle());
         Translation2d relativePos = position.minus(p2);
 
         Rotation2d diffAngle = p1.minus(p2).getAngle().minus(relativePos.getAngle());

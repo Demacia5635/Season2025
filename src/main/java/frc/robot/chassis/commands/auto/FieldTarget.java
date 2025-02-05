@@ -14,8 +14,9 @@ import frc.robot.Path.Utils.PathPoint;
 public class FieldTarget {
 
     public static final Translation2d approachOffset = new Translation2d(1.5, 0);
-    public static final Translation2d reefOffsetLeft = new Translation2d(-0.185, 0);
-    public static Translation2d reefOffsetRight = new Translation2d(0.165, 0);
+    public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.155);
+    public static Translation2d reefOffsetRight = new Translation2d(0, 0.145);
+    public static Translation2d intakeOffset = new Translation2d(0.76, 0);
 
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
@@ -89,9 +90,14 @@ public class FieldTarget {
         Translation2d calculatedOffset = new Translation2d();
 
         if(isScoring){
-            Translation2d levelOffset = level == LEVEL.L3 ? new Translation2d(0.48, 0) : new Translation2d(0.72, 0);
+            Translation2d levelOffset = level == LEVEL.L3 ? new Translation2d(0.50, 0) : new Translation2d(0.62,0);
             Translation2d elementOffset = elementPosition == ELEMENT_POSITION.CORAL_LEFT ? reefOffsetLeft : reefOffsetRight;
             calculatedOffset = levelOffset.plus(elementOffset);
+        }
+        else{
+            if(level == LEVEL.FEEDER){
+                calculatedOffset = intakeOffset;
+            }
         }
         
         return getElement(position.getId(), calculatedOffset);
@@ -102,7 +108,7 @@ public class FieldTarget {
     public static PathPoint getElement(int elementTag, Translation2d offset){
         Translation2d originToTag = O_TO_TAG[elementTag];
         offset = offset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)), 0.15);
+        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)), 0.2);
     }
    
     @Override

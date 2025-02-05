@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 
@@ -136,10 +136,8 @@ public class Arm extends SubsystemBase {
 
     /* add state chooser through the netwrok tables */
     SendableChooser<ARM_ANGLE_STATES> stateChooser = new SendableChooser<>();
-    stateChooser.addOption("L2", ARM_ANGLE_STATES.L2_TOUCHING);
-    stateChooser.addOption("L2 Calc", ARM_ANGLE_STATES.L2_CALC);
-    stateChooser.addOption("L3", ARM_ANGLE_STATES.L3_TOUCHING);
-    stateChooser.addOption("L3 Calc", ARM_ANGLE_STATES.L3_CALC);
+    stateChooser.addOption("L2", ARM_ANGLE_STATES.L2);
+    stateChooser.addOption("L3", ARM_ANGLE_STATES.L3);
     stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);
     stateChooser.addOption("Starting", ARM_ANGLE_STATES.STARTING);
     stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
@@ -168,6 +166,33 @@ public class Arm extends SubsystemBase {
    */
   public void setState(ARM_ANGLE_STATES state) {
     this.state = state;
+  }
+
+  public void setState(LEVEL level) {
+    switch (level) {
+      case L2:
+        setState(ARM_ANGLE_STATES.L2);
+        break;
+      
+      case L3:
+        setState(ARM_ANGLE_STATES.L3);
+        break;
+      
+      case ALGAE_BOTTOM:
+        setState(ARM_ANGLE_STATES.ALGAE_BOTTOM);
+        break;
+      
+      case ALGAE_TOP:
+        setState(ARM_ANGLE_STATES.ALGAE_TOP);
+        break;
+      
+      case FEEDER:
+        setState(ARM_ANGLE_STATES.CORAL_STATION);
+        break;
+    
+      default:
+        break;
+    }
   }
 
   /**

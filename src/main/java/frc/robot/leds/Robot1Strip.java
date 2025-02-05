@@ -34,11 +34,11 @@ public class Robot1Strip extends LedStrip {
                 setColor(Color.kYellow);
                 break;
             
-            case L2_TOUCHING:
+            case L2:
                 setColor(Color.kDarkGreen);
                 break;
             
-            case L3_TOUCHING:
+            case L3:
                 setColor(Color.kDarkBlue);
                 break;
             
