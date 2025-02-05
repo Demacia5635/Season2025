@@ -22,9 +22,11 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
+import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils;
+import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmDrive;
@@ -70,6 +72,7 @@ public class RobotContainer implements Sendable{
 
   public POSITION fieldPosition;
 
+  public FieldTarget fieldTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -79,6 +82,16 @@ public class RobotContainer implements Sendable{
     controller = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
+
+    SmartDashboard.putData("Reef", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Reef");
+        builder.addDoubleProperty("Position", ()-> fieldTarget.position.ordinal(), index-> fieldTarget.position = POSITION.values()[(int)index]);
+        builder.addDoubleProperty("Element Position", ()-> fieldTarget.elementPosition.ordinal(), index-> fieldTarget.elementPosition = ELEMENT_POSITION.values()[(int)index]);
+        builder.addDoubleProperty("Level", ()-> fieldTarget.level.ordinal(), index-> fieldTarget.level = LEVEL.values()[(int)index]);
+      }
+    });
 
     configureSubsytems();
     configureCommands();
