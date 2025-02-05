@@ -17,11 +17,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import frc.robot.Path.Utils.*;
-import frc.robot.chassis.commands.auto.AutoUtils;
-import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
-import frc.robot.chassis.commands.auto.AutoUtils.REEF_SEGMENTS;
-import frc.robot.utils.LogManager;
-
 /** Add your docs here. */
 public class DemaciaTrajectory {
     private ArrayList<Segment> segments;

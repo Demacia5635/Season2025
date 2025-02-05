@@ -22,10 +22,8 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
-import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
-import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
-import frc.robot.chassis.commands.auto.AutoUtils.LEVEL;
-import frc.robot.chassis.commands.auto.AutoIntake;
+import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
+import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
@@ -70,8 +68,7 @@ public class RobotContainer implements Sendable{
   public static Grab grab;
   public static Drop drop;
 
-  public FIELD_POSITION fieldPosition;
-  public LEVEL level;
+  public POSITION fieldPosition;
 
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
@@ -87,7 +84,6 @@ public class RobotContainer implements Sendable{
     configureCommands();
     configureDefaultCommands();
     configureBindings();
-    addNT();
   }
 
   /**
@@ -102,27 +98,7 @@ public class RobotContainer implements Sendable{
     robot1Strip = new Robot1Strip(arm, gripper);
   }
 
-  private void addNT() {
-    SendableChooser<FIELD_POSITION> fieldChooser = new SendableChooser<>();
-    fieldChooser.addOption("A", FIELD_POSITION.A);
-    fieldChooser.addOption("B", FIELD_POSITION.B);
-    fieldChooser.addOption("C", FIELD_POSITION.C);
-    fieldChooser.addOption("D", FIELD_POSITION.D);
-    fieldChooser.addOption("E", FIELD_POSITION.E);
-    fieldChooser.addOption("F", FIELD_POSITION.F);
-    fieldChooser.onChange(fieldPosition -> this.fieldPosition = fieldPosition);
-    SmartDashboard.putData("placement field Chooser", fieldChooser);
-
-    SendableChooser<LEVEL> LevelChooser = new SendableChooser<>();
-    LevelChooser.addOption("algea bottom", LEVEL.ALGAE_BOTTOM);
-    LevelChooser.addOption("algea top", LEVEL.ALGAE_TOP);
-    LevelChooser.addOption("L2 right", LEVEL.L2_RIGHT);
-    LevelChooser.addOption("L2 left", LEVEL.L2_LEFT);
-    LevelChooser.addOption("L3 right", LEVEL.L3_RIGHT);
-    LevelChooser.addOption("L3 left", LEVEL.L3_LEFT);
-    LevelChooser.onChange(level -> this.level = level);
-    SmartDashboard.putData("placement field Chooser", LevelChooser);
-  }
+ 
 
 
   /**
@@ -153,19 +129,11 @@ public class RobotContainer implements Sendable{
     arm.setDefaultCommand(armCommand);
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
+
   private void configureBindings() {
 
     controller.leftButton().onTrue(new ArmCalibration(arm));
-    // .alongWith(new goToPlace(FIELD_POSITION.FEEDER_LEFT, ELEMENT.FEEDER, 3.5), new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION)))
+   
     controller.rightButton().onTrue(new Drop(gripper));
     controller.leftBumper().onTrue(getDisableInitCommand());
 
@@ -175,10 +143,8 @@ public class RobotContainer implements Sendable{
 
     controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
 
-    controller.downButton().onTrue(new AutoIntake(chassis, arm, gripper, true));
-   /*controller.leftSettings().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L2_LEFT, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L2_TOUCHING)))).andThen(new Drop(gripper)));
-    controller.povDown().onTrue((new goToPlace(arm, gripper, FIELD_POSITION.E, ELEMENT.CORAL_LEFT, LEVEL.L3_LEFT, 2.8).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3_TOUCHING)))).andThen(new Drop(gripper)));
- */ 
+    //controller.downButton().onTrue();
+    
   }
 
   public static boolean isRed() {

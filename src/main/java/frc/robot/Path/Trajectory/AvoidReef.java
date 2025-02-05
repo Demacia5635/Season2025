@@ -11,8 +11,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.Path.Utils.Segment;
 import frc.robot.chassis.commands.auto.AutoUtils;
-import frc.robot.chassis.commands.auto.AutoUtils.ELEMENT;
-import frc.robot.chassis.commands.auto.AutoUtils.FIELD_POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget;
 
 /** Add your docs here. */
 public class AvoidReef {
@@ -33,7 +32,7 @@ public class AvoidReef {
         pointsList.add(new PathPoint(point0, new Rotation2d()));
 
         while (id != leaveId) {
-            pointsList.add(AutoUtils.REEF_POINTS[id]);
+            pointsList.add(FieldTarget.REEF_POINTS[id]);
             id = ascending ? id + 1 : id - 1;
             id = normalize(id);
         }
@@ -46,18 +45,18 @@ public class AvoidReef {
     private static PathPoint getClosetPoint(Translation2d startingPos) {
         double closetDistance = Integer.MAX_VALUE;
         int index = -1;
-        for (int i = 0; i < AutoUtils.REEF_POINTS.length; i++) {
-            if (AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance) {
+        for (int i = 0; i < FieldTarget.REEF_POINTS.length; i++) {
+            if (FieldTarget.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance) {
                 index = i;
-                closetDistance = AutoUtils.REEF_POINTS[i].getTranslation().getDistance(startingPos);
+                closetDistance = FieldTarget.REEF_POINTS[i].getTranslation().getDistance(startingPos);
             }
         }
-        return AutoUtils.REEF_POINTS[index];
+        return FieldTarget.REEF_POINTS[index];
     }
 
     private static int findIndex(PathPoint point) {
-        for (int i = 0; i < AutoUtils.REEF_POINTS.length; i++) {
-            if (point == AutoUtils.REEF_POINTS[i])
+        for (int i = 0; i < FieldTarget.REEF_POINTS.length; i++) {
+            if (point == FieldTarget.REEF_POINTS[i])
                 return i;
         }
         return -1;
