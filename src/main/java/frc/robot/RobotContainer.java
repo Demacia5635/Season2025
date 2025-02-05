@@ -193,9 +193,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    ArrayList<PathPoint> points = new ArrayList<PathPoint>();
-    points.add(new PathPoint(new Translation2d(), new Rotation2d()));
-    points.add(AutoUtils.fieldElements.get(FIELD_POSITION.E));
-    return new FollowTrajectory(chassis, points, AutoUtils.fieldElements.get(FIELD_POSITION.E).getRotation());
+    return null;
   }
 }
