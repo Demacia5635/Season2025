@@ -17,9 +17,9 @@ public class FieldTarget {
     public static final Translation2d reefOffsetLeft = new Translation2d(-0.185, 0);
     public static Translation2d reefOffsetRight = new Translation2d(0.165, 0);
 
-    private POSITION position;
-    private ELEMENT_POSITION elementPosition;
-    private LEVEL level;
+    public POSITION position;
+    public ELEMENT_POSITION elementPosition;
+    public LEVEL level;
 
     public FieldTarget(POSITION position, ELEMENT_POSITION elementPosition, LEVEL level){
         this.position = position;
@@ -105,4 +105,10 @@ public class FieldTarget {
         return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)), 0.15);
     }
    
+    @Override
+    public String toString() {
+        return "Position: " + position
+        + "\n" + "Element Position: " + elementPosition
+        + "\n" + "Level: " + level;
+    }
 }
