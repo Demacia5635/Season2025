@@ -13,10 +13,22 @@ import frc.robot.Path.Utils.PathPoint;
 
 public class FieldTarget {
 
-    public static Translation2d approachOffset = new Translation2d(1.5, 0);
-    public static Translation2d reefOffsetLeft = new Translation2d(-0.185, 0);
+    public static final Translation2d approachOffset = new Translation2d(1.5, 0);
+    public static final Translation2d reefOffsetLeft = new Translation2d(-0.185, 0);
     public static Translation2d reefOffsetRight = new Translation2d(0.165, 0);
 
+    private POSITION position;
+    private ELEMENT_POSITION elementPosition;
+    private LEVEL level;
+
+    public FieldTarget(POSITION position, ELEMENT_POSITION elementPosition, LEVEL level){
+        this.position = position;
+        this.elementPosition = elementPosition;
+        this.level = level;
+
+    }
+
+    
     public static PathPoint[] REEF_POINTS = new PathPoint[]{
         POSITION.A.getApproachPoint(),
         POSITION.B.getApproachPoint(),
@@ -26,7 +38,8 @@ public class FieldTarget {
         POSITION.F.getApproachPoint()
     };
 
-    
+
+
 
     public enum ELEMENT_POSITION{
         CORAL_LEFT, CORAL_RIGHT, ALGEA, FEEDER
@@ -66,8 +79,11 @@ public class FieldTarget {
         
     }
 
+    public PathPoint getApproachingPoint(){
+        return position.getApproachPoint();
+    }
 
-    public PathPoint getFinishPoint(POSITION position, LEVEL level, ELEMENT_POSITION elementPosition){
+    public PathPoint getFinishPoint(){
 
         boolean isScoring = level == LEVEL.L2 || level == LEVEL.L3;
         Translation2d calculatedOffset = new Translation2d();
@@ -83,10 +99,10 @@ public class FieldTarget {
     public static PathPoint getElement(int elementTag){
         return getElement(elementTag, new Translation2d());
     }
-    public static PathPoint getElement(int elementTag, Translation2d ofset){
+    public static PathPoint getElement(int elementTag, Translation2d offset){
         Translation2d originToTag = O_TO_TAG[elementTag];
-        ofset = ofset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(ofset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)), 0.2);
+        offset = offset.rotateBy(TAG_ANGLE[elementTag]);
+        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)), 0.15);
     }
    
 }
