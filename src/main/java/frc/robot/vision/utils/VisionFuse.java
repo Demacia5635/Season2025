@@ -40,13 +40,15 @@ public class VisionFuse {
     public Pose2d getPoseEstemation() {
         double x = 0;
         double y = 0;
+        double angle = 0;
         for (Tag tag : tags) {
             if (tag.getPose() == null)
                 continue;
             x += tag.getPose().getX() * normalizeConfidence(tag.getPoseEstemationConfidence());
             y += tag.getPose().getY() * normalizeConfidence(tag.getPoseEstemationConfidence());
+            angle += tag.getPose().getRotation().getRadians() * normalizeConfidence(tag.getPoseEstemationConfidence());
         }
-        return (x == 0 && y == 0) ? null : new Pose2d(x, y, getRotationEstimation());
+        return (x == 0 && y == 0) ? null : new Pose2d(x, y, (getRotationEstimation() == null) ? new Rotation2d(angle) : getRotationEstimation());
     }
 
     public Rotation2d getRotationEstimation(){
