@@ -37,6 +37,7 @@ public class Chassis extends SubsystemBase {
     private SwerveKinematics kinematicsFIx;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
+    private Field2d fieldTag;
     public Tag reefTag;
     public Tag fiderTag;
     public Tag bargeTag;
@@ -67,6 +68,7 @@ public class Chassis extends SubsystemBase {
         SimpleMatrix std = new SimpleMatrix(new double[]{0.02, 0.02, 0});
         poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
         field = new Field2d();
+        fieldTag = new Field2d();
         reefTag = new Tag(()->getGyroAngle(), 0);
         fiderTag = new Tag(()->getGyroAngle(), 1);
         bargeTag = new Tag(()->getGyroAngle(), 2);
@@ -77,6 +79,7 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(visionFuse.getVisionEstimatedAngle())));
         SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
+        SmartDashboard.putData("ultfielf", fieldTag);
 
     }
 
@@ -243,9 +246,9 @@ public class Chassis extends SubsystemBase {
     @Override
     public void periodic() {
         visionFusePoseEstimation = visionFuse.getPoseEstemation();
-        if(visionFusePoseEstimation !=null){
+        if(visionFusePoseEstimation != null){
             updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(), getGyroAngle()));
-            // fieldTag.setRobotPose(visionFuse.getPoseEstemation());
+            // fieldTag.setRobotPose(visionFusePoseEstimation);
         }
         poseEstimator.update(getGyroAngle(), getModulePositions());
             

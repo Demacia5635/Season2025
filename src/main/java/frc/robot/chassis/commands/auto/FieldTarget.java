@@ -6,6 +6,8 @@ package frc.robot.chassis.commands.auto;
 import static frc.robot.vision.utils.VisionConstants.O_TO_TAG;
 import static frc.robot.vision.utils.VisionConstants.TAG_ANGLE;
 
+import java.lang.System.Logger.Level;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
@@ -15,9 +17,10 @@ public class FieldTarget {
 
     public static final Translation2d approachOffset = new Translation2d(1.5, 0);
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.155);
-    public static Translation2d reefOffsetRight = new Translation2d(0, 0.145);
-    public static Translation2d intakeOffset = new Translation2d(0.76, 0);
-
+    public static final Translation2d reefOffsetRight = new Translation2d(0, 0.18);
+    public static final Translation2d intakeOffset = new Translation2d(0.78, 0);
+    public static final Translation2d topAlgeaOffset = new Translation2d(0.50,0.55);
+    public static final Translation2d bottomAlgeaOffset = new Translation2d(0.63, 0.55);
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
     public LEVEL level;
@@ -97,6 +100,12 @@ public class FieldTarget {
         else{
             if(level == LEVEL.FEEDER){
                 calculatedOffset = intakeOffset;
+            }
+            if(level == LEVEL.ALGAE_TOP){
+                calculatedOffset = topAlgeaOffset;
+            }
+            if(level == LEVEL.ALGAE_BOTTOM){
+                calculatedOffset = bottomAlgeaOffset;
             }
         }
         

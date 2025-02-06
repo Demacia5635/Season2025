@@ -9,10 +9,13 @@ import java.util.Arrays;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
@@ -25,12 +28,15 @@ public class FollowTrajectory extends Command {
   private Rotation2d wantedAngle;
   private FieldTarget target;
   private boolean usePoints;
-  private boolean isScoring;
+  private TrajectoryTarget trajectoryTarget;
 
-  public FollowTrajectory(Chassis chassis, boolean isScoring) {
+  public enum TrajectoryTarget{
+    CORAL, FEEDER, ALGAE
+  }
+  public FollowTrajectory(Chassis chassis, TrajectoryTarget target) {
     this.chassis = chassis;
     this.usePoints = false;
-    this.isScoring = isScoring;
+    this.trajectoryTarget = target;
     addRequirements(chassis);
   //  this.points.add(target.getFinishPoint());
   }
@@ -45,7 +51,7 @@ public class FollowTrajectory extends Command {
 
   @Override
   public void initialize() {
-    if (isScoring) {
+    if (trajectoryTarget == TrajectoryTarget.CORAL || trajectoryTarget == TrajectoryTarget.ALGAE) {
       this.target = new FieldTarget(RobotContainer.scoringTarget.position, RobotContainer.scoringTarget.elementPosition, RobotContainer.scoringTarget.level);
     } else {
       this.target = new FieldTarget(RobotContainer.feedingTarget.position, RobotContainer.feedingTarget.elementPosition, RobotContainer.feedingTarget.level);
@@ -58,6 +64,7 @@ public class FollowTrajectory extends Command {
       points.add(new PathPoint(new Translation2d(), wantedAngle));
       points.add(target.getApproachingPoint());
       points.add(target.getFinishPoint());
+      LogManager.log("wanted pose: " + points.get(points.size() - 1));
 
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
@@ -71,9 +78,22 @@ public class FollowTrajectory extends Command {
   }
   @Override
   public void end(boolean interrupted) {
-    chassis.stop();
-    if (isScoring) {
+    
+    if (trajectoryTarget == TrajectoryTarget.CORAL) {
+      
+      chassis.stop();
       new Drop(RobotContainer.gripper).schedule();
+    }
+    if(trajectoryTarget == TrajectoryTarget.FEEDER){
+      chassis.stop();
+      new Grab(RobotContainer.gripper).schedule();
+    }
+    if(trajectoryTarget == TrajectoryTarget.ALGAE){
+      new RunCommand(()->chassis.setVelocities(
+        new ChassisSpeeds(0, 0, 0.5)), chassis).withTimeout(1)
+          .andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
+            new ChassisSpeeds(-2, 0, 0)), chassis)
+            .withTimeout(0.3)).schedule();
     }
   } 
 

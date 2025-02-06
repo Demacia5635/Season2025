@@ -121,7 +121,8 @@ public class DemaciaTrajectory {
             >= segments.get(segmentIndex).getLength()- DISTANCE_OFFSET;
     }
 
-    PIDController omegaPidController = new PIDController(1.5, 0.1, 0);
+    //PIDController omegaPidController = new PIDController(0.9, 0, 0);
+    double kP = 0.9;
     public ChassisSpeeds calculate(Pose2d chassisPose, ChassisSpeeds currentVelocity) {
         this.chassisPose = chassisPose;
         
@@ -149,8 +150,8 @@ public class DemaciaTrajectory {
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
 
         double wantedOmega = Math.abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
-            : omegaPidController.calculate(wantedAngle.minus(chassisPose.getRotation()).getRadians(), 0);
-            
+            : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 0.9;
+        
 
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }

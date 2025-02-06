@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Path.Trajectory.FollowTrajectory;
+import frc.robot.Path.Trajectory.FollowTrajectory.TrajectoryTarget;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
@@ -190,8 +191,10 @@ public class RobotContainer implements Sendable{
     controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
     
 
-    controller.downButton().onTrue(new FollowTrajectory(chassis, false));
-    controller.rightBumper().onTrue(new FollowTrajectory(chassis, true));
+    controller.downButton().onTrue(new FollowTrajectory(chassis, TrajectoryTarget.FEEDER));
+    controller.rightBumper().onTrue(new FollowTrajectory(chassis, TrajectoryTarget.CORAL));
+    controller.povLeft().onTrue(new FollowTrajectory(chassis, TrajectoryTarget.ALGAE));
+
 
     // controller.getLeftStickMove().onTrue(new Drive(chassis, controller));
     
