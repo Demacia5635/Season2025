@@ -18,6 +18,7 @@ public final class Constants {
 
   public static class CANBuses {
     public static final CANBus ARM_CAN_BUS = new CANBus("rio");
+    public static final CANBus Climeb_CAN_BUS = new CANBus("rio");
     public static final CANBus CHASSIS_CAN_BUS = new CANBus("canivore");
   }
   
