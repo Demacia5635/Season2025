@@ -23,8 +23,8 @@ public class SwerveModule {
 
         steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
 
-        SmartDashboard.putData(configs.DRIVE_CONFIG.name, driveMotor);
-        SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
+        // SmartDashboard.putData(configs.DRIVE_CONFIG.name, driveMotor);
+        // SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
     }
 
     public void setSteerPower(double power) {

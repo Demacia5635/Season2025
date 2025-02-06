@@ -65,7 +65,7 @@ public class TalonMotor extends TalonFX {
 		name = config.name;
 		configMotor();
     setSignals();
-		addLog();
+		// addLog();
 		LogManager.log(name + " motor initialized");
   }
   
@@ -209,12 +209,12 @@ public class TalonMotor extends TalonFX {
    */
   public void setDuty(double power) {
     setControl(dutyCycle.withOutput(power));
-    dutyCycleEntry.log(power);
+    // dutyCycleEntry.log(power);
   }
 
   public void setVoltage(double voltage) {
     setControl(voltageOut.withOutput(voltage));
-    dutyCycleEntry.log(voltage / 12.0);
+    // dutyCycleEntry.log(voltage / 12.0);
   }
 
 	/**
@@ -224,7 +224,7 @@ public class TalonMotor extends TalonFX {
    */
   public void setVelocity(double velocity, double feedForward) {
     setControl(velocityVoltage.withVelocity(velocity).withFeedForward(feedForward));
-    velocityEntry.log(velocity);
+    // velocityEntry.log(velocity);
   }
 
 	public void setVelocity(double velocity) {
@@ -240,7 +240,7 @@ public class TalonMotor extends TalonFX {
   */
 	public void setMotionMagic(double position, double feedForward) {
 		setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
-		positionEntry.log(position);
+		// positionEntry.log(position);
 	}
 
 	public void setMotionMagic(double position) {
@@ -249,7 +249,7 @@ public class TalonMotor extends TalonFX {
 
   public void setPositionVoltage(double position, double feedForward) {
     setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
-    positionEntry.log(position);
+    // positionEntry.log(position);
   }
 
   public void setPositionVoltage(double position) {

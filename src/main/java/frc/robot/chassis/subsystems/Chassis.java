@@ -238,11 +238,14 @@ public class Chassis extends SubsystemBase {
         return new Matrix<N3, N1>(new SimpleMatrix(new double[]{x, y, theta}));
     }
 
+    Pose2d visionFusePoseEstimation;
+
     @Override
     public void periodic() {
-
-        if(visionFuse.getPoseEstemation() !=null){
-            updateVision(new Pose2d(visionFuse.getPoseEstemation().getTranslation(), getGyroAngle()));
+        visionFusePoseEstimation = visionFuse.getPoseEstemation();
+        if(visionFusePoseEstimation !=null){
+            updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(), getGyroAngle()));
+            // fieldTag.setRobotPose(visionFuse.getPoseEstemation());
         }
         poseEstimator.update(getGyroAngle(), getModulePositions());
             
