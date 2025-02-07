@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 
 public class LogManager extends SubsystemBase {
 
@@ -56,12 +57,24 @@ public class LogManager extends SubsystemBase {
     double lastValue = Double.MAX_VALUE; // last value - only logging when value changes
 
     /*
+     * the log levels are this:
+     * 1 -> log if it is not in a compition
+     * 2 -> only log
+     * 3 -> log and add to network tables if not in a compition
+     * 4 -> log and add to network tables
+     */
+    public int logLevel;
+
+    /*
      * Constructor with the suppliers and boolean if add to network table
      */
     @SuppressWarnings("rawtypes")
     LogEntry(String name, StatusSignal phoenix6Status, DoubleSupplier getterDouble, BooleanSupplier getterBoolean,
-        boolean addToNT) {
+        int logLevel) {
 
+      this.name = name;
+      this.logLevel = logLevel;
+      
       if (getterBoolean != null || (phoenix6Status != null && phoenix6Status.getTypeClass().equals(Boolean.class))) {
         this.booleanEntry = new BooleanLogEntry(log, name);
       } else {
@@ -70,8 +83,7 @@ public class LogManager extends SubsystemBase {
       this.phoenix6Status = phoenix6Status;
       this.getterDouble = getterDouble;
       this.getterBoolean = getterBoolean;
-      this.name = name;
-      if (addToNT) {
+      if (logLevel == 4 || (logLevel == 3 && !RobotContainer.isComp())) {
         if (getterBoolean != null || (phoenix6Status != null && phoenix6Status.getTypeClass().equals(Boolean.class))) {
           BooleanTopic bt = table.getBooleanTopic(name);
           ntPublisherBoolean = bt.publish();
@@ -157,6 +169,16 @@ public class LogManager extends SubsystemBase {
     public void setBooleanConsumer(BiConsumer<Boolean, Long> consumer) {
       this.booleanConsumer = consumer;
     }
+
+    public void removeInComp() {
+      if (logLevel == 3) {
+        if (getterBoolean != null || (phoenix6Status != null && phoenix6Status.getTypeClass().equals(Boolean.class))) {
+          ntPublisherBoolean.close();
+        } else {
+          ntPublisherDouble.close();
+        }
+      }
+    }
   }
 
   // array of log entries
@@ -180,8 +202,8 @@ public class LogManager extends SubsystemBase {
    */
   @SuppressWarnings("rawtypes")
   private LogEntry add(String name, StatusSignal phoenix6Status, DoubleSupplier getterDouble,
-      BooleanSupplier getterBoolean, boolean addToNT) {
-    LogEntry entry = new LogEntry(name, phoenix6Status, getterDouble, getterBoolean, addToNT);
+      BooleanSupplier getterBoolean, int logLevel) {
+    LogEntry entry = new LogEntry(name, phoenix6Status, getterDouble, getterBoolean, logLevel);
     logEntries.add(entry);
     return entry;
   }
@@ -189,12 +211,22 @@ public class LogManager extends SubsystemBase {
   /*
    * get a log entry - if not found, creat one
    */
-  private LogEntry get(String name, boolean addToNT) {
+  private LogEntry get(String name) {
     LogEntry e = find(name);
     if (e != null) {
       return e;
     }
-    return new LogEntry(name, null, null, null, addToNT);
+    return new LogEntry(name, null, null, null, 1);
+  }
+
+  public static void removeInComp() {
+    for (int i = 0; i < LogManager.logManager.logEntries.size(); i++) {
+      LogManager.logManager.logEntries.get(i).removeInComp();
+      if (LogManager.logManager.logEntries.get(i).logLevel == 1) {
+        LogManager.logManager.logEntries.remove(LogManager.logManager.logEntries.get(i));
+        i--;
+      }
+    }
   }
 
   /*
@@ -214,8 +246,8 @@ public class LogManager extends SubsystemBase {
    */
   @SuppressWarnings("rawtypes")
   public static LogEntry addEntry(String name, StatusSignal phoenixStatus,
-      DoubleSupplier getterDouble, boolean addToNT) {
-    return logManager.add(name, phoenixStatus, getterDouble, null, addToNT);
+      DoubleSupplier getterDouble, int logLevel) {
+    return logManager.add(name, phoenixStatus, getterDouble, null, logLevel);
   }
 
   /*
@@ -223,16 +255,16 @@ public class LogManager extends SubsystemBase {
    * network table
    */
   @SuppressWarnings("rawtypes")
-  public static LogEntry addEntry(String name, StatusSignal phoenixStatus, boolean addToNT) {
-    return logManager.add(name, phoenixStatus, null, null, addToNT);
+  public static LogEntry addEntry(String name, StatusSignal phoenixStatus, int logLevel) {
+    return logManager.add(name, phoenixStatus, null, null, logLevel);
   }
 
   /*
    * Static function - add log entry for double supplier with option to add to
    * network table
    */
-  public static LogEntry addEntry(String name, DoubleSupplier getterDouble, boolean addToNT) {
-    return logManager.add(name, null, getterDouble, null, addToNT);
+  public static LogEntry addEntry(String name, DoubleSupplier getterDouble, int logLevel) {
+    return logManager.add(name, null, getterDouble, null, logLevel);
   }
 
   /*
@@ -240,30 +272,22 @@ public class LogManager extends SubsystemBase {
    */
   @SuppressWarnings("rawtypes")
   public static LogEntry addEntry(String name, StatusSignal phoenix6Status) {
-    return logManager.add(name, phoenix6Status, null, null, true);
+    return logManager.add(name, phoenix6Status, null, null, 4);
   }
 
   /*
    * Static function - add log entry for double supplier with network table
    */
   public static LogEntry addEntry(String name, DoubleSupplier getterDouble) {
-    return logManager.add(name, null, getterDouble, null,  true);
+    return logManager.add(name, null, getterDouble, null,  4);
   }
 
   public static LogEntry addEntry(String name, BooleanSupplier getterBoolean) {
-    return logManager.add(name, null, null, getterBoolean, true);
+    return logManager.add(name, null, null, getterBoolean, 4);
   }
 
-  public static LogEntry addEntry(String name, BooleanSupplier getterBoolean, boolean addToNT) {
-    return logManager.add(name, null, null, getterBoolean, addToNT);
-  }
-
-  /*
-   * Static function - get an entry, create if not foune - will see network table
-   * is crating new
-   */
-  public static LogEntry getEntry(String name, boolean addToNT) {
-    return logManager.get(name, addToNT);
+  public static LogEntry addEntry(String name, BooleanSupplier getterBoolean, int logLevel) {
+    return logManager.add(name, null, null, getterBoolean, logLevel);
   }
 
   /*
@@ -271,7 +295,7 @@ public class LogManager extends SubsystemBase {
    * is crating new
    */
   public static LogEntry getEntry(String name) {
-    return logManager.get(name, true);
+    return logManager.get(name);
   }
 
   /*

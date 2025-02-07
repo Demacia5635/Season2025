@@ -70,10 +70,10 @@ public class Gripper extends SubsystemBase {
    */
   private void addNT() {
     /* put the sensors */
-    LogManager.addEntry(getName() + "/get up front sensor", this::getUpFrontSensor);
-    LogManager.addEntry(getName() + "/get up back sensor", this::getUpBackSensor);
-    LogManager.addEntry(getName() + "/get down sensor", this::getDownSensor);
-    LogManager.addEntry(getName() + "/Is Coral", this::isCoral);
+    LogManager.addEntry(getName() + "/get up front sensor", this::getUpFrontSensor, 3);
+    LogManager.addEntry(getName() + "/get up back sensor", this::getUpBackSensor, 3);
+    LogManager.addEntry(getName() + "/get down sensor", this::getDownSensor, 3);
+    LogManager.addEntry(getName() + "/Is Coral", this::isCoral, 4);
 
     /* put function to put the motor at brake and coast */
     SmartDashboard.putData(getName() + "/Motor" + "/set Brake",

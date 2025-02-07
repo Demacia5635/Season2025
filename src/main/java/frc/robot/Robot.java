@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.utils.Elastic;
 
 /**
  * The methods in this class are called automatically corresponding to each mode, as described in
@@ -70,6 +71,10 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.schedule();
     }
+
+    if (RobotContainer.isComp()) {
+      Elastic.selectTab("Autonomous");
+    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -92,6 +97,10 @@ public class Robot extends TimedRobot {
         m_enableInitCommand.schedule();
         m_hasScheduled = true;
       }
+    }
+
+    if (RobotContainer.isComp()) {
+      Elastic.selectTab("Teleoperated");
     }
   }
 
