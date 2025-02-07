@@ -130,6 +130,9 @@ public class RobotContainer implements Sendable{
       }
     });
 
+    LogManager.addEntry("name", DriverStation::isTeleop, 1);
+    LogManager.addEntry("name2", DriverStation::isTeleop, 2);
+
     configureSubsytems();
     configureCommands();
     configureDefaultCommands();
