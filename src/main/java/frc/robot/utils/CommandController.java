@@ -293,7 +293,7 @@ public class CommandController extends CommandGenericHID{
     }
 
     public Trigger getLeftStickMove() {
-        return new Trigger(()-> getLeftX() != 0 || getLeftY() != 0);
+        return new Trigger(()-> Math.abs(getLeftX()) >= 0.3 || Math.abs(getLeftY()) >= 0.3);
     }
 
     public Trigger getRightStickkMove() {

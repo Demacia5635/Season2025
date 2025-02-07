@@ -35,9 +35,9 @@ public class FollowTrajectory extends Command {
     this.chassis = chassis;
     this.usePoints = false;
     this.isScoring = isScoring;
-    
+
     addRequirements(chassis);
-  //  this.points.add(target.getFinishPoint());
+    // this.points.add(target.getFinishPoint());
   }
 
   public FollowTrajectory(Chassis chassis, ArrayList<PathPoint> points, Rotation2d wantedAngle) {
@@ -53,7 +53,7 @@ public class FollowTrajectory extends Command {
     RobotContainer.robot1Strip.setAutoPath();
     this.target = isScoring ? RobotContainer.scoringTarget : RobotContainer.feedingTarget;
 
-    if(!usePoints){
+    if (!usePoints) {
       points = new ArrayList<PathPoint>();
       this.wantedAngle = target.getFinishPoint().getRotation();
       points.add(new PathPoint(new Translation2d(), wantedAngle));
@@ -63,7 +63,8 @@ public class FollowTrajectory extends Command {
 
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
-    if(this.target != null) RobotContainer.arm.setState(this.target.level);
+    if (this.target != null)
+      RobotContainer.arm.setState(this.target.level);
   }
 
   @Override
@@ -71,26 +72,32 @@ public class FollowTrajectory extends Command {
     chassis.setVelocities(trajectory.calculate(chassis.getPose(), chassis.getChassisSpeeds()));
 
   }
+
   @Override
   public void end(boolean interrupted) {
-    
-    if (target.elementPosition == ELEMENT_POSITION.CORAL_LEFT || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
-      
-      chassis.stop();
-      new Drop(RobotContainer.gripper).schedule();
+    if (!interrupted) {
+
+      if (target.elementPosition == ELEMENT_POSITION.CORAL_LEFT
+          || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
+
+        chassis.stop();
+        new Drop(RobotContainer.gripper).schedule();
+      }
+      if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
+        chassis.stop();
+        new Grab(RobotContainer.gripper).schedule();
+      }
+      if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
+        new RunCommand(() -> chassis.setVelocities(
+            new ChassisSpeeds(0, 0, 0.5)), chassis).withTimeout(1)
+            .andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
+                new ChassisSpeeds(-2, 0, 0)), chassis)
+                .withTimeout(0.3))
+            .schedule();
+      }
+
     }
-    if(target.elementPosition == ELEMENT_POSITION.FEEDER){
-      chassis.stop();
-      new Grab(RobotContainer.gripper).schedule();
-    }
-    if(target.elementPosition == ELEMENT_POSITION.ALGEA){
-      new RunCommand(()->chassis.setVelocities(
-        new ChassisSpeeds(0, 0, 0.5)), chassis).withTimeout(1)
-          .andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
-            new ChassisSpeeds(-2, 0, 0)), chassis)
-            .withTimeout(0.3)).schedule();
-    }
-  } 
+  }
 
   @Override
   public boolean isFinished() {
