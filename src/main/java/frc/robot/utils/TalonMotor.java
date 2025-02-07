@@ -65,7 +65,7 @@ public class TalonMotor extends TalonFX {
 		name = config.name;
 		configMotor();
     setSignals();
-		// addLog();
+		addLog();
 		LogManager.log(name + " motor initialized");
   }
   
@@ -151,18 +151,18 @@ public class TalonMotor extends TalonFX {
   }
 
   private void addLog() {    
-    LogManager.addEntry(name + "/Position", positionSignal);
-    LogManager.addEntry(name + "/Velocity", velocitySignal);
-    LogManager.addEntry(name + "/Acceleration", accelerationSignal);
-    LogManager.addEntry(name + "/Voltage", voltageSignal);
-    LogManager.addEntry(name + "/Current", getStatorCurrent());
-    LogManager.addEntry(name + "/CloseLoopError", closedLoopErrorSignal);
-    LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput());
-    LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput());
-    LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput());
-    LogManager.addEntry(name + "/CloseLoopD", getClosedLoopDerivativeOutput());
-    LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward());
-    LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal);
+    LogManager.addEntry(name + "/Position", positionSignal, 3);
+    LogManager.addEntry(name + "/Velocity", velocitySignal, 3);
+    LogManager.addEntry(name + "/Acceleration", accelerationSignal, 3);
+    LogManager.addEntry(name + "/Voltage", voltageSignal, 3);
+    LogManager.addEntry(name + "/Current", getStatorCurrent(), 3);
+    LogManager.addEntry(name + "/CloseLoopError", closedLoopErrorSignal, 3);
+    LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput(), 3);
+    LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput(), 2);
+    LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput(), 2);
+    LogManager.addEntry(name + "/CloseLoopD", getClosedLoopDerivativeOutput(), 2);
+    LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward(), 2);
+    LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal, 3);
 
     dutyCycleEntry = LogManager.getEntry(name + "/SetDutyCycle");
     velocityEntry = LogManager.getEntry(name + "/SetVelocity");

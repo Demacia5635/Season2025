@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -55,6 +56,8 @@ public class RobotContainer implements Sendable{
   public static LedManager ledManager;
   public static CommandController controller;
   public static boolean isRed = true;
+  public static boolean isComp = DriverStation.isFMSAttached();
+  private static boolean hasRemovedFromLog = false;
 
   public static Chassis chassis;  
   public static Arm arm;
@@ -78,12 +81,14 @@ public class RobotContainer implements Sendable{
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    robotContainer = this;
     new AutoUtils();
     new LogManager();
     ledManager = new LedManager();
     controller = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
+    LogManager.addEntry("Timer", DriverStation::getMatchTime);
 
     SmartDashboard.putData("Reef", new Sendable() {
       @Override
@@ -124,6 +129,9 @@ public class RobotContainer implements Sendable{
         }
       }
     });
+
+    LogManager.addEntry("name", DriverStation::isTeleop, 1);
+    LogManager.addEntry("name2", DriverStation::isTeleop, 2);
 
     configureSubsytems();
     configureCommands();
@@ -208,9 +216,22 @@ public class RobotContainer implements Sendable{
     RobotContainer.isRed = isRed;
   }
 
+  public static boolean isComp() {
+    return isComp;
+  }
+
+  public static void setIsComp(boolean isComp) {
+    RobotContainer.isComp = isComp;
+    if(!hasRemovedFromLog && isComp) {
+      hasRemovedFromLog = true;
+      LogManager.removeInComp();
+    }
+  }
+
   @Override
   public void initSendable(SendableBuilder builder) {
-      builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::setIsRed);
+    builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::setIsRed);
+    builder.addBooleanProperty("isComp", RobotContainer::isComp, RobotContainer::setIsComp);
   }
 
   /**

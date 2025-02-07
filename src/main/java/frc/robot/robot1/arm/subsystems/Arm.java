@@ -115,10 +115,10 @@ public class Arm extends SubsystemBase {
    */
   public void addNT() {
     /* add to log the important stuff */
-    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle);
-    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle);
-    LogManager.addEntry(getName() + "/Arm Angle Limit Switch", this::getArmAngleLimit);
-    LogManager.addEntry(getName() + "/IsReady", this::isReady);
+    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle, 4);
+    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle, 4);
+    LogManager.addEntry(getName() + "/Arm Angle Limit Switch", this::getArmAngleLimit, 3);
+    LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
     /* add to smart dashboard the widgets of the talon motor */
     // SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
