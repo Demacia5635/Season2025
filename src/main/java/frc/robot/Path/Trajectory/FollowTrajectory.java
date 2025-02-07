@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.gripper.commands.Drop;
@@ -28,15 +29,13 @@ public class FollowTrajectory extends Command {
   private Rotation2d wantedAngle;
   private FieldTarget target;
   private boolean usePoints;
-  private TrajectoryTarget trajectoryTarget;
+  private boolean isScoring;
 
-  public enum TrajectoryTarget{
-    CORAL, FEEDER, ALGAE
-  }
-  public FollowTrajectory(Chassis chassis, TrajectoryTarget target) {
+  public FollowTrajectory(Chassis chassis, boolean isScoring) {
     this.chassis = chassis;
     this.usePoints = false;
-    this.trajectoryTarget = target;
+    this.isScoring = isScoring;
+    
     addRequirements(chassis);
   //  this.points.add(target.getFinishPoint());
   }
@@ -51,12 +50,8 @@ public class FollowTrajectory extends Command {
 
   @Override
   public void initialize() {
-    if (trajectoryTarget == TrajectoryTarget.CORAL || trajectoryTarget == TrajectoryTarget.ALGAE) {
-      this.target = new FieldTarget(RobotContainer.scoringTarget.position, RobotContainer.scoringTarget.elementPosition, RobotContainer.scoringTarget.level);
-    } else {
-      this.target = new FieldTarget(RobotContainer.feedingTarget.position, RobotContainer.feedingTarget.elementPosition, RobotContainer.feedingTarget.level);
-      new Grab(RobotContainer.gripper).schedule();
-    }
+    RobotContainer.robot1Strip.setAutoPath();
+    this.target = isScoring ? RobotContainer.scoringTarget : RobotContainer.feedingTarget;
 
     if(!usePoints){
       points = new ArrayList<PathPoint>();
@@ -79,16 +74,16 @@ public class FollowTrajectory extends Command {
   @Override
   public void end(boolean interrupted) {
     
-    if (trajectoryTarget == TrajectoryTarget.CORAL) {
+    if (target.elementPosition == ELEMENT_POSITION.CORAL_LEFT || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
       
       chassis.stop();
       new Drop(RobotContainer.gripper).schedule();
     }
-    if(trajectoryTarget == TrajectoryTarget.FEEDER){
+    if(target.elementPosition == ELEMENT_POSITION.FEEDER){
       chassis.stop();
       new Grab(RobotContainer.gripper).schedule();
     }
-    if(trajectoryTarget == TrajectoryTarget.ALGAE){
+    if(target.elementPosition == ELEMENT_POSITION.ALGEA){
       new RunCommand(()->chassis.setVelocities(
         new ChassisSpeeds(0, 0, 0.5)), chassis).withTimeout(1)
           .andThen(new RunCommand(() -> chassis.setRobotRelVelocities(

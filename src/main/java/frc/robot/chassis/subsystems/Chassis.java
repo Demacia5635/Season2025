@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.utils.ChassisConstants;
 import frc.robot.chassis.utils.SwerveKinematics;
 import frc.robot.vision.subsystem.Tag;
@@ -254,6 +255,8 @@ public class Chassis extends SubsystemBase {
             
         
         field.setRobotPose(poseEstimator.getEstimatedPosition());
+
+        RobotContainer.feedingTarget.position = getPose().getY() > 4 ? POSITION.FEEDER_RIGHT : POSITION.FEEDER_LEFT;
     }
         
     public boolean isRed() {

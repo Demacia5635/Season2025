@@ -8,7 +8,7 @@ package frc.robot.Path.Trajectory;
 public class TrajectoryConstants {
     public static final double FIELD_LENGTH = -1; // X in field based
     public static final double FIELD_HEIGHT = -1; // y in field based
-    public static final double MAX_DRIVE_VELOCITY = 1.75; // m/s
+    public static final double MAX_DRIVE_VELOCITY = 1; // m/s
     public static final double MAX_DRIVE_ACCEL = 4; // m/s^2
     public static final double MAX_ROTATIONAL_VELOCITY = Math.toRadians(360); //in radians;
     public static final double MAX_ROTATIONAL_ACCEL = Math.toRadians(720); // in radians^2

@@ -15,14 +15,22 @@ public class Drive extends Command {
     private double direction;
     private boolean isRed;
     private ChassisSpeeds speeds;
+    private static boolean precisionMode;
 
     public Drive(Chassis chassis, CommandController controller) {
         this.chassis = chassis;
         this.controller = controller;
+        Drive.precisionMode = false;
 
         addRequirements(chassis);
     }
 
+    public static void invertPrecisionMode() {
+        precisionMode = !precisionMode;
+    }
+    public static  void setPrecisionMode(boolean precisionMode) {
+        Drive.precisionMode = precisionMode;
+    }
     @Override
     public void execute() {
         isRed = chassis.isRed();
@@ -36,6 +44,12 @@ public class Drive extends Command {
         double velX = Math.pow(joyX, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyX);
         double velY = Math.pow(joyY, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyY);
         double velRot = Math.pow(rot, 2) * ChassisConstants.MAX_OMEGA_VELOCITY * Math.signum(rot);
+
+        if (precisionMode) {
+            velX /= 4d;
+            velY /= 4d;
+            velRot /= 4d;
+        }
         
         speeds = new ChassisSpeeds(velX, velY,velRot);
         

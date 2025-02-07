@@ -5,6 +5,7 @@
 package frc.robot.robot1.gripper.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
 import frc.robot.robot1.gripper.constants.GripperConstants.DropConstants;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
@@ -45,6 +46,7 @@ public class Drop extends Command {
    */
   @Override
   public void initialize() {
+    RobotContainer.robot1Strip.setDrop();
     hasSeenCoral = false;
   }
 
