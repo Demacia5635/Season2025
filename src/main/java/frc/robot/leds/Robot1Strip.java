@@ -52,6 +52,7 @@ public class Robot1Strip extends LedStrip {
     @Override
     public void periodic() {
 
+
         setColor(Color.kWhite);
 
         if (arm.getState().equals(ARM_ANGLE_STATES.CORAL_STATION)) {

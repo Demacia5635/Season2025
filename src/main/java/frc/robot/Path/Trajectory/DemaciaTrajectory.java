@@ -157,9 +157,10 @@ public class DemaciaTrajectory {
     }
 
     public boolean isFinishedTrajectory(){
-        return ((trajectoryLength - distanceTraveled) <= MAX__POSITION_THRESHOLD 
-        || points.get(points.size() - 1).getTranslation().getDistance(chassisPose.getTranslation()) <= MAX__POSITION_THRESHOLD)
-        && Math.abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) <= MAX_ROTATION_THRESHOLD;
+        return (trajectoryLength - distanceTraveled <= MAX__POSITION_THRESHOLD
+        || chassisPose.getTranslation().getDistance(points.get(points.size()-1).getTranslation()) <= MAX__POSITION_THRESHOLD) 
+        
+        && wantedAngle.minus(chassisPose.getRotation()).getRadians() <= MAX_ROTATION_THRESHOLD;
     }
 
 }

@@ -155,6 +155,7 @@ public class RobotContainer implements Sendable{
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
     driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
     driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
+    driverController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
 
     driverController.leftBumper().onTrue(new InstantCommand(()-> {
       chassis.stop();
@@ -175,14 +176,13 @@ public class RobotContainer implements Sendable{
     });
 
     driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
-    driverController.povLeft().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
-    driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
+    driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
 
     driverController.rightSetting().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
 
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
-    operatorController.downButton().onTrue(new RunCommand(()-> gripper.setPower(-0.5), gripper));
+    operatorController.downButton().onTrue(new RunCommand(()-> gripper.setPower(-1), gripper));
     operatorController.leftButton().onTrue(new ArmCalibration(arm));
 
     operatorController.leftBumper().onTrue(new InstantCommand(()-> {
