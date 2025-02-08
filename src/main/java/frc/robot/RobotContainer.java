@@ -134,7 +134,7 @@ public class RobotContainer implements Sendable{
     chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();
-    robot1Strip = new Robot1Strip(arm, gripper);
+    robot1Strip = new Robot1Strip(chassis, arm, gripper);
   }
 
   /**
@@ -175,7 +175,7 @@ public class RobotContainer implements Sendable{
     });
     
     driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
-    driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
+    driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
     
     driverController.rightSetting().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
     

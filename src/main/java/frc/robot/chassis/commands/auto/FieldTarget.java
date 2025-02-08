@@ -16,9 +16,11 @@ public class FieldTarget {
     public static final Translation2d approachOffset = new Translation2d(1.5, 0);
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.1);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.28);
-    public static final Translation2d intakeOffset = new Translation2d(0.78, 0);
+    public static final Translation2d intakeOffset = new Translation2d(0.73, 0);
     public static final Translation2d topAlgeaOffset = new Translation2d(0.50,0.55);
     public static final Translation2d bottomAlgeaOffset = new Translation2d(0.63, 0.55);
+    public static final Translation2d l2Offset = new Translation2d(0.62, 0);
+    public static final Translation2d l3Offset = new Translation2d(0.5, 0);
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
     public LEVEL level;
@@ -86,12 +88,15 @@ public class FieldTarget {
     }
 
     public PathPoint getFinishPoint(){
+        return getElement(position.getId(), getCalcOffset());
+    }
 
+    public Translation2d getCalcOffset() {
         boolean isScoring = level == LEVEL.L2 || level == LEVEL.L3;
         Translation2d calculatedOffset = new Translation2d();
 
         if(isScoring){
-            Translation2d levelOffset = level == LEVEL.L3 ? new Translation2d(0.50, 0) : new Translation2d(0.62,0);
+            Translation2d levelOffset = level == LEVEL.L3 ? l3Offset : l2Offset;
             Translation2d elementOffset = elementPosition == ELEMENT_POSITION.CORAL_LEFT ? reefOffsetLeft : reefOffsetRight;
             calculatedOffset = levelOffset.plus(elementOffset);
         }
@@ -106,9 +111,10 @@ public class FieldTarget {
                 calculatedOffset = bottomAlgeaOffset;
             }
         }
-        
-        return getElement(position.getId(), calculatedOffset);
+
+        return calculatedOffset;
     }
+
     public static PathPoint getElement(int elementTag){
         return getElement(elementTag, new Translation2d());
     }
