@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -29,6 +30,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.L2AlgaeL3;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmDrive;
@@ -43,6 +45,7 @@ import frc.robot.leds.subsystems.LedManager;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
+import frc.robot.vision.utils.VisionConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -150,6 +153,7 @@ public class RobotContainer implements Sendable{
 
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
+    driverController.povLeft().onTrue(new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)));
 
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
     driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
@@ -177,7 +181,38 @@ public class RobotContainer implements Sendable{
     driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
     driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
     
-    driverController.rightSetting().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
+    driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
+    driverController.rightSetting().onTrue(new Command() {
+      POSITION closestTagToChassis() {
+        POSITION closestReef = null;
+        double closestReefToRobot = Double.MAX_VALUE;
+        for (int i = 0; i < 6; i++) {
+          double norm = chassis.getPose().getTranslation().minus(VisionConstants.O_TO_TAG[POSITION.values()[i].getId()]).getNorm();
+          if (norm < closestReefToRobot) {
+            closestReefToRobot = norm;
+            closestReef = POSITION.values()[i];
+          }
+        }
+        return closestReef;
+      }
+
+      public void initialize() {
+        POSITION closestReef = closestTagToChassis();
+        if (closestReef != null) {
+          scoringTarget.position = closestReef;
+        }
+      };
+
+      public void end(boolean interrupted) {
+        if (!interrupted) {
+          new FollowTrajectory(chassis, true).schedule();
+        }
+      };
+
+      public boolean isFinished() {
+        return true;
+      };
+    });
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
@@ -191,6 +226,7 @@ public class RobotContainer implements Sendable{
       arm.setState(ARM_ANGLE_STATES.IDLE);
     }, chassis, arm, gripper).ignoringDisable(true));
 
+    operatorController.povUp().onTrue(new InstantCommand(robot1Strip::setManualOrAuto));
     operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
     operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
     operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
@@ -255,6 +291,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return new L2AlgaeL3(chassis, false);  
   }
 }

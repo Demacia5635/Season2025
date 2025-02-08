@@ -12,6 +12,7 @@ import frc.robot.Path.Utils.PathPoint;
 import frc.robot.Path.Utils.Segment;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.utils.LogManager;
 
 /** Add your docs here. */
 public class AvoidReef {
@@ -30,13 +31,14 @@ public class AvoidReef {
         boolean ascending = isPathAscending(id, leaveId);
 
         pointsList.add(new PathPoint(point0, new Rotation2d()));
+        pointsList.add(entryPoint);
 
         while (id != leaveId) {
             pointsList.add(FieldTarget.REEF_POINTS[id]);
             id = ascending ? id + 1 : id - 1;
             id = normalize(id);
+            
         }
-
         pointsList.add(new PathPoint(point1, wantedAngle));
         return pointsList;
 
@@ -86,8 +88,7 @@ public class AvoidReef {
             if (isIntersecting(segment, Math.sqrt(2) / 2, AutoUtils.REEF_SEGMENTS[i])) {
                 return true;
             }
-        }
-        return false;
+        }return false;
     }
 
     private static boolean isIntersecting(Segment segment, double segmentWidth, Segment segmentBase) {

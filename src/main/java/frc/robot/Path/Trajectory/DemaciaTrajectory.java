@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import frc.robot.Path.Utils.*;
 import frc.robot.utils.LogManager;
@@ -26,9 +27,10 @@ public class DemaciaTrajectory {
     private ArrayList<PathPoint> points;
     private RoundedPoint[] corners;
     private int segmentIndex;
-    Rotation2d wantedAngle;
+    private Rotation2d wantedAngle;
+    private double currentMaxVel;
     Pose2d chassisPose = new Pose2d();
-    TrapezoidProfile driveTrapezoid = new TrapezoidProfile(new Constraints(MAX_DRIVE_VELOCITY, MAX_DRIVE_ACCEL));
+    TrapezoidProfile driveTrapezoid = new TrapezoidProfile(new Constraints(PathsConstraints.MAX_APPROACH_VELOCITY, PathsConstraints.MAX_APPROACH_ACCEL));
     
     /*
      * 
@@ -42,6 +44,7 @@ public class DemaciaTrajectory {
         this.points = points;
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
+        this.currentMaxVel = PathsConstraints.MAX_APPROACH_VELOCITY;
 
         if (isRed) points = convertAlliance();
         fixFirstPoint(initialPose);
@@ -49,7 +52,7 @@ public class DemaciaTrajectory {
         initCorners();
 
         if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
-            AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
+            points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
         }
 
         createSegments();
@@ -122,30 +125,49 @@ public class DemaciaTrajectory {
     }
 
     //PIDController omegaPidController = new PIDController(0.9, 0, 0);
-    double kP = 0.9;
+    double kP = 1.1;
     public ChassisSpeeds calculate(Pose2d chassisPose, ChassisSpeeds currentVelocity) {
         this.chassisPose = chassisPose;
         
         if(hasFinishedSegments(chassisPose)) {
             distanceTraveled = segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());
             if(segmentIndex != segments.size() - 1) segmentIndex++;
+            else{
+                currentMaxVel = PathsConstraints.MAX_FINISH_VELOCITY;
+                driveTrapezoid = new TrapezoidProfile(new Constraints(PathsConstraints.MAX_FINISH_ACCEL,
+                    PathsConstraints.MAX_FINISH_ACCEL));
+            }
         }
 
         double lineDistance = points.get(points.size() - 1).getTranslation()
             .getDistance(chassisPose.getTranslation());
 
         Translation2d robotToTarget = points.get(points.size()- 1).getTranslation().minus(chassisPose.getTranslation()).times(-1);
+        double vX = 0;
+        double vY = 0;
+        if(segmentIndex == segments.size() - 1){
+            vX = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getCos())/ currentMaxVel, 
+                new State(lineDistance * robotToTarget.getAngle().getCos(), currentVelocity.vxMetersPerSecond), 
+                new State(0, 0)).velocity;
 
-        double vX = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getCos())/ MAX_DRIVE_VELOCITY, 
-            new State(lineDistance * robotToTarget.getAngle().getCos(), currentVelocity.vxMetersPerSecond), 
-            new State(0, 0)).velocity;
+
+            vY = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getSin())/ currentMaxVel, 
+                new State(lineDistance * robotToTarget.getAngle().getSin(), currentVelocity.vyMetersPerSecond), 
+                new State(0, 0)).velocity;
+        }
+        else{
+            vX = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getCos())/ currentMaxVel, 
+                new State(lineDistance * robotToTarget.getAngle().getCos(), currentVelocity.vxMetersPerSecond), 
+                new State(0, PathsConstraints.MAX_FINISH_VELOCITY * robotToTarget.getAngle().getCos())).velocity;
 
 
-        double vY = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getSin())/ MAX_DRIVE_VELOCITY, 
-            new State(lineDistance * robotToTarget.getAngle().getSin(), currentVelocity.vyMetersPerSecond), 
-            new State(0, 0)).velocity;
+            vY = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getSin())/ currentMaxVel, 
+                new State(lineDistance * robotToTarget.getAngle().getSin(), currentVelocity.vyMetersPerSecond), 
+                new State(0, PathsConstraints.MAX_FINISH_VELOCITY * robotToTarget.getAngle().getSin())).velocity;
+        }
+        
 
-        double velocity = Math.min(MAX_DRIVE_VELOCITY, Math.hypot(vX, vY));
+        double velocity = Math.min(currentMaxVel, Math.hypot(vX, vY));
         
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
 

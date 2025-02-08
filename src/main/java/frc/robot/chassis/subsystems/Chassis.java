@@ -293,7 +293,7 @@ public class Chassis extends SubsystemBase {
     Rotation2d angleToUse = angle == null ? new Rotation2d() : angle;
     double angleError = angleToUse.minus(getGyroAngle()).getRadians();
     if (Math.abs(angleError)>Math.toRadians(1)){
-        speeds.omegaRadiansPerSecond = -rotationPid.calculate(getPose().getRotation().getRadians(), angleToUse.getRadians());
+        speeds.omegaRadiansPerSecond = rotationPid.calculate(getPose().getRotation().getRadians(), angleToUse.getRadians());
     }
     else{
         speeds.omegaRadiansPerSecond = 0;

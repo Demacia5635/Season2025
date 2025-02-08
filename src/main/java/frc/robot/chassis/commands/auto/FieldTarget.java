@@ -14,10 +14,11 @@ import frc.robot.Path.Utils.PathPoint;
 public class FieldTarget {
 
     public static final Translation2d approachOffset = new Translation2d(1.5, 0);
+    public static final Translation2d approachOffsetAlgae = new Translation2d(1.5, 1);
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.1);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.28);
-    public static final Translation2d intakeOffset = new Translation2d(0.73, 0);
-    public static final Translation2d topAlgeaOffset = new Translation2d(0.50,0.55);
+    public static final Translation2d intakeOffset = new Translation2d(0.72, 0);
+    public static final Translation2d topAlgeaOffset = new Translation2d(0.50,0.5);
     public static final Translation2d bottomAlgeaOffset = new Translation2d(0.63, 0.55);
     public static final Translation2d l2Offset = new Translation2d(0.62, 0);
     public static final Translation2d l3Offset = new Translation2d(0.5, 0);
@@ -34,12 +35,12 @@ public class FieldTarget {
 
     
     public static PathPoint[] REEF_POINTS = new PathPoint[]{
-        POSITION.A.getApproachPoint(),
-        POSITION.B.getApproachPoint(),
-        POSITION.C.getApproachPoint(),
-        POSITION.D.getApproachPoint(),
-        POSITION.E.getApproachPoint(),
-        POSITION.F.getApproachPoint()
+        new FieldTarget(POSITION.A, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.B, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.C, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.D, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.E, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.F, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
     };
 
 
@@ -77,14 +78,14 @@ public class FieldTarget {
             return RobotContainer.isRed? redId:blueId;
         }
         
-        public PathPoint getApproachPoint() {
-            return getElement(getId(), approachOffset);
+        public PathPoint getApproachPoint(Translation2d offset) {
+            return getElement(getId(), offset);
         }
         
     }
 
     public PathPoint getApproachingPoint(){
-        return position.getApproachPoint();
+        return elementPosition == ELEMENT_POSITION.ALGEA ? position.getApproachPoint(approachOffsetAlgae) : position.getApproachPoint(approachOffset);
     }
 
     public PathPoint getFinishPoint(){

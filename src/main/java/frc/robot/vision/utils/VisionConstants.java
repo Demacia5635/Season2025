@@ -139,8 +139,8 @@ public class VisionConstants {
             new Translation2d(0.13, 0.284) };
 
     // NetworkTables key for AprilTag vision data
-    public static final String[] TABLE = { "limelight-bottom", "limelight-front", "limelight-back",
-            "limelight-backup" };
+    public static final String[] TABLE = {"limelight-bottom", "limelight-front", "limelight-back",
+            "limelight-backup"};
 
     // resolution of cam
     public static final double CROP_OFSET = 0.5;

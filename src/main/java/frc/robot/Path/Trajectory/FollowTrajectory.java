@@ -30,14 +30,24 @@ public class FollowTrajectory extends Command {
   private FieldTarget target;
   private boolean usePoints;
   private boolean isScoring;
+  private boolean useElasticTarget;
 
   public FollowTrajectory(Chassis chassis, boolean isScoring) {
     this.chassis = chassis;
     this.usePoints = false;
     this.isScoring = isScoring;
+    
+    this.useElasticTarget = true;
 
     addRequirements(chassis);
     // this.points.add(target.getFinishPoint());
+  }
+  public FollowTrajectory(Chassis chassis, FieldTarget newTarget){
+    this.chassis = chassis;
+    this.target = newTarget;
+    this.useElasticTarget = false;
+    this.usePoints = false;
+    addRequirements(chassis);
   }
 
   public FollowTrajectory(Chassis chassis, ArrayList<PathPoint> points, Rotation2d wantedAngle) {
@@ -45,13 +55,14 @@ public class FollowTrajectory extends Command {
     this.points = points;
     this.wantedAngle = wantedAngle;
     this.usePoints = true;
+    this.useElasticTarget = true;
     addRequirements(chassis);
   }
 
   @Override
   public void initialize() {
     RobotContainer.robot1Strip.setAutoPath();
-    this.target = isScoring ? RobotContainer.scoringTarget : RobotContainer.feedingTarget;
+    if(useElasticTarget) this.target = isScoring ? RobotContainer.scoringTarget : RobotContainer.feedingTarget;
 
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
@@ -59,7 +70,6 @@ public class FollowTrajectory extends Command {
       points.add(new PathPoint(new Translation2d(), wantedAngle));
       points.add(target.getApproachingPoint());
       points.add(target.getFinishPoint());
-      LogManager.log("wanted pose: " + points.get(points.size() - 1));
 
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
