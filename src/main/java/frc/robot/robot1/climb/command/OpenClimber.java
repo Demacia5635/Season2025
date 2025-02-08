@@ -4,45 +4,32 @@
 
 package frc.robot.robot1.climb.command;
 
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot1.climb.ClimebConstants;
 import frc.robot.robot1.climb.subsystem.Climb;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ClimebCommand extends Command {
+public class OpenClimber extends Command {
   private Climb climb;
-  private Timer timer;
-  public ClimebCommand(Climb climb) {
+  public OpenClimber(Climb climb) {
     this.climb = climb;
-    timer = new Timer();
     addRequirements(climb);
   }
 
-  @Override
-  public void initialize() {
-    timer.reset();
-    timer.start();
-    
-  }
 
   @Override
   public void execute() {
-    if(timer.get() < ClimebConstants.ClimbConstants.prepareClimbTime){
-      climb.setClimbPower(ClimebConstants.ClimbConstants.prepareClimbPower);
-    }
-    else{
-      climb.setClimbPower(ClimebConstants.ClimbConstants.CLIMB_POWER);
-    }
+    climb.setClimbPower(ClimebConstants.ClimbConstants.prepareClimbPower);
   }
 
   @Override
   public void end(boolean interrupted) {
+    climb.setAngle(0);
     climb.stopClimb();
   }
 
   @Override
   public boolean isFinished() {
-    return climb.isStall();
+    return climb.getLimit();
   }
 }

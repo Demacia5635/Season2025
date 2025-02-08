@@ -13,7 +13,12 @@ public class ClimebConstants {
     /** the name of the subsystem */
     public static final String NAME = "Climb";
 
-    public static final TalonConfig MOTOR_CONFIG = new TalonConfig(MotorConstants.MOTOR_ID, Constants.CANBuses.Climeb_CAN_BUS, NAME).withInvert(MotorConstants.INVERT).withBrake(MotorConstants.START_NEUTRAL_MODE);
+    public static final TalonConfig MOTOR_CONFIG = 
+            new TalonConfig(MotorConstants.MOTOR_ID, Constants.CANBuses.Climeb_CAN_BUS, NAME)
+            .withInvert(MotorConstants.INVERT)
+            .withBrake(MotorConstants.START_NEUTRAL_MODE)
+            .withRadiansMotor()
+            .withMotorRatio(ClimbConstants.CLIMB_RATIO);
     /** All the motor constants */
     public static class MotorConstants {
         public static final int MOTOR_ID = 40;
@@ -25,6 +30,9 @@ public class ClimebConstants {
         public static final double prepareClimbTime = 2;
         public static final double STALL_CURRENT = 35;
         public static final double CLIMB_POWER = 0.3;
+        public static final double CLIMB_RATIO = 600;
+        public static final double HAS_CLIMED_ANGLE = 0.5;
     }
+    public static final int LIMIT_SWITCH_CHANNEL = 5;
     
 }
