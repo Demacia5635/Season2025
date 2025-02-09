@@ -30,6 +30,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.FullAlign;
 import frc.robot.chassis.commands.auto.L2AlgaeL3;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
@@ -154,6 +155,9 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.povLeft().onTrue(new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)));
+
+
+    driverController.povRight().onTrue(new FullAlign(chassis, arm, gripper, new FieldTarget(POSITION.B, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3)));
 
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
     driverController.downButton().onTrue(new FollowTrajectory(chassis, false));

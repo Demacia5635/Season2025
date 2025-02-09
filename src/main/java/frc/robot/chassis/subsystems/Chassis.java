@@ -301,6 +301,15 @@ public class Chassis extends SubsystemBase {
     setVelocities(speeds);
   }
 
+  public void setVelocitiesRotateToAngleOld(ChassisSpeeds speeds, Rotation2d angle) {
+    double angleError = angle.minus(getGyroAngle()).getRadians();
+    double angleErrorabs = Math.abs(angleError);
+    if (angleErrorabs>Math.toRadians(1.5)){
+        speeds.omegaRadiansPerSecond = angleError * 1;
+    }
+    setVelocities(speeds);
+  }
+
   
   PIDController drivePID = new PIDController(1.7, 0.1, 0);
   public void goTo(Pose2d pose, double threshold){
