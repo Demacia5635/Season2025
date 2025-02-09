@@ -23,7 +23,7 @@ public class ClimebConstants {
     public static class MotorConstants {
         public static final int MOTOR_ID = 40;
         public static final boolean INVERT = false;
-        public static final boolean START_NEUTRAL_MODE = true;
+        public static final boolean START_NEUTRAL_MODE = false;
     }
     public static class ClimbConstants {
         public static final double prepareClimbPower = -0.5;

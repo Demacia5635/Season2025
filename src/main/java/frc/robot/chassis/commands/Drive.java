@@ -39,16 +39,16 @@ public class Drive extends Command {
         
         speeds = new ChassisSpeeds(velX, velY,velRot);
         
-        Translation2d RightJoyVector = Utils.getStickVector(controller);
-        Rotation2d sticAngle = RightJoyVector.getAngle().unaryMinus().plus(Rotation2d.fromDegrees(90));
-        if (!isRed){
-            sticAngle = sticAngle.plus(Rotation2d.fromDegrees(180));
-        }
+        // Translation2d RightJoyVector = Utils.getStickVector(controller);
+        // Rotation2d sticAngle = RightJoyVector.getAngle().unaryMinus().plus(Rotation2d.fromDegrees(90));
+        // if (!isRed){
+        //     sticAngle = sticAngle.plus(Rotation2d.fromDegrees(180));
+        // }
         
-        if(RightJoyVector.getNorm() > 0.3){
-            chassis.setVelocitiesRotateToAngle(speeds, sticAngle);
-        }else{ 
+        // if(RightJoyVector.getNorm() > 0.3){
+        //     chassis.setVelocitiesRotateToAngle(speeds, sticAngle);
+        // }else{ 
         chassis.setVelocities(speeds);
-        }
+        // }
     }
 }

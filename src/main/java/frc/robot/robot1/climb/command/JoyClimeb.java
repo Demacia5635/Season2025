@@ -25,7 +25,7 @@ public class JoyClimeb extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climb.setClimbPower(controller.getRightY()* -0.25);
+    climb.setClimbPower(controller.getRightY()* -0.5);
   }
 
   // Called once the command ends or is interrupted.

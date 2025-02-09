@@ -193,7 +193,7 @@ public class RobotContainer implements Sendable{
     // controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3)));
     // controller.rightSetting().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
 
-    // controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
+    controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
     
 
     // controller.downButton().onTrue(new FollowTrajectory(chassis, false));
@@ -221,9 +221,8 @@ public class RobotContainer implements Sendable{
    * Look in {@link Robot} for more details.
    * @return the ommand that start at the start at enable
    */
-  public Command getEnaleInitCommand() {
-    return null;
-    // return armCalibration;
+  public Command getEnableInitCommand() {
+    return armCalibration;
   }
 
   /**
