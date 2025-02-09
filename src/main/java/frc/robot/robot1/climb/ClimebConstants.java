@@ -14,11 +14,11 @@ public class ClimebConstants {
     public static final String NAME = "Climb";
 
     public static final TalonConfig MOTOR_CONFIG = 
-            new TalonConfig(MotorConstants.MOTOR_ID, Constants.CANBuses.Climeb_CAN_BUS, NAME)
+            new TalonConfig(MotorConstants.MOTOR_ID, Constants.CANBuses.ARM_CAN_BUS, NAME + "Motor")
             .withInvert(MotorConstants.INVERT)
             .withBrake(MotorConstants.START_NEUTRAL_MODE)
-            .withRadiansMotor()
-            .withMotorRatio(ClimbConstants.CLIMB_RATIO);
+            .withMotorRatio(ClimbConstants.CLIMB_RATIO)
+            .withRadiansMotor();
     /** All the motor constants */
     public static class MotorConstants {
         public static final int MOTOR_ID = 40;
@@ -33,6 +33,6 @@ public class ClimebConstants {
         public static final double CLIMB_RATIO = 600;
         public static final double HAS_CLIMED_ANGLE = 0.5;
     }
-    public static final int LIMIT_SWITCH_CHANNEL = 5;
+    public static final int LIMIT_SWITCH_CHANNEL = 4;
     
 }

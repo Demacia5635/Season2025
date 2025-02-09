@@ -33,6 +33,9 @@ import frc.robot.robot1.arm.commands.ArmDrive;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.climb.command.JoyClimeb;
+import frc.robot.robot1.climb.command.OpenClimber;
+import frc.robot.robot1.climb.subsystem.Climb;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.robot1.gripper.subsystems.Gripper;
@@ -58,6 +61,7 @@ public class RobotContainer implements Sendable{
   public static Chassis chassis;  
   public static Arm arm;
   public static Gripper gripper;
+  public static Climb climb;
   public static Robot1Strip robot1Strip;
 
   public static Drive drive;
@@ -139,6 +143,7 @@ public class RobotContainer implements Sendable{
     chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();
+    climb = new Climb();
     robot1Strip = new Robot1Strip(arm, gripper);
   }
 
@@ -176,22 +181,23 @@ public class RobotContainer implements Sendable{
 
   private void configureBindings() {
 
+    controller.downButton().onTrue(new OpenClimber(climb));
+    controller.rightButton().onTrue(new JoyClimeb(controller, climb));
 
-
-    controller.leftButton().onTrue(new ArmCalibration(arm));
+    // controller.leftButton().onTrue(new ArmCalibration(arm));
    
-    controller.rightButton().onTrue(new Drop(gripper));
-    controller.povRight().onTrue(new Grab(gripper));
-    controller.leftBumper().onTrue(getDisableInitCommand());
+    // controller.rightButton().onTrue(new Drop(gripper));
+    // controller.povRight().onTrue(new Grab(gripper));
+    // controller.leftBumper().onTrue(getDisableInitCommand());
 
-    controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3)));
-    controller.rightSetting().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
+    // controller.povUp().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.L3)));
+    // controller.rightSetting().onTrue(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.STARTING)));
 
-    controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
+    // controller.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.fromDegrees(0)), chassis).withTimeout(0.25));
     
 
-    controller.downButton().onTrue(new FollowTrajectory(chassis, false));
-    controller.rightBumper().onTrue(new FollowTrajectory(chassis, true));
+    // controller.downButton().onTrue(new FollowTrajectory(chassis, false));
+    // controller.rightBumper().onTrue(new FollowTrajectory(chassis, true));
 
     // controller.getLeftStickMove().onTrue(new Drive(chassis, controller));
     
@@ -215,8 +221,9 @@ public class RobotContainer implements Sendable{
    * Look in {@link Robot} for more details.
    * @return the ommand that start at the start at enable
    */
-  public Command getEnableInitCommand() {
-    return armCalibration;
+  public Command getEnaleInitCommand() {
+    return null;
+    // return armCalibration;
   }
 
   /**
@@ -231,7 +238,8 @@ public class RobotContainer implements Sendable{
       chassis.stop();
       arm.stop();
       gripper.stop();
-    }, chassis, arm, gripper
+      climb.stopClimb();
+    }, chassis, arm, gripper, climb
     ).ignoringDisable(true);
     initDisableCommand.setName("Init Disable Command");
     return initDisableCommand;

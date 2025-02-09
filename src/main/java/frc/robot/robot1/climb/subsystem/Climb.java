@@ -5,17 +5,23 @@
 package frc.robot.robot1.climb.subsystem;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.robot1.climb.ClimebConstants;
+import frc.robot.robot1.climb.ClimebConstants.ClimbConstants;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 
 public class Climb extends SubsystemBase {
-  private TalonMotor cllimbMotor;
-  private DigitalInput AngleLimit;
+  private TalonMotor climbMotor;
+  private DigitalInput angleLimit;
   public Climb() {
-    cllimbMotor = new TalonMotor(ClimebConstants.MOTOR_CONFIG);
-    AngleLimit = new DigitalInput(ClimebConstants.LIMIT_SWITCH_CHANNEL);
+    setName(ClimebConstants.NAME);
+
+    climbMotor = new TalonMotor(ClimebConstants.MOTOR_CONFIG);
+    angleLimit = new DigitalInput(ClimebConstants.LIMIT_SWITCH_CHANNEL);
+
+    SmartDashboard.putData(getName() + "/" + ClimebConstants.NAME + " Motor", climbMotor);
 
     LogManager.addEntry(getName() + "/climeb Angle", this::getArmAngle);
     LogManager.addEntry(getName() + "/climeb is on Limit Switch", this::getLimit);
@@ -23,31 +29,31 @@ public class Climb extends SubsystemBase {
   }
 
   public void setClimbPower(double power){
-    cllimbMotor.set(power);
+    climbMotor.set(power);
   }
 
   public void stopClimb(){
-    cllimbMotor.set(0);;
+    climbMotor.stopMotor();
   }
 
   public void breakClimb(){
-    cllimbMotor.setNeutralMode(true);;
+    climbMotor.setNeutralMode(true);
   }
   
   public void coastClimb(){
-    cllimbMotor.setNeutralMode(false);;
+    climbMotor.setNeutralMode(false);
   }
 
   public double getArmAngle(){
-    return cllimbMotor.getCurrentPosition();
+    return climbMotor.getCurrentPosition();
   }
 
   public boolean getLimit() {
-    return !AngleLimit.get();
+    return !angleLimit.get();
   }
 
   public void setAngle(double angle){
-    cllimbMotor.setPosition(angle);
+    climbMotor.setPosition(angle);
   }
   
   @Override
