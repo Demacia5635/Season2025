@@ -54,17 +54,18 @@ public class Arm extends SubsystemBase {
 
   /** The digital sensor that help with calibrate the arm */
   private final DigitalInput armAngleLimit;
+
+  /**
+   * The absolute sensor that tells the arm angle motor what is the real angle
+   * of the gripper
+   */
+  private final DutyCycleEncoder armAngleAbsoluteSensor;
+
   /**
    * The absolute sensor that tells the gripper angle motor what is the real angle
    * of the gripper
    */
   private final DutyCycleEncoder gripperAngleAbsoluteSensor;
-
-  /**
-   * A variable that tells the arm if it was calibrated if it wasn't its will not
-   * listen to go to angles
-   */
-  public boolean isCalibrated;
 
   /**
    * The state of the arm used in the
@@ -91,9 +92,7 @@ public class Arm extends SubsystemBase {
     /* configure the sensors */
     armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
     gripperAngleAbsoluteSensor = new DutyCycleEncoder(GripperAngleMotorConstants.ABSOLUTE_SENSOR_CHANNEL);
-
-    /* set is calibrated to false at the start */
-    isCalibrated = false;
+    armAngleAbsoluteSensor = new DutyCycleEncoder(ArmAngleMotorConstants.ABSOLUTE_SENSOR_CHANNEL);
 
     /* make the default state to idle */
     state = ARM_ANGLE_STATES.IDLE;
@@ -144,16 +143,6 @@ public class Arm extends SubsystemBase {
 
     /* add the arm itself to the network tables */
     SmartDashboard.putData(this);
-  }
-
-  /**
-   * set the arm to calibrated
-   * <br>
-   * </br>
-   * used in the {@link frc.robot.robot1.arm.commands.ArmCalibration}
-   */
-  public void hadCalibrated() {
-    isCalibrated = true;
   }
 
   /**
@@ -234,11 +223,6 @@ public class Arm extends SubsystemBase {
    *      automaticly be the forward limit
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
-    if (!isCalibrated) {
-      LogManager.log("Can not move motor before calibration", AlertType.kError);
-      return;
-    }
-
     if (targetAngle < ArmAngleMotorConstants.BACK_LIMIT) {
       targetAngle = ArmAngleMotorConstants.BACK_LIMIT;
     }
@@ -262,11 +246,6 @@ public class Arm extends SubsystemBase {
    *      to go to the back limit
    */
   public void gripperAngleMotorSetPositionVoltage(double angle) {
-    if (!isCalibrated) {
-      LogManager.log("Can not move motor before calibration", AlertType.kError);
-      return;
-    }
-
     if (angle < GripperAngleMotorConstants.BACK_LIMIT) {
       angle = GripperAngleMotorConstants.BACK_LIMIT;
     }
@@ -324,7 +303,7 @@ public class Arm extends SubsystemBase {
    * 
    * @return the arm angle motor position, position in radians
    */
-  public double getArmAngle() {
+  public double getArmAngleMotor() {
     return armAngleMotor.getCurrentPosition();
   }
 
@@ -337,6 +316,15 @@ public class Arm extends SubsystemBase {
    */
   public double getGripperAngleMotor() {
     return gripperAngleMotor.getCurrentPosition();
+  }
+
+  /**
+   * get the gripper angle absolute sensor
+   * 
+   * @return the gripper angle in radians
+   */
+  public double getArmAngle() {
+    return (armAngleAbsoluteSensor.get() * 2 * Math.PI) - ArmAngleMotorConstants.BASE_ANGLE;
   }
 
   /**
@@ -381,10 +369,18 @@ public class Arm extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    /* check if the arm angle absolute sensor is connected */
+    if (!armAngleAbsoluteSensor.isConnected()) {
+      LogManager.log("arm Angle Encoder is not connected", AlertType.kError);
+    }
+
     /* check if the gripper angle absolute sensor is connected */
     if (!gripperAngleAbsoluteSensor.isConnected()) {
       LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
     }
+
+    /* set the arm angle motor position to the gripper angle absolute sensor */
+    armAngleMotor.setPosition(getArmAngle());
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */
     gripperAngleMotor.setPosition(getGripperAngle());

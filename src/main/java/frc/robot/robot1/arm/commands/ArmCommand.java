@@ -177,7 +177,7 @@ public class ArmCommand extends Command {
    * the function that is called to check if the command have finished
    * <br>
    * </br
-   * there is no condition so the command will go all the time after calibration
+   * there is no condition so the command will go all the time
    */
   @Override
   public boolean isFinished() {

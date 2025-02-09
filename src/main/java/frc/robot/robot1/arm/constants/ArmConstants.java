@@ -55,6 +55,9 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_ACCELERATION = 3;
         public static final double MOTION_MAGIC_JERK = 6;
 
+        /* the channel of the absolute sensor */
+        public static final int ABSOLUTE_SENSOR_CHANNEL = 1;
+
         /* the channel of the limit switch of the arm angle motor */
         public static final int LIMIT_SWITCH_CHANNEL = 0;
 
@@ -72,7 +75,7 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double BASE_ANGLE = Math.toRadians(33.7);
+        public static final double BASE_ANGLE = 0;
         public static final double BACK_LIMIT = Math.toRadians(33.7);
         public static final double FWD_LIMIT = Math.toRadians(130);
 
