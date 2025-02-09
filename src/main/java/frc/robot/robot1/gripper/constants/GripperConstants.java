@@ -4,6 +4,8 @@
 
 package frc.robot.robot1.gripper.constants;
 
+import edu.wpi.first.math.Pair;
+
 /**
  * All gripper constants divided to diffrent static class based on all the
  * features of the gripper
@@ -22,9 +24,10 @@ public class GripperConstants {
 
     /** All the sensor constants */
     public static class SensorConstants {
-        public static final int UP_FRONT_SENSOR_CHANNEL = 1;
-        public static final int UP_BACK_SENSOR_CHANNEL = 2;
+        // public static final int UP_FRONT_SENSOR_CHANNEL = 1;
+        // public static final int UP_BACK_SENSOR_CHANNEL = 2;
         public static final int DOWN_SENSOR_CHANNEL = 0;
+        public static final Pair<Integer, Integer> UP_SENSOR_CHANNELS = new Pair<Integer, Integer>(2,3);
         public static final double CORAL_IN_SENSOR = 4;
     }
 

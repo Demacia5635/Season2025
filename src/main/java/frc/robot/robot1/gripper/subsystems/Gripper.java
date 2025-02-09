@@ -6,6 +6,7 @@ package frc.robot.robot1.gripper.subsystems;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -35,8 +36,9 @@ public class Gripper extends SubsystemBase {
   /** The motor of the gripper */
   private final TalonSRX motor;
 
-  private final AnalogInput upFrontSensor;
-  private final AnalogInput upBackSensor;
+  // private final AnalogInput upFrontSensor;
+  // private final AnalogInput upBackSensor;
+  private final Ultrasonic upSensor;
   /** The sensor that tells if a coral is inside */
   private final AnalogInput downSensor;
 
@@ -57,8 +59,9 @@ public class Gripper extends SubsystemBase {
     motor.setNeutralMode(MotorConstants.START_NEUTRAL_MODE ? NeutralMode.Brake : NeutralMode.Coast);
 
     /* configure the sensors */
-    upFrontSensor = new AnalogInput(SensorConstants.UP_FRONT_SENSOR_CHANNEL);
-    upBackSensor = new AnalogInput(SensorConstants.UP_BACK_SENSOR_CHANNEL);
+    // upFrontSensor = new AnalogInput(SensorConstants.UP_FRONT_SENSOR_CHANNEL);
+    // upBackSensor = new AnalogInput(SensorConstants.UP_BACK_SENSOR_CHANNEL);
+    upSensor = new Ultrasonic(SensorConstants.UP_SENSOR_CHANNELS.getFirst(), SensorConstants.UP_SENSOR_CHANNELS.getSecond());
     downSensor = new AnalogInput(SensorConstants.DOWN_SENSOR_CHANNEL);
 
     /* send to network tables staff */
@@ -70,8 +73,9 @@ public class Gripper extends SubsystemBase {
    */
   private void addNT() {
     /* put the sensors */
-    LogManager.addEntry(getName() + "/get up front sensor", this::getUpFrontSensor, 3);
-    LogManager.addEntry(getName() + "/get up back sensor", this::getUpBackSensor, 3);
+    // LogManager.addEntry(getName() + "/get up front sensor", this::getUpFrontSensor, 3);
+    // LogManager.addEntry(getName() + "/get up back sensor", this::getUpBackSensor, 3);
+    LogManager.addEntry(getName() + "/get up sensor", this::getUpSensor, 3);
     LogManager.addEntry(getName() + "/get down sensor", this::getDownSensor, 3);
     LogManager.addEntry(getName() + "/Is Coral", this::isCoral, 4);
 
@@ -80,6 +84,8 @@ public class Gripper extends SubsystemBase {
         new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/Motor" + "/set Coast",
         new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
+
+    SmartDashboard.putData(getName() + "/" + "up sensor", upSensor);
 
     /* put the gripper itself in the smart dashboard */
     SmartDashboard.putData(this);
@@ -111,12 +117,16 @@ public class Gripper extends SubsystemBase {
     motor.setNeutralMode(isBrake ? NeutralMode.Brake : NeutralMode.Coast);
   }
 
-  public double getUpFrontSensor() {
-    return upFrontSensor.getVoltage();
-  }
+  // public double getUpFrontSensor() {
+  //   return upFrontSensor.getVoltage();
+  // }
 
-  public double getUpBackSensor() {
-    return upBackSensor.getVoltage();
+  // public double getUpBackSensor() {
+  //   return upBackSensor.getVoltage();
+  // }
+
+  public double getUpSensor() {
+    return upSensor.getRangeMM() * 1000;
   }
 
   /**
@@ -129,8 +139,9 @@ public class Gripper extends SubsystemBase {
   }
 
   public boolean isCoralUpSensor() {
-    return getUpFrontSensor() < SensorConstants.CORAL_IN_SENSOR 
-    || getUpBackSensor() < SensorConstants.CORAL_IN_SENSOR;
+    return getUpSensor() < 0.13;
+    // return getUpFrontSensor() < SensorConstants.CORAL_IN_SENSOR 
+    // || getUpBackSensor() < SensorConstants.CORAL_IN_SENSOR;
   }
 
   public boolean isCoralDownSensor() {
@@ -167,5 +178,11 @@ public class Gripper extends SubsystemBase {
    */
   @Override
   public void periodic() {
+    if (!upSensor.isEnabled()) {
+      LogManager.log("up sensor is not enabled");
+    }
+    if (!upSensor.isRangeValid()) {
+      LogManager.log("up sensor range is not valid");
+    }
   }
 }
