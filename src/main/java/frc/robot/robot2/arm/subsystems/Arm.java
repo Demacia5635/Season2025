@@ -2,7 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.robot1.arm.subsystems;
+package frc.robot.robot2.arm.subsystems;
+
+import static frc.robot.robot2.arm.constants.ArmConstants.*;
 
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -12,15 +14,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
-import frc.robot.robot1.arm.constants.ArmConstants.ArmAngleMotorConstants;
-import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleMotorConstants;
-import frc.robot.robot1.arm.constants.ArmConstants.GripperAngleStarting;
-import frc.robot.robot1.arm.constants.ArmConstants.MaxErrors;
+import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot2.arm.constants.ArmConstants.ArmAngleMotorConstants;
+import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleMotorConstants;
+import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleStarting;
+import frc.robot.robot2.arm.constants.ArmConstants.MaxErrors;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
-
-import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
 /**
  * The Arm Subsystem
@@ -42,8 +42,8 @@ import static frc.robot.robot1.arm.constants.ArmConstants.*;
  * <br>
  * </br>
  * 
- * @see frc.robot.robot1.arm.constants.ArmConstants
- * @see frc.robot.robot1.arm.commands.ArmCommand
+ * @see frc.robot.robot2.arm.constants.ArmConstants
+ * @see frc.robot.robot2.arm.commands.ArmCommand
  */
 public class Arm extends SubsystemBase {
 
@@ -69,7 +69,7 @@ public class Arm extends SubsystemBase {
 
   /**
    * The state of the arm used in the
-   * {@link frc.robot.robot1.arm.commands.ArmCommand} to tell the arm what angle
+   * {@link frc.robot.robot2.arm.commands.ArmCommand} to tell the arm what angle
    * to go
    */
   public ARM_ANGLE_STATES state;

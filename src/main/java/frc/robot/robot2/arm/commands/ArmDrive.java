@@ -1,8 +1,8 @@
-package frc.robot.robot1.arm.commands;
+package frc.robot.robot2.arm.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot2.arm.subsystems.Arm;
 
 /**
  * command to control the arm with controller

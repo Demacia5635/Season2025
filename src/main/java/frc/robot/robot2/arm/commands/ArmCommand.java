@@ -2,7 +2,9 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.robot1.arm.commands;
+package frc.robot.robot2.arm.commands;
+
+import static frc.robot.robot2.arm.constants.ArmConstants.*;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -10,12 +12,10 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.robot1.arm.constants.ArmConstants.ANGLES;
-import frc.robot.robot1.arm.subsystems.Arm;
-import frc.robot.robot1.arm.utils.ArmUtils;
+import frc.robot.robot2.arm.constants.ArmConstants.ANGLES;
+import frc.robot.robot2.arm.subsystems.Arm;
+import frc.robot.robot2.arm.utils.ArmUtils;
 import frc.robot.utils.LogManager;
-
-import static frc.robot.robot1.arm.constants.ArmConstants.*;
 
 /**
  * the main command of the arm
