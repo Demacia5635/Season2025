@@ -27,7 +27,7 @@ public class ArmConstants {
      * All the constnats of the calculation
      */
     public static class CalculationsConstants {
-        public static final double BASE_HEIGHT = 0.75;
+        public static final double BASE_HEIGHT = 0.86;
         public static final double ARM_1_LEN = 0.53;
         public static final double ARM_2_LEN = 0.32;
     }
@@ -196,7 +196,7 @@ public class ArmConstants {
         public static final Translation2d REEF = new Translation2d();
         public static final Translation2d CORAL_STATION = new Translation2d();
 
-        public static final double L2_HEIGHT = 0.54;
+        public static final double L2_HEIGHT = 0.81;
         public static final double L3_HEIGHT = 1.02;
         public static final double CORAL_STATION_HEIGHT = 0;
     }

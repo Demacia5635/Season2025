@@ -24,28 +24,43 @@ public class ArmUtils {
      */
     public static Pair<Double, Double> calculateAngles(double distance, double height) {
 
-        /* set the hypotenuse of the triangle */
         double relativeHeight = CalculationsConstants.BASE_HEIGHT - height;
-        Translation2d hypotenuse = new Translation2d(distance, relativeHeight);
 
-        /* check if the calculation is not acos of more and than 1 and not less than -1 */
-        if (Math.abs(
-            (Math.pow(CalculationsConstants.ARM_2_LEN, 2) + Math.pow(CalculationsConstants.ARM_1_LEN, 2) - Math.pow(hypotenuse.getNorm(), 2)) /
-            (2 * CalculationsConstants.ARM_1_LEN * CalculationsConstants.ARM_2_LEN)
-        ) >= 1) {
-            return new Pair<Double,Double>(ArmAngleMotorConstants.BASE_ANGLE, GripperAngleMotorConstants.BACK_LIMIT);
-        }
-
-        /* using cosines law calculate both angles and modify them to match the needed angles for the motors  */
         return new Pair<Double,Double>(
-            Math.acos(
-                (Math.pow(CalculationsConstants.ARM_1_LEN, 2) + Math.pow(hypotenuse.getNorm(), 2) - Math.pow(CalculationsConstants.ARM_2_LEN, 2)) / 
-                (2 * CalculationsConstants.ARM_1_LEN * hypotenuse.getNorm())) +
-                0.5 * Math.PI - hypotenuse.getAngle().getRadians(),
-            2 * Math.PI - 
-            Math.acos(
-                (Math.pow(CalculationsConstants.ARM_2_LEN, 2) + Math.pow(CalculationsConstants.ARM_1_LEN, 2) - Math.pow(hypotenuse.getNorm(), 2)) / 
-                (2 * CalculationsConstants.ARM_2_LEN * CalculationsConstants.ARM_1_LEN))
+            (
+                Math.PI 
+                / 2
+            ) 
+            - Math.atan(relativeHeight/distance) 
+            + Math.acos(
+                (
+                    Math.pow(CalculationsConstants.ARM_1_LEN, 2) 
+                    + Math.pow(distance, 2) + Math.pow(relativeHeight, 2) 
+                    - Math.pow(CalculationsConstants.ARM_2_LEN, 2)
+                ) / (
+                    2 
+                    * CalculationsConstants.ARM_1_LEN 
+                    * Math.sqrt(
+                        Math.pow(distance, 2) 
+                        + Math.pow(relativeHeight, 2)
+                    )
+                )
+            ), 
+            2 * Math.PI
+            - (
+                Math.acos(
+                    (
+                        Math.pow(CalculationsConstants.ARM_1_LEN, 2)
+                        + Math.pow(CalculationsConstants.ARM_2_LEN, 2)
+                        - Math.pow(distance, 2)
+                        - Math.pow(relativeHeight, 2)
+                    ) / (
+                        2
+                        * CalculationsConstants.ARM_1_LEN
+                        * CalculationsConstants.ARM_2_LEN
+                    )
+                )
+            )
         );
     }
 }

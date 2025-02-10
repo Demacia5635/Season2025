@@ -14,8 +14,11 @@ import frc.robot.robot1.arm.constants.ArmConstants.ANGLES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.arm.utils.ArmUtils;
 import frc.robot.utils.LogManager;
+import frc.robot.vision.utils.VisionConstants;
 
 import static frc.robot.robot1.arm.constants.ArmConstants.*;
+
+import java.util.function.Supplier;
 
 /**
  * the main command of the arm
@@ -41,7 +44,7 @@ public class ArmCommand extends Command {
   private Pair<Double, Double> wantedAngle;
 
   /* current position later will be set from the chassis */
-  Pose2d currentPose2d;
+  // Supplier<Translation2d> currentPos;
 
   /**
    * creates a new arm command
@@ -57,6 +60,8 @@ public class ArmCommand extends Command {
 
     testArmAngle = arm.getArmAngle();
     testGripperAngle = arm.getGripperAngle();
+
+    // this.currentPos = currentPos;
 
     SmartDashboard.putData(this);
     addRequirements(arm);
@@ -95,6 +100,23 @@ public class ArmCommand extends Command {
   @Override
   public void execute() {
     switch (arm.getState()) {
+      // case CALC:
+      //   wantedAngle = ArmUtils.calculateAngles(
+      //     currentPos.get().minus(
+      //       RobotContainer.scoringTarget.position.getApproachPoint(
+      //         RobotContainer.scoringTarget.elementPosition == ELEMENT_POSITION.CORAL_LEFT 
+      //         ? FullAlign.reelLeftReefOffset 
+      //         : FullAlign.reelRightReefOffset).getTranslation()).getNorm()
+      //         - 0.25
+      //       , FieldConstants.L2_HEIGHT + 0.05
+      //     );
+      //   LogManager.log(wantedAngle);
+      //   if (wantedAngle.getFirst().isNaN() || wantedAngle.getSecond().isNaN()) {
+      //     wantedAngle = ANGLES.L2;
+      //   }
+      //   arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
+      //   break;
+
       case L2:
         wantedAngle = ANGLES.L2;
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
