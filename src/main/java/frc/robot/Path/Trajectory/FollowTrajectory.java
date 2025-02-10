@@ -17,6 +17,7 @@ import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
+import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
@@ -70,6 +71,7 @@ public class FollowTrajectory extends Command {
       points.add(new PathPoint(new Translation2d(), wantedAngle));
       points.add(target.getApproachingPoint());
       points.add(target.getFinishPoint());
+      LogManager.log("FINISH POINT: " + target.getFinishPoint()); 
 
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
@@ -99,7 +101,7 @@ public class FollowTrajectory extends Command {
       }
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         new RunCommand(() -> chassis.setVelocities(
-            new ChassisSpeeds(0, 0, 0.5)), chassis).withTimeout(1)
+            new ChassisSpeeds(0, 0, 0.5 * (target.position == POSITION.A || target.position == POSITION.B || target.position == POSITION.F ? 1 : -1))), chassis).withTimeout(1)
             .andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
                 new ChassisSpeeds(-2, 0, 0)), chassis)
                 .withTimeout(0.3))

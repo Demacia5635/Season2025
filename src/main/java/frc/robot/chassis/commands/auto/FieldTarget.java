@@ -10,16 +10,21 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
+import frc.robot.utils.LogManager;
 
 public class FieldTarget {
 
     public static final Translation2d approachOffset = new Translation2d(1.5, 0);
-    public static final Translation2d approachOffsetAlgae = new Translation2d(1.5, 1);
+    public static final Translation2d approachOffsetAlgaeRight = new Translation2d(1.5, 1);
+    public static final Translation2d approachOffsetAlgaeLeft = new Translation2d(1.5, -1);
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.1);
-    public static final Translation2d reefOffsetRight = new Translation2d(0, 0.28);
+    public static final Translation2d reefOffsetRight = new Translation2d(0, 0.27);
     public static final Translation2d intakeOffset = new Translation2d(0.72, 0);
-    public static final Translation2d topAlgeaOffset = new Translation2d(0.50,0.5);
-    public static final Translation2d bottomAlgeaOffset = new Translation2d(0.63, 0.55);
+    public static final Translation2d topAlgeaRightOffset = new Translation2d(0.50,0.5);
+    public static final Translation2d topAlgeaLefttOffset = new Translation2d(0.50,-0.5);
+    public static final Translation2d bottomAlgeaRightOffset = new Translation2d(0.63, 0.55);
+    
+    public static final Translation2d bottomAlgeaLeftOffset = new Translation2d(0.63, -0.55);
     public static final Translation2d l2Offset = new Translation2d(0.62, 0);
     public static final Translation2d l3Offset = new Translation2d(0.5, 0);
     public POSITION position;
@@ -85,7 +90,17 @@ public class FieldTarget {
     }
 
     public PathPoint getApproachingPoint(){
-        return elementPosition == ELEMENT_POSITION.ALGEA ? position.getApproachPoint(approachOffsetAlgae) : position.getApproachPoint(approachOffset);
+        if(elementPosition == ELEMENT_POSITION.ALGEA){
+            if(position == POSITION.A || position == POSITION.B || position == POSITION.F){
+                return position.getApproachPoint(approachOffsetAlgaeRight);
+            }
+            else{
+                return position.getApproachPoint(approachOffsetAlgaeLeft);
+            }
+        }
+        else{
+            return position.getApproachPoint(approachOffset);
+        }
     }
 
     public PathPoint getFinishPoint(){
@@ -104,12 +119,23 @@ public class FieldTarget {
         else{
             if(level == LEVEL.FEEDER){
                 calculatedOffset = intakeOffset;
+                LogManager.log("INTAKE OFFSET");
             }
-            if(level == LEVEL.ALGAE_TOP){
-                calculatedOffset = topAlgeaOffset;
+            else if(level == LEVEL.ALGAE_TOP){
+                if(position == POSITION.A || position == POSITION.B || position == POSITION.F){
+                    calculatedOffset = topAlgeaRightOffset;
+                }
+                else{
+                    calculatedOffset = topAlgeaLefttOffset;
+                }
             }
-            if(level == LEVEL.ALGAE_BOTTOM){
-                calculatedOffset = bottomAlgeaOffset;
+            else if(level == LEVEL.ALGAE_BOTTOM){
+                if(position == POSITION.A || position == POSITION.B || position == POSITION.F){
+                    calculatedOffset = bottomAlgeaRightOffset;
+                }
+                else{
+                    calculatedOffset = topAlgeaLefttOffset;
+                }
             }
         }
 
