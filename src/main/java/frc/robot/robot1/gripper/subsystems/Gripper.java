@@ -62,6 +62,7 @@ public class Gripper extends SubsystemBase {
     // upFrontSensor = new AnalogInput(SensorConstants.UP_FRONT_SENSOR_CHANNEL);
     // upBackSensor = new AnalogInput(SensorConstants.UP_BACK_SENSOR_CHANNEL);
     upSensor = new Ultrasonic(SensorConstants.UP_SENSOR_CHANNELS.getFirst(), SensorConstants.UP_SENSOR_CHANNELS.getSecond());
+    Ultrasonic.setAutomaticMode(true);
     downSensor = new AnalogInput(SensorConstants.DOWN_SENSOR_CHANNEL);
 
     /* send to network tables staff */
@@ -84,8 +85,6 @@ public class Gripper extends SubsystemBase {
         new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/Motor" + "/set Coast",
         new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
-
-    SmartDashboard.putData(getName() + "/" + "up sensor", upSensor);
 
     /* put the gripper itself in the smart dashboard */
     SmartDashboard.putData(this);
@@ -126,7 +125,7 @@ public class Gripper extends SubsystemBase {
   // }
 
   public double getUpSensor() {
-    return upSensor.getRangeMM() * 1000;
+    return upSensor.getRangeMM() / 1000;
   }
 
   /**
