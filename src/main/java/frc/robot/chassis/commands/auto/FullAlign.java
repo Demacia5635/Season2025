@@ -10,9 +10,11 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
 import static frc.robot.vision.utils.VisionConstants.*;
@@ -29,7 +31,7 @@ public class FullAlign extends Command {
   private Translation2d robotToTarget;
   private Translation2d robotToReelTarget;
 
-  private double maxVel = 1;
+  private double maxVel = 2;
 
   public static final Translation2d reelLeftReefOffset = new Translation2d(-0.05,-0.16);
   public static final Translation2d reelRightReefOffset = new Translation2d(-0.05,0.16);
@@ -53,17 +55,19 @@ public class FullAlign extends Command {
     robotToTarget = target.getFinishPoint().getTranslation().minus(robotPose);
     robotToReelTarget = reelElement.minus(robotPose);
 
-    chassis.setVelocitiesRotateToAngleOld(new ChassisSpeeds(Math.min(robotToTarget.getX()* 0.5, maxVel), Math.min(robotToTarget.getY()*0.5, maxVel), 0), robotToReelTarget.getAngle());
-    //arm.setState(ARM_ANGLE_STATES.)
+    chassis.setVelocitiesRotateToAngleOld(new ChassisSpeeds(Math.min(robotToTarget.getX()* 2, maxVel), Math.min(robotToTarget.getY()*2, maxVel), 0), robotToReelTarget.getAngle());
+    arm.setState(target.level == LEVEL.L2 ? ARM_ANGLE_STATES.L2 : ARM_ANGLE_STATES.L3);
   }
 
   @Override
   public void end(boolean interrupted) {
+    new Drop(gripper).schedule();
     chassis.stop();
   }
 
   @Override
   public boolean isFinished() {
+    //return (target.level == LEVEL.L2 ? false : robotToReelTarget.getNorm()<0.82) && (robotToReelTarget.getAngle() > );
     return false;
   }
 
