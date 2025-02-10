@@ -38,6 +38,7 @@ import frc.robot.robot1.arm.commands.ArmDrive;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.climb.subsystem.Climb;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.robot1.gripper.subsystems.Gripper;
@@ -67,6 +68,7 @@ public class RobotContainer implements Sendable{
   public static Chassis chassis;  
   public static Arm arm;
   public static Gripper gripper;
+  public static Climb climb;
   public static Robot1Strip robot1Strip;
 
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
@@ -138,6 +140,7 @@ public class RobotContainer implements Sendable{
     chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();
+    climb = new Climb();
     robot1Strip = new Robot1Strip(chassis, arm, gripper);
   }
 
@@ -283,7 +286,8 @@ public class RobotContainer implements Sendable{
       chassis.stop();
       arm.stop();
       gripper.stop();
-    }, chassis, arm, gripper
+      climb.stopClimb();
+    }, chassis, arm, gripper, climb
     ).ignoringDisable(true);
     initDisableCommand.setName("Init Disable Command");
     return initDisableCommand;
