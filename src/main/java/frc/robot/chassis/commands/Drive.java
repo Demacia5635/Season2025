@@ -60,7 +60,7 @@ public class Drive extends Command {
         }
         
         if(RightJoyVector.getNorm() > 0.3){
-            chassis.setVelocitiesRotateToAngle(speeds, sticAngle);
+            chassis.setVelocitiesRotateToAngleOld(speeds, sticAngle);
         }else{ 
         chassis.setVelocities(speeds);
         }

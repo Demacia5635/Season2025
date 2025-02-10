@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.utils.ChassisConstants;
 import frc.robot.chassis.utils.SwerveKinematics;
@@ -305,10 +306,21 @@ public class Chassis extends SubsystemBase {
     double angleError = angle.minus(getGyroAngle()).getRadians();
     double angleErrorabs = Math.abs(angleError);
     if (angleErrorabs>Math.toRadians(1.5)){
-        speeds.omegaRadiansPerSecond = angleError * 1;
+        speeds.omegaRadiansPerSecond = angleError * 2.5;
     }
+
     setVelocities(speeds);
   }
+
+//   public void setVelocitiesRotateToTarget(ChassisSpeeds speeds, FieldTarget target) {
+//     Translation2d robotToReelTarget = target..minus(getPose());
+//     double angleError = angle.minus(getGyroAngle()).getRadians();
+//     double angleErrorabs = Math.abs(angleError);
+//     if (angleErrorabs>Math.toRadians(1.5)){  
+//         speeds.omegaRadiansPerSecond = angleError * 2;
+//     }
+//     setVelocities(speeds);
+//   }
 
   
   PIDController drivePID = new PIDController(1.7, 0.1, 0);
