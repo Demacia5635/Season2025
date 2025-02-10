@@ -38,6 +38,8 @@ import frc.robot.robot1.arm.commands.ArmDrive;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.climb.command.JoyClimeb;
+import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
@@ -151,7 +153,8 @@ public class RobotContainer implements Sendable{
    */
   private void configureDefaultCommands() {
     chassis.setDefaultCommand(new Drive(chassis, driverController));
-    arm.setDefaultCommand(new ArmCommand(arm));
+    climb.setDefaultCommand(new JoyClimeb(operatorController, climb));
+    arm.setDefaultCommand(new ArmCommand(arm, ()-> chassis.getPose().getTranslation()));
   }
 
 
@@ -232,6 +235,7 @@ public class RobotContainer implements Sendable{
       gripper.stop();
       arm.setState(ARM_ANGLE_STATES.IDLE);
     }, chassis, arm, gripper).ignoringDisable(true));
+    operatorController.rightBumper().onTrue(new OpenClimber(climb));
 
     operatorController.povUp().onTrue(new InstantCommand(robot1Strip::setManualOrAuto));
     operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
