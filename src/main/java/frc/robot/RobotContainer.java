@@ -154,7 +154,7 @@ public class RobotContainer implements Sendable{
   private void configureDefaultCommands() {
     chassis.setDefaultCommand(new Drive(chassis, driverController));
     climb.setDefaultCommand(new JoyClimeb(operatorController, climb));
-    arm.setDefaultCommand(new ArmCommand(arm, ()-> chassis.getPose().getTranslation()));
+    arm.setDefaultCommand(new ArmCommand(arm));
   }
 
 
