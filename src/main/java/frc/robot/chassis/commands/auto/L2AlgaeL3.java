@@ -4,12 +4,14 @@
 
 package frc.robot.chassis.commands.auto;
 
+import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -21,6 +23,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.utils.LogManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class L2AlgaeL3 extends SequentialCommandGroup {
@@ -40,13 +43,12 @@ public class L2AlgaeL3 extends SequentialCommandGroup {
 
     addCommands(
       new FollowTrajectory(chassis, new FieldTarget(POSITION.F, L2Right ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)),
-      new WaitCommand(0.1),
-      new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0,0)), chassis).withTimeout(0.4),
+      new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0,0)), chassis).withTimeout(0.2),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER)),
       new WaitUntilCommand(()->RobotContainer.gripper.isCoralDownSensor()),
-
+      new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-2.5, -2,0)), chassis).withTimeout(0.1),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
-    
+      new RemoveAlgae(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3))
       
      );

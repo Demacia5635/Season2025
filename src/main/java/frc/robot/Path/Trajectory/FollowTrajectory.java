@@ -10,11 +10,13 @@ import java.util.Arrays;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.RemoveAlgae;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
@@ -71,6 +73,9 @@ public class FollowTrajectory extends Command {
       points.add(new PathPoint(new Translation2d(), wantedAngle));
       points.add(target.getApproachingPoint());
       points.add(target.getFinishPoint());
+      if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
+        new Grab(RobotContainer.gripper).schedule();
+      }
       LogManager.log("FINISH POINT: " + target.getFinishPoint()); 
 
     }
@@ -95,17 +100,13 @@ public class FollowTrajectory extends Command {
         chassis.stop();
         new Drop(RobotContainer.gripper).schedule();
       }
-      if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
-        chassis.stop();
-        new Grab(RobotContainer.gripper).schedule();
-      }
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
-        new RunCommand(() -> chassis.setVelocities(
-            new ChassisSpeeds(0, 0, 0.5 * (target.position == POSITION.A || target.position == POSITION.B || target.position == POSITION.F ? 1 : -1))), chassis).withTimeout(1)
-            .andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
-                new ChassisSpeeds(-2, 0, 0)), chassis)
-                .withTimeout(0.3))
-            .schedule();
+        if (!DriverStation.isAutonomous()) {
+          new RemoveAlgae(chassis, target).schedule();
+        } else {
+          chassis.stop();
+        }
+        LogManager.log("i do algea");
       }
 
     }

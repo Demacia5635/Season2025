@@ -17,14 +17,14 @@ public class FieldTarget {
     public static final Translation2d approachOffset = new Translation2d(1.5, 0);
     public static final Translation2d approachOffsetAlgaeRight = new Translation2d(1.5, 1);
     public static final Translation2d approachOffsetAlgaeLeft = new Translation2d(1.5, -1);
-    public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.1);
+    public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.15);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.27);
-    public static final Translation2d intakeOffset = new Translation2d(0.72, 0);
+    public static final Translation2d intakeOffset = new Translation2d(0.775, 0);
     public static final Translation2d topAlgeaRightOffset = new Translation2d(0.50,0.5);
     public static final Translation2d topAlgeaLefttOffset = new Translation2d(0.50,-0.5);
     public static final Translation2d bottomAlgeaRightOffset = new Translation2d(0.63, 0.55);
     public static final Translation2d bottomAlgeaLeftOffset = new Translation2d(0.63, -0.55);
-    public static final Translation2d l2Offset = new Translation2d(0.62, 0);
+    public static final Translation2d l2Offset = new Translation2d(0.6, 0);
     public static final Translation2d l3Offset = new Translation2d(0.5, 0);
     public static final Translation2d reelLeftReefOffset = new Translation2d(-0.05,-0.16);
     public static final Translation2d reelRightReefOffset = new Translation2d(-0.05,0.16);

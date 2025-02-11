@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -23,6 +24,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.L2AlgaeL3;
+import frc.robot.chassis.commands.auto.RemoveAlgae;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmCalibration;
@@ -62,9 +64,11 @@ public class RobotContainer implements Sendable{
   public static Gripper gripper;
   public static Climb climb;
   public static Robot1Strip robot1Strip;
-
+  
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
   public static FieldTarget feedingTarget = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
+
+  Timer timer;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -76,7 +80,8 @@ public class RobotContainer implements Sendable{
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
-    LogManager.addEntry("Timer", DriverStation::getMatchTime);
+    timer = new Timer();
+    LogManager.addEntry("Timer",()-> 15-timer.get());
 
     SmartDashboard.putData("Reef", new Sendable() {
       @Override
@@ -291,6 +296,8 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new L2AlgaeL3(chassis, false);  
+    timer.reset();
+    timer.start();
+    return new ArmCalibration(arm).andThen(new L2AlgaeL3(chassis, hasRemovedFromLog).alongWith(new ArmCommand(arm)));  
   }
 }

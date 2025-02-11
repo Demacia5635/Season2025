@@ -138,7 +138,8 @@ public class Gripper extends SubsystemBase {
   }
 
   public boolean isCoralUpSensor() {
-    return getUpSensor() < 0.04;
+    return true;
+    // return getUpSensor() < 0.05;
     // return getUpFrontSensor() < SensorConstants.CORAL_IN_SENSOR 
     // || getUpBackSensor() < SensorConstants.CORAL_IN_SENSOR;
   }
@@ -177,11 +178,11 @@ public class Gripper extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    if (!upSensor.isEnabled()) {
-      LogManager.log("up sensor is not enabled");
-    }
-    if (!upSensor.isRangeValid()) {
-      LogManager.log("up sensor range is not valid");
-    }
+    // if (!upSensor.isEnabled()) {
+    //   LogManager.log("up sensor is not enabled");
+    // }
+    // if (!upSensor.isRangeValid()) {
+    //   LogManager.log("up sensor range is not valid");
+    // }
   }
 }
