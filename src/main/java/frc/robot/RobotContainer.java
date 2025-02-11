@@ -76,7 +76,7 @@ public class RobotContainer implements Sendable{
     new AutoUtils();
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
@@ -284,6 +284,7 @@ public class RobotContainer implements Sendable{
       arm.stop();
       gripper.stop();
       climb.stopClimb();
+      timer.stop();
     }, chassis, arm, gripper, climb
     ).ignoringDisable(true);
     initDisableCommand.setName("Init Disable Command");
@@ -298,6 +299,6 @@ public class RobotContainer implements Sendable{
   public Command getAutonomousCommand() {
     timer.reset();
     timer.start();
-    return new ArmCalibration(arm).andThen(new L2AlgaeL3(chassis, hasRemovedFromLog).alongWith(new ArmCommand(arm)));  
+    return (new ArmCalibration(arm).andThen(new ArmCommand(arm))).alongWith(new L2AlgaeL3(chassis, hasRemovedFromLog));  
   }
 }

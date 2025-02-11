@@ -34,6 +34,7 @@ public class FollowTrajectory extends Command {
   private boolean usePoints;
   private boolean isScoring;
   private boolean useElasticTarget;
+  private Grab grabCommand;
 
   public FollowTrajectory(Chassis chassis, boolean isScoring) {
     this.chassis = chassis;
@@ -74,7 +75,8 @@ public class FollowTrajectory extends Command {
       points.add(target.getApproachingPoint());
       points.add(target.getFinishPoint());
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
-        new Grab(RobotContainer.gripper).schedule();
+        grabCommand = new Grab(RobotContainer.gripper);
+        grabCommand.schedule();
       }
       LogManager.log("FINISH POINT: " + target.getFinishPoint()); 
 
@@ -86,7 +88,7 @@ public class FollowTrajectory extends Command {
 
   @Override
   public void execute() {
-    chassis.setVelocities(trajectory.calculate(chassis.getPose(), chassis.getChassisSpeeds()));
+    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
 
   }
 
@@ -114,6 +116,9 @@ public class FollowTrajectory extends Command {
 
   @Override
   public boolean isFinished() {
-    return trajectory.isFinishedTrajectory();
+    return trajectory.isFinishedTrajectory() || 
+    (!usePoints 
+    && (target.position == POSITION.FEEDER_LEFT || target.position == POSITION.FEEDER_RIGHT) 
+    && grabCommand.isFinished());
   }
 }

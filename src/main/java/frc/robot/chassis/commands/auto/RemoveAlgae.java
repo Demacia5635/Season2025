@@ -1,6 +1,7 @@
 package frc.robot.chassis.commands.auto;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
@@ -13,8 +14,10 @@ public class RemoveAlgae extends Command {
     private final FieldTarget target;
     private final Timer steerTimer;
     private final Timer driveBackTimer;
+    private boolean isAuto;
 
     public RemoveAlgae(Chassis chassis, FieldTarget fieldTarget) {
+        this.isAuto = DriverStation.isAutonomous();
         this.chassis = chassis;
         this.target = fieldTarget;
         this.steerTimer = new Timer();
@@ -39,20 +42,23 @@ public class RemoveAlgae extends Command {
             steerTimer.reset();
             driveBackTimer.start();
         } 
-        LogManager.log(driveBackTimer.get());
     }
 
     @Override
     public void end(boolean interrupted) {
-        chassis.stop();
-        steerTimer.stop();
-        steerTimer.reset();
-        driveBackTimer.stop();
-        driveBackTimer.reset();
+        if(!isAuto){
+            
+            chassis.stop();
+            steerTimer.stop();
+            steerTimer.reset();
+            driveBackTimer.stop();
+            driveBackTimer.reset();
+    
+        }
     }
 
     @Override
     public boolean isFinished() {
-        return driveBackTimer.hasElapsed(0.3);
+        return driveBackTimer.hasElapsed(0.3) || (isAuto && steerTimer.hasElapsed(1));
     }
 }

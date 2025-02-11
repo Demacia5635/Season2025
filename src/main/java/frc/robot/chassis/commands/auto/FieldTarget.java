@@ -14,7 +14,7 @@ import frc.robot.utils.LogManager;
 
 public class FieldTarget {
 
-    public static final Translation2d approachOffset = new Translation2d(1.5, 0);
+    public static final Translation2d approachOffset = new Translation2d(1.2, 0);
     public static final Translation2d approachOffsetAlgaeRight = new Translation2d(1.5, 1);
     public static final Translation2d approachOffsetAlgaeLeft = new Translation2d(1.5, -1);
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.15);
@@ -22,8 +22,8 @@ public class FieldTarget {
     public static final Translation2d intakeOffset = new Translation2d(0.775, 0);
     public static final Translation2d topAlgeaRightOffset = new Translation2d(0.50,0.5);
     public static final Translation2d topAlgeaLefttOffset = new Translation2d(0.50,-0.5);
-    public static final Translation2d bottomAlgeaRightOffset = new Translation2d(0.63, 0.55);
-    public static final Translation2d bottomAlgeaLeftOffset = new Translation2d(0.63, -0.55);
+    public static final Translation2d bottomAlgeaRightOffset = new Translation2d(0.55, 0.55);
+    public static final Translation2d bottomAlgeaLeftOffset = new Translation2d(0.55, -0.55);
     public static final Translation2d l2Offset = new Translation2d(0.6, 0);
     public static final Translation2d l3Offset = new Translation2d(0.5, 0);
     public static final Translation2d reelLeftReefOffset = new Translation2d(-0.05,-0.16);
@@ -153,7 +153,7 @@ public class FieldTarget {
     public static PathPoint getElement(int elementTag, Translation2d offset){
         Translation2d originToTag = O_TO_TAG[elementTag];
         offset = offset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)), 0.2);
+        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)), 0.1);
     }
    
     @Override

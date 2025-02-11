@@ -12,8 +12,8 @@ public class ChassisConstants {
     public static final double MAX_DRIVE_VELOCITY = 3.6;
     public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
 
-    public static final double DRIVE_ACCELERATION = 7;
-    public static final double DRIVE_MAX_VEL_CHNAGE = 7 * CYCLE_DT;
+    public static final double PATHS_ACCELERATION = 20;
+public static final double DRIVE_ACCELERATION = 27;
     public static final double MIN_DRIVE_VELOCITY_FOR_ROTATION = 0.2;
 
     
@@ -102,24 +102,24 @@ public class ChassisConstants {
     public static final SwerveModuleConfigs FRONT_LEFT = new SwerveModuleConfigs(
         0,
         -0.66601764256103616655408039725525,
-        0.096
+        0.1
     );
 
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
         1,
-        0.06283185307179586476925286766559,
-        0.0955
+        0.0,
+        0.1
     );
 
     public static final SwerveModuleConfigs BACK_LEFT = new SwerveModuleConfigs(
         2,
-        2.7369555198074278693486549155131,
-        0.097
+        2.8054422396556853619471405412686,
+        0.1
     );
 
     public static final SwerveModuleConfigs BACK_RIGHT = new SwerveModuleConfigs(
         3,
-        -0.69115038378975451246178154432149,
-        0.096
+        -0.67115038378975451246178154432149,
+        0.1
     );
 }

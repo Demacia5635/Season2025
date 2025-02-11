@@ -60,18 +60,5 @@ public class SwerveKinematics extends SwerveDriveKinematics {
         return super.toSwerveModuleStates(s);
     }
 
-    /**
-     * Rotate the speeds back to omega - to drive stright
-     */
-    @Override
-    public ChassisSpeeds toChassisSpeeds(SwerveModuleState... moduleStates) {
-        ChassisSpeeds speeds = super.toChassisSpeeds(moduleStates);
-        double ratio = speeds.omegaRadiansPerSecond > MIN_RATIO_CHANGE ? -VX_VY_CHANGE_RATIO : 0;
-        ChassisSpeeds s = speeds;
-        if(ratio != 0) {
-            Translation2d newV = new Translation2d(speeds.vxMetersPerSecond,speeds.vyMetersPerSecond).rotateBy(Rotation2d.fromRadians(speeds.omegaRadiansPerSecond * ratio));
-            s = new ChassisSpeeds(newV.getX(), newV.getY(), speeds.omegaRadiansPerSecond);
-        }
-        return s;
-    }
+    
 }

@@ -7,6 +7,7 @@ package frc.robot.chassis.commands.auto;
 import java.lang.System.Logger.Level;
 import java.util.ArrayList;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -44,12 +45,21 @@ public class L2AlgaeL3 extends SequentialCommandGroup {
     addCommands(
       new FollowTrajectory(chassis, new FieldTarget(POSITION.F, L2Right ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)),
       new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0,0)), chassis).withTimeout(0.2),
+      new RunCommand(()->chassis.goTo(new Pose2d(15.38, 2, Rotation2d.fromDegrees(-40)), 0, false), chassis)
+      .until(()->chassis.isSeeTag(1, 1, 5)),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER)),
       new WaitUntilCommand(()->RobotContainer.gripper.isCoralDownSensor()),
-      new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-2.5, -2,0)), chassis).withTimeout(0.1),
+      new RunCommand(()->chassis.goTo(new Pose2d(14.764765315220112, 2.2286484904026063, Rotation2d.fromDegrees(125)), 0.3, false), chassis)
+      .until(()->chassis.isSeeTag(6, 0, 5) || chassis.isSeeTag(6, 3, 5)),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
       new RemoveAlgae(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
-      new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3))
+      new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3)),
+      new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0,0)), chassis).withTimeout(0.2),
+      new RunCommand(()->chassis.goTo(new Pose2d(15.6, 2, Rotation2d.fromDegrees(-50)), 0.3, false), chassis)
+      .until(()->chassis.isSeeTag(1, 1, 5)),
+      new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER))
+
+
       
      );
 

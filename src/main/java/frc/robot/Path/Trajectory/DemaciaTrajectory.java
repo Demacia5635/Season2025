@@ -19,19 +19,20 @@ import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import frc.robot.Path.Utils.*;
 import frc.robot.utils.LogManager;
+
 /** Add your docs here. */
 public class DemaciaTrajectory {
     private ArrayList<Segment> segments;
     private double trajectoryLength;
-    private double distanceTraveled;
+    private double distanceTraveledOnSegment;
     private ArrayList<PathPoint> points;
     private RoundedPoint[] corners;
     private int segmentIndex;
     private Rotation2d wantedAngle;
     private double currentMaxVel;
+    private double distanceLeft;
     Pose2d chassisPose = new Pose2d();
-    TrapezoidProfile driveTrapezoid = new TrapezoidProfile(new Constraints(PathsConstraints.MAX_APPROACH_VELOCITY, PathsConstraints.MAX_APPROACH_ACCEL));
-    
+
     /*
      * 
      * given points based on blue alliance
@@ -40,13 +41,14 @@ public class DemaciaTrajectory {
     public DemaciaTrajectory(ArrayList<PathPoint> points, boolean isRed, Rotation2d wantedAngle, Pose2d initialPose) {
         this.segments = new ArrayList<Segment>();
         this.trajectoryLength = 0;
-        this.distanceTraveled = 0;
+        this.distanceTraveledOnSegment = 0;
         this.points = points;
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
         this.currentMaxVel = PathsConstraints.MAX_APPROACH_VELOCITY;
 
-        if (isRed) points = convertAlliance();
+        if (isRed)
+            points = convertAlliance();
         fixFirstPoint(initialPose);
 
         initCorners();
@@ -57,10 +59,12 @@ public class DemaciaTrajectory {
 
         createSegments();
         trajectoryLength = calcTrajectoryLength();
+        distanceLeft = trajectoryLength;
+
 
     }
 
-    private void fixFirstPoint(Pose2d initialPose){
+    private void fixFirstPoint(Pose2d initialPose) {
         points.remove(0);
         points.add(0, new PathPoint(initialPose.getTranslation(), initialPose.getRotation()));
 
@@ -75,7 +79,6 @@ public class DemaciaTrajectory {
         return convertedPoints;
 
     }
-    
 
     private PathPoint convertPoint(PathPoint pointToConvert) {
         return new PathPoint(
@@ -83,7 +86,6 @@ public class DemaciaTrajectory {
                         FIELD_HEIGHT - pointToConvert.getY()),
                 pointToConvert.getRotation());
     }
-
 
     private void initCorners() {
         this.corners = new RoundedPoint[points.size() - 2];
@@ -97,8 +99,7 @@ public class DemaciaTrajectory {
         if (points.size() < 3) {
             segments.add(new Leg(points.get(0).getTranslation(), points.get(1).getTranslation()));
         }
-        
-        
+
         else {
             segments.add(0, corners[0].getAtoCurveLeg());
 
@@ -111,7 +112,7 @@ public class DemaciaTrajectory {
         }
     }
 
-    public double calcTrajectoryLength(){
+    public double calcTrajectoryLength() {
         double sum = 0;
         for (Segment s : segments) {
             sum += s.getLength();
@@ -119,71 +120,52 @@ public class DemaciaTrajectory {
         return sum;
     }
 
-    public boolean hasFinishedSegments(Pose2d chassisPose){
-        return segments.get(segmentIndex).distancePassed(chassisPose.getTranslation())
-            >= segments.get(segmentIndex).getLength()- DISTANCE_OFFSET;
+    public boolean hasFinishedSegments(Pose2d chassisPose) {
+        Translation2d currentLastPoint = segments.get(segmentIndex).getPoints()[segments.get(segmentIndex).getPoints().length - 1];
+        if(segmentIndex == segments.size() - 1) return segments.get(segmentIndex).distancePassed(
+                chassisPose.getTranslation()) >= segments.get(segmentIndex).getLength() - MAX__POSITION_THRESHOLD
+                || chassisPose.getTranslation().getDistance(currentLastPoint) <= MAX__POSITION_THRESHOLD;
+        else return segments.get(segmentIndex).distancePassed(
+            chassisPose.getTranslation()) >= segments.get(segmentIndex).getLength() - MAX__POSITION_THRESHOLD
+            || chassisPose.getTranslation().getDistance(currentLastPoint) <= 0.2;
+                
     }
 
-    //PIDController omegaPidController = new PIDController(0.9, 0, 0);
-    double kP = 1.1;
-    public ChassisSpeeds calculate(Pose2d chassisPose, ChassisSpeeds currentVelocity) {
+    PIDController drivePID = new PIDController(1.6, 0, 0);
+    double lastDistance = 0;
+    public ChassisSpeeds calculate(Pose2d chassisPose) {
+
         this.chassisPose = chassisPose;
         
-        if(hasFinishedSegments(chassisPose)) {
-            distanceTraveled = segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());
-            if(segmentIndex != segments.size() - 1) segmentIndex++;
-            else{
+        distanceTraveledOnSegment = segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());
+        distanceLeft -= (distanceTraveledOnSegment - lastDistance);
+        lastDistance = distanceTraveledOnSegment;
+        if (hasFinishedSegments(chassisPose)) {
+            lastDistance = 0;
+            if (segmentIndex != segments.size() - 1)
+                segmentIndex++;
+            else {
                 currentMaxVel = PathsConstraints.MAX_FINISH_VELOCITY;
-                driveTrapezoid = new TrapezoidProfile(new Constraints(PathsConstraints.MAX_FINISH_ACCEL,
-                    PathsConstraints.MAX_FINISH_ACCEL));
+
             }
         }
+        double velocity = Math.min(currentMaxVel, -drivePID.calculate(distanceLeft, 0));
 
-        double lineDistance = points.get(points.size() - 1).getTranslation()
-            .getDistance(chassisPose.getTranslation());
-
-        Translation2d robotToTarget = points.get(points.size()- 1).getTranslation().minus(chassisPose.getTranslation()).times(-1);
-        double vX = 0;
-        double vY = 0;
-        if(segmentIndex == segments.size() - 1){
-            vX = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getCos())/ currentMaxVel, 
-                new State(lineDistance * robotToTarget.getAngle().getCos(), currentVelocity.vxMetersPerSecond), 
-                new State(0, 0)).velocity;
-
-
-            vY = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getSin())/ currentMaxVel, 
-                new State(lineDistance * robotToTarget.getAngle().getSin(), currentVelocity.vyMetersPerSecond), 
-                new State(0, 0)).velocity;
-        }
-        else{
-            vX = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getCos())/ currentMaxVel, 
-                new State(lineDistance * robotToTarget.getAngle().getCos(), currentVelocity.vxMetersPerSecond), 
-                new State(0, PathsConstraints.MAX_FINISH_VELOCITY * robotToTarget.getAngle().getCos())).velocity;
-
-
-            vY = driveTrapezoid.calculate((lineDistance * robotToTarget.getAngle().getSin())/ currentMaxVel, 
-                new State(lineDistance * robotToTarget.getAngle().getSin(), currentVelocity.vyMetersPerSecond), 
-                new State(0, PathsConstraints.MAX_FINISH_VELOCITY * robotToTarget.getAngle().getSin())).velocity;
-        }
-        
-
-        double velocity = Math.min(currentMaxVel, Math.hypot(vX, vY));
-        
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
 
-        double wantedOmega = Math.abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
-            : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 0.9;
-        
+        double wantedOmega = Math
+                .abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
+                        : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 0.9;
 
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
 
-    public boolean isFinishedTrajectory(){
-        return (trajectoryLength - distanceTraveled <= MAX__POSITION_THRESHOLD
-        || chassisPose.getTranslation().getDistance(points.get(points.size()-1).getTranslation()) <= MAX__POSITION_THRESHOLD) 
-        
-        && wantedAngle.minus(chassisPose.getRotation()).getRadians() <= MAX_ROTATION_THRESHOLD;
+    public boolean isFinishedTrajectory() {
+        return (distanceLeft <= MAX__POSITION_THRESHOLD
+                || chassisPose.getTranslation()
+                        .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD)
+
+                && wantedAngle.minus(chassisPose.getRotation()).getRadians() <= MAX_ROTATION_THRESHOLD;
     }
 
 }
-

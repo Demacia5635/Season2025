@@ -56,7 +56,7 @@ public class SwerveModule {
         return steerMotor.getCurrentPosition();
     }
     public Rotation2d getSteerRotation() {
-        return Rotation2d.fromDegrees(getSteerAngle());
+        return new Rotation2d(getSteerAngle());
     }
     public double getSteerVel() {
         return steerMotor.getCurrentVelocity();
