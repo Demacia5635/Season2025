@@ -4,37 +4,27 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Path.Trajectory.FollowTrajectory;
-import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
-import frc.robot.chassis.commands.auto.FullAlign;
 import frc.robot.chassis.commands.auto.L2AlgaeL3;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
-import frc.robot.robot1.arm.commands.ArmDrive;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
@@ -162,9 +152,6 @@ public class RobotContainer implements Sendable{
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.povLeft().onTrue(new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)));
 
-
-    driverController.povRight().onTrue(new FullAlign(chassis, arm, gripper, new FieldTarget(POSITION.B, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3)));
-
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
     driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
     driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
@@ -235,6 +222,7 @@ public class RobotContainer implements Sendable{
       gripper.stop();
       arm.setState(ARM_ANGLE_STATES.IDLE);
     }, chassis, arm, gripper).ignoringDisable(true));
+
     operatorController.rightBumper().onTrue(new OpenClimber(climb));
 
     operatorController.povUp().onTrue(new InstantCommand(robot1Strip::setManualOrAuto));

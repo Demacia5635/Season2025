@@ -312,15 +312,15 @@ public class Chassis extends SubsystemBase {
     setVelocities(speeds);
   }
 
-//   public void setVelocitiesRotateToTarget(ChassisSpeeds speeds, FieldTarget target) {
-//     Translation2d robotToReelTarget = target..minus(getPose());
-//     double angleError = angle.minus(getGyroAngle()).getRadians();
-//     double angleErrorabs = Math.abs(angleError);
-//     if (angleErrorabs>Math.toRadians(1.5)){  
-//         speeds.omegaRadiansPerSecond = angleError * 2;
-//     }
-//     setVelocities(speeds);
-//   }
+  public void setVelocitiesRotateToTarget(ChassisSpeeds speeds, FieldTarget target) {
+    Translation2d robotToTarget = target.getReefPole().getTranslation().minus(getPose().getTranslation());
+    double angleError = robotToTarget.getAngle().minus(getGyroAngle()).getRadians();
+    double angleErrorabs = Math.abs(angleError);
+    if (angleErrorabs>Math.toRadians(1.5)){  
+        speeds.omegaRadiansPerSecond = angleError * 2;
+    }
+    setVelocities(speeds);
+  }
 
   
   PIDController drivePID = new PIDController(1.7, 0.1, 0);

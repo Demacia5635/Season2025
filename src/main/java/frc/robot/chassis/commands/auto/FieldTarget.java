@@ -23,10 +23,11 @@ public class FieldTarget {
     public static final Translation2d topAlgeaRightOffset = new Translation2d(0.50,0.5);
     public static final Translation2d topAlgeaLefttOffset = new Translation2d(0.50,-0.5);
     public static final Translation2d bottomAlgeaRightOffset = new Translation2d(0.63, 0.55);
-    
     public static final Translation2d bottomAlgeaLeftOffset = new Translation2d(0.63, -0.55);
     public static final Translation2d l2Offset = new Translation2d(0.62, 0);
     public static final Translation2d l3Offset = new Translation2d(0.5, 0);
+    public static final Translation2d reelLeftReefOffset = new Translation2d(-0.05,-0.16);
+    public static final Translation2d reelRightReefOffset = new Translation2d(-0.05,0.16);
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
     public LEVEL level;
@@ -105,6 +106,10 @@ public class FieldTarget {
 
     public PathPoint getFinishPoint(){
         return getElement(position.getId(), getCalcOffset());
+    }
+
+    public PathPoint getReefPole(){
+        return getElement(position.getId(), (elementPosition == ELEMENT_POSITION.CORAL_LEFT) ? reelLeftReefOffset : reelRightReefOffset);
     }
 
     public Translation2d getCalcOffset() {
