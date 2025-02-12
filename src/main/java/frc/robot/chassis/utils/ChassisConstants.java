@@ -101,25 +101,25 @@ public static final double DRIVE_ACCELERATION = 27;
 
     public static final SwerveModuleConfigs FRONT_LEFT = new SwerveModuleConfigs(
         0,
-        -0.66601764256103616655408039725525,
+        2.450442269800038726000861838958,
         0.1
     );
 
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
         1,
-        0.0,
+        -3.0787608005179973736933905156139,
         0.1
     );
 
     public static final SwerveModuleConfigs BACK_LEFT = new SwerveModuleConfigs(
         2,
-        2.8054422396556853619471405412686,
+        -0.3644247478164160156616666324604,
         0.1
     );
 
     public static final SwerveModuleConfigs BACK_RIGHT = new SwerveModuleConfigs(
         3,
-        -0.67115038378975451246178154432149,
+        2.4567254551072183124777871257246,
         0.1
     );
 }
