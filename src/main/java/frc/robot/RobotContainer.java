@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -76,7 +77,7 @@ public class RobotContainer implements Sendable{
     new AutoUtils();
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
@@ -230,10 +231,13 @@ public class RobotContainer implements Sendable{
 
     operatorController.rightBumper().onTrue(new OpenClimber(climb));
 
-    operatorController.povUp().onTrue(new InstantCommand(robot1Strip::setManualOrAuto));
+    operatorController.povUp().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
     operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
     operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
+
+    operatorController.rightSetting().onTrue(new RunCommand(()->chassis.goTo(new Pose2d(14.764765315220112, 2.2286484904026063, Rotation2d.fromDegrees(125)), 0.3, false), chassis)
+    .until(()->chassis.isSeeTag(6, 0, 5) || chassis.isSeeTag(6, 3, 5)));
   }
 
   public static boolean isRed() {

@@ -15,26 +15,32 @@ public class RemoveAlgae extends Command {
     private final Timer steerTimer;
     private final Timer driveBackTimer;
     private boolean isAuto;
+    private boolean isAlgaeRight;
 
-    public RemoveAlgae(Chassis chassis, FieldTarget fieldTarget) {
+    public RemoveAlgae(Chassis chassis, FieldTarget fieldTarget, boolean isAlgaeRight) {
         this.isAuto = DriverStation.isAutonomous();
         this.chassis = chassis;
         this.target = fieldTarget;
         this.steerTimer = new Timer();
         this.driveBackTimer = new Timer();
+        this.isAlgaeRight = isAlgaeRight;
         addRequirements(chassis);
+    }
+
+    public RemoveAlgae(Chassis chassis, FieldTarget fieldTarget) {
+        this(chassis, fieldTarget, fieldTarget.position == POSITION.A || fieldTarget.position == POSITION.B || fieldTarget.position == POSITION.F );
     }
 
     @Override
     public void initialize() {
         chassis.setVelocities(new ChassisSpeeds(0, 0, 
-        0.5 * (target.position == POSITION.A || target.position == POSITION.B || target.position == POSITION.F ? 1 : -1)));
+        4.5 * (isAlgaeRight ? -1 : 1)));
         steerTimer.start();
     }
 
     @Override
     public void execute() {
-        if (steerTimer.hasElapsed(1)) {
+        if (steerTimer.hasElapsed(0.5)) {
             chassis.setRobotRelVelocities(new ChassisSpeeds(
                 -2, 0, 0
             ));
@@ -59,6 +65,6 @@ public class RemoveAlgae extends Command {
 
     @Override
     public boolean isFinished() {
-        return driveBackTimer.hasElapsed(0.3) || (isAuto && steerTimer.hasElapsed(1));
+        return driveBackTimer.hasElapsed(0.3) || (isAuto && steerTimer.hasElapsed(0.25));
     }
 }

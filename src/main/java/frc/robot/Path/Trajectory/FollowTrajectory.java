@@ -70,10 +70,10 @@ public class FollowTrajectory extends Command {
 
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
-      this.wantedAngle = target.getFinishPoint().getRotation();
+      this.wantedAngle = target.getFinishPoint(false).getRotation();
       points.add(new PathPoint(new Translation2d(), wantedAngle));
-      points.add(target.getApproachingPoint());
-      points.add(target.getFinishPoint());
+      points.add(target.getApproachingPoint(false));
+      points.add(target.getFinishPoint(false));
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
         grabCommand = new Grab(RobotContainer.gripper);
         grabCommand.schedule();
