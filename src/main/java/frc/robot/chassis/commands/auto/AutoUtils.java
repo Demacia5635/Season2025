@@ -25,7 +25,6 @@ public class AutoUtils {
 
     static Chassis chassis = RobotContainer.chassis;
     static double maxVel = MAX_DRIVE_VELOCITY;
-    static double maxAceel = DRIVE_ACCELERATION;
     static Translation2d cornerOffsetLeft = new Translation2d(0.480, 0.93212813);
     static Translation2d cornerOffsetRight = new Translation2d(0.480, -0.93212813);
     

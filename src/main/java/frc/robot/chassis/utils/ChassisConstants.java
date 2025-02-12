@@ -11,11 +11,26 @@ public class ChassisConstants {
     public static final double CYCLE_DT = 0.02;
     public static final double MAX_DRIVE_VELOCITY = 3.6;
     public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
-
-    public static final double PATHS_ACCELERATION = 20;
-public static final double DRIVE_ACCELERATION = 27;
     public static final double MIN_DRIVE_VELOCITY_FOR_ROTATION = 0.2;
 
+    public static class AccelPaths{
+        public static final double DEFAULT = 20;
+        public static final double L2 = 20;
+        public static final double L3 = 20;
+        public static final double INTAKE = 20;
+        public static final double ALGAE_BOTTOM = 20;
+        public static final double ALGAE_TOP = 20;
+    }
+    
+    public static class AccelDrive{
+        
+        public static final double DEFAULT = 30;
+        public static final double L2 = 30;
+        public static final double L3 = 30;
+        public static final double INTAKE = 30;
+        public static final double ALGAE_BOTTOM = 30;
+        public static final double ALGAE_TOP = 30;
+    }
     
     public static final int GYRO_ID = 14;
     public static final CANBus CAN_BUS = CANBuses.CHASSIS_CAN_BUS;

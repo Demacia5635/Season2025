@@ -132,7 +132,6 @@ public class FieldTarget {
         else{
             if(level == LEVEL.FEEDER){
                 calculatedOffset = intakeOffset;
-                LogManager.log("INTAKE OFFSET");
             }
             else if(level == LEVEL.ALGAE_TOP){
                 if(isAlgaeRight){

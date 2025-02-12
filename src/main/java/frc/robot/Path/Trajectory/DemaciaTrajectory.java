@@ -131,7 +131,7 @@ public class DemaciaTrajectory {
                 
     }
 
-    PIDController drivePID = new PIDController(1.6, 0, 0);
+    PIDController drivePID = new PIDController(2, 0, 0);
     double lastDistance = 0;
     public ChassisSpeeds calculate(Pose2d chassisPose) {
 

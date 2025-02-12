@@ -94,7 +94,7 @@ public class FollowTrajectory extends Command {
 
   @Override
   public void execute() {
-    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
+    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()), true);
 
   }
 

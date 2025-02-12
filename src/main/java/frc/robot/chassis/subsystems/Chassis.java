@@ -47,6 +47,8 @@ public class Chassis extends SubsystemBase {
     public Tag bargeTag;
     public Tag backTag;
     public VisionFuse visionFuse;
+    private double driveAccel;
+    private double pathsAccel;
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
@@ -78,6 +80,8 @@ public class Chassis extends SubsystemBase {
         bargeTag = new Tag(()->getGyroAngle(), 2);
         backTag = new Tag(()->getGyroAngle(), 3);
         visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
+        this.pathsAccel = ChassisConstants.AccelPaths.DEFAULT;
+        this.driveAccel = ChassisConstants.AccelDrive.DEFAULT;
 
         SmartDashboard.putData("reset gyro", new InstantCommand(()-> setYaw(Rotation2d.fromDegrees(0))));
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(visionFuse.getVisionEstimatedAngle())));
@@ -104,15 +108,10 @@ public class Chassis extends SubsystemBase {
     }
 
 
-    public void setVelocitiesWithAccelDrive(ChassisSpeeds speeds){
-        ChassisSpeeds limitedAccel = limitAccelDrive(speeds);
-        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(limitedAccel, getGyroAngle());
-        
-        SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
-        setModuleStates(states);
-    }
-    public void setVelocitiesWithAccel(ChassisSpeeds speeds){
-        ChassisSpeeds limitedAccel = limitAccel(speeds);
+    public void setVelocitiesWithAccel(ChassisSpeeds speeds, boolean isPaths){
+        ChassisSpeeds limitedAccel = limitAccel(speeds, isPaths);
+
+
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(limitedAccel, getGyroAngle());
         
         SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
@@ -126,8 +125,11 @@ public class Chassis extends SubsystemBase {
     }
 
     ChassisSpeeds currentVelocity = new ChassisSpeeds();
-    double maxDeltaVel = ChassisConstants.PATHS_ACCELERATION * 0.02;
-    public ChassisSpeeds limitAccel(ChassisSpeeds wantedSpeeds) {
+    public ChassisSpeeds limitAccel(ChassisSpeeds wantedSpeeds, boolean isPaths) {
+        
+        double maxDeltaVel = adjustAccel(isPaths) * 0.02;
+        LogManager.log("ACCEL: " + maxDeltaVel / 0.02);
+
         currentVelocity = getChassisSpeedsFieldRel();
         double vx = wantedSpeeds.vxMetersPerSecond;
         double vy = wantedSpeeds.vyMetersPerSecond;
@@ -136,25 +138,47 @@ public class Chassis extends SubsystemBase {
         if(Math.abs(deltaX) > maxDeltaVel) vx = currentVelocity.vxMetersPerSecond + (maxDeltaVel * Math.signum(deltaX));
         if(Math.abs(deltaY) > maxDeltaVel) vy = currentVelocity.vyMetersPerSecond + (maxDeltaVel * Math.signum(deltaY));
         return new ChassisSpeeds(vx, vy, wantedSpeeds.omegaRadiansPerSecond);
+    }
+    private double adjustAccel(boolean isPaths){
+        switch (RobotContainer.arm.state) {
+            case L2:
+                driveAccel = ChassisConstants.AccelDrive.L2;
+                pathsAccel = ChassisConstants.AccelPaths.L2;
+                break;
+            case L3:
+            
+                driveAccel = ChassisConstants.AccelDrive.L3;
+                pathsAccel = ChassisConstants.AccelPaths.L3;
+                break;
+            
+            case ALGAE_TOP:
+                
+                driveAccel = ChassisConstants.AccelDrive.ALGAE_TOP;
+                pathsAccel = ChassisConstants.AccelPaths.ALGAE_TOP;
+                break;
 
+            case ALGAE_BOTTOM:
+                driveAccel = ChassisConstants.AccelDrive.ALGAE_BOTTOM;
+                pathsAccel = ChassisConstants.AccelPaths.ALGAE_BOTTOM;
+                break;
+
+            case CORAL_STATION:
+            
+                driveAccel = ChassisConstants.AccelDrive.INTAKE;
+                pathsAccel = ChassisConstants.AccelPaths.INTAKE;
+                break;
+            
+            default:
+            
+                driveAccel = ChassisConstants.AccelDrive.DEFAULT;
+                pathsAccel = ChassisConstants.AccelPaths.DEFAULT;
+                break;
+        }
+        return isPaths ? pathsAccel : driveAccel;
     }
 
 
-    double maxDeltaVelDrive = ChassisConstants.DRIVE_ACCELERATION * 0.02;
-    public ChassisSpeeds limitAccelDrive(ChassisSpeeds wantedSpeeds) {
-        currentVelocity = getChassisSpeedsFieldRel();
-        Translation2d currentVelocityVector = new Translation2d(currentVelocity.vxMetersPerSecond, currentVelocity.vyMetersPerSecond);
-        Translation2d wantedVelocityVector = new Translation2d(wantedSpeeds.vxMetersPerSecond, wantedSpeeds.vyMetersPerSecond);
-        double vx = wantedSpeeds.vxMetersPerSecond;
-        double vy = wantedSpeeds.vyMetersPerSecond;
-        double deltaX = wantedSpeeds.vxMetersPerSecond - currentVelocity.vxMetersPerSecond;
-        double deltaY = wantedSpeeds.vyMetersPerSecond - currentVelocity.vyMetersPerSecond;
-        
-        if(Math.abs(deltaX) > maxDeltaVel) vx = currentVelocity.vxMetersPerSecond + (maxDeltaVelDrive * Math.signum(deltaX));
-        if(Math.abs(deltaY) > maxDeltaVel) vy = currentVelocity.vyMetersPerSecond + (maxDeltaVelDrive * Math.signum(deltaY));
-        return new ChassisSpeeds(vx, vy, wantedSpeeds.omegaRadiansPerSecond);
-
-    }
+    
 
     public void setSteerPositions(double[] positions) {
         for (int i = 0; i < positions.length; i++) {
@@ -312,14 +336,14 @@ public class Chassis extends SubsystemBase {
   }
 
 
-  public void setVelocitiesRotateToAngleOld(ChassisSpeeds speeds, Rotation2d angle) {
+  public void setVelocitiesRotateToAngleOld(ChassisSpeeds speeds, Rotation2d angle, boolean isPaths) {
     double angleError = angle.minus(getGyroAngle()).getRadians();
     double angleErrorabs = Math.abs(angleError);
     if (angleErrorabs>Math.toRadians(1.5)){
         speeds.omegaRadiansPerSecond = angleError * 2.5;
     }
 
-    setVelocitiesWithAccel(speeds);
+    setVelocitiesWithAccel(speeds, isPaths);
   }
 
   public void setVelocitiesRotateToTarget(ChassisSpeeds speeds, FieldTarget target) {
@@ -341,15 +365,15 @@ public class Chassis extends SubsystemBase {
     
     double distance = diffVector.getNorm();
     if(distance <= threshold) {
-        if(stopWhenFinished) setVelocitiesRotateToAngleOld(new ChassisSpeeds(0, 0, 0), pose.getRotation());
-        else setVelocitiesRotateToAngleOld(new ChassisSpeeds(1 * diffVector.getAngle().getCos(), 1 * diffVector.getAngle().getSin(), 0), pose.getRotation());
+        if(stopWhenFinished) setVelocitiesRotateToAngleOld(new ChassisSpeeds(0, 0, 0), pose.getRotation(), true);
+        else setVelocitiesRotateToAngleOld(new ChassisSpeeds(1 * diffVector.getAngle().getCos(), 1 * diffVector.getAngle().getSin(), 0), pose.getRotation(), true);
     }
         
     else{
         double vX = drivePID.calculate(-diffVector.getX(), 0);
         double vY = drivePID.calculate(-diffVector.getY(), 0);
 
-        setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation());
+        setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation(), true);
     }
     
 
