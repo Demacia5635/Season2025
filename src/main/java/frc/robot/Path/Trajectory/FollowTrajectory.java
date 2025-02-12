@@ -35,6 +35,7 @@ public class FollowTrajectory extends Command {
   private boolean isScoring;
   private boolean useElasticTarget;
   private Grab grabCommand;
+  private boolean isAlgaeRight;
 
   public FollowTrajectory(Chassis chassis, boolean isScoring) {
     this.chassis = chassis;
@@ -46,12 +47,17 @@ public class FollowTrajectory extends Command {
     addRequirements(chassis);
     // this.points.add(target.getFinishPoint());
   }
-  public FollowTrajectory(Chassis chassis, FieldTarget newTarget){
+  public FollowTrajectory(Chassis chassis, FieldTarget newTarget, boolean isAlgaeRight) {
     this.chassis = chassis;
     this.target = newTarget;
     this.useElasticTarget = false;
     this.usePoints = false;
+    this.isAlgaeRight = isAlgaeRight;
     addRequirements(chassis);
+  }
+
+  public FollowTrajectory(Chassis chassis, FieldTarget newTarget) {
+    this(chassis, newTarget, newTarget.position == POSITION.A || newTarget.position == POSITION.B || newTarget.position == POSITION.F);
   }
 
   public FollowTrajectory(Chassis chassis, ArrayList<PathPoint> points, Rotation2d wantedAngle) {
@@ -70,10 +76,10 @@ public class FollowTrajectory extends Command {
 
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
-      this.wantedAngle = target.getFinishPoint(false).getRotation();
+      this.wantedAngle = target.getFinishPoint(isAlgaeRight).getRotation();
       points.add(new PathPoint(new Translation2d(), wantedAngle));
-      points.add(target.getApproachingPoint(false));
-      points.add(target.getFinishPoint(false));
+      points.add(target.getApproachingPoint(isAlgaeRight));
+      points.add(target.getFinishPoint(isAlgaeRight));
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
         grabCommand = new Grab(RobotContainer.gripper);
         grabCommand.schedule();
@@ -108,7 +114,7 @@ public class FollowTrajectory extends Command {
       }
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         if (!DriverStation.isAutonomous()) {
-          new RemoveAlgae(chassis, target).schedule();
+          new RemoveAlgae(chassis, target, isAlgaeRight).schedule();
         } else {
           chassis.stop();
         }
