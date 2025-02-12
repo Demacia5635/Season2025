@@ -43,16 +43,20 @@ public class L2AlgaeL3 extends SequentialCommandGroup {
 
 
     addCommands(
-      new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L2)),
+      // new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L2)),
       // new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 1.5,0)), chassis).withTimeout(0.3),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
       new RemoveAlgae(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
+      new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, -1, 0)), chassis).withTimeout(0.1),
+      new RunCommand(()-> chassis.stop(), chassis).withTimeout(0.3),
+      new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3)),
       new RunCommand(()->chassis.goTo(new Pose2d(15.38, 1.75, Rotation2d.fromDegrees(-40)), 0.3, false), chassis)
       .until(()->chassis.isSeeTag(1, 1, 5)),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER)),
       new WaitUntilCommand(()->RobotContainer.gripper.isCoralDownSensor()),
       new RunCommand(()->chassis.goTo(new Pose2d(14.764765315220112, 2.2286484904026063, Rotation2d.fromDegrees(125)), 0.3, false), chassis)
       .until(()->chassis.isSeeTag(6, 0, 5) || chassis.isSeeTag(6, 3, 5)),
+      new WaitCommand(0.2),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3)),
       new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0,0)), chassis).withTimeout(0.3),
       new RunCommand(()->chassis.goTo(new Pose2d(15.6, 2, Rotation2d.fromDegrees(-50)), 0.3, false), chassis)
@@ -60,8 +64,8 @@ public class L2AlgaeL3 extends SequentialCommandGroup {
       new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER)),
       new WaitUntilCommand(()->RobotContainer.gripper.isCoralDownSensor()),
       new RunCommand(()->chassis.goTo(new Pose2d(14.764765315220112, 2.2286484904026063, Rotation2d.fromDegrees(125)), 0.3, false), chassis)
-      .until(()->chassis.isSeeTag(6, 0, 5) || chassis.isSeeTag(6, 3, 5)),
-      new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3)),
+      .until(()->chassis.isSeeTag(6, 0, 5) || chassis.isSeeTag(6, 3,  5)),
+      new FollowTrajectory(chassis, new FieldTarget(POSITION.B, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER))
      );
   }
