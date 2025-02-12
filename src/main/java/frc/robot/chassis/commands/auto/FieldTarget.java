@@ -21,7 +21,7 @@ public class FieldTarget {
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.27);
     public static final Translation2d intakeOffset = new Translation2d(0.775, 0);
     public static final Translation2d topAlgeaRightOffset = new Translation2d(0.50,0.5);
-    public static final Translation2d topAlgeaLefttOffset = new Translation2d(0.50,-0.5);
+    public static final Translation2d topAlgeaLeftOffset = new Translation2d(0.50,-0.5);
     public static final Translation2d bottomAlgeaRightOffset = new Translation2d(0.55, 0.5);
     public static final Translation2d bottomAlgeaLeftOffset = new Translation2d(0.55, -0.5);
     public static final Translation2d l2Offset = new Translation2d(0.57, 0);
@@ -93,10 +93,10 @@ public class FieldTarget {
     public PathPoint getApproachingPoint(boolean isAlgaeRight){
         if(elementPosition == ELEMENT_POSITION.ALGEA){
             if(isAlgaeRight){
-                return position.getApproachPoint(approachOffsetAlgaeRight);
+                return position.getApproachPoint(approachOffsetAlgaeLeft);
             }
             else{
-                return position.getApproachPoint(approachOffsetAlgaeLeft);
+                return position.getApproachPoint(approachOffsetAlgaeRight);
             }
         }
         else{
@@ -136,18 +136,18 @@ public class FieldTarget {
             }
             else if(level == LEVEL.ALGAE_TOP){
                 if(isAlgaeRight){
-                    calculatedOffset = topAlgeaRightOffset;
+                    calculatedOffset = topAlgeaLeftOffset;
                 }
                 else{
-                    calculatedOffset = topAlgeaLefttOffset;
+                    calculatedOffset = topAlgeaRightOffset;
                 }
             }
             else if(level == LEVEL.ALGAE_BOTTOM){
                 if(isAlgaeRight){
-                    calculatedOffset = bottomAlgeaRightOffset;
+                    calculatedOffset = bottomAlgeaLeftOffset;
                 }
                 else{
-                    calculatedOffset = topAlgeaLefttOffset;
+                    calculatedOffset = bottomAlgeaRightOffset;
                 }
             }
         }
