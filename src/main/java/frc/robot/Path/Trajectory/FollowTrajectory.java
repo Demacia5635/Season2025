@@ -96,6 +96,10 @@ public class FollowTrajectory extends Command {
   public void end(boolean interrupted) {
     if (!interrupted) {
 
+      if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
+        chassis.stop();
+      } 
+
       if (target.elementPosition == ELEMENT_POSITION.CORAL_LEFT
           || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
 
