@@ -220,7 +220,7 @@ public class RobotContainer implements Sendable{
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
-    operatorController.downButton().onTrue(new GripperDrive(gripper, operatorController));
+    operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
     operatorController.leftButton().onTrue(new ArmCalibration(arm));
 
     operatorController.leftBumper().onTrue(new InstantCommand(()-> {
