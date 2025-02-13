@@ -90,7 +90,7 @@ public class FollowTrajectory extends Command {
         grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
       }
-      // LogManager.log("FINISH POINT: " + target.getFinishPoint()); 
+      LogManager.log("Approach POINT: " + target.getApproachingPoint()); 
 
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
