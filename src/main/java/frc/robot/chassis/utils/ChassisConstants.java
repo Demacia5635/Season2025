@@ -15,11 +15,11 @@ public class ChassisConstants {
 
     public static class AccelPaths{
         public static final double DEFAULT = 20;
-        public static final double L2 = 18;
-        public static final double L3 = 15;
+        public static final double L2 = 12;
+        public static final double L3 = 10;
         public static final double INTAKE = 17;
-        public static final double ALGAE_BOTTOM = 18;
-        public static final double ALGAE_TOP = 15;
+        public static final double ALGAE_BOTTOM = 12;
+        public static final double ALGAE_TOP = 10;
     }
     
     public static class AccelDrive{
@@ -122,7 +122,7 @@ public class ChassisConstants {
 
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
         1,
-        0.0628318530717958647692528676656,
+        0.06911503837897545124617815443215,
         0.1
     );
 
