@@ -12,15 +12,21 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
+import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.RemoveAlgae;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.utils.LogManager;
@@ -34,14 +40,14 @@ public class FollowTrajectory extends Command {
   private boolean usePoints;
   private boolean isScoring;
   private boolean useElasticTarget;
-  private Grab grabCommand;
+  private Command grabCommand;
   private boolean isAlgaeRight;
+  
 
   public FollowTrajectory(Chassis chassis, boolean isScoring) {
     this.chassis = chassis;
     this.usePoints = false;
     this.isScoring = isScoring;
-    
     this.useElasticTarget = true;
 
     addRequirements(chassis);
@@ -81,10 +87,10 @@ public class FollowTrajectory extends Command {
       points.add(target.getApproachingPoint(isAlgaeRight));
       points.add(target.getFinishPoint(isAlgaeRight));
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
-        grabCommand = new Grab(RobotContainer.gripper);
+        grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
       }
-      LogManager.log("FINISH POINT: " + target.getFinishPoint()); 
+      // LogManager.log("FINISH POINT: " + target.getFinishPoint()); 
 
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
@@ -110,7 +116,9 @@ public class FollowTrajectory extends Command {
           || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
 
         chassis.stop();
-        new Drop(RobotContainer.gripper).schedule();
+        new Drop(RobotContainer.gripper).andThen(
+          new WaitUntilCommand(()-> chassis.getPose().getTranslation().getDistance(RobotContainer.isRed ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6), 
+          new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING))).schedule();
       }
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         if (!DriverStation.isAutonomous()) {
@@ -118,7 +126,7 @@ public class FollowTrajectory extends Command {
         } else {
           chassis.stop();
         }
-        LogManager.log("i do algea");
+        // LogManager.log("i do algea");
       }
 
     }
@@ -129,6 +137,6 @@ public class FollowTrajectory extends Command {
     return trajectory.isFinishedTrajectory() || 
     (!usePoints 
     && (target.position == POSITION.FEEDER_LEFT || target.position == POSITION.FEEDER_RIGHT) 
-    && grabCommand.isFinished());
+    && RobotContainer.gripper.isCoralDownSensor());
   }
 }

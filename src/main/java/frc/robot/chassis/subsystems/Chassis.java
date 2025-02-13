@@ -90,7 +90,6 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("ultfielf", fieldTag);
         LogManager.addEntry("VELOCITY NORM: ", ()->new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond, getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
         LogManager.addEntry("Chassis vX", ()->getChassisSpeedsRobotRel().vxMetersPerSecond);
-        
         LogManager.addEntry("Chassis vY", ()->getChassisSpeedsRobotRel().vyMetersPerSecond);
     }
 
@@ -128,7 +127,7 @@ public class Chassis extends SubsystemBase {
     public ChassisSpeeds limitAccel(ChassisSpeeds wantedSpeeds, boolean isPaths) {
         
         double maxDeltaVel = adjustAccel(isPaths) * 0.02;
-        LogManager.log("ACCEL: " + maxDeltaVel / 0.02);
+        // LogManager.log("ACCEL: " + maxDeltaVel / 0.02);
 
         currentVelocity = getChassisSpeedsFieldRel();
         double vx = wantedSpeeds.vxMetersPerSecond;

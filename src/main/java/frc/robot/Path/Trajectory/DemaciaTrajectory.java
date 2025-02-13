@@ -57,6 +57,8 @@ public class DemaciaTrajectory {
             points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
         }
 
+        LogManager.log(points);
+
         createSegments();
         trajectoryLength = calcTrajectoryLength();
         distanceLeft = trajectoryLength;
@@ -131,7 +133,7 @@ public class DemaciaTrajectory {
                 
     }
 
-    PIDController drivePID = new PIDController(2, 0, 0);
+    PIDController drivePID = new PIDController(1.6, 0.2, 0);
     double lastDistance = 0;
     public ChassisSpeeds calculate(Pose2d chassisPose) {
 

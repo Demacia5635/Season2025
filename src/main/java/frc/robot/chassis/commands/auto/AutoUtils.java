@@ -27,6 +27,8 @@ public class AutoUtils {
     static double maxVel = MAX_DRIVE_VELOCITY;
     static Translation2d cornerOffsetLeft = new Translation2d(0.480, 0.93212813);
     static Translation2d cornerOffsetRight = new Translation2d(0.480, -0.93212813);
+    public static final Translation2d blueReefCenter = new Translation2d(4.490, 4.035);
+    public static final Translation2d redReefCenter = new Translation2d(13.058902, 4.035);
     
 
     public static Segment[] REEF_SEGMENTS = {
