@@ -36,6 +36,7 @@ import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
+import frc.robot.robot1.gripper.commands.GripperDrive;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.leds.Robot1Strip;
 import frc.robot.leds.subsystems.LedManager;
@@ -219,7 +220,7 @@ public class RobotContainer implements Sendable{
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
-    operatorController.downButton().onTrue(new RunCommand(()-> gripper.setPower(-1), gripper));
+    operatorController.downButton().onTrue(new GripperDrive(gripper, operatorController));
     operatorController.leftButton().onTrue(new ArmCalibration(arm));
 
     operatorController.leftBumper().onTrue(new InstantCommand(()-> {
