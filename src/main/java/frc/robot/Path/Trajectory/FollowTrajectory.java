@@ -116,9 +116,7 @@ public class FollowTrajectory extends Command {
           || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
 
         chassis.stop();
-        new Drop(RobotContainer.gripper).andThen(
-          new WaitUntilCommand(()-> chassis.getPose().getTranslation().getDistance(RobotContainer.isRed ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6), 
-          new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING))).schedule();
+        new Drop(RobotContainer.gripper).schedule();
       }
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         if (!DriverStation.isAutonomous()) {

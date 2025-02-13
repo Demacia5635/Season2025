@@ -5,7 +5,11 @@
 package frc.robot.robot1.gripper.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
+import frc.robot.chassis.commands.auto.AutoUtils;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.gripper.constants.GripperConstants.DropConstants;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
@@ -74,6 +78,8 @@ public class Drop extends Command {
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
+    new WaitUntilCommand(()-> RobotContainer.chassis.getPose().getTranslation().getDistance(RobotContainer.isRed ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6).andThen(
+    new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING))).schedule();
   }
 
   /**
