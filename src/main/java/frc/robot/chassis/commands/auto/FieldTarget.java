@@ -99,7 +99,11 @@ public class FieldTarget {
                 return position.getApproachPoint(approachOffsetAlgaeRight);
             }
         }
-        else{
+        else if (elementPosition == ELEMENT_POSITION.CORAL_LEFT) {
+            return position.getApproachPoint(approachOffset.plus(reefOffsetLeft));
+        } else if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
+            return position.getApproachPoint(approachOffset.plus(reefOffsetRight));
+        } else {
             return position.getApproachPoint(approachOffset);
         }
     }
