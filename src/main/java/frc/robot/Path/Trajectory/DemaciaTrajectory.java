@@ -57,12 +57,9 @@ public class DemaciaTrajectory {
             points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
         }
 
-        LogManager.log(points);
-
         createSegments();
         trajectoryLength = calcTrajectoryLength();
         distanceLeft = trajectoryLength;
-
 
     }
 
@@ -123,22 +120,44 @@ public class DemaciaTrajectory {
     }
 
     public boolean hasFinishedSegments(Pose2d chassisPose) {
-        Translation2d currentLastPoint = segments.get(segmentIndex).getPoints()[segments.get(segmentIndex).getPoints().length - 1];
-        if(segmentIndex == segments.size() - 1) return segments.get(segmentIndex).distancePassed(
-                chassisPose.getTranslation()) >= segments.get(segmentIndex).getLength() - MAX__POSITION_THRESHOLD
-                || chassisPose.getTranslation().getDistance(currentLastPoint) <= MAX__POSITION_THRESHOLD;
-        else return segments.get(segmentIndex).distancePassed(
-            chassisPose.getTranslation()) >= segments.get(segmentIndex).getLength() - MAX__POSITION_THRESHOLD
-            || chassisPose.getTranslation().getDistance(currentLastPoint) <= 0.2;
-                
+        
+        Translation2d currentLastPoint = segmentIndex == segments.size() - 1
+                ? segments.get(segmentIndex).getPoints()[1]
+                : (segments.get(segmentIndex) instanceof Leg ? segments.get(segmentIndex).getPoints()[1]
+                        : segments.get(segmentIndex + 1).getPoints()[0]);
+                        
+        Translation2d diffVector = currentLastPoint.minus(chassisPose.getTranslation());
+
+        // if (diffVector.getNorm() >= 0.5 && Math.abs(
+        //         diffVector.getAngle().minus(currentLastPoint.minus(segments.get(segmentIndex).getPoints()[0])
+        //                 .getAngle()).getRadians()) >= Math.toRadians(30) && segmentIndex != segments.size() -1) {
+
+        //     return true;
+        // }
+
+        if (segmentIndex == segments.size() - 1) {
+
+            return segments.get(segmentIndex).distancePassed(
+                    chassisPose.getTranslation()) >= segments.get(segmentIndex).getLength() - MAX__POSITION_THRESHOLD
+                    || chassisPose.getTranslation().getDistance(currentLastPoint) <= MAX__POSITION_THRESHOLD;
+
+        } else {
+
+            return segments.get(segmentIndex).distancePassed(
+                    chassisPose.getTranslation()) >= segments.get(segmentIndex).getLength() - MAX__POSITION_THRESHOLD
+                    || chassisPose.getTranslation().getDistance(currentLastPoint) <= 0.2;
+
+        }
+
     }
 
-    PIDController drivePID = new PIDController(1.6, 0.2, 0);
+    PIDController drivePID = new PIDController(1.2, 0.4, 0);
     double lastDistance = 0;
+
     public ChassisSpeeds calculate(Pose2d chassisPose) {
 
         this.chassisPose = chassisPose;
-        
+
         distanceTraveledOnSegment = segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());
         distanceLeft -= (distanceTraveledOnSegment - lastDistance);
         lastDistance = distanceTraveledOnSegment;
