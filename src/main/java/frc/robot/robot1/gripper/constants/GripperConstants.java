@@ -37,8 +37,8 @@ public class GripperConstants {
     }
     
     public static class AlignCoralConstants {
-        public static final double DOWN_POWER = 0.25;
-        public static final double UP_POWER = -0.25;
+        public static final double DOWN_POWER = 0.175;
+        public static final double UP_POWER = -0.175;
     }
 
     /** All the constants for the drop command */

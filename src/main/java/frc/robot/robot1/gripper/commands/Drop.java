@@ -27,6 +27,8 @@ public class Drop extends Command {
   /** a variable to check if the sensor has seen the coral */
   private boolean hasSeenCoral;
 
+  private Command settingArmDown;
+
   /**
    * creates a new Drop command
    * <br>
@@ -39,6 +41,8 @@ public class Drop extends Command {
   public Drop(Gripper gripper) {
     this.gripper = gripper;
     hasSeenCoral = false;
+    settingArmDown = new WaitUntilCommand(()-> RobotContainer.chassis.getPose().getTranslation().getDistance(RobotContainer.isRed ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6).andThen(
+      new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
     addRequirements(gripper);
   }
 
@@ -78,8 +82,7 @@ public class Drop extends Command {
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
-    new WaitUntilCommand(()-> RobotContainer.chassis.getPose().getTranslation().getDistance(RobotContainer.isRed ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6).andThen(
-    new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING))).schedule();
+    settingArmDown.schedule();
   }
 
   /**

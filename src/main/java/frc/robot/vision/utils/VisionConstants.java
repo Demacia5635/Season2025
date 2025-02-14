@@ -137,13 +137,13 @@ public class VisionConstants {
 
 // if the robot tihnk it is behined the tag swap id 1 with id 2 in line 150
     // TAG Camera mounting configuration
-    public static final double[] CAM_HIGHT = { 0.795, 0.9, 0.9, 0.815};
-    public static final double[] CAM_PITHC = { 54.369, 22, 55, 56.804};
+    public static final double[] CAM_HIGHT = { 0.795, 0.91, 0.89, 0.815};
+    public static final double[] CAM_PITHC = { 54.369, 20, 53, 56.804};
     public static final double[] CAM_YAW = { 0, 0, 180, 0 };
 
     // Camera to Tag position relative to robot center
     public static final Translation2d[] ROBOT_TO_CAM = { new Translation2d(0.13, -0.27),
-            new Translation2d(0.12, -0.285), new Translation2d(0.0093341, -0.287903),
+            new Translation2d(0.11, -0.285), new Translation2d(0.0, -0.285),
             new Translation2d(0.13, 0.284) };
 
     // NetworkTables key for AprilTag vision data

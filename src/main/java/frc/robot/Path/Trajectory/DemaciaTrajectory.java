@@ -120,7 +120,6 @@ public class DemaciaTrajectory {
     }
 
     public boolean hasFinishedSegments(Pose2d chassisPose) {
-        
         Translation2d currentLastPoint = segmentIndex == segments.size() - 1
                 ? segments.get(segmentIndex).getPoints()[1]
                 : (segments.get(segmentIndex) instanceof Leg ? segments.get(segmentIndex).getPoints()[1]
@@ -128,12 +127,12 @@ public class DemaciaTrajectory {
                         
         Translation2d diffVector = currentLastPoint.minus(chassisPose.getTranslation());
 
-        if (diffVector.getNorm() >= 0.5 && Math.abs(
-                diffVector.getAngle().minus(currentLastPoint.minus(segments.get(segmentIndex).getPoints()[0])
-                        .getAngle()).getRadians()) >= Math.toRadians(30) && segmentIndex != segments.size() -1) {
+        // if (diffVector.getNorm() >= 0.5 && Math.abs(
+        //         diffVector.getAngle().minus(currentLastPoint.minus(segments.get(segmentIndex).getPoints()[0])
+        //                 .getAngle()).getRadians()) >= Math.toRadians(30) && segmentIndex != segments.size() -1) {
 
-            return true;
-        }
+        //     return true;
+        // }
 
         if (segmentIndex == segments.size() - 1) {
 
@@ -148,14 +147,13 @@ public class DemaciaTrajectory {
                     || chassisPose.getTranslation().getDistance(currentLastPoint) <= 0.2;
 
         }
-
     }
 
-    PIDController drivePID = new PIDController(1.2, 0.4, 0);
+    PIDController drivePID = new PIDController(1.7, 0.1, 0);
     double lastDistance = 0;
 
     public ChassisSpeeds calculate(Pose2d chassisPose) {
-
+        LogManager.log("DISTANCE LEFT: " + distanceLeft);
         this.chassisPose = chassisPose;
 
         distanceTraveledOnSegment = segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());
@@ -170,7 +168,7 @@ public class DemaciaTrajectory {
 
             }
         }
-        double velocity = Math.min(currentMaxVel, -drivePID.calculate(distanceLeft, 0));
+        double velocity = Math.min(currentMaxVel, -drivePID.calculate(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]), 0));
 
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
 
@@ -183,8 +181,9 @@ public class DemaciaTrajectory {
 
     public boolean isFinishedTrajectory() {
         return (distanceLeft <= MAX__POSITION_THRESHOLD
-                || chassisPose.getTranslation()
-                        .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD)
+                || (chassisPose.getTranslation()
+                    .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
+                        && segmentIndex == segments.size() - 1))
 
                 && wantedAngle.minus(chassisPose.getRotation()).getRadians() <= MAX_ROTATION_THRESHOLD;
     }
