@@ -128,12 +128,12 @@ public class DemaciaTrajectory {
                         
         Translation2d diffVector = currentLastPoint.minus(chassisPose.getTranslation());
 
-        // if (diffVector.getNorm() >= 0.5 && Math.abs(
-        //         diffVector.getAngle().minus(currentLastPoint.minus(segments.get(segmentIndex).getPoints()[0])
-        //                 .getAngle()).getRadians()) >= Math.toRadians(30) && segmentIndex != segments.size() -1) {
+        if (diffVector.getNorm() >= 0.5 && Math.abs(
+                diffVector.getAngle().minus(currentLastPoint.minus(segments.get(segmentIndex).getPoints()[0])
+                        .getAngle()).getRadians()) >= Math.toRadians(30) && segmentIndex != segments.size() -1) {
 
-        //     return true;
-        // }
+            return true;
+        }
 
         if (segmentIndex == segments.size() - 1) {
 
