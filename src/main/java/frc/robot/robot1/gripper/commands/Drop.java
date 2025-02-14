@@ -42,7 +42,7 @@ public class Drop extends Command {
     this.gripper = gripper;
     hasSeenCoral = false;
     settingArmDown = new WaitUntilCommand(()-> RobotContainer.chassis.getPose().getTranslation().getDistance(RobotContainer.isRed ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6).andThen(
-      new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
+      new InstantCommand(()-> {if (RobotContainer.arm.state != ARM_ANGLE_STATES.CORAL_STATION) RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING);}));
     addRequirements(gripper);
   }
 
@@ -82,7 +82,9 @@ public class Drop extends Command {
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
-    settingArmDown.schedule();
+    if (!interrupted) {
+      settingArmDown.schedule();
+    }
   }
 
   /**
