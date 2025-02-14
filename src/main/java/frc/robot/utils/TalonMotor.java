@@ -151,18 +151,18 @@ public class TalonMotor extends TalonFX {
   }
 
   private void addLog() {    
-    LogManager.addEntry(name + "/Position", positionSignal);
-    LogManager.addEntry(name + "/Velocity", velocitySignal);
-    LogManager.addEntry(name + "/Acceleration", accelerationSignal);
-    LogManager.addEntry(name + "/Voltage", voltageSignal);
-    LogManager.addEntry(name + "/Current", getStatorCurrent());
-    LogManager.addEntry(name + "/CloseLoopError", closedLoopErrorSignal);
-    LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput());
-    LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput());
-    LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput());
-    LogManager.addEntry(name + "/CloseLoopD", getClosedLoopDerivativeOutput());
-    LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward());
-    LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal);
+    LogManager.addEntry(name + "/Position", positionSignal, 3);
+    LogManager.addEntry(name + "/Velocity", velocitySignal, 3);
+    LogManager.addEntry(name + "/Acceleration", accelerationSignal, 3);
+    LogManager.addEntry(name + "/Voltage", voltageSignal, 3);
+    LogManager.addEntry(name + "/Current", getStatorCurrent(), 3);
+    LogManager.addEntry(name + "/CloseLoopError", closedLoopErrorSignal, 3);
+    LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput(), 3);
+    LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput(), 2);
+    LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput(), 2);
+    LogManager.addEntry(name + "/CloseLoopD", getClosedLoopDerivativeOutput(), 2);
+    LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward(), 2);
+    LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal, 3);
 
     LogManager.addEntry(name + "/Fault Field", getFaultField());
     LogManager.addEntry(name + "/Sticky Fault Field", getStickyFaultField());
@@ -229,12 +229,12 @@ public class TalonMotor extends TalonFX {
    */
   public void setDuty(double power) {
     setControl(dutyCycle.withOutput(power));
-    dutyCycleEntry.log(power);
+    // dutyCycleEntry.log(power);
   }
 
   public void setVoltage(double voltage) {
     setControl(voltageOut.withOutput(voltage));
-    dutyCycleEntry.log(voltage / 12.0);
+    // dutyCycleEntry.log(voltage / 12.0);
   }
 
 	/**
@@ -244,7 +244,7 @@ public class TalonMotor extends TalonFX {
    */
   public void setVelocity(double velocity, double feedForward) {
     setControl(velocityVoltage.withVelocity(velocity).withFeedForward(feedForward));
-    velocityEntry.log(velocity);
+    // velocityEntry.log(velocity);
   }
 
 	public void setVelocity(double velocity) {
@@ -260,7 +260,7 @@ public class TalonMotor extends TalonFX {
   */
 	public void setMotionMagic(double position, double feedForward) {
 		setControl(motionMagicVoltage.withPosition(position).withFeedForward(feedForward));
-		positionEntry.log(position);
+		// positionEntry.log(position);
 	}
 
 	public void setMotionMagic(double position) {
@@ -269,7 +269,7 @@ public class TalonMotor extends TalonFX {
 
   public void setPositionVoltage(double position, double feedForward) {
     setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
-    positionEntry.log(position);
+    // positionEntry.log(position);
   }
 
   public void setPositionVoltage(double position) {

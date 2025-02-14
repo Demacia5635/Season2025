@@ -4,8 +4,6 @@
 
 package frc.robot.robot2.arm.subsystems;
 
-import static frc.robot.robot2.arm.constants.ArmConstants.*;
-
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -14,13 +12,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
-import frc.robot.robot2.arm.constants.ArmConstants.ArmAngleMotorConstants;
-import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleMotorConstants;
-import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleStarting;
-import frc.robot.robot2.arm.constants.ArmConstants.MaxErrors;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
+
+import static frc.robot.robot2.arm.constants.ArmConstants.*;
 
 /**
  * The Arm Subsystem
@@ -42,8 +37,8 @@ import frc.robot.utils.TalonMotor;
  * <br>
  * </br>
  * 
- * @see frc.robot.robot2.arm.constants.ArmConstants
- * @see frc.robot.robot2.arm.commands.ArmCommand
+ * @see frc.robot.robot1.arm.constants.ArmConstants
+ * @see frc.robot.robot1.arm.commands.ArmCommand
  */
 public class Arm extends SubsystemBase {
 
@@ -54,13 +49,6 @@ public class Arm extends SubsystemBase {
 
   /** The digital sensor that help with calibrate the arm */
   private final DigitalInput armAngleLimit;
-
-  /**
-   * The absolute sensor that tells the arm angle motor what is the real angle
-   * of the gripper
-   */
-  private final DutyCycleEncoder armAngleAbsoluteSensor;
-
   /**
    * The absolute sensor that tells the gripper angle motor what is the real angle
    * of the gripper
@@ -68,11 +56,22 @@ public class Arm extends SubsystemBase {
   private final DutyCycleEncoder gripperAngleAbsoluteSensor;
 
   /**
+   * A variable that tells the arm if it was calibrated if it wasn't its will not
+   * listen to go to angles
+   */
+  public boolean isCalibrated;
+
+  /**
    * The state of the arm used in the
-   * {@link frc.robot.robot2.arm.commands.ArmCommand} to tell the arm what angle
+   * {@link frc.robot.robot1.arm.commands.ArmCommand} to tell the arm what angle
    * to go
    */
   public ARM_ANGLE_STATES state;
+
+  private boolean hasArmAngleReachedTarget;
+  private double lastArmAngleTarget;
+
+  private boolean hasGripperAngleReachedTarget;
 
   /**
    * creates a new Arm, should only be one
@@ -92,10 +91,17 @@ public class Arm extends SubsystemBase {
     /* configure the sensors */
     armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
     gripperAngleAbsoluteSensor = new DutyCycleEncoder(GripperAngleMotorConstants.ABSOLUTE_SENSOR_CHANNEL);
-    armAngleAbsoluteSensor = new DutyCycleEncoder(ArmAngleMotorConstants.ABSOLUTE_SENSOR_CHANNEL);
+
+    /* set is calibrated to false at the start */
+    isCalibrated = false;
 
     /* make the default state to idle */
     state = ARM_ANGLE_STATES.IDLE;
+
+    hasArmAngleReachedTarget = false;
+    lastArmAngleTarget = Double.MAX_VALUE;
+
+    hasGripperAngleReachedTarget = false;
 
     /* add to network tables everything that needed */
     addNT();
@@ -106,14 +112,14 @@ public class Arm extends SubsystemBase {
    */
   public void addNT() {
     /* add to log the important stuff */
-    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle);
-    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle);
-    LogManager.addEntry(getName() + "/Arm Angle Limit Switch", () -> getArmAngleLimit() ? 1 : 0);
-    LogManager.addEntry(getName() + "/IsReady", () -> isReady() ? 1 : 0);
+    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle, 4);
+    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle, 4);
+    LogManager.addEntry(getName() + "/Arm Angle Limit Switch", this::getArmAngleLimit, 3);
+    LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
     /* add to smart dashboard the widgets of the talon motor */
-    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
-    SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
+    // SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
+    // SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
     /* add to smart dashboard the coast and brake of both motors */
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set brake",
@@ -127,10 +133,8 @@ public class Arm extends SubsystemBase {
 
     /* add state chooser through the netwrok tables */
     SendableChooser<ARM_ANGLE_STATES> stateChooser = new SendableChooser<>();
-    stateChooser.addOption("L2", ARM_ANGLE_STATES.L2_TOUCHING);
-    stateChooser.addOption("L2 Calc", ARM_ANGLE_STATES.L2_CALC);
-    stateChooser.addOption("L3", ARM_ANGLE_STATES.L3_TOUCHING);
-    stateChooser.addOption("L3 Calc", ARM_ANGLE_STATES.L3_CALC);
+    stateChooser.addOption("L2", ARM_ANGLE_STATES.L2);
+    stateChooser.addOption("L3", ARM_ANGLE_STATES.L3);
     stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);
     stateChooser.addOption("Starting", ARM_ANGLE_STATES.STARTING);
     stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
@@ -138,11 +142,18 @@ public class Arm extends SubsystemBase {
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
 
-    SmartDashboard.putData("Disable Arm Angle Supply Limits", new InstantCommand(()-> armAngleMotor.disableSupplyLimit()).ignoringDisable(true));
-    SmartDashboard.putData("Clear Sticky Fault Static Brake Disabled", new InstantCommand(()-> armAngleMotor.disableStaticBrakeDisable()).ignoringDisable(true));
-
     /* add the arm itself to the network tables */
     SmartDashboard.putData(this);
+  }
+
+  /**
+   * set the arm to calibrated
+   * <br>
+   * </br>
+   * used in the {@link frc.robot.robot1.arm.commands.ArmCalibration}
+   */
+  public void hadCalibrated() {
+    isCalibrated = true;
   }
 
   /**
@@ -223,6 +234,28 @@ public class Arm extends SubsystemBase {
    *      automaticly be the forward limit
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
+    if (!isCalibrated) {
+      LogManager.log("Can not move motor before calibration", AlertType.kError);
+      return;
+    }
+    if (Double.isNaN(targetAngle)) {
+      LogManager.log("arm target Angle is NaN", AlertType.kError);
+      return;
+    }
+
+    if (lastArmAngleTarget != targetAngle) {
+      hasArmAngleReachedTarget = false;
+      lastArmAngleTarget = targetAngle;
+    }
+
+    if (targetAngle > getArmAngle()) {
+      targetAngle += 2.5*MaxErrors.ARM_ANGLE_DOWN_ERROR;
+    }
+
+    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+      hasArmAngleReachedTarget = true;
+    }
+
     if (targetAngle < ArmAngleMotorConstants.BACK_LIMIT) {
       targetAngle = ArmAngleMotorConstants.BACK_LIMIT;
     }
@@ -230,7 +263,27 @@ public class Arm extends SubsystemBase {
       targetAngle = ArmAngleMotorConstants.FWD_LIMIT;
     }
 
-    armAngleMotor.setPositionVoltage(targetAngle);
+    if (hasArmAngleReachedTarget) {
+      if (getArmAngle() > targetAngle) {
+        if (getArmAngle() - targetAngle > MaxErrors.ARM_ANGLE_UP_ERROR) {
+          armAngleMotor.setPositionVoltage(targetAngle);
+          hasArmAngleReachedTarget = false;
+        } else {
+          armAngleMotor.stopMotor();
+        }
+      } else {
+        if (targetAngle - getArmAngle() > MaxErrors.ARM_ANGLE_DOWN_ERROR) {
+          armAngleMotor.setPositionVoltage(targetAngle);
+          hasArmAngleReachedTarget = false;
+        } else {
+          armAngleMotor.stopMotor();
+        }
+      }
+    } else {
+      armAngleMotor.setPositionVoltage(targetAngle);
+    }
+
+    // armAngleMotor.setPositionVoltage(targetAngle);
   }
 
   /**
@@ -245,19 +298,60 @@ public class Arm extends SubsystemBase {
    * @see if the arm angle is below a specific angle the gripepr will always want
    *      to go to the back limit
    */
-  public void gripperAngleMotorSetPositionVoltage(double angle) {
-    if (angle < GripperAngleMotorConstants.BACK_LIMIT) {
-      angle = GripperAngleMotorConstants.BACK_LIMIT;
+  public void gripperAngleMotorSetPositionVoltage(double targetAngle) {
+    if (!isCalibrated) {
+      LogManager.log("Can not move motor before calibration", AlertType.kError);
+      return;
     }
-    if (angle > GripperAngleMotorConstants.FWD_LIMIT) {
-      angle = GripperAngleMotorConstants.FWD_LIMIT;
+    if (Double.isNaN(targetAngle)) {
+      LogManager.log("gripper target Angle is NaN", AlertType.kError);
+      return;
     }
+    if (!gripperAngleAbsoluteSensor.isConnected()) {
+      return;
+    }
+
+    // if (lastGripperAngleTarget != targetAngle) {
+    //   hasGripperAngleReachedTarget = false;
+    //   lastGripperAngleTarget = targetAngle;
+    // }
+
+    // if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+    //   hasGripperAngleReachedTarget = true;
+    // }
 
     if (armAngleMotor.getCurrentClosedLoopSP() <= GripperAngleStarting.WHEN_MOVING_GRIPPER) {
-      angle = GripperAngleStarting.ANGLE_TO_GRIPPER;
+      targetAngle = GripperAngleStarting.ANGLE_TO_GRIPPER;
     }
 
-    gripperAngleMotor.setPositionVoltage(angle);
+    if (targetAngle < GripperAngleMotorConstants.BACK_LIMIT) {
+      targetAngle = GripperAngleMotorConstants.BACK_LIMIT;
+    }
+    if (targetAngle > GripperAngleMotorConstants.FWD_LIMIT) {
+      targetAngle = GripperAngleMotorConstants.FWD_LIMIT;
+    }
+
+    // if (hasGripperAngleReachedTarget) {
+    //   if (getGripperAngle() > targetAngle) {
+    //     if (getGripperAngle() - targetAngle > MaxErrors.GRIPPER_ANGLE_UP_ERROR) {
+    //       gripperAngleMotor.setPositionVoltage(targetAngle);
+    //       hasGripperAngleReachedTarget = false;
+    //     } else {
+    //       gripperAngleMotor.stopMotor();
+    //     }
+    //   } else {
+    //     if (targetAngle - getGripperAngle() > MaxErrors.GRIPPER_ANGLE_DOWN_ERROR) {
+    //       gripperAngleMotor.setPosition(targetAngle);
+    //       hasGripperAngleReachedTarget = false;
+    //     } else {
+    //       gripperAngleMotor.stopMotor();
+    //     }
+    //   }
+    // } else {
+    //   gripperAngleMotor.setPositionVoltage(targetAngle);
+    // }
+
+    gripperAngleMotor.setPositionVoltage(getGripperAngleMotor() + targetAngle - getGripperAngle());
   }
 
   /**
@@ -294,8 +388,7 @@ public class Arm extends SubsystemBase {
    * @return is the motors at the right angles
    */
   public boolean isReady() {
-    return armAngleMotor.getCurrentClosedLoopError() <= MaxErrors.ARM_ANGLE_ERROR
-        && gripperAngleMotor.getCurrentClosedLoopError() <= MaxErrors.GRIPPER_ANGLE_ERROR;
+    return hasArmAngleReachedTarget && hasGripperAngleReachedTarget;
   }
 
   /**
@@ -303,28 +396,15 @@ public class Arm extends SubsystemBase {
    * 
    * @return the arm angle motor position, position in radians
    */
-  public double getArmAngleMotor() {
+  public double getArmAngle() {
     return armAngleMotor.getCurrentPosition();
   }
 
   /**
-   * @deprecated use the getGripperAngle function instead to get the gripper angle
-   *             from the sensor
-   *             get the gripper angle from the motor instead of the absolute
-   *             sensor
    * @return the gripper angle motor position, position in radians
    */
   public double getGripperAngleMotor() {
     return gripperAngleMotor.getCurrentPosition();
-  }
-
-  /**
-   * get the gripper angle absolute sensor
-   * 
-   * @return the gripper angle in radians
-   */
-  public double getArmAngle() {
-    return (armAngleAbsoluteSensor.get() * 2 * Math.PI) - ArmAngleMotorConstants.BASE_ANGLE;
   }
 
   /**
@@ -369,20 +449,12 @@ public class Arm extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    /* check if the arm angle absolute sensor is connected */
-    if (!armAngleAbsoluteSensor.isConnected()) {
-      LogManager.log("arm Angle Encoder is not connected", AlertType.kError);
-    }
-
     /* check if the gripper angle absolute sensor is connected */
     if (!gripperAngleAbsoluteSensor.isConnected()) {
       LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
     }
 
-    /* set the arm angle motor position to the gripper angle absolute sensor */
-    armAngleMotor.setPosition(getArmAngle());
-
     /* set the gripper angle motor position to the gripper angle absolute sensor */
-    gripperAngleMotor.setPosition(getGripperAngle());
+    // gripperAngleMotor.setPosition(getGripperAngle());
   }
 }

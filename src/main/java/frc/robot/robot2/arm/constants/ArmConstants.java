@@ -8,7 +8,7 @@ import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.Constants;
+import frc.robot.Constants.CANBuses;
 import frc.robot.utils.TalonConfig;
 
 /**
@@ -27,7 +27,7 @@ public class ArmConstants {
      * All the constnats of the calculation
      */
     public static class CalculationsConstants {
-        public static final double BASE_HEIGHT = 0.75;
+        public static final double BASE_HEIGHT = 0.86;
         public static final double ARM_1_LEN = 0.53;
         public static final double ARM_2_LEN = 0.32;
     }
@@ -38,12 +38,12 @@ public class ArmConstants {
     public static class ArmAngleMotorConstants {
         /* all the main configs of the motor */
         public static final int ID = 20;
-        public static final CANBus CAN_BUS = Constants.CAN_BUS;
+        public static final CANBus CAN_BUS = CANBuses.ARM_CAN_BUS;
         public static final String NAME = "Arm Angle Motor";
 
         /* the pid and ff constants of the motor */
         public static final double KP = 20;
-        public static final double KI = 0.75;
+        public static final double KI = 1.0;
         public static final double KD = 0.5;
         public static final double KS = 0;
         public static final double KV = 0;
@@ -77,7 +77,7 @@ public class ArmConstants {
          */
         public static final double BASE_ANGLE = 0;
         public static final double BACK_LIMIT = Math.toRadians(33.7);
-        public static final double FWD_LIMIT = Math.toRadians(130);
+        public static final double FWD_LIMIT = 2.501220703125;
 
         /* The config of the motors based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -102,11 +102,11 @@ public class ArmConstants {
     public static class GripperAngleMotorConstants {
         /* All the main configs of the motor */
         public static final int ID = 21;
-        public static final CANBus CAN_BUS = Constants.CAN_BUS;
+        public static final CANBus CAN_BUS = CANBuses.ARM_CAN_BUS;
         public static final String NAME = "Gripper Angle Motor";
 
         /* the pid and ff of the motor */
-        public static final double KP = 8;
+        public static final double KP = 9.5;
         public static final double KI = 1.75;
         public static final double KD = 0.25;
         public static final double KS = 0;
@@ -138,7 +138,7 @@ public class ArmConstants {
          */
         public static final double ENCODER_BASE_ANGLE = -1.6270964174482998;
         public static final double BACK_LIMIT = 3.7;
-        public static final double FWD_LIMIT = 5.3824149977630915;
+        public static final double FWD_LIMIT = 5.4;
 
         /* The config of the motor based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -154,33 +154,33 @@ public class ArmConstants {
     public static class CalibrationConstants {
         public static final double ARM_ANGLE_POWER = -0.2;
         public static final double ARM_ANGLE_START_POWER = 0.2;
-        public static final double TIME_TO_CHANGE_POWER = 0.5;
+        public static final double TIME_TO_CHANGE_POWER = 0.75;
     }
 
     /** The max errors of the arm and gripper angles */
     public static class MaxErrors {
-        public static final double ARM_ANGLE_ERROR = 0.05;
-        public static final double GRIPPER_ANGLE_ERROR = 0.05;
+        public static final double ARM_ANGLE_UP_ERROR = 0.017;
+        public static final double ARM_ANGLE_DOWN_ERROR = 0.03;
+        public static final double GRIPPER_ANGLE_UP_ERROR = 0.017;
+        public static final double GRIPPER_ANGLE_DOWN_ERROR = 0.03;
     }
 
     /** all the constants angles */
     public static class ANGLES {
-        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(0.872665, 5d);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(1.570796, 4d);
-        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.919862, 5.3824149977630915);
-        public static final Pair<Double, Double> ALGAE_UNDER = new Pair<Double, Double>(0.0, 0.0);
-        public static final Pair<Double, Double> ALGAE_OVER = new Pair<Double, Double>(0.0, 0.0);
+        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
+        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.4, 4.4);
+        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
+        public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.55, 4.4);
+        public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.2, 4.4);
         public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(Math.toRadians(33.7), 3.64);
     }
 
     /** the arm angle states */
     public static enum ARM_ANGLE_STATES {
-        L2_CALC,
-        L3_CALC,
-        L2_TOUCHING,
-        L3_TOUCHING,
-        ALGAE_UNDER,
-        ALGAE_OVER,
+        L2,
+        L3,
+        ALGAE_BOTTOM,
+        ALGAE_TOP,
         CORAL_STATION,
         TESTING,
         STARTING,
@@ -199,7 +199,7 @@ public class ArmConstants {
         public static final Translation2d REEF = new Translation2d();
         public static final Translation2d CORAL_STATION = new Translation2d();
 
-        public static final double L2_HEIGHT = 0.54;
+        public static final double L2_HEIGHT = 0.81;
         public static final double L3_HEIGHT = 1.02;
         public static final double CORAL_STATION_HEIGHT = 0;
     }
