@@ -128,9 +128,17 @@ public class VisionConstants {
     }
 
     // 0 is LEFT TAG(ll2), 1 is RIGHT TAG, 2 is SIDE TAG, 3 is NOTE.
+
+// note for faniel and tomer in 14/2/25 - 
+//the vision code suled work for the maunt noga printed if somthing
+// dose not work reaf the next coments 
+
+// if the dist calc do not work, chaneg to 90-the number(only for id 1 and 2) in line 141
+
+// if the robot tihnk it is behined the tag swap id 1 with id 2 in line 150
     // TAG Camera mounting configuration
     public static final double[] CAM_HIGHT = { 0.795, 0.9, 0.9, 0.815};
-    public static final double[] CAM_PITHC = { 54.369, 14, 35, 56.804};
+    public static final double[] CAM_PITHC = { 54.369, 22, 55, 56.804};
     public static final double[] CAM_YAW = { 0, 0, 180, 0 };
 
     // Camera to Tag position relative to robot center
