@@ -347,7 +347,7 @@ public class Chassis extends SubsystemBase {
     double angleError = angle.minus(getGyroAngle()).getRadians();
     double angleErrorabs = Math.abs(angleError);
     if (angleErrorabs>Math.toRadians(1.5)){
-        speeds.omegaRadiansPerSecond = angleError * 2.5;
+        speeds.omegaRadiansPerSecond = angleError * 1.5;
     }
 
     setVelocitiesWithAccel(speeds, isPaths);
@@ -364,7 +364,7 @@ public class Chassis extends SubsystemBase {
   }
 
   
-  PIDController drivePID = new PIDController(2.2, 0.7, 0);
+  PIDController drivePID = new PIDController(2.2, 0.14, 0);
   public void goTo(Pose2d pose, double threshold, boolean stopWhenFinished){
     
     Translation2d diffVector = pose.getTranslation().minus(getPose().getTranslation());

@@ -153,7 +153,6 @@ public class DemaciaTrajectory {
     double lastDistance = 0;
 
     public ChassisSpeeds calculate(Pose2d chassisPose) {
-        LogManager.log("DISTANCE LEFT: " + distanceLeft);
         this.chassisPose = chassisPose;
 
         distanceTraveledOnSegment = segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());

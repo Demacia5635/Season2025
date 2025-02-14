@@ -70,61 +70,81 @@ public class RobotContainer implements Sendable{
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
   public static FieldTarget feedingTarget = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
 
-  Timer timer;
-
-  /** The container for the robot. Contains subsystems, OI devices, and commands. */
-  public RobotContainer() {
-    robotContainer = this;
-    new AutoUtils();
-    new LogManager();
-    ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
-    operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
-    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-    SmartDashboard.putData("RC", this);
-    timer = new Timer();
-    LogManager.addEntry("Timer",()-> 15-timer.get());
-
-    SmartDashboard.putData("Reef", new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Reef");
-        builder.addDoubleProperty("Position", ()-> scoringTarget.position.ordinal(), index-> {
-          if (isFeeding(index, 0)) {
-            // feedingTarget.position = POSITION.values()[(int)index];
-          } else {
-            scoringTarget.position = POSITION.values()[(int)index];
-          }});
-        builder.addDoubleProperty("Element Position", ()-> scoringTarget.elementPosition.ordinal(), index-> {
-          if (isFeeding(index, 1)) {
-            // feedingTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
-          } else {
-            scoringTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
-          }
-        });
-        builder.addDoubleProperty("Level", ()-> scoringTarget.level.ordinal(), index-> {
-          if (isFeeding(index, 2)) {
-            // feedingTarget.level = LEVEL.values()[(int)index];
-          } else {
-            scoringTarget.level = LEVEL.values()[(int)index];
-          }
-        });
-      }
-
-      boolean isFeeding(double index, int element) {
-        switch (element) {
-          case 0:
-            return index == 6 || index == 7;
-          case 1:
-            return index == 3;
-          case 2:
-            return index == 2;
-          default:
-            return false;
+  public Command testCommand;
+    Timer timer;
+  
+    /** The container for the robot. Contains subsystems, OI devices, and commands. */
+    public RobotContainer() {
+      robotContainer = this;
+      new AutoUtils();
+      new LogManager();
+      ledManager = new LedManager();
+      driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+      operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
+      SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+      SmartDashboard.putData("RC", this);
+      timer = new Timer();
+      LogManager.addEntry("Timer",()-> 15-timer.get());
+  
+      SmartDashboard.putData("Reef", new Sendable() {
+        @Override
+        public void initSendable(SendableBuilder builder) {
+          builder.setSmartDashboardType("Reef");
+          builder.addDoubleProperty("Position", ()-> scoringTarget.position.ordinal(), index-> {
+            if (isFeeding(index, 0)) {
+              // feedingTarget.position = POSITION.values()[(int)index];
+            } else {
+              scoringTarget.position = POSITION.values()[(int)index];
+            }});
+          builder.addDoubleProperty("Element Position", ()-> scoringTarget.elementPosition.ordinal(), index-> {
+            if (isFeeding(index, 1)) {
+              // feedingTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
+            } else {
+              scoringTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
+            }
+          });
+          builder.addDoubleProperty("Level", ()-> scoringTarget.level.ordinal(), index-> {
+            if (isFeeding(index, 2)) {
+              // feedingTarget.level = LEVEL.values()[(int)index];
+            } else {
+              scoringTarget.level = LEVEL.values()[(int)index];
+            }
+          });
         }
-      }
-    });
+  
+        boolean isFeeding(double index, int element) {
+          switch (element) {
+            case 0:
+              return index == 6 || index == 7;
+            case 1:
+              return index == 3;
+            case 2:
+              return index == 2;
+            default:
+              return false;
+          }
+        }
+      });
+  
+      FieldTarget test = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
+      this.testCommand = (new Command() {
+      public void execute() {
+        chassis.goTo(test.getApproachingPoint(), 0.2, false);
+      };
 
+      public boolean isFinished() {return chassis.getPose().getTranslation().getDistance(test.getApproachingPoint().getTranslation()) <= 0.2;}
+    }.andThen(new Command(){
+      public void execute() {
+        chassis.goTo(test.getFinishPoint(), 0.02, true);
+      };
+
+      public boolean isFinished() {return chassis.getPose().getTranslation().getDistance(test.getFinishPoint().getTranslation()) <= 0.02;}
+    
+
+
+    })).alongWith(new InstantCommand(()->arm.setState(test.level)));
+    
+    
     configureSubsytems();
     configureDefaultCommands();
     configureBindings();
@@ -158,7 +178,7 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.povLeft().onTrue(new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)));
-
+    driverController.povRight().onTrue(testCommand);
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
     driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
     driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
