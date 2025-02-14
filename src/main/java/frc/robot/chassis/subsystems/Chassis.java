@@ -91,6 +91,14 @@ public class Chassis extends SubsystemBase {
         LogManager.addEntry("VELOCITY NORM: ", ()->new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond, getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
         LogManager.addEntry("Chassis vX", ()->getChassisSpeedsRobotRel().vxMetersPerSecond);
         LogManager.addEntry("Chassis vY", ()->getChassisSpeedsRobotRel().vyMetersPerSecond);
+        SmartDashboard.putData("Chassis/set coast", new InstantCommand(()-> setNeutralMode(false)));
+        SmartDashboard.putData("Chassis/set brake", new InstantCommand(()-> setNeutralMode(true)));
+    }
+
+    public void setNeutralMode(boolean isBrake) {
+        for (SwerveModule module : modules) {
+            module.setNeutralMode(isBrake);
+        }
     }
 
     public void resetPose(Pose2d pose){
