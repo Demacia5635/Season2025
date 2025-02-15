@@ -80,6 +80,7 @@ public class Chassis extends SubsystemBase {
         bargeTag = new Tag(()->getGyroAngle(), 2);
         backTag = new Tag(()->getGyroAngle(), 3);
         visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
+
         this.pathsAccel = ChassisConstants.AccelPaths.DEFAULT;
         this.driveAccel = ChassisConstants.AccelDrive.DEFAULT;
 
@@ -294,8 +295,13 @@ public class Chassis extends SubsystemBase {
         return new Matrix<N3, N1>(new SimpleMatrix(new double[]{x, y, theta}));
     }
 
-    Pose2d visionFusePoseEstimation;
+    private boolean isSeeScoringTag(){
+        return isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5)
+            || isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5);
+        
+    }
 
+    Pose2d visionFusePoseEstimation;
     @Override
     public void periodic() {
         visionFusePoseEstimation = visionFuse.getPoseEstemation();
@@ -304,12 +310,12 @@ public class Chassis extends SubsystemBase {
             // fieldTag.setRobotPose(visionFusePoseEstimation);
         }
         poseEstimator.update(getGyroAngle(), getModulePositions());
-            
-        
+
         field.setRobotPose(poseEstimator.getEstimatedPosition());
 
         RobotContainer.feedingTarget.position = getPose().getY() > 4 ? POSITION.FEEDER_RIGHT : POSITION.FEEDER_LEFT;
     }
+
         
     public boolean isRed() {
         return RobotContainer.isRed();
