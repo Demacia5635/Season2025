@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.robot2.elevator.commands.ElevatorCalibration;
 import frc.robot.robot2.elevator.commands.ElevatorCommand;
+import frc.robot.robot2.elevator.commands.ElevatorDrive;
 import frc.robot.robot2.elevator.subsystem.Elevator;
 import frc.robot.utils.LogManager;
 
@@ -74,7 +75,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
-    elevator.setDefaultCommand(elevatorCommand);
+    // elevator.setDefaultCommand(elevatorCommand);
   }
 
   /**
@@ -87,7 +88,7 @@ public class RobotContainer implements Sendable{
    * joysticks}.
    */
   private void configureBindings() {
-    controller.x().onTrue(elevatorCalibration);
+    controller.x().onTrue(new ElevatorDrive(elevator, controller));
   }
 
   public static boolean isRed() {
@@ -109,7 +110,7 @@ public class RobotContainer implements Sendable{
    * @return the ommand that start at the start at enable
    */
   public Command getEnableInitCommand() {
-    return elevatorCalibration;
+    return null;
   }
 
   /**

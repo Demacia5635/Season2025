@@ -16,10 +16,10 @@ public class ElevatorConstants {
 
     public static class ElevatorMotorConstants {
 
-        private static int MOTOR_ID = -1;
-        private static CANBus CANBUS = CANBuses.CHASSIS_CAN_BUS;
-        private static String NAME = "Elevator/Motor";
-        private static double GEAR_RATIO = -1/-1;
+        private static final int MOTOR_ID = 60;
+        private static final CANBus CANBUS = CANBuses.ARM_CAN_BUS;
+        private static final String NAME = "Elevator/Motor";
+        private static final double GEAR_RATIO = -1/-1;
         private static final double kP = -1;
         private static final double kI = -1;
         private static final double kD = -1;
