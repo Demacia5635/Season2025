@@ -12,6 +12,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot2.arm.constants.ArmConstants.ArmAngleMotorConstants;
+import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleMotorConstants;
+import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleStarting;
+import frc.robot.robot2.arm.constants.ArmConstants.MaxErrors;
+import frc.robot.utils.Cancoder;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 
@@ -41,6 +47,12 @@ import static frc.robot.robot2.arm.constants.ArmConstants.*;
  * @see frc.robot.robot1.arm.commands.ArmCommand
  */
 public class Arm extends SubsystemBase {
+
+  /**canconder arm to elovetor */
+  private final Cancoder armCancoder;
+
+  /** cancoder griper */
+  private final Cancoder griperCancoder;
 
   /** The motor that change the angle of the arm */
   private final TalonMotor armAngleMotor;
@@ -92,6 +104,13 @@ public class Arm extends SubsystemBase {
     armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
     gripperAngleAbsoluteSensor = new DutyCycleEncoder(GripperAngleMotorConstants.ABSOLUTE_SENSOR_CHANNEL);
 
+
+    /* configure the cancoder */
+    armCancoder = new Cancoder(ArmAngleMotorConstants.CANCODER_CONFIG);
+    griperCancoder = new Cancoder(GripperAngleMotorConstants.CANCODER_CONFIG);
+
+
+
     /* set is calibrated to false at the start */
     isCalibrated = false;
 
@@ -103,9 +122,19 @@ public class Arm extends SubsystemBase {
 
     hasGripperAngleReachedTarget = false;
 
+
     /* add to network tables everything that needed */
     addNT();
   }
+
+  /** armCancoder get angle */
+  public double getCancoderArmAngle(){
+    return armCancoder.getCurrentAbsPosition();
+  }
+    /** griperCancoder  get angle */
+    public double getCancoderGriperAngle(){
+      return griperCancoder.getCurrentAbsPosition();
+    }
 
   /**
    * add to network tables all the variables
@@ -234,6 +263,7 @@ public class Arm extends SubsystemBase {
    *      automaticly be the forward limit
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
+    gripperAngleMotorSetPositionVoltage((getCancoderGriperAngle()-targetAngle));
     if (!isCalibrated) {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
@@ -248,11 +278,11 @@ public class Arm extends SubsystemBase {
       lastArmAngleTarget = targetAngle;
     }
 
-    if (targetAngle > getArmAngle()) {
+    if (targetAngle > getCancoderArmAngle()) {
       targetAngle += 2.5*MaxErrors.ARM_ANGLE_DOWN_ERROR;
     }
 
-    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+    if (Math.abs(targetAngle - getCancoderArmAngle()) <= Math.toRadians(1)) {
       hasArmAngleReachedTarget = true;
     }
 
@@ -272,7 +302,7 @@ public class Arm extends SubsystemBase {
           armAngleMotor.stopMotor();
         }
       } else {
-        if (targetAngle - getArmAngle() > MaxErrors.ARM_ANGLE_DOWN_ERROR) {
+        if (targetAngle - getCancoderArmAngle() > MaxErrors.ARM_ANGLE_DOWN_ERROR) {
           armAngleMotor.setPositionVoltage(targetAngle);
           hasArmAngleReachedTarget = false;
         } else {

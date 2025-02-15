@@ -9,6 +9,8 @@ import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.CANBuses;
+import frc.robot.utils.Cancoder;
+import frc.robot.utils.CancoderConfig;
 import frc.robot.utils.TalonConfig;
 
 /**
@@ -41,7 +43,12 @@ public class ArmConstants {
         public static final CANBus CAN_BUS = CANBuses.ARM_CAN_BUS;
         public static final String NAME = "Arm Angle Motor";
 
-        /* the pid and ff constants of the motor */
+        /* All the main configs of the cancoder*/
+        public static final int CANCODER_ID = 22;//TODO: find right id
+        public static final String CANCODER_NAME = "Arm Cancoder";
+        public static final double CANCODER_OFFSET = 0.0;//TODO: find right offset
+
+        /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
         public static final double KP = 20;
         public static final double KI = 1.0;
         public static final double KD = 0.5;
@@ -64,7 +71,7 @@ public class ArmConstants {
         /* the basic configues of the motor */
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERTED = false;
-        public static final double GEAR_RATIO = 36.0 * (105.0 / 16.0);
+        public static final double GEAR_RATIO = 48.0 * (60.0 / 48.0);
 
         /* the ramp time of the motor */
         public static final double RAMP_TIME = 0.5;
@@ -87,6 +94,9 @@ public class ArmConstants {
                 .withInvert(IS_INVERTED)
                 .withMotorRatio(GEAR_RATIO).withRadiansMotor()
                 .withRampTime(RAMP_TIME);
+
+        /* The config of the motor based on the constants cancoder */
+        public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME).withOffset(CANCODER_OFFSET);
     }
 
     /**
@@ -100,12 +110,18 @@ public class ArmConstants {
 
     /** All the constants for the gripper angle motor */
     public static class GripperAngleMotorConstants {
+
+        /* All the main configs of the cancoder*/
+        public static final int CANCODER_ID = 22;//TODO: find right id
+        public static final String CANCODER_NAME = "Gripper Cancoder";
+        public static final double CANCODER_OFFSET = 0.0;//TODO: find right offset
+
         /* All the main configs of the motor */
         public static final int ID = 21;
         public static final CANBus CAN_BUS = CANBuses.ARM_CAN_BUS;
         public static final String NAME = "Gripper Angle Motor";
 
-        /* the pid and ff of the motor */
+        /* the pid and ff of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
         public static final double KP = 9.5;
         public static final double KI = 1.75;
         public static final double KD = 0.25;
@@ -125,7 +141,7 @@ public class ArmConstants {
         /* all the basic configs of the motor */
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERTED = false;
-        public static final double GEAR_RATIO = 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
+        public static final double GEAR_RATIO = 48.0 * (57.0 / 48.0);
 
         /* the ramp time of the motor */
         public static final double RAMP_TIME = 0.5;
@@ -148,6 +164,10 @@ public class ArmConstants {
                 .withInvert(IS_INVERTED)
                 .withMotorRatio(GEAR_RATIO).withRadiansMotor()
                 .withRampTime(RAMP_TIME);
+ 
+        /* The config of the motor based on the constants cancoder */
+        public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME).withOffset(CANCODER_OFFSET);
+
     }
 
     /** All the constants of the calibration */
