@@ -10,6 +10,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -22,10 +23,12 @@ import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
+import frc.robot.chassis.commands.auto.AlgaeL3L3;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.L2AlgaeAlgaeAlgae;
+import frc.robot.chassis.commands.auto.L2AlgaeL2;
 import frc.robot.chassis.commands.auto.L2AlgaeL3;
-import frc.robot.chassis.commands.auto.RemoveAlgae;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmCalibration;
@@ -70,84 +73,76 @@ public class RobotContainer implements Sendable{
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
   public static FieldTarget feedingTarget = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
 
-  public Command testCommand;
-    Timer timer;
+  private final Timer timer;
+
+
+  SendableChooser<Command> autoChooser;
   
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
-    public RobotContainer() {
-      robotContainer = this;
-      new AutoUtils();
-      new LogManager();
-      ledManager = new LedManager();
-      driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
-      operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
-      SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
-      SmartDashboard.putData("RC", this);
-      timer = new Timer();
-      LogManager.addEntry("Timer",()-> 15-timer.get());
-  
-      SmartDashboard.putData("Reef", new Sendable() {
-        @Override
-        public void initSendable(SendableBuilder builder) {
-          builder.setSmartDashboardType("Reef");
-          builder.addDoubleProperty("Position", ()-> scoringTarget.position.ordinal(), index-> {
-            if (isFeeding(index, 0)) {
-              // feedingTarget.position = POSITION.values()[(int)index];
-            } else {
-              scoringTarget.position = POSITION.values()[(int)index];
-            }});
-          builder.addDoubleProperty("Element Position", ()-> scoringTarget.elementPosition.ordinal(), index-> {
-            if (isFeeding(index, 1)) {
-              // feedingTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
-            } else {
-              scoringTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
-            }
-          });
-          builder.addDoubleProperty("Level", ()-> scoringTarget.level.ordinal(), index-> {
-            if (isFeeding(index, 2)) {
-              // feedingTarget.level = LEVEL.values()[(int)index];
-            } else {
-              scoringTarget.level = LEVEL.values()[(int)index];
-            }
-          });
-        }
-  
-        boolean isFeeding(double index, int element) {
-          switch (element) {
-            case 0:
-              return index == 6 || index == 7;
-            case 1:
-              return index == 3;
-            case 2:
-              return index == 2;
-            default:
-              return false;
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
+  public RobotContainer() {
+    robotContainer = this;
+    new AutoUtils();
+    new LogManager();
+    ledManager = new LedManager();
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
+    operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
+    SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
+    SmartDashboard.putData("RC", this);
+    timer = new Timer();
+    LogManager.addEntry("Timer",()-> 15-timer.get());
+    SmartDashboard.putData("Reef", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("Reef");
+        builder.addDoubleProperty("Position", ()-> scoringTarget.position.ordinal(), index-> {
+          if (isFeeding(index, 0)) {
+            // feedingTarget.position = POSITION.values()[(int)index];
+          } else {
+            scoringTarget.position = POSITION.values()[(int)index];
           }
-        }
-      });
+        });
+        builder.addDoubleProperty("Element Position", ()-> scoringTarget.elementPosition.ordinal(), index-> {
+          if (isFeeding(index, 1)) {
+            // feedingTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
+          } else {
+            scoringTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
+          }
+        });
+        builder.addDoubleProperty("Level", ()-> scoringTarget.level.ordinal(), index-> {
+          if (isFeeding(index, 2)) {
+            // feedingTarget.level = LEVEL.values()[(int)index];
+          } else {
+            scoringTarget.level = LEVEL.values()[(int)index];
+          }
+        });
+      }
   
-      FieldTarget test = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
-      this.testCommand = (new Command() {
-      public void execute() {
-        chassis.goTo(test.getApproachingPoint(), 0.2, false);
-      };
+      boolean isFeeding(double index, int element) {
+        switch (element) {
+          case 0:
+            return index == 6 || index == 7;
+          case 1:
+            return index == 3;
+          case 2:
+            return index == 2;
+          default:
+            return false;
+        }
+      }
+    });
 
-      public boolean isFinished() {return chassis.getPose().getTranslation().getDistance(test.getApproachingPoint().getTranslation()) <= 0.2;}
-    }.andThen(new Command(){
-      public void execute() {
-        chassis.goTo(test.getFinishPoint(), 0.02, true);
-      };
-
-      public boolean isFinished() {return chassis.getPose().getTranslation().getDistance(test.getFinishPoint().getTranslation()) <= 0.02;}
-    
-
-
-    })).alongWith(new InstantCommand(()->arm.setState(test.level)));
-    
     
     configureSubsytems();
     configureDefaultCommands();
     configureBindings();
+
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("L2AlgaeL3", new L2AlgaeL3(chassis));
+    autoChooser.addOption("L2AlgaeL2", new L2AlgaeL2(chassis));
+    autoChooser.addOption("L2AlgaeAlgaeAlgae", new L2AlgaeAlgaeAlgae(chassis));
+    autoChooser.addOption("AlgaeL3L3", new AlgaeL3L3(chassis));
+    SmartDashboard.putData("AutoChooser", autoChooser);
+
   }
 
   /**
@@ -177,8 +172,7 @@ public class RobotContainer implements Sendable{
 
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
-    driverController.povLeft().onTrue(new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)));
-    driverController.povRight().onTrue(testCommand);
+
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
     driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
     driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
@@ -204,7 +198,7 @@ public class RobotContainer implements Sendable{
     
     driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
     driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
-    
+
     driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
     driverController.rightSetting().onTrue(new Command() {
       POSITION closestTagToChassis() {
@@ -324,6 +318,6 @@ public class RobotContainer implements Sendable{
   public Command getAutonomousCommand() {
     timer.reset();
     timer.start();
-    return (new ArmCalibration(arm).andThen(new ArmCommand(arm))).alongWith(new L2AlgaeL3(chassis, hasRemovedFromLog));  
+    return (new ArmCalibration(arm).andThen(new ArmCommand(arm))).alongWith(autoChooser.getSelected());  
   }
 }

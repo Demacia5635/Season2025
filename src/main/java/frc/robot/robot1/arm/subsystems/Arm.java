@@ -145,6 +145,8 @@ public class Arm extends SubsystemBase {
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
 
+    armAngleMotor.configPidFf(0);
+
     /* add the arm itself to the network tables */
     SmartDashboard.putData(this);
   }

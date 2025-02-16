@@ -167,7 +167,7 @@ public class FieldTarget {
     public static PathPoint getElement(int elementTag, Translation2d offset){
         Translation2d originToTag = O_TO_TAG[elementTag];
         offset = offset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.fromDegrees(180)),0);
+        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.kPi),0);
     }
    
     @Override

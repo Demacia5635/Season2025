@@ -15,11 +15,11 @@ public class ChassisConstants {
 
     public static class AccelPaths{
         public static final double DEFAULT = 20;
-        public static final double L2 = 18;
-        public static final double L3 = 15;
+        public static final double L2 = 20;
+        public static final double L3 = 20;
         public static final double INTAKE = 20;
-        public static final double ALGAE_BOTTOM = 18;
-        public static final double ALGAE_TOP = 15;
+        public static final double ALGAE_BOTTOM = 20;
+        public static final double ALGAE_TOP = 20;
     }
     
     public static class AccelDrive{

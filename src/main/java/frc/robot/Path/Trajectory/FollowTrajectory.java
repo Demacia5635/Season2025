@@ -6,6 +6,7 @@ package frc.robot.Path.Trajectory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -30,6 +31,7 @@ import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.utils.LogManager;
+import frc.robot.vision.utils.VisionConstants;
 
 public class FollowTrajectory extends Command {
   private Chassis chassis;
@@ -90,7 +92,6 @@ public class FollowTrajectory extends Command {
         grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
       }
-      LogManager.log("Approach POINT: " + target.getApproachingPoint()); 
 
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());

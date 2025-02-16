@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
+import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.utils.ChassisConstants;
@@ -370,10 +371,14 @@ public class Chassis extends SubsystemBase {
   }
 
   
+  private double getVelocity(double distanceFromLastPoint){
+        return Math.min(PathsConstraints.MAX_VELOCITY, Math.sqrt((distanceFromLastPoint * 2) / PathsConstraints.ACCEL) * PathsConstraints.ACCEL);
+    }
   PIDController drivePID = new PIDController(2.2, 0.14, 0);
   public void goTo(Pose2d pose, double threshold, boolean stopWhenFinished){
     
     Translation2d diffVector = pose.getTranslation().minus(getPose().getTranslation());
+    Translation2d vectorToFinish = pose.getTranslation().minus(RobotContainer.scoringTarget.getFinishPoint().getTranslation());
 
     
     double distance = diffVector.getNorm();
@@ -383,8 +388,8 @@ public class Chassis extends SubsystemBase {
     }
         
     else{
-        double vX = drivePID.calculate(-diffVector.getX(), 0);
-        double vY = drivePID.calculate(-diffVector.getY(), 0);
+        double vX = -getVelocity(getPose().getTranslation().getDistance(RobotContainer.scoringTarget.getFinishPoint().getTranslation())) * vectorToFinish.getAngle().getCos();
+        double vY = -getVelocity(getPose().getTranslation().getDistance(RobotContainer.scoringTarget.getFinishPoint().getTranslation())) * vectorToFinish.getAngle().getSin();
 
         setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation(), true);
     }

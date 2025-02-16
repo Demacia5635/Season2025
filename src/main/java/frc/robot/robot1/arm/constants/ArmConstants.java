@@ -104,7 +104,7 @@ public class ArmConstants {
 
         /* the pid and ff of the motor */
         public static final double KP = 9.5;
-        public static final double KI = 1.75;
+        public static final double KI = 1.9;
         public static final double KD = 0.25;
         public static final double KS = 0;
         public static final double KV = 0;
