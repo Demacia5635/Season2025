@@ -51,8 +51,6 @@ public class Arm extends SubsystemBase {
   /**canconder arm to elovetor */
   private final Cancoder armCancoder;
 
-  /** cancoder griper */
-  private final Cancoder griperCancoder;
 
   /** The motor that change the angle of the arm */
   private final TalonMotor armAngleMotor;
@@ -107,7 +105,6 @@ public class Arm extends SubsystemBase {
 
     /* configure the cancoder */
     armCancoder = new Cancoder(ArmAngleMotorConstants.CANCODER_CONFIG);
-    griperCancoder = new Cancoder(GripperAngleMotorConstants.CANCODER_CONFIG);
 
 
 
@@ -131,10 +128,6 @@ public class Arm extends SubsystemBase {
   public double getCancoderArmAngle(){
     return armCancoder.getCurrentAbsPosition();
   }
-    /** griperCancoder  get angle */
-    public double getCancoderGriperAngle(){
-      return griperCancoder.getCurrentAbsPosition();
-    }
 
   /**
    * add to network tables all the variables
@@ -263,7 +256,6 @@ public class Arm extends SubsystemBase {
    *      automaticly be the forward limit
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
-    gripperAngleMotorSetPositionVoltage((getCancoderGriperAngle()-targetAngle));
     if (!isCalibrated) {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;

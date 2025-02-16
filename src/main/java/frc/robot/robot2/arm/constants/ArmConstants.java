@@ -4,6 +4,8 @@
 
 package frc.robot.robot2.arm.constants;
 
+import org.opencv.core.Mat;
+
 import com.ctre.phoenix6.CANBus;
 
 import edu.wpi.first.math.Pair;
@@ -46,7 +48,7 @@ public class ArmConstants {
         /* All the main configs of the cancoder*/
         public static final int CANCODER_ID = 22;//TODO: find right id
         public static final String CANCODER_NAME = "Arm Cancoder";
-        public static final double CANCODER_OFFSET = 0.0;//TODO: find right offset
+        public static final double CANCODER_OFFSET = Math.toRadians(0.0);//TODO: find right offset
 
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
         public static final double KP = 20;
@@ -96,11 +98,11 @@ public class ArmConstants {
                 .withRampTime(RAMP_TIME);
 
         /* The config of the motor based on the constants cancoder */
-        public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME).withOffset(CANCODER_OFFSET);
+        public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME);
     }
 
     /**
-     * the constants for the gripper going automaticly to a specific angle when the
+     * The constants for the gripper going automaticly to a specific angle when the
      * arm is less than a specific angle
      */
     public static class GripperAngleStarting {
@@ -114,7 +116,7 @@ public class ArmConstants {
         /* All the main configs of the cancoder*/
         public static final int CANCODER_ID = 22;//TODO: find right id
         public static final String CANCODER_NAME = "Gripper Cancoder";
-        public static final double CANCODER_OFFSET = 0.0;//TODO: find right offset
+        public static final double CANCODER_OFFSET = Math.toRadians(0.0);//TODO: find right offset
 
         /* All the main configs of the motor */
         public static final int ID = 21;
@@ -166,7 +168,6 @@ public class ArmConstants {
                 .withRampTime(RAMP_TIME);
  
         /* The config of the motor based on the constants cancoder */
-        public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME).withOffset(CANCODER_OFFSET);
 
     }
 
