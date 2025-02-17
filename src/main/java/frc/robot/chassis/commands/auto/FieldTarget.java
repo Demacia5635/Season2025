@@ -10,24 +10,25 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
+import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.LogManager;
 
 public class FieldTarget {
 
-    public static final Translation2d approachOffset = new Translation2d(1.2, 0);
+    public static final Translation2d approachOffset = new Translation2d(1, 0);
     public static final Translation2d approachOffsetAlgaeRight = new Translation2d(1.5, 1);
     public static final Translation2d approachOffsetAlgaeLeft = new Translation2d(1.5, -1);
-    public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.13);
-    public static final Translation2d reefOffsetRight = new Translation2d(0, 0.27);
+    public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
+    public static final Translation2d reefOffsetRight = new Translation2d(0, 0.23);
     public static final Translation2d intakeOffset = new Translation2d(0.73, 0);
     public static final Translation2d topAlgeaRightOffset = new Translation2d(0.50,0.5);
     public static final Translation2d topAlgeaLeftOffset = new Translation2d(0.50,-0.5);
     public static final Translation2d bottomAlgeaRightOffset = new Translation2d(0.55, 0.5);
     public static final Translation2d bottomAlgeaLeftOffset = new Translation2d(0.55, -0.5);
-    public static final Translation2d l2Offset = new Translation2d(0.6, 0);
+    public static final Translation2d l2Offset = new Translation2d(0.64, 0);
     public static final Translation2d l3Offset = new Translation2d(0.5, 0);
-    public static final Translation2d reelLeftReefOffset = new Translation2d(-0.05,-0.16);
-    public static final Translation2d reelRightReefOffset = new Translation2d(-0.05,0.16);
+    public static final Translation2d realLeftReefOffset = new Translation2d(-0.05,-0.16);
+    public static final Translation2d realRightReefOffset = new Translation2d(-0.05,0.16);
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
     public LEVEL level;
@@ -90,6 +91,18 @@ public class FieldTarget {
         
     }
 
+    public Translation2d getPole(){
+        return getElement(position.getId(), new Translation2d(0.6, 0).plus(elementPosition == ELEMENT_POSITION.CORAL_LEFT ? realLeftReefOffset : realRightReefOffset)).getTranslation();
+    }
+
+    private Translation2d getApproachOffsetByChassis(){
+        if (RobotContainer.chassis == null) return Translation2d.kZero;
+        Translation2d diffVector = getFinishPoint().getTranslation().minus(RobotContainer.chassis.getPose().getTranslation());
+        if(Math.abs(diffVector.getAngle().getRadians()) <= Math.toRadians(15)) return Translation2d.kZero;
+        if(diffVector.getAngle().getRadians() < 0) return new Translation2d(0, -0.3);
+        return new Translation2d(0, 0.3);
+    }
+
     public PathPoint getApproachingPoint(boolean isAlgaeRight){
         if(elementPosition == ELEMENT_POSITION.ALGEA){
             if(isAlgaeRight){
@@ -99,9 +112,9 @@ public class FieldTarget {
                 return position.getApproachPoint(approachOffsetAlgaeRight);
             }
         } else if (elementPosition == ELEMENT_POSITION.CORAL_LEFT) {
-            return position.getApproachPoint(approachOffset.plus(reelLeftReefOffset));
+            return position.getApproachPoint(approachOffset.plus(realLeftReefOffset));
         } else if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
-            return position.getApproachPoint(approachOffset.plus(reelRightReefOffset));
+            return position.getApproachPoint(approachOffset.plus(realLeftReefOffset));
         } else {
             return position.getApproachPoint(approachOffset);
         }
@@ -120,7 +133,7 @@ public class FieldTarget {
     }
 
     public PathPoint getReefPole(){
-        return getElement(position.getId(), (elementPosition == ELEMENT_POSITION.CORAL_LEFT) ? reelLeftReefOffset : reelRightReefOffset);
+        return getElement(position.getId(), (elementPosition == ELEMENT_POSITION.CORAL_LEFT) ? realLeftReefOffset : realRightReefOffset);
     }
 
     public Translation2d getCalcOffset(boolean isAlgaeRight) {
@@ -167,7 +180,7 @@ public class FieldTarget {
     public static PathPoint getElement(int elementTag, Translation2d offset){
         Translation2d originToTag = O_TO_TAG[elementTag];
         offset = offset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.kPi),0);
+        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.kPi),0.6);
     }
    
     @Override
