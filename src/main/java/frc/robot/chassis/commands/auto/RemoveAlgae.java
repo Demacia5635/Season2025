@@ -28,7 +28,7 @@ public class RemoveAlgae extends Command {
     }
 
     public RemoveAlgae(Chassis chassis, FieldTarget fieldTarget) {
-        this(chassis, fieldTarget, fieldTarget.position == POSITION.A || fieldTarget.position == POSITION.B || fieldTarget.position == POSITION.F );
+        this(chassis, fieldTarget, fieldTarget.position == POSITION.C || fieldTarget.position == POSITION.D || fieldTarget.position == POSITION.E );
     }
 
     @Override
@@ -36,6 +36,8 @@ public class RemoveAlgae extends Command {
         chassis.setVelocities(new ChassisSpeeds(0, 0, 
         4.5 * (isAlgaeRight ? -1 : 1)));
         steerTimer.start();
+
+        isAuto = DriverStation.isAutonomous();
     }
 
     @Override

@@ -37,6 +37,7 @@ import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.climb.command.JoyClimeb;
 import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
+import frc.robot.robot1.gripper.commands.AlignCoral;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.robot1.gripper.commands.GripperDrive;

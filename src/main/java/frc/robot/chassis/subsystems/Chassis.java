@@ -8,6 +8,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -56,45 +57,47 @@ public class Chassis extends SubsystemBase {
 
     public Chassis() {
         modules = new SwerveModule[] {
-            new SwerveModule(ChassisConstants.FRONT_LEFT),
-            new SwerveModule(ChassisConstants.FRONT_RIGHT),
-            new SwerveModule(ChassisConstants.BACK_LEFT),
-            new SwerveModule(ChassisConstants.BACK_RIGHT),
+                new SwerveModule(ChassisConstants.FRONT_LEFT),
+                new SwerveModule(ChassisConstants.FRONT_RIGHT),
+                new SwerveModule(ChassisConstants.BACK_LEFT),
+                new SwerveModule(ChassisConstants.BACK_RIGHT),
         };
         gyro = new Pigeon2(ChassisConstants.GYRO_ID, ChassisConstants.GYRO_CAN_BUS);
         addStatus();
         kinematicsFIx = new SwerveKinematics(
-            ChassisConstants.FRONT_LEFT.POSITION,
-            ChassisConstants.FRONT_RIGHT.POSITION,
-            ChassisConstants.BACK_LEFT.POSITION,
-            ChassisConstants.BACK_RIGHT.POSITION
+                ChassisConstants.FRONT_LEFT.POSITION,
+                ChassisConstants.FRONT_RIGHT.POSITION,
+                ChassisConstants.BACK_LEFT.POSITION,
+                ChassisConstants.BACK_RIGHT.POSITION
 
         );
         poseEstimator = new SwerveDrivePoseEstimator(kinematicsFIx, getGyroAngle(), getModulePositions(), new Pose2d());
-        
-        SimpleMatrix std = new SimpleMatrix(new double[]{0.02, 0.02, 0});
+
+        SimpleMatrix std = new SimpleMatrix(new double[] { 0.02, 0.02, 0 });
         poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
         field = new Field2d();
         fieldTag = new Field2d();
-        reefTag = new Tag(()->getGyroAngle(), 0);
-        fiderTag = new Tag(()->getGyroAngle(), 1);
-        bargeTag = new Tag(()->getGyroAngle(), 2);
-        backTag = new Tag(()->getGyroAngle(), 3);
+        reefTag = new Tag(() -> getGyroAngle(), 0);
+        fiderTag = new Tag(() -> getGyroAngle(), 1);
+        bargeTag = new Tag(() -> getGyroAngle(), 2);
+        backTag = new Tag(() -> getGyroAngle(), 3);
         visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
 
         this.pathsAccel = ChassisConstants.AccelPaths.DEFAULT;
         this.driveAccel = ChassisConstants.AccelDrive.DEFAULT;
 
-        SmartDashboard.putData("reset gyro", new InstantCommand(()-> setYaw(Rotation2d.fromDegrees(0))));
-        SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(()-> setYaw(visionFuse.getVisionEstimatedAngle())));
+        SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.fromDegrees(0))));
+        SmartDashboard.putData("set gyro to 3D tag",
+                new InstantCommand(() -> setYaw(visionFuse.getVisionEstimatedAngle())));
         SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
         SmartDashboard.putData("ultfielf", fieldTag);
-        LogManager.addEntry("VELOCITY NORM: ", ()->new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond, getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
-        LogManager.addEntry("Chassis vX", ()->getChassisSpeedsRobotRel().vxMetersPerSecond);
-        LogManager.addEntry("Chassis vY", ()->getChassisSpeedsRobotRel().vyMetersPerSecond);
-        SmartDashboard.putData("Chassis/set coast", new InstantCommand(()-> setNeutralMode(false)));
-        SmartDashboard.putData("Chassis/set brake", new InstantCommand(()-> setNeutralMode(true)));
+        LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
+                getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
+        LogManager.addEntry("Chassis vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
+        LogManager.addEntry("Chassis vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
+        SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)));
+        SmartDashboard.putData("Chassis/set brake", new InstantCommand(() -> setNeutralMode(true)));
     }
 
     public void setNeutralMode(boolean isBrake) {
@@ -103,7 +106,7 @@ public class Chassis extends SubsystemBase {
         }
     }
 
-    public void resetPose(Pose2d pose){
+    public void resetPose(Pose2d pose) {
         poseEstimator.resetPose(pose);
     }
 
@@ -116,26 +119,26 @@ public class Chassis extends SubsystemBase {
         return poseEstimator.getEstimatedPosition();
     }
 
-
-    public void setVelocitiesWithAccel(ChassisSpeeds speeds, boolean isPaths){
+    public void setVelocitiesWithAccel(ChassisSpeeds speeds, boolean isPaths) {
         ChassisSpeeds limitedAccel = limitAccel(speeds, isPaths);
 
-
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(limitedAccel, getGyroAngle());
-        
+
         SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
+
     public void setVelocities(ChassisSpeeds speeds) {
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
-        
+
         SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
 
     ChassisSpeeds currentVelocity = new ChassisSpeeds();
+
     public ChassisSpeeds limitAccel(ChassisSpeeds wantedSpeeds, boolean isPaths) {
-        
+
         double maxDeltaVel = adjustAccel(isPaths) * 0.02;
         // LogManager.log("ACCEL: " + maxDeltaVel / 0.02);
 
@@ -144,24 +147,27 @@ public class Chassis extends SubsystemBase {
         double vy = wantedSpeeds.vyMetersPerSecond;
         double deltaX = wantedSpeeds.vxMetersPerSecond - currentVelocity.vxMetersPerSecond;
         double deltaY = wantedSpeeds.vyMetersPerSecond - currentVelocity.vyMetersPerSecond;
-        if(Math.abs(deltaX) > maxDeltaVel) vx = currentVelocity.vxMetersPerSecond + (maxDeltaVel * Math.signum(deltaX));
-        if(Math.abs(deltaY) > maxDeltaVel) vy = currentVelocity.vyMetersPerSecond + (maxDeltaVel * Math.signum(deltaY));
+        if (Math.abs(deltaX) > maxDeltaVel)
+            vx = currentVelocity.vxMetersPerSecond + (maxDeltaVel * Math.signum(deltaX));
+        if (Math.abs(deltaY) > maxDeltaVel)
+            vy = currentVelocity.vyMetersPerSecond + (maxDeltaVel * Math.signum(deltaY));
         return new ChassisSpeeds(vx, vy, wantedSpeeds.omegaRadiansPerSecond);
     }
-    private double adjustAccel(boolean isPaths){
+
+    private double adjustAccel(boolean isPaths) {
         switch (RobotContainer.arm.state) {
             case L2:
                 driveAccel = ChassisConstants.AccelDrive.L2;
                 pathsAccel = ChassisConstants.AccelPaths.L2;
                 break;
             case L3:
-            
+
                 driveAccel = ChassisConstants.AccelDrive.L3;
                 pathsAccel = ChassisConstants.AccelPaths.L3;
                 break;
-            
+
             case ALGAE_TOP:
-                
+
                 driveAccel = ChassisConstants.AccelDrive.ALGAE_TOP;
                 pathsAccel = ChassisConstants.AccelPaths.ALGAE_TOP;
                 break;
@@ -172,13 +178,13 @@ public class Chassis extends SubsystemBase {
                 break;
 
             case CORAL_STATION:
-            
+
                 driveAccel = ChassisConstants.AccelDrive.INTAKE;
                 pathsAccel = ChassisConstants.AccelPaths.INTAKE;
                 break;
-            
+
             default:
-            
+
                 driveAccel = ChassisConstants.AccelDrive.DEFAULT;
                 pathsAccel = ChassisConstants.AccelPaths.DEFAULT;
                 break;
@@ -186,34 +192,33 @@ public class Chassis extends SubsystemBase {
         return isPaths ? pathsAccel : driveAccel;
     }
 
-
-    
-
     public void setSteerPositions(double[] positions) {
         for (int i = 0; i < positions.length; i++) {
             modules[i].setSteerPosition(positions[i]);
         }
     }
 
-    public void setSteerPower(double pow, int id){
+    public void setSteerPower(double pow, int id) {
         modules[id].setSteerPower(pow);
     }
 
-    public double getSteerVelocity(int id){
+    public double getSteerVelocity(int id) {
         return modules[id].getSteerVel();
     }
-    public double getSteeracceleration(int id){
+
+    public double getSteeracceleration(int id) {
         return modules[id].getSteerAccel();
     }
 
     public void setSteerPositions(double position) {
-        setSteerPositions(new double[] { position, position, position, position});
+        setSteerPositions(new double[] { position, position, position, position });
     }
 
-    public ChassisSpeeds getRobotRelVelocities(){
+    public ChassisSpeeds getRobotRelVelocities() {
         return ChassisSpeeds.fromFieldRelativeSpeeds(getChassisSpeedsRobotRel(), getGyroAngle());
     }
-    public void setRobotRelVelocities(ChassisSpeeds speeds){
+
+    public void setRobotRelVelocities(ChassisSpeeds speeds) {
         SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
@@ -225,7 +230,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public void setDriveVelocities(double velocity) {
-        setDriveVelocities(new double[] { velocity, velocity, velocity, velocity});
+        setDriveVelocities(new double[] { velocity, velocity, velocity, velocity });
     }
 
     public Rotation2d getGyroAngle() {
@@ -249,8 +254,8 @@ public class Chassis extends SubsystemBase {
             modules[i].setState(states[i]);
         }
     }
-    
-    private void updateVision(Pose2d pose){
+
+    private void updateVision(Pose2d pose) {
         poseEstimator.setVisionMeasurementStdDevs(getSTD());
         poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
     }
@@ -259,17 +264,17 @@ public class Chassis extends SubsystemBase {
         double x = 0.05;
         double y = 0.05;
         double theta = 0.03;
-        
-        Translation2d velocityVector = new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond, 
-                                                       getChassisSpeedsRobotRel().vyMetersPerSecond);
+
+        Translation2d velocityVector = new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
+                getChassisSpeedsRobotRel().vyMetersPerSecond);
         double speed = velocityVector.getNorm();
-    
+
         // Vision confidence adjustment
         if (visionFuse.getVisionConfidence() < 0.3) {
             x += 0.3;
             y += 0.3;
         }
-    
+
         // Speed-based confidence calculation
         if (speed > WORST_RELIABLE_SPEED) {
             // Maximum uncertainty for high speeds
@@ -281,32 +286,33 @@ public class Chassis extends SubsystemBase {
             y -= 0.02;
         } else {
             // Calculate normalized speed for the falloff range
-            double normalizedSpeed = (speed - BEST_RELIABLE_SPEED) 
-                                   / (WORST_RELIABLE_SPEED - BEST_RELIABLE_SPEED);
-            
+            double normalizedSpeed = (speed - BEST_RELIABLE_SPEED)
+                    / (WORST_RELIABLE_SPEED - BEST_RELIABLE_SPEED);
+
             // Apply exponential falloff to calculate additional uncertainty
             double speedConfidence = Math.exp(-3 * normalizedSpeed);
-            
+
             // Scale the uncertainty adjustment based on confidence
             double adjustment = 0.02 * (1 - speedConfidence);
             x += adjustment;
             y += adjustment;
         }
-    
-        return new Matrix<N3, N1>(new SimpleMatrix(new double[]{x, y, theta}));
+
+        return new Matrix<N3, N1>(new SimpleMatrix(new double[] { x, y, theta }));
     }
 
-    private boolean isSeeScoringTag(){
+    private boolean isSeeScoringTag() {
         return isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5)
-            || isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5);
-        
+                || isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5);
+
     }
 
     Pose2d visionFusePoseEstimation;
+
     @Override
     public void periodic() {
         visionFusePoseEstimation = visionFuse.getPoseEstemation();
-        if(visionFusePoseEstimation != null){
+        if (visionFusePoseEstimation != null) {
             updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(), getGyroAngle()));
             // fieldTag.setRobotPose(visionFusePoseEstimation);
         }
@@ -317,7 +323,6 @@ public class Chassis extends SubsystemBase {
         RobotContainer.feedingTarget.position = getPose().getY() > 4 ? POSITION.FEEDER_RIGHT : POSITION.FEEDER_LEFT;
     }
 
-        
     public boolean isRed() {
         return RobotContainer.isRed();
     }
@@ -325,16 +330,17 @@ public class Chassis extends SubsystemBase {
     public ChassisSpeeds getChassisSpeedsRobotRel() {
         return kinematicsFIx.toChassisSpeeds(getModuleStates());
     }
-    public ChassisSpeeds getChassisSpeedsFieldRel(){
+
+    public ChassisSpeeds getChassisSpeedsFieldRel() {
         return ChassisSpeeds.fromRobotRelativeSpeeds(kinematicsFIx.toChassisSpeeds(getModuleStates()), getGyroAngle());
     }
 
     /**
-   * Returns the state of every module
-   * 
-   * 
-   * @return Velocity in m/s, angle in Rotation2d
-   */
+     * Returns the state of every module
+     * 
+     * 
+     * @return Velocity in m/s, angle in Rotation2d
+     */
     public SwerveModuleState[] getModuleStates() {
         SwerveModuleState[] res = new SwerveModuleState[modules.length];
         for (int i = 0; i < modules.length; i++) {
@@ -342,62 +348,60 @@ public class Chassis extends SubsystemBase {
         }
         return res;
     }
-  public void setYaw(Rotation2d angle) {
-    if (angle != null){
-        gyro.setYaw(angle.getDegrees());
-        poseEstimator.resetPose(new Pose2d(poseEstimator.getEstimatedPosition().getTranslation(), gyro.getRotation2d()));
-    }
-  }
 
-
-  public void setVelocitiesRotateToAngleOld(ChassisSpeeds speeds, Rotation2d angle, boolean isPaths) {
-    double angleError = angle.minus(getGyroAngle()).getRadians();
-    double angleErrorabs = Math.abs(angleError);
-    if (angleErrorabs>Math.toRadians(1.5)){
-        speeds.omegaRadiansPerSecond = angleError * 1.5;
+    public void setYaw(Rotation2d angle) {
+        if (angle != null) {
+            gyro.setYaw(angle.getDegrees());
+            poseEstimator
+                    .resetPose(new Pose2d(poseEstimator.getEstimatedPosition().getTranslation(), gyro.getRotation2d()));
+        }
     }
 
-    setVelocitiesWithAccel(speeds, isPaths);
-  }
+    public void setVelocitiesRotateToAngleOld(ChassisSpeeds speeds, Rotation2d angle, boolean isPaths) {
+        double angleError = angle.minus(getGyroAngle()).getRadians();
+        double angleErrorabs = Math.abs(angleError);
+        if (angleErrorabs > Math.toRadians(1.5)) {
+            speeds.omegaRadiansPerSecond = angleError * 2.3;
+        }
 
-  public void setVelocitiesRotateToTarget(ChassisSpeeds speeds, FieldTarget target) {
-    Translation2d robotToTarget = target.getReefPole().getTranslation().minus(getPose().getTranslation());
-    double angleError = robotToTarget.getAngle().minus(getGyroAngle()).getRadians();
-    double angleErrorabs = Math.abs(angleError);
-    if (angleErrorabs>Math.toRadians(1.5)){  
-        speeds.omegaRadiansPerSecond = angleError * 2;
+        setVelocitiesWithAccel(speeds, isPaths);
     }
-    setVelocities(speeds);
-  }
 
-  
-  private double getVelocity(double distanceFromLastPoint){
-        return Math.min(PathsConstraints.MAX_VELOCITY, Math.sqrt((distanceFromLastPoint * 2) / PathsConstraints.ACCEL) * PathsConstraints.ACCEL);
+    public void setVelocitiesRotateToTarget(ChassisSpeeds speeds, FieldTarget target) {
+        Translation2d robotToTarget = target.getReefPole().getTranslation().minus(getPose().getTranslation());
+        double angleError = robotToTarget.getAngle().minus(getGyroAngle()).getRadians();
+        double angleErrorabs = Math.abs(angleError);
+        if (angleErrorabs > Math.toRadians(1.5)) {
+            speeds.omegaRadiansPerSecond = angleError * 2;
+        }
+        setVelocities(speeds);
     }
-  PIDController drivePID = new PIDController(2.2, 0.14, 0);
-  public void goTo(Pose2d pose, double threshold, boolean stopWhenFinished){
-    
-    Translation2d diffVector = pose.getTranslation().minus(getPose().getTranslation());
-    Translation2d vectorToFinish = pose.getTranslation().minus(RobotContainer.scoringTarget.getFinishPoint().getTranslation());
 
-    
-    double distance = diffVector.getNorm();
-    if(distance <= threshold) {
-        if(stopWhenFinished) setVelocitiesRotateToAngleOld(new ChassisSpeeds(0, 0, 0), pose.getRotation(), true);
-        else setVelocitiesRotateToAngleOld(new ChassisSpeeds(1 * diffVector.getAngle().getCos(), 1 * diffVector.getAngle().getSin(), 0), pose.getRotation(), true);
+
+    PIDController drivePID = new PIDController(2, 0, 0);
+
+    public void goTo(Pose2d pose, double threshold, boolean stopWhenFinished) {
+
+        Translation2d diffVector = pose.getTranslation().minus(getPose().getTranslation());
+
+        double distance = diffVector.getNorm();
+        if (distance <= threshold) {
+            if (stopWhenFinished)
+                setVelocitiesRotateToAngleOld(new ChassisSpeeds(0, 0, 0), pose.getRotation(), true);
+            else
+                setVelocitiesRotateToAngleOld(
+                        new ChassisSpeeds(0.5 * diffVector.getAngle().getCos(), 0.5 * diffVector.getAngle().getSin(), 0),
+                        pose.getRotation(), true);
+        }
+
+        else {
+            double vX = MathUtil.clamp(-drivePID.calculate(diffVector.getX(), 0), -3.2, 3.2);
+            double vY = MathUtil.clamp(-drivePID.calculate(diffVector.getY(), 0), -3.2, 3.2);
+
+            setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation(), true);
+        }
+
     }
-        
-    else{
-        double vX = -getVelocity(getPose().getTranslation().getDistance(RobotContainer.scoringTarget.getFinishPoint().getTranslation())) * vectorToFinish.getAngle().getCos();
-        double vY = -getVelocity(getPose().getTranslation().getDistance(RobotContainer.scoringTarget.getFinishPoint().getTranslation())) * vectorToFinish.getAngle().getSin();
-
-        setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation(), true);
-    }
-    
-
-  }
-
-
 
     public void stop() {
         for (SwerveModule i : modules) {
@@ -405,10 +409,9 @@ public class Chassis extends SubsystemBase {
         }
     }
 
+    public boolean isSeeTag(int id, int cameraId, double distance) {
+        Tag[] tags = { reefTag, fiderTag, bargeTag, backTag };
 
-    public boolean isSeeTag(int id, int cameraId, double distance){
-        Tag[] tags = {reefTag, fiderTag, bargeTag, backTag};
-        
         return tags[cameraId].isSeeTag(id, distance);
     }
 

@@ -16,10 +16,12 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import frc.robot.RobotContainer;
 import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Path.Utils.*;
+import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.utils.LogManager;
 
 /** Add your docs here. */
@@ -33,13 +35,15 @@ public class DemaciaTrajectory {
     private Rotation2d wantedAngle;
     private double distanceLeft;
     Pose2d chassisPose = new Pose2d();
+    boolean isAlgae;
 
     /*
      * 
      * given points based on blue alliance
      * 
      */
-    public DemaciaTrajectory(ArrayList<PathPoint> points, boolean isRed, Rotation2d wantedAngle, Pose2d initialPose) {
+    public DemaciaTrajectory(ArrayList<PathPoint> points, boolean isRed, Rotation2d wantedAngle, Pose2d initialPose,
+            boolean isAlgae) {
         this.segments = new ArrayList<Segment>();
         this.trajectoryLength = 0;
         this.distanceTraveledOnSegment = 0;
@@ -62,6 +66,7 @@ public class DemaciaTrajectory {
         distanceLeft = trajectoryLength;
 
         drivePID = new PIDController(2, 0, 0);
+        this.isAlgae = isAlgae;
     }
 
     private void fixFirstPoint(Pose2d initialPose) {
@@ -132,11 +137,13 @@ public class DemaciaTrajectory {
                 : (segments.get(segmentIndex) instanceof Leg ? segments.get(segmentIndex).getPoints()[1]
                         : segments.get(segmentIndex + 1).getPoints()[0]);
 
-        if (segmentIndex == segments.size() - 1) {
+        if (isAlgae)
+            return chassisPose.getTranslation().getDistance(currentLastPoint) <= 0.1;
 
+        if (segmentIndex == segments.size() - 1)
             return chassisPose.getTranslation().getDistance(currentLastPoint) <= MAX__POSITION_THRESHOLD;
 
-        } else {
+        else {
 
             return chassisPose.getTranslation().getDistance(currentLastPoint) <= 1.5;
 
@@ -144,7 +151,7 @@ public class DemaciaTrajectory {
     }
 
     PIDController drivePID;
-    
+
     double lastDistance = 0;
 
     public ChassisSpeeds calculate(Pose2d chassisPose) {
@@ -158,7 +165,8 @@ public class DemaciaTrajectory {
             if (segmentIndex != segments.size() - 1)
                 segmentIndex++;
         }
-        double velocity = Math.min(TrajectoryConstants.PathsConstraints.MAX_VELOCITY, -drivePID.calculate(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]), 0));
+        double velocity = Math.min(TrajectoryConstants.PathsConstraints.MAX_VELOCITY, -drivePID.calculate(
+                chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]), 0));
 
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double wantedOmega = Math
@@ -167,12 +175,16 @@ public class DemaciaTrajectory {
 
         if ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
-                && segmentIndex == segments.size() - 1)) wantedVelocity = new Translation2d();
+                && segmentIndex == segments.size() - 1))
+            wantedVelocity = new Translation2d();
 
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
 
     public boolean isFinishedTrajectory() {
+        if (isAlgae)
+            return chassisPose.getTranslation()
+                    .getDistance(points.get(points.size() - 1).getTranslation()) <= 0.1;
         return ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))

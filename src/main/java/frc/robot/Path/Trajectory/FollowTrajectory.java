@@ -68,7 +68,7 @@ public class FollowTrajectory extends Command {
   }
 
   public FollowTrajectory(Chassis chassis, FieldTarget newTarget) {
-    this(chassis, newTarget, newTarget.position == POSITION.A || newTarget.position == POSITION.B || newTarget.position == POSITION.F);
+    this(chassis, newTarget, newTarget.position == POSITION.C || newTarget.position == POSITION.D || newTarget.position == POSITION.E);
   }
 
   public FollowTrajectory(Chassis chassis, ArrayList<PathPoint> points, Rotation2d wantedAngle) {
@@ -89,7 +89,8 @@ public class FollowTrajectory extends Command {
       points = new ArrayList<PathPoint>();
       this.wantedAngle = target.getFinishPoint(isAlgaeRight).getRotation();
       points.add(new PathPoint(new Translation2d(), wantedAngle));
-      points.add(target.getApproachingPoint(isAlgaeRight));
+      if(target.elementPosition == ELEMENT_POSITION.ALGEA && DriverStation.isAutonomous());
+      else points.add(target.getApproachingPoint(isAlgaeRight));
       points.add(target.getFinishPoint(isAlgaeRight));
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
         grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
@@ -97,7 +98,7 @@ public class FollowTrajectory extends Command {
       }
 
     }
-    this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
+    this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), target.elementPosition == ELEMENT_POSITION.ALGEA);
     if (this.target != null)
       RobotContainer.arm.setState(this.target.level);
   }
