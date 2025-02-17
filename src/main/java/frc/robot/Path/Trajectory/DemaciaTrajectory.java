@@ -18,6 +18,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Path.Utils.*;
 import frc.robot.utils.LogManager;
 
@@ -30,7 +31,6 @@ public class DemaciaTrajectory {
     private RoundedPoint[] corners;
     private int segmentIndex;
     private Rotation2d wantedAngle;
-    private double currentMaxVel;
     private double distanceLeft;
     Pose2d chassisPose = new Pose2d();
 
@@ -46,7 +46,6 @@ public class DemaciaTrajectory {
         this.points = points;
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
-        this.currentMaxVel = PathsConstraints.MAX_VELOCITY;
 
         if (isRed)
             points = convertAlliance();
@@ -62,6 +61,7 @@ public class DemaciaTrajectory {
         trajectoryLength = calcTrajectoryLength();
         distanceLeft = trajectoryLength;
 
+        drivePID = new PIDController(2, 0, 0);
     }
 
     private void fixFirstPoint(Pose2d initialPose) {
@@ -116,9 +116,6 @@ public class DemaciaTrajectory {
                 segments.add(arc);
             segments.add(corners[corners.length - 1].getCtoCurveLeg());
         }
-        for (Segment s : segments) {
-            LogManager.log(s);
-        }
     }
 
     public double calcTrajectoryLength() {
@@ -135,7 +132,6 @@ public class DemaciaTrajectory {
                 : (segments.get(segmentIndex) instanceof Leg ? segments.get(segmentIndex).getPoints()[1]
                         : segments.get(segmentIndex + 1).getPoints()[0]);
 
-        LogManager.log("DISTANCE on segment: " + chassisPose.getTranslation().getDistance(currentLastPoint));
         if (segmentIndex == segments.size() - 1) {
 
             return chassisPose.getTranslation().getDistance(currentLastPoint) <= MAX__POSITION_THRESHOLD;
@@ -147,7 +143,8 @@ public class DemaciaTrajectory {
         }
     }
 
-    PIDController drivePID = new PIDController(1.7, 0.1, 0);
+    PIDController drivePID;
+    
     double lastDistance = 0;
 
     public ChassisSpeeds calculate(Pose2d chassisPose) {
@@ -161,10 +158,9 @@ public class DemaciaTrajectory {
             if (segmentIndex != segments.size() - 1)
                 segmentIndex++;
         }
-        double velocity = Math.min(currentMaxVel, -drivePID.calculate(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]), 0));
+        double velocity = Math.min(TrajectoryConstants.PathsConstraints.MAX_VELOCITY, -drivePID.calculate(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]), 0));
 
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
-        LogManager.log("VELOCITY: " + wantedVelocity);
         double wantedOmega = Math
                 .abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
                         : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 0.9;
