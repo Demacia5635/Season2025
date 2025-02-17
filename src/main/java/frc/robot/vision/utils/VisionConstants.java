@@ -137,7 +137,7 @@ public class VisionConstants {
 
 // if the robot tihnk it is behined the tag swap id 1 with id 2 in line 150
     // TAG Camera mounting configuration
-    public static final double[] CAM_HIGHT = { 0.795, 0.91, 0.89, 0.815};
+    public static final double[] CAM_HEIGHT = { 0.795, 0.91, 0.89, 0.815};
     public static final double[] CAM_PITHC = { 54.369, 20, 53, 56.804};
     public static final double[] CAM_YAW = { 0, 0, 180, 0 };
 

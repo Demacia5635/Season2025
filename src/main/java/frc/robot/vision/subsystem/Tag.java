@@ -113,12 +113,12 @@ public class Tag extends SubsystemBase {
   public double GetDistFromCamera() {
     if (cameraId == 0 || cameraId == 3) {
       alpha = camToTagPitch + CAM_PITHC[cameraId];
-      dist = (Math.abs(height - CAM_HIGHT[cameraId])) * (Math.tan(Math.toRadians(alpha)));
+      dist = (Math.abs(height - CAM_HEIGHT[cameraId])) * (Math.tan(Math.toRadians(alpha)));
       dist = dist/Math.cos(Math.toRadians(camToTagYaw));
       return Math.abs(dist);
     }
     alpha = camToTagPitch + CAM_PITHC[cameraId];
-    dist = (Math.abs(height - CAM_HIGHT[cameraId])) / (Math.tan(Math.toRadians(alpha)));
+    dist = (Math.abs(height - CAM_HEIGHT[cameraId])) / (Math.tan(Math.toRadians(alpha)));
     dist = dist/Math.cos(Math.toRadians(camToTagYaw));
     return Math.abs(dist);
   }
