@@ -4,6 +4,9 @@
 
 package frc.robot.Path.Trajectory;
 
+import static frc.robot.vision.utils.VisionConstants.O_TO_TAG;
+import static frc.robot.vision.utils.VisionConstants.TAG_ANGLE;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Supplier;
@@ -102,7 +105,6 @@ public class FollowTrajectory extends Command {
   @Override
   public void execute() {
     chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()), true);
-
   }
 
   @Override
