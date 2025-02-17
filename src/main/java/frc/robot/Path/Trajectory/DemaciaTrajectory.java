@@ -20,7 +20,6 @@ import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import frc.robot.Path.Utils.*;
 import frc.robot.utils.LogManager;
-import static frc.robot.Path.Trajectory.TrajectoryConstants.*;
 
 /** Add your docs here. */
 public class DemaciaTrajectory {
@@ -47,16 +46,17 @@ public class DemaciaTrajectory {
         this.points = points;
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
+        this.currentMaxVel = PathsConstraints.MAX_VELOCITY;
 
         if (isRed)
             points = convertAlliance();
         fixFirstPoint(initialPose);
 
+        initCorners();
+
         if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
             points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
         }
-
-        initCorners();
 
         createSegments();
         trajectoryLength = calcTrajectoryLength();
@@ -147,12 +147,8 @@ public class DemaciaTrajectory {
         }
     }
 
+    PIDController drivePID = new PIDController(1.7, 0.1, 0);
     double lastDistance = 0;
-
-    private double getVelocity(double distanceFromLastPoint) {
-        return Math.min(PathsConstraints.MAX_VELOCITY,
-                Math.sqrt((distanceFromLastPoint * 2) / PathsConstraints.ACCEL) * PathsConstraints.ACCEL);
-    }
 
     public ChassisSpeeds calculate(Pose2d chassisPose) {
         this.chassisPose = chassisPose;
@@ -165,8 +161,7 @@ public class DemaciaTrajectory {
             if (segmentIndex != segments.size() - 1)
                 segmentIndex++;
         }
-        double velocity = getVelocity(
-                chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
+        double velocity = Math.min(currentMaxVel, -drivePID.calculate(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]), 0));
 
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         LogManager.log("VELOCITY: " + wantedVelocity);
