@@ -91,47 +91,7 @@ public class RobotContainer implements Sendable{
     SmartDashboard.putData("RC", this);
     timer = new Timer();
     LogManager.addEntry("Timer",()-> 15-timer.get());
-    SmartDashboard.putData("Reef", new Sendable() {
-      @Override
-      public void initSendable(SendableBuilder builder) {
-        builder.setSmartDashboardType("Reef");
-        builder.addDoubleProperty("Position", ()-> scoringTarget.position.ordinal(), index-> {
-          if (isFeeding(index, 0)) {
-            // feedingTarget.position = POSITION.values()[(int)index];
-          } else {
-            scoringTarget.position = POSITION.values()[(int)index];
-          }
-        });
-        builder.addDoubleProperty("Element Position", ()-> scoringTarget.elementPosition.ordinal(), index-> {
-          if (isFeeding(index, 1)) {
-            // feedingTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
-          } else {
-            scoringTarget.elementPosition = ELEMENT_POSITION.values()[(int)index];
-          }
-        });
-        builder.addDoubleProperty("Level", ()-> scoringTarget.level.ordinal(), index-> {
-          if (isFeeding(index, 2)) {
-            // feedingTarget.level = LEVEL.values()[(int)index];
-          } else {
-            scoringTarget.level = LEVEL.values()[(int)index];
-          }
-        });
-      }
-  
-      boolean isFeeding(double index, int element) {
-        switch (element) {
-          case 0:
-            return index == 6 || index == 7;
-          case 1:
-            return index == 3;
-          case 2:
-            return index == 2;
-          default:
-            return false;
-        }
-      }
-    });
-
+    SmartDashboard.putData("Reef", ReefWidget.getInstance());
     
     configureSubsytems();
     configureDefaultCommands();
