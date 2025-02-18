@@ -29,6 +29,7 @@ import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.L2AlgaeAlgaeAlgae;
 import frc.robot.chassis.commands.auto.L2AlgaeL2;
 import frc.robot.chassis.commands.auto.L2AlgaeL3;
+import frc.robot.chassis.commands.auto.L2L2L2;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmCalibration;
@@ -98,10 +99,11 @@ public class RobotContainer implements Sendable{
     configureBindings();
 
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("L2AlgaeL3", new L2AlgaeL3(chassis));
-    autoChooser.addOption("L2AlgaeL2", new L2AlgaeL2(chassis));
-    autoChooser.addOption("L2AlgaeAlgaeAlgae", new L2AlgaeAlgaeAlgae(chassis));
-    autoChooser.addOption("AlgaeL3L3", new AlgaeL3L3(chassis));
+    autoChooser.setDefaultOption("L2AlgaeL3", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new L2AlgaeL3(chassis)));
+    autoChooser.addOption("L2AlgaeL2", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new L2AlgaeL2(chassis)));
+    autoChooser.addOption("L2AlgaeAlgaeAlgae", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new L2AlgaeAlgaeAlgae(chassis)));
+    autoChooser.addOption("AlgaeL3L3", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new AlgaeL3L3(chassis)));
+    autoChooser.addOption("L2L2L2", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new L2L2L2(chassis)));
     SmartDashboard.putData("AutoChooser", autoChooser);
 
   }
@@ -279,6 +281,6 @@ public class RobotContainer implements Sendable{
   public Command getAutonomousCommand() {
     timer.reset();
     timer.start();
-    return (new ArmCalibration(arm).andThen(new ArmCommand(arm))).alongWith(autoChooser.getSelected());  
+    return autoChooser.getSelected();  
   }
 }

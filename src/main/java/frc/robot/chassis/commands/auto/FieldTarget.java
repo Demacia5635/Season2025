@@ -121,7 +121,7 @@ public class FieldTarget {
     }
 
     public PathPoint getApproachingPoint() {
-        return getApproachingPoint(position == POSITION.A || position == POSITION.B || position == POSITION.F);
+        return getApproachingPoint(position == POSITION.C || position == POSITION.D || position == POSITION.E);
     }
 
     public PathPoint getFinishPoint(boolean isAlgaeRight){
@@ -171,7 +171,7 @@ public class FieldTarget {
     }
 
     public Translation2d getCalcOffset() {
-        return getCalcOffset(position == POSITION.A || position == POSITION.B || position == POSITION.F);
+        return getCalcOffset(position == POSITION.C || position == POSITION.D || position == POSITION.E);
     };
 
     public static PathPoint getElement(int elementTag){

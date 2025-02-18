@@ -31,10 +31,10 @@ public class Leg extends Segment{
     {
        // if (p2.getDistance(position) <= 0.2) return new Translation2d(velocity, position.minus(p2).getAngle());
         Translation2d relativePos = position.minus(p2);
+        double diffAngleMaxed = Math.min(10, p1.minus(p2).getAngle().minus(relativePos.getAngle()).getDegrees());
+        
 
-        Rotation2d diffAngle = p1.minus(p2).getAngle().minus(relativePos.getAngle());
-
-        return new Translation2d(velocity, relativePos.times(-1).getAngle().minus(diffAngle));
+        return new Translation2d(velocity, relativePos.times(-1).getAngle().minus(Rotation2d.fromDegrees(diffAngleMaxed)));
 
     }
 

@@ -21,13 +21,13 @@ public class L2AlgaeAlgaeAlgae extends SequentialCommandGroup {
   public L2AlgaeAlgaeAlgae(Chassis chassis) {
     addCommands(
       new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2)),
-      new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0 ,0)), chassis).withTimeout(0.3),
+      new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0 ,0)), chassis).withTimeout(0.35),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_TOP)),
       new RemoveAlgae(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_TOP)),
-      new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0 ,0)), chassis).withTimeout(0.3),
+      new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0 ,0)), chassis).withTimeout(0.35),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
       new RemoveAlgae(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
-      new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0 ,0)), chassis).withTimeout(0.3),
+      new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0 ,0)), chassis).withTimeout(0.35),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.B, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_TOP)),
       new RemoveAlgae(chassis, new FieldTarget(POSITION.B, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_TOP)),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER))

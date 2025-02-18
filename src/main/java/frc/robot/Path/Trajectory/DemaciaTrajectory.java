@@ -19,6 +19,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Path.Utils.*;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
@@ -36,6 +37,9 @@ public class DemaciaTrajectory {
     private double distanceLeft;
     Pose2d chassisPose = new Pose2d();
     boolean isAlgae;
+    private boolean isAuto;
+    double maxVel;
+    double accel;
 
     /*
      * 
@@ -50,6 +54,9 @@ public class DemaciaTrajectory {
         this.points = points;
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
+        this.isAuto = DriverStation.isAutonomous();
+        this.maxVel = isAuto ? PathsConstraints.AutoConstraints.MAX_VELOCITY : PathsConstraints.MAX_VELOCITY;
+        this.accel = isAuto ? PathsConstraints.AutoConstraints.ACCEL : PathsConstraints.ACCEL;
 
         if (isRed)
             points = convertAlliance();
@@ -145,12 +152,20 @@ public class DemaciaTrajectory {
 
         else {
 
-            return chassisPose.getTranslation().getDistance(currentLastPoint) <= 1.5;
+            return chassisPose.getTranslation().getDistance(currentLastPoint) < 0.65;
 
         }
     }
 
     PIDController drivePID;
+
+
+    
+
+    private double getVelocity(double distanceFromLastPoint) {
+        return Math.min(maxVel,
+                Math.sqrt((distanceFromLastPoint * 2) / accel) * accel);
+    }
 
     double lastDistance = 0;
 
@@ -165,8 +180,7 @@ public class DemaciaTrajectory {
             if (segmentIndex != segments.size() - 1)
                 segmentIndex++;
         }
-        double velocity = Math.min(TrajectoryConstants.PathsConstraints.MAX_VELOCITY, -drivePID.calculate(
-                chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]), 0));
+        double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
 
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double wantedOmega = Math

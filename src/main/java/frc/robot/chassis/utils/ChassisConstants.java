@@ -14,12 +14,12 @@ public class ChassisConstants {
     public static final double MIN_DRIVE_VELOCITY_FOR_ROTATION = 0.2;
 
     public static class AccelPaths{
-        public static final double DEFAULT = 20;
-        public static final double L2 = 20;
-        public static final double L3 = 20;
-        public static final double INTAKE = 20;
-        public static final double ALGAE_BOTTOM = 20;
-        public static final double ALGAE_TOP = 20;
+        public static final double DEFAULT = 25;
+        public static final double L2 = 25;
+        public static final double L3 = 25;
+        public static final double INTAKE = 25;
+        public static final double ALGAE_BOTTOM = 25;
+        public static final double ALGAE_TOP = 25;
     }
     
     public static class AccelDrive{

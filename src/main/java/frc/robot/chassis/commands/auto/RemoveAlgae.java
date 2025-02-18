@@ -33,7 +33,7 @@ public class RemoveAlgae extends Command {
 
     @Override
     public void initialize() {
-        chassis.setVelocities(new ChassisSpeeds(0, 0, 
+        chassis.setVelocities(new ChassisSpeeds(-0.5, 0, 
         4.5 * (isAlgaeRight ? -1 : 1)));
         steerTimer.start();
 
