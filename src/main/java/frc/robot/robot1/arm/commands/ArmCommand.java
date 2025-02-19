@@ -142,6 +142,11 @@ public class ArmCommand extends Command {
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
+      case CLIMB:
+        wantedAngle = ANGLES.CLIMB;
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
+        break;
+
       case TESTING:
         wantedAngle = new Pair<Double, Double>(testArmAngle, testGripperAngle);
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());

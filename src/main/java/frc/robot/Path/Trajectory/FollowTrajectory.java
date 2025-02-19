@@ -80,26 +80,33 @@ public class FollowTrajectory extends Command {
     addRequirements(chassis);
   }
 
+  private FieldTarget getClosestFeeder() {
+    if (chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_LEFT.getId()]) > chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()])) {
+      return RobotContainer.isRed() ? FieldTarget.kFeederLeft : FieldTarget.kFeederRight;
+    } else {
+      return RobotContainer.isRed() ? FieldTarget.kFeederRight : FieldTarget.kFeederLeft;
+    }
+  }
+
   @Override
   public void initialize() {
     RobotContainer.robot1Strip.setAutoPath();
-    if(useElasticTarget) this.target = isScoring ? RobotContainer.scoringTarget : RobotContainer.feedingTarget;
+    if(useElasticTarget) this.target = isScoring ? RobotContainer.scoringTarget : getClosestFeeder();
 
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
       this.wantedAngle = target.getFinishPoint(isAlgaeRight).getRotation();
       points.add(new PathPoint(new Translation2d(), wantedAngle));
-      if(target.elementPosition != ELEMENT_POSITION.ALGEA || !DriverStation.isAutonomous()){
-        points.add(target.getApproachingPoint(isAlgaeRight));
-      }
+      
+      points.add(target.getApproachingPoint(isAlgaeRight));
+      
       points.add(target.getFinishPoint(isAlgaeRight));
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
         grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
       }
 
-      LogManager.log(target.getApproachingPoint());
-
+      LogManager.log(points);
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), target.elementPosition == ELEMENT_POSITION.ALGEA);
     if (this.target != null)
@@ -123,7 +130,7 @@ public class FollowTrajectory extends Command {
           || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
 
         chassis.stop();
-        new Drop(RobotContainer.gripper).schedule();
+        new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new Drop(RobotContainer.gripper)).schedule();
       }
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         if (!DriverStation.isAutonomous()) {

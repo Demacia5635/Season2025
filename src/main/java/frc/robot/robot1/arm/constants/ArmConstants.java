@@ -42,8 +42,8 @@ public class ArmConstants {
         public static final String NAME = "Arm Angle Motor";
 
         /* the pid and ff constants of the motor */
-        public static final double KP = 20;
-        public static final double KI = 1.0;
+        public static final double KP = 22;
+        public static final double KI = 1.2;
         public static final double KD = 0.5;
         public static final double KS = 0;
         public static final double KV = 0;
@@ -74,7 +74,7 @@ public class ArmConstants {
          */
         public static final double BASE_ANGLE = Math.toRadians(33.7);
         public static final double BACK_LIMIT = Math.toRadians(33.7);
-        public static final double FWD_LIMIT = 2.501220703125;
+        public static final double FWD_LIMIT = 2.904541015625;
 
         /* The config of the motors based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -135,7 +135,7 @@ public class ArmConstants {
          */
         public static final double ENCODER_BASE_ANGLE = -1.6270964174482998;
         public static final double BACK_LIMIT = 3.7;
-        public static final double FWD_LIMIT = 5.4;
+        public static final double FWD_LIMIT = 5.46;
 
         /* The config of the motor based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -167,8 +167,9 @@ public class ArmConstants {
         public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
         public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.4, 4.4);
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
-        public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.55, 4.4);
+        public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.67048828125, 4.4);
         public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.2, 4.4);
+        public static final Pair<Double, Double> CLIMB = new Pair<Double, Double>(2.9 ,5.45);
         public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(Math.toRadians(33.7), 3.64);
     }
 
@@ -179,6 +180,7 @@ public class ArmConstants {
         ALGAE_BOTTOM,
         ALGAE_TOP,
         CORAL_STATION,
+        CLIMB,
         TESTING,
         STARTING,
         IDLE;

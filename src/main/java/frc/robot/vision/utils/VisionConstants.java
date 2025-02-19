@@ -55,7 +55,7 @@ public class VisionConstants {
             new Translation2d(inchToMeter(160.39), inchToMeter(186.83)), // 19
             new Translation2d(inchToMeter(193.10), inchToMeter(186.83)), // 20
             new Translation2d(inchToMeter(209.49), inchToMeter(186.83)), // 21
-            new Translation2d(inchToMeter(193.10), inchToMeter(193.10)),// 22
+            new Translation2d(inchToMeter(193.10), inchToMeter(130.17)),// 22
 
     };
     public static Rotation2d[] TAG_ANGLE = { null, // 0

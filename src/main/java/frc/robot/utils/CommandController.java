@@ -109,7 +109,7 @@ public class CommandController extends CommandGenericHID{
             case kXbox:
                 return button(XboxController.Button.kRightStick.value, CommandScheduler.getInstance().getDefaultButtonLoop());
             case kPS5:
-                return button(PS5Controller.Button.kL3.value , CommandScheduler.getInstance().getDefaultButtonLoop());
+                return button(PS5Controller.Button.kR3.value , CommandScheduler.getInstance().getDefaultButtonLoop());
             default:
                 return null;
         }

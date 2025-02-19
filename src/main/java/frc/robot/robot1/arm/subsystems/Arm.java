@@ -140,6 +140,7 @@ public class Arm extends SubsystemBase {
     stateChooser.addOption("L3", ARM_ANGLE_STATES.L3);
     stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);
     stateChooser.addOption("Starting", ARM_ANGLE_STATES.STARTING);
+    stateChooser.addOption("Climb", ARM_ANGLE_STATES.CLIMB);
     stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
     stateChooser.addOption("Idle", ARM_ANGLE_STATES.IDLE);
     stateChooser.onChange(state -> this.state = state);

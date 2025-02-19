@@ -26,7 +26,7 @@ public class ClimebConstants {
         public static final boolean START_NEUTRAL_MODE = false;
     }
     public static class ClimbConstants {
-        public static final double prepareClimbPower = 0.5;
+        public static final double prepareClimbPower = 0.8;
         public static final double prepareClimbTime = 2;
         public static final double STALL_CURRENT = 35;
         public static final double CLIMB_POWER = -0.3;

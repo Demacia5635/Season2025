@@ -67,6 +67,6 @@ public class RemoveAlgae extends Command {
 
     @Override
     public boolean isFinished() {
-        return driveBackTimer.hasElapsed(0.3) || (isAuto && steerTimer.hasElapsed(0.3));
+        return driveBackTimer.hasElapsed(0.3) || (isAuto && steerTimer.hasElapsed(0.5));
     }
 }

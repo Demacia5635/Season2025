@@ -5,15 +5,27 @@
 package frc.robot.robot1.climb.command;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.climb.ClimebConstants;
 import frc.robot.robot1.climb.subsystem.Climb;
+import frc.robot.utils.CommandController;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class OpenClimber extends Command {
+
   private Climb climb;
-  public OpenClimber(Climb climb) {
+  private CommandController controller;
+
+  public OpenClimber(CommandController controller, Climb climb) {
     this.climb = climb;
     addRequirements(climb);
+  }
+
+  @Override
+  public void initialize() {
+    RobotContainer.arm.setState(ARM_ANGLE_STATES.CLIMB);
   }
 
 
@@ -24,7 +36,6 @@ public class OpenClimber extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    climb.setAngle(0);
     climb.stopClimb();
   }
 

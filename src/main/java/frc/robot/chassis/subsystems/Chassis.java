@@ -89,7 +89,7 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.fromDegrees(0))));
         SmartDashboard.putData("set gyro to 3D tag",
                 new InstantCommand(() -> setYaw(visionFuse.getVisionEstimatedAngle())));
-        SmartDashboard.putNumber("gyro", gyro.getYaw().getValueAsDouble());
+        LogManager.addEntry("gyro", ()-> gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
         SmartDashboard.putData("ultfielf", fieldTag);
         LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
@@ -319,8 +319,6 @@ public class Chassis extends SubsystemBase {
         poseEstimator.update(getGyroAngle(), getModulePositions());
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
-
-        RobotContainer.feedingTarget.position = getPose().getY() > 4 ? POSITION.FEEDER_RIGHT : POSITION.FEEDER_LEFT;
     }
 
     public boolean isRed() {

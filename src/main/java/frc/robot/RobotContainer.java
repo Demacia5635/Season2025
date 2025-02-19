@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -16,21 +15,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Path.Trajectory.ChangeReefToClosest;
 import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
+import frc.robot.chassis.commands.auto.AlgaeL3;
 import frc.robot.chassis.commands.auto.AlgaeL3L3;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
-import frc.robot.chassis.commands.auto.L2AlgaeAlgaeAlgae;
-import frc.robot.chassis.commands.auto.L2AlgaeL2;
-import frc.robot.chassis.commands.auto.L2AlgaeL3;
-import frc.robot.chassis.commands.auto.L2L2L2;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmCalibration;
@@ -39,8 +35,7 @@ import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.climb.command.JoyClimeb;
 import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
-import frc.robot.robot1.gripper.commands.Drop;
-import frc.robot.robot1.gripper.commands.Grab;
+import frc.robot.robot1.gripper.commands.GrabOrDrop;
 import frc.robot.robot1.gripper.commands.GripperDrive;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.leds.Robot1Strip;
@@ -48,7 +43,6 @@ import frc.robot.leds.subsystems.LedManager;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
-import frc.robot.vision.utils.VisionConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -73,12 +67,12 @@ public class RobotContainer implements Sendable{
   public static Robot1Strip robot1Strip;
   
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
-  public static FieldTarget feedingTarget = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
 
   private final Timer timer;
-
-
-  SendableChooser<Command> autoChooser;
+  private final SendableChooser<AutoMode> autoChooser;
+  private enum AutoMode {
+    LEFT, MIDDLE, RIGHT
+  }
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -99,11 +93,9 @@ public class RobotContainer implements Sendable{
     configureBindings();
 
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("L2AlgaeL3", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new L2AlgaeL3(chassis)));
-    autoChooser.addOption("L2AlgaeL2", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new L2AlgaeL2(chassis)));
-    autoChooser.addOption("L2AlgaeAlgaeAlgae", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new L2AlgaeAlgaeAlgae(chassis)));
-    autoChooser.addOption("AlgaeL3L3", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new AlgaeL3L3(chassis)));
-    autoChooser.addOption("L2L2L2", new ArmCalibration(arm).andThen(new ArmCommand(arm)).alongWith(new L2L2L2(chassis)));
+    autoChooser.setDefaultOption("left", AutoMode.LEFT);
+    autoChooser.addOption("middle", AutoMode.MIDDLE);
+    autoChooser.addOption("right", AutoMode.RIGHT);
     SmartDashboard.putData("AutoChooser", autoChooser);
 
   }
@@ -129,13 +121,14 @@ public class RobotContainer implements Sendable{
    */
   private void configureDefaultCommands() {
     chassis.setDefaultCommand(new Drive(chassis, driverController));
-    climb.setDefaultCommand(new JoyClimeb(operatorController, climb));
     arm.setDefaultCommand(new ArmCommand(arm));
   }
 
 
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
+    driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
+    driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
 
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
     driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
@@ -146,55 +139,17 @@ public class RobotContainer implements Sendable{
       chassis.stop();
       arm.stop();
       gripper.stop();
-    }, chassis, arm, gripper).ignoringDisable(true));
-    driverController.rightBumper().onTrue(new Command() {
-      public void end(boolean interrupted) {
-        if (gripper.isCoral()) {
-          new Drop(gripper).schedule(); 
-        } else {
-          new Grab(gripper).schedule();
-        }
-      }
-      public boolean isFinished() {
-        return true;
-      }
-    });
+      climb.stopClimb();
+    }, chassis, arm, gripper, climb).ignoringDisable(true));
+    driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
     driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
     driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
 
     driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
-    driverController.rightSetting().onTrue(new Command() {
-      POSITION closestTagToChassis() {
-        POSITION closestReef = null;
-        double closestReefToRobot = Double.MAX_VALUE;
-        for (int i = 0; i < 6; i++) {
-          double norm = chassis.getPose().getTranslation().minus(VisionConstants.O_TO_TAG[POSITION.values()[i].getId()]).getNorm();
-          if (norm < closestReefToRobot) {
-            closestReefToRobot = norm;
-            closestReef = POSITION.values()[i];
-          }
-        }
-        return closestReef;
-      }
+    driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
 
-      public void initialize() {
-        POSITION closestReef = closestTagToChassis();
-        if (closestReef != null) {
-          scoringTarget.position = closestReef;
-        }
-      };
-
-      public void end(boolean interrupted) {
-        if (!interrupted) {
-          new FollowTrajectory(chassis, true).schedule();
-        }
-      };
-
-      public boolean isFinished() {
-        return true;
-      };
-    });
+    operatorController.getRightStickkMove().onTrue(new JoyClimeb(operatorController, climb));
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
@@ -206,17 +161,15 @@ public class RobotContainer implements Sendable{
       arm.stop();
       gripper.stop();
       arm.setState(ARM_ANGLE_STATES.IDLE);
-    }, chassis, arm, gripper).ignoringDisable(true));
+      climb.stopClimb();
+    }, chassis, arm, gripper, climb).ignoringDisable(true));
 
-    operatorController.rightBumper().onTrue(new OpenClimber(climb));
-
-    operatorController.povUp().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
+    operatorController.povUp().onTrue(new InstantCommand(climb::stopClimb ,climb).ignoringDisable(true));
     operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
     operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
     operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
 
-    operatorController.rightSetting().onTrue(new RunCommand(()->chassis.goTo(new Pose2d(14.764765315220112, 2.2286484904026063, Rotation2d.fromDegrees(125)), 0.3, false), chassis)
-    .until(()->chassis.isSeeTag(6, 0, 5) || chassis.isSeeTag(6, 3, 5)));
+    operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
   }
 
   public static boolean isRed() {
@@ -262,16 +215,14 @@ public class RobotContainer implements Sendable{
    * @return the command that runs at disable
    */
   public Command getDisableInitCommand() {
-    Command initDisableCommand = new InstantCommand(()-> {
+    return new InstantCommand(()-> {
       chassis.stop();
       arm.stop();
       gripper.stop();
       climb.stopClimb();
       timer.stop();
     }, chassis, arm, gripper, climb
-    ).ignoringDisable(true);
-    initDisableCommand.setName("Init Disable Command");
-    return initDisableCommand;
+    ).withName("initDisableCommand").ignoringDisable(true);
   }
 
   /**
@@ -282,6 +233,18 @@ public class RobotContainer implements Sendable{
   public Command getAutonomousCommand() {
     timer.reset();
     timer.start();
-    return autoChooser.getSelected();  
+    switch (autoChooser.getSelected()) {
+      case LEFT:
+        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, false)));
+
+      case MIDDLE:
+        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3(chassis)));
+      
+      case RIGHT: 
+        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, true)));
+    
+      default:
+        return new ArmCalibration(arm);
+    }
   }
 }

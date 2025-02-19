@@ -159,7 +159,9 @@ public class DemaciaTrajectory {
 
 
     private double getAccel(double distanceFromLastPoint){
-        return Math.min(PathsConstraints.MAX_ACCEL, distanceFromLastPoint * 3.6);
+        if(distanceFromLastPoint < 0.2) accel = 0.7;
+        else accel = PathsConstraints.MAX_ACCEL;
+        return accel;
     }
 
     private double getVelocity(double distanceFromLastPoint) {
@@ -185,7 +187,9 @@ public class DemaciaTrajectory {
                 segmentIndex++;
         }
         double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
+        LogManager.log("Velocity: " + velocity);
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
+
         double wantedOmega = Math
                 .abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
                         : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 0.9;

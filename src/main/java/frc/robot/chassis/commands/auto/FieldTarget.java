@@ -16,8 +16,8 @@ import frc.robot.utils.LogManager;
 public class FieldTarget {
 
     public static final Translation2d approachOffset = new Translation2d(1, 0);
-    public static final Translation2d approachOffsetAlgaeRight = new Translation2d(1.5, 1);
-    public static final Translation2d approachOffsetAlgaeLeft = new Translation2d(1.5, -1);
+    public static final Translation2d approachOffsetAlgaeRight = new Translation2d(1, 0.6);
+    public static final Translation2d approachOffsetAlgaeLeft = new Translation2d(1, -0.6);
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);
     public static final Translation2d intakeOffset = new Translation2d(0.73, 0);
@@ -32,6 +32,10 @@ public class FieldTarget {
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
     public LEVEL level;
+
+
+    public static final FieldTarget kFeederLeft = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
+    public static final FieldTarget kFeederRight = new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
 
     public FieldTarget(POSITION position, ELEMENT_POSITION elementPosition, LEVEL level){
         this.position = position;
