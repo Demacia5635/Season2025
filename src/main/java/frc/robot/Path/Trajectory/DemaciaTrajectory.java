@@ -38,7 +38,7 @@ public class DemaciaTrajectory {
     Pose2d chassisPose = new Pose2d();
     boolean isAlgae;
     private boolean isAuto;
-    double maxVel;
+    
     double accel;
 
     /*
@@ -55,8 +55,6 @@ public class DemaciaTrajectory {
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
         this.isAuto = DriverStation.isAutonomous();
-        this.maxVel = isAuto ? PathsConstraints.AutoConstraints.MAX_VELOCITY : PathsConstraints.MAX_VELOCITY;
-        this.accel = isAuto ? PathsConstraints.AutoConstraints.ACCEL : PathsConstraints.ACCEL;
 
         if (isRed)
             points = convertAlliance();
@@ -128,9 +126,6 @@ public class DemaciaTrajectory {
                 segments.add(arc);
             segments.add(corners[corners.length - 1].getCtoCurveLeg());
         }
-        for(Segment s : segments){
-            LogManager.log(s);
-        }
     }
 
     public double calcTrajectoryLength() {
@@ -163,14 +158,16 @@ public class DemaciaTrajectory {
     PIDController drivePID;
 
 
-    
+    private double getAccel(double distanceFromLastPoint){
+        return Math.min(PathsConstraints.MAX_ACCEL, distanceFromLastPoint * 3.6);
+    }
 
     private double getVelocity(double distanceFromLastPoint) {
-        if(distanceFromLastPoint < 0.2) accel = 0.7;
-        else accel = isAuto ? PathsConstraints.AutoConstraints.ACCEL : PathsConstraints.ACCEL;
+
+        accel = getAccel(distanceFromLastPoint);
         
         double v = Math.sqrt((distanceFromLastPoint * 2) / accel) * accel; 
-        return Math.min(maxVel,
+        return Math.min(PathsConstraints.MAX_VELOCITY,
                 Double.isNaN(v) ? 0 : v);
     }
 

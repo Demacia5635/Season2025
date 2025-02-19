@@ -17,12 +17,9 @@ public class TrajectoryConstants {
 
     public class PathsConstraints{
         public static final double MAX_VELOCITY = 2.5;
-        public static final double ACCEL = 3;
+        public static final double MAX_ACCEL = 3;
         
-        public class AutoConstraints{
-            public static final double MAX_VELOCITY = 2;
-            public static final double ACCEL = 2.5;
-        }
+        
     }
 
 }
