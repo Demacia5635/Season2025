@@ -10,6 +10,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -38,7 +39,6 @@ import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.climb.command.JoyClimeb;
 import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
-import frc.robot.robot1.gripper.commands.AlignCoral;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.robot1.gripper.commands.GripperDrive;
@@ -114,6 +114,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor.
    */
   private void configureSubsytems() {
+    Ultrasonic.setAutomaticMode(true);
     chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();

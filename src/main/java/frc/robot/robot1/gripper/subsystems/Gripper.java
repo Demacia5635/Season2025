@@ -62,7 +62,6 @@ public class Gripper extends SubsystemBase {
     // upFrontSensor = new AnalogInput(SensorConstants.UP_FRONT_SENSOR_CHANNEL);
     // upBackSensor = new AnalogInput(SensorConstants.UP_BACK_SENSOR_CHANNEL);
     upSensor = new Ultrasonic(SensorConstants.UP_SENSOR_CHANNELS.getFirst(), SensorConstants.UP_SENSOR_CHANNELS.getSecond());
-    Ultrasonic.setAutomaticMode(true);
     downSensor = new AnalogInput(SensorConstants.DOWN_SENSOR_CHANNEL);
 
     /* send to network tables staff */
