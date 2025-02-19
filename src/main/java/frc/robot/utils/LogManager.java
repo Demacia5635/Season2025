@@ -320,12 +320,6 @@ public class LogManager extends SubsystemBase {
 
   @Override
   public void periodic() {
-    for (int i = 0; i < activeConsole.size(); i++) {
-      if (activeConsole.get(i).isTimerOver()) {
-        activeConsole.get(i).close();
-        activeConsole.remove(i);
-      }
-    }
 
     for (LogEntry e : logEntries) {
       e.log();

@@ -82,11 +82,13 @@ public class ArmCalibration extends Command {
     /* stop the arm */
     arm.stop();
 
-    /*
-     * set the arm angle motor position to base angle and set the arm to calibrated
-     */
-    arm.armAngleSetPosition(ArmAngleMotorConstants.BASE_ANGLE);
-    arm.hadCalibrated();
+    if (!interrupted) {
+      /*
+      * set the arm angle motor position to base angle and set the arm to calibrated
+      */
+      arm.armAngleSetPosition(ArmAngleMotorConstants.BASE_ANGLE);
+      arm.hadCalibrated();
+    }
 
     /* reset the timer */
     timer.stop();

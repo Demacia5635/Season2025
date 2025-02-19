@@ -128,6 +128,9 @@ public class DemaciaTrajectory {
                 segments.add(arc);
             segments.add(corners[corners.length - 1].getCtoCurveLeg());
         }
+        for(Segment s : segments){
+            LogManager.log(s);
+        }
     }
 
     public double calcTrajectoryLength() {
@@ -163,8 +166,12 @@ public class DemaciaTrajectory {
     
 
     private double getVelocity(double distanceFromLastPoint) {
+        if(distanceFromLastPoint < 0.2) accel = 0.7;
+        else accel = isAuto ? PathsConstraints.AutoConstraints.ACCEL : PathsConstraints.ACCEL;
+        
+        double v = Math.sqrt((distanceFromLastPoint * 2) / accel) * accel; 
         return Math.min(maxVel,
-                Math.sqrt((distanceFromLastPoint * 2) / accel) * accel);
+                Double.isNaN(v) ? 0 : v);
     }
 
     double lastDistance = 0;
@@ -181,7 +188,6 @@ public class DemaciaTrajectory {
                 segmentIndex++;
         }
         double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
-
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double wantedOmega = Math
                 .abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0

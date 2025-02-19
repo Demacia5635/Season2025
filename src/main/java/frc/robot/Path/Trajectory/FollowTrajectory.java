@@ -98,7 +98,7 @@ public class FollowTrajectory extends Command {
         grabCommand.schedule();
       }
 
-      LogManager.log(points);
+      LogManager.log(target.getApproachingPoint());
 
     }
     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), target.elementPosition == ELEMENT_POSITION.ALGEA);
