@@ -5,16 +5,14 @@
 package frc.robot.robot2.elevator.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.robot2.elevator.ElevatorConstants.CalibrationConstants;
 import frc.robot.robot2.elevator.subsystem.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorCalibration extends Command {
-
-  private final Elevator elevator;
-
-  /** Creates a new ElevatorCalibration. */
-  public ElevatorCalibration(Elevator elevator) {
+public class UpAndDown extends Command {
+  private double power = -0.6;
+  private Elevator elevator;
+  /** Creates a new UpAndDown. */
+  public UpAndDown(Elevator elevator) {
     this.elevator = elevator;
     addRequirements(elevator);
   }
@@ -26,21 +24,23 @@ public class ElevatorCalibration extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    elevator.setPower(CalibrationConstants.POWER);
+    
+    elevator.setPower(power);
+    if(elevator.hasReachedBottom()){
+      power = -0.6;
+    }
+    if (elevator.hasReachedTop()) {
+      power = 0.6;
+    }
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    elevator.stop();
-
-    elevator.calibrated();
-    elevator.setHeight(CalibrationConstants.HEIGHT);
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.hasReachedBottom();
+    return false;
   }
 }

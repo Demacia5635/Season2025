@@ -17,6 +17,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.robot2.elevator.commands.ElevatorCalibration;
 import frc.robot.robot2.elevator.commands.ElevatorCommand;
 import frc.robot.robot2.elevator.commands.ElevatorDrive;
+import frc.robot.robot2.elevator.commands.UpAndDown;
 import frc.robot.robot2.elevator.subsystem.Elevator;
 import frc.robot.utils.LogManager;
 
@@ -75,7 +76,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
-    // elevator.setDefaultCommand(elevatorCommand);
+    elevator.setDefaultCommand(new ElevatorDrive(elevator, controller));
   }
 
   /**
@@ -88,7 +89,8 @@ public class RobotContainer implements Sendable{
    * joysticks}.
    */
   private void configureBindings() {
-    controller.x().onTrue(new ElevatorDrive(elevator, controller));
+    controller.x().onTrue(new ElevatorCalibration(elevator));
+    controller.b().onTrue(new UpAndDown(elevator));
   }
 
   public static boolean isRed() {
@@ -135,6 +137,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
+    return new UpAndDown(elevator);
   }
 }
