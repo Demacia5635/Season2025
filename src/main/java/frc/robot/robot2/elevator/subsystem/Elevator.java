@@ -4,11 +4,13 @@
 
 package frc.robot.robot2.elevator.subsystem;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.TalonMotor;
@@ -28,6 +30,7 @@ public class Elevator extends SubsystemBase {
   ELEVATOR_STATE state;
 
   boolean isCalibrated;
+  double voltest = 0;
 
   public Elevator() {
     setName(ElevatorConstants.NAME);
@@ -61,8 +64,12 @@ public class Elevator extends SubsystemBase {
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/State Chooser", stateChooser);
 
+    motor.configPidFf(0);
+
     SmartDashboard.putData(getName() + "/Motor" + "/Set Brake", new InstantCommand(()-> motor.setNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/Motor" + "/Set Coast", new InstantCommand(()-> motor.setNeutralMode(false)).ignoringDisable(true));
+
+    SmartDashboard.putData("set voltage", new RunCommand(() -> motor.setVoltage(voltest)));
 
     SmartDashboard.putData(this);
   }
@@ -99,7 +106,7 @@ public class Elevator extends SubsystemBase {
    * position in meters
    */
   public void setPositionVoltage(double position){
-    if (isCalibrated) {
+    if (!isCalibrated) {
       LogManager.log("Elevator has not calibrated", AlertType.kError);
       return;
     }
@@ -111,7 +118,7 @@ public class Elevator extends SubsystemBase {
       position = ElevatorLimits.BOTTOM_LIMIT_POSITION;
     }
 
-    motor.setPositionVoltage(position);
+    motor.setPositionVoltage(position,0.22614986964940442); //kg
   }
 
   public void setHeight(double height) {
@@ -124,6 +131,13 @@ public class Elevator extends SubsystemBase {
 
   public void stop() {
     motor.stopMotor();
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+      // TODO Auto-generated method stub
+      super.initSendable(builder);
+      builder.addDoubleProperty("test vol", ()-> voltest, (double vel)-> voltest = vel);
   }
 
   @Override

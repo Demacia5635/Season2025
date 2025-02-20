@@ -20,14 +20,20 @@ public class ElevatorConstants {
         private static final CANBus CANBUS = CANBuses.ARM_CAN_BUS;
         private static final String NAME = "Elevator/Motor";
         private static final double GEAR_RATIO = 1.0/0.007;
-        private static final double kP = -1;
-        private static final double kI = -1;
-        private static final double kD = -1;
-        private static final double kG = -1;
-        private static final double kV = -1;
+        private static final double kP = 40;
+        private static final double kI = 20;
+        private static final double kD = 15;
+        private static final double kG = 0.22614986964940442;
+        private static final double kV = 16;
         private static final boolean NETURAL_MODE = true;
         private static final boolean IS_INVERTED = true;
         private static final double RAMP_TIME = 0.3;
+        /*
+         * KS = 0.06474606582845017
+KV = 16.634375086155174 / 0.38188467058072995
+KA = 0.04204649456490994
+KG= 0.22614986964940442
+         */
         
         public static final TalonConfig motorConfig = 
         new TalonConfig(MOTOR_ID, CANBUS, NAME).withMotorRatio(GEAR_RATIO)
@@ -36,8 +42,8 @@ public class ElevatorConstants {
     }
 
     public class ElevatorLimits{
-        public static final double TOP_LIMIT_POSITION = -1;
-        public static final double BOTTOM_LIMIT_POSITION = -1;
+        public static final double TOP_LIMIT_POSITION = 0.6;
+        public static final double BOTTOM_LIMIT_POSITION = 0.01;
         public static final int TOP_SWITCH_ID = 0;
         public static final int BOTTOM_SWITCH_ID = 1;
     }
@@ -48,13 +54,13 @@ public class ElevatorConstants {
     }
 
     public enum ELEVATOR_STATE {
-        L4(-1),
-        L3(-1),
-        L2(-1),
-        CORAL_STATION(-1),
-        STARTING(-1),
-        TESTING(-1),
-        IDLE(-1);
+        L4(0.55),
+        L3(0.5),
+        L2(0.2),
+        CORAL_STATION(0.1),
+        STARTING(0),
+        TESTING(0.3),
+        IDLE(0);
 
         public final double HEIGHT;
 

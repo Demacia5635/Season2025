@@ -50,7 +50,7 @@ public class ElevatorCommand extends Command {
 
       case IDLE:
         elevator.stop();
-        break;
+        break;  
 
       default:
         LogManager.log("Illegul Elevator State", AlertType.kError);

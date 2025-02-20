@@ -76,7 +76,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
-    elevator.setDefaultCommand(new ElevatorDrive(elevator, controller));
+    elevator.setDefaultCommand(new ElevatorCommand(elevator));
   }
 
   /**
@@ -91,6 +91,7 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     controller.x().onTrue(new ElevatorCalibration(elevator));
     controller.b().onTrue(new UpAndDown(elevator));
+//    controller.y().onTrue(new ElevatorCommand(elevator));
   }
 
   public static boolean isRed() {
@@ -112,7 +113,8 @@ public class RobotContainer implements Sendable{
    * @return the ommand that start at the start at enable
    */
   public Command getEnableInitCommand() {
-    return null;
+    
+    return new ElevatorCalibration(elevator);
   }
 
   /**
@@ -137,6 +139,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-      return new UpAndDown(elevator);
+      return new ElevatorCommand(elevator);//new UpAndDown(elevator);
   }
 }
