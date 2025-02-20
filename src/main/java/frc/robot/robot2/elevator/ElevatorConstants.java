@@ -19,14 +19,14 @@ public class ElevatorConstants {
         private static final int MOTOR_ID = 60;
         private static final CANBus CANBUS = CANBuses.ARM_CAN_BUS;
         private static final String NAME = "Elevator/Motor";
-        private static final double GEAR_RATIO = 1 / 0.0007;
+        private static final double GEAR_RATIO = 1.0/0.007;
         private static final double kP = -1;
         private static final double kI = -1;
         private static final double kD = -1;
         private static final double kG = -1;
         private static final double kV = -1;
         private static final boolean NETURAL_MODE = true;
-        private static final boolean IS_INVERTED = false;
+        private static final boolean IS_INVERTED = true;
         private static final double RAMP_TIME = 0.3;
         
         public static final TalonConfig motorConfig = 
@@ -38,8 +38,8 @@ public class ElevatorConstants {
     public class ElevatorLimits{
         public static final double TOP_LIMIT_POSITION = -1;
         public static final double BOTTOM_LIMIT_POSITION = -1;
-        public static final int TOP_SWITCH_ID = 8;
-        public static final int BOTTOM_SWITCH_ID = 6;
+        public static final int TOP_SWITCH_ID = 0;
+        public static final int BOTTOM_SWITCH_ID = 1;
     }
 
     public static class CalibrationConstants {

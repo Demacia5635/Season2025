@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.utils.TalonMotor;
+import frc.robot.utils.LogManager.LogEntry;
 import frc.robot.robot2.elevator.ElevatorConstants;
 import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
 import frc.robot.robot2.elevator.ElevatorConstants.ElevatorLimits;

@@ -27,10 +27,10 @@ public class UpAndDown extends Command {
     
     elevator.setPower(power);
     if(elevator.hasReachedBottom()){
-      power = -0.6;
+      power = 0.6;
     }
     if (elevator.hasReachedTop()) {
-      power = 0.6;
+      power = -0.6;
     }
   }
 

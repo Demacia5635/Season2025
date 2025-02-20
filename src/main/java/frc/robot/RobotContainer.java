@@ -137,6 +137,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return new UpAndDown(elevator);
+      return new UpAndDown(elevator);
   }
 }
