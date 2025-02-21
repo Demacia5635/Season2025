@@ -29,6 +29,8 @@ import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.Test;
+import frc.robot.chassis.commands.auto.AlgaeL3;
+import frc.robot.chassis.commands.auto.AlgaeL3L3;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
@@ -85,7 +87,7 @@ public class RobotContainer implements Sendable{
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
@@ -240,7 +242,7 @@ public class RobotContainer implements Sendable{
   public Command getAutonomousCommand() {
     timer.reset();
     timer.start();
-    return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm)))).andThen(new Drop(gripper));
+    return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
     // switch (autoChooser.getSelected()) {
     //   case LEFT:
     //     return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, false)));

@@ -157,9 +157,8 @@ public class DemaciaTrajectory {
 
     PIDController drivePID;
 
-
     private double getAccel(double distanceFromLastPoint){
-        if(distanceFromLastPoint < 0.3) accel = 0.55;
+        if(distanceFromLastPoint < 0.25) accel = 0.55;
         else accel = PathsConstraints.MAX_ACCEL;
         return accel;
     }

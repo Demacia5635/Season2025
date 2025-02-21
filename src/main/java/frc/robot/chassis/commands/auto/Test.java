@@ -23,6 +23,7 @@ import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.AlignCoral;
+import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
 public class Test extends SequentialCommandGroup {
@@ -36,8 +37,8 @@ public class Test extends SequentialCommandGroup {
     FieldTarget feederLeft = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
     FieldTarget feederRight = new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
     FieldTarget coralLeft = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
-
     FieldTarget coralRight = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
+    FieldTarget backupCoral = new FieldTarget(POSITION.B, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
 
     this.chassis = RobotContainer.chassis;
     this.arm = RobotContainer.arm;
@@ -47,34 +48,70 @@ public class Test extends SequentialCommandGroup {
     Command goToFeederRight = new FollowTrajectory(chassis, feederRight);
 
     addCommands(
-        new FollowTrajectory(chassis, aAlgaeBottom, false).andThen(new RemoveAlgae(chassis, aAlgaeBottom, false)
+        new FollowTrajectory(chassis, aAlgaeBottom, true), (new RemoveAlgae(chassis, aAlgaeBottom, true)
             .alongWith(new InstantCommand(() -> new AlignCoral(gripper).schedule()))),
-        new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
-          {
-            add(dummyPoint);
-            add(new PathPoint(new Translation2d(3.3, 6), Rotation2d.fromDegrees(-60)));
-          }
-        }, Rotation2d.fromDegrees(-60)).until(() -> chassis.isSeeTag(coralRight.position.getId(), 0, 2)
-            || chassis.isSeeTag(coralRight.position.getId(), 3, 2)),
+        new WaitCommand(0.1).alongWith(new InstantCommand(() -> arm.setState(LEVEL.L3))),
+        // new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
+        // {
+        // add(dummyPoint);
+        // add(new PathPoint(new Translation2d(3.3, 6), Rotation2d.fromDegrees(-60)));
+        // }
+        // }, Rotation2d.fromDegrees(-60)).until(() ->
+        // chassis.isSeeTag(coralRight.position.getId(), 0, 2)
+        // || chassis.isSeeTag(coralRight.position.getId(), 3, 2)),
         new FollowTrajectory(chassis, coralRight),
-        new WaitUntilCommand(() -> !gripper.isCoralDownSensor()).withTimeout(0.2),
-        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 4)), chassis).withTimeout(0.2),
-        new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
+        new WaitUntilCommand(() -> gripper.isCoralUpSensor()),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.1),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 4)), chassis).withTimeout(0.1),
+        (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
           {
             add(dummyPoint);
             add(feederLeft.getApproachingPoint());
           }
-        }, Rotation2d.fromDegrees(130)).until(() -> chassis.isSeeTag(feederLeft.position.getId(), 1, 10)),
+        }, Rotation2d.fromDegrees(130))
+            .alongWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))))
+            .until(() -> chassis.isSeeTag(feederLeft.position.getId(), 1, 10)),
         new FollowTrajectory(chassis, feederLeft),
         new WaitUntilCommand(() -> gripper.isCoralDownSensor()),
-        new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 6)), chassis)
+            .until(() -> chassis.isSeeTag(feederLeft.position.getId(), 1, 10)),
+
+        (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
           {
             add(dummyPoint);
             add(new PathPoint(new Translation2d(3.3, 6), Rotation2d.fromDegrees(-60)));
           }
-        }, Rotation2d.fromDegrees(-60)).until(() -> chassis.isSeeTag(coralLeft.position.getId(), 0, 2.5)
-            || chassis.isSeeTag(coralLeft.position.getId(), 3, 2.5)),
-        new FollowTrajectory(chassis, coralLeft));
+        }, Rotation2d.fromDegrees(-60))
+            .alongWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))))
+            .until(() -> chassis.isSeeTag(coralLeft.position.getId(), 0, 2.5)
+                || chassis.isSeeTag(coralLeft.position.getId(), 3, 2.5)),
+        new FollowTrajectory(chassis, coralLeft),
+        new WaitCommand(0.2),
+        new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.1),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 4)), chassis).withTimeout(0.1),
+        (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
+          {
+            add(dummyPoint);
+            add(feederLeft.getApproachingPoint());
+          }
+        }, Rotation2d.fromDegrees(130))
+        .alongWith(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))))
+        .until(() -> chassis.isSeeTag(feederLeft.position.getId(), 1, 10)),
+        new FollowTrajectory(chassis, feederLeft),
+
+        new WaitUntilCommand(gripper::isCoralDownSensor),
+        (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
+          {
+            add(dummyPoint);
+            add(new PathPoint(new Translation2d(3.3, 6), Rotation2d.fromDegrees(-60)));
+          }
+        }, Rotation2d.fromDegrees(-60))
+            .alongWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L2))))
+            .until(() -> chassis.isSeeTag(coralLeft.position.getId(), 0, 2.5)
+                || chassis.isSeeTag(coralLeft.position.getId(), 3, 2.5)),
+        new FollowTrajectory(chassis, backupCoral),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis));
+
   }
 
 }

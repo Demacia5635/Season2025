@@ -132,7 +132,11 @@ public class FollowTrajectory extends Command {
           || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
 
         chassis.stop();
-        new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new Drop(RobotContainer.gripper)).schedule();
+        if (DriverStation.isAutonomous()) {
+          new Drop(RobotContainer.gripper).schedule();
+        } else {
+          new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new Drop(RobotContainer.gripper)).schedule();
+        }
       }
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         if (!DriverStation.isAutonomous()) {
@@ -144,7 +148,7 @@ public class FollowTrajectory extends Command {
       }
 
     }
-    else chassis.stop();
+    else if(!DriverStation.isAutonomous()) chassis.stop();
   }
 
   @Override
