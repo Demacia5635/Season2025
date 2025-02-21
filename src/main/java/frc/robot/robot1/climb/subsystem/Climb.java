@@ -4,6 +4,7 @@
 
 package frc.robot.robot1.climb.subsystem;
 
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,6 +27,7 @@ public class Climb extends SubsystemBase {
     LogManager.addEntry(getName() + "/climeb Angle", this::getArmAngle);
     LogManager.addEntry(getName() + "/climeb is on Limit Switch", this::getLimit);
 
+    SmartDashboard.putData("Climb", this);
   }
 
   public void setClimbPower(double power){
@@ -54,6 +56,11 @@ public class Climb extends SubsystemBase {
 
   public void setAngle(double angle){
     climbMotor.setPosition(angle);
+  }
+
+  @Override
+  public void initSendable(SendableBuilder builder) {
+    super.initSendable(builder);
   }
   
   @Override

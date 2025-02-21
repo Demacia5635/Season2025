@@ -21,6 +21,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -88,16 +89,41 @@ public class Chassis extends SubsystemBase {
 
         SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.fromDegrees(0))));
         SmartDashboard.putData("set gyro to 3D tag",
-                new InstantCommand(() -> setYaw(visionFuse.getVisionEstimatedAngle())));
+        new InstantCommand(() -> setYaw(visionFuse.getVisionEstimatedAngle())));
         LogManager.addEntry("gyro", ()-> gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
         SmartDashboard.putData("ultfielf", fieldTag);
         LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
-                getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
+        getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
         LogManager.addEntry("Chassis vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
         LogManager.addEntry("Chassis vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
         SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)));
         SmartDashboard.putData("Chassis/set brake", new InstantCommand(() -> setNeutralMode(true)));
+        SmartDashboard.putData(getName() + "/Swerve Drive", getChassisWidget());
+        SmartDashboard.putData("Chassis", this);
+    }
+
+    private Sendable getChassisWidget() {
+        return new Sendable() {
+            @Override
+            public void initSendable(SendableBuilder builder) {
+                builder.setSmartDashboardType("SwerveDrive");
+
+                builder.addDoubleProperty("Front Left Angle", () -> modules[0].getAbsoluteAngle(), null);
+                builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getDriveVel(), null);
+
+                builder.addDoubleProperty("Front Right Angle", () -> modules[1].getAbsoluteAngle(), null);
+                builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getDriveVel(), null);
+
+                builder.addDoubleProperty("Back Left Angle", () -> modules[2].getAbsoluteAngle(), null);
+                builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getDriveVel(), null);
+
+                builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAbsoluteAngle(), null);
+                builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getDriveVel(), null);
+
+                builder.addDoubleProperty("Robot Angle", () -> getGyroAngle().getRadians(), null);
+            }
+        };
     }
 
     public void setNeutralMode(boolean isBrake) {
@@ -417,5 +443,6 @@ public class Chassis extends SubsystemBase {
 
     @Override
     public void initSendable(SendableBuilder builder) {
+        super.initSendable(builder);
     }
 }

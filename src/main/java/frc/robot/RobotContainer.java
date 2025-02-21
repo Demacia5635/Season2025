@@ -4,14 +4,12 @@
 
 package frc.robot;
 
-import java.util.ArrayList;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.net.WebServer;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -23,17 +21,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Path.Trajectory.ChangeReefToClosest;
 import frc.robot.Path.Trajectory.FollowTrajectory;
-import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.Test;
-import frc.robot.chassis.commands.auto.AlgaeL3;
-import frc.robot.chassis.commands.auto.AlgaeL3L3;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
-import frc.robot.chassis.commands.auto.RemoveAlgae;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmCalibration;
@@ -42,7 +36,6 @@ import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.climb.command.JoyClimeb;
 import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
-import frc.robot.robot1.gripper.commands.AlignCoral;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.GrabOrDrop;
 import frc.robot.robot1.gripper.commands.GripperDrive;
@@ -85,6 +78,7 @@ public class RobotContainer implements Sendable{
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
