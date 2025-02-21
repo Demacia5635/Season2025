@@ -76,7 +76,7 @@ public class FollowTrajectory extends Command {
     this.points = points;
     this.wantedAngle = wantedAngle;
     this.usePoints = true;
-    this.useElasticTarget = true;
+    this.useElasticTarget = false;
     addRequirements(chassis);
   }
 
@@ -96,7 +96,7 @@ public class FollowTrajectory extends Command {
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
       this.wantedAngle = target.getFinishPoint(isAlgaeRight).getRotation();
-      points.add(new PathPoint(new Translation2d(), wantedAngle));
+      points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
       
       points.add(target.getApproachingPoint(isAlgaeRight));
       
@@ -105,10 +105,12 @@ public class FollowTrajectory extends Command {
         grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
       }
+      
+     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), target.elementPosition == ELEMENT_POSITION.ALGEA);
+    
 
-      LogManager.log(points);
     }
-    this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), target.elementPosition == ELEMENT_POSITION.ALGEA);
+    else this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), false);
     if (this.target != null)
       RobotContainer.arm.setState(this.target.level);
   }
@@ -120,8 +122,8 @@ public class FollowTrajectory extends Command {
 
   @Override
   public void end(boolean interrupted) {
-    if (!interrupted) {
-
+    if (!interrupted && !usePoints) {
+      
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
         chassis.stop();
       } 
@@ -142,6 +144,7 @@ public class FollowTrajectory extends Command {
       }
 
     }
+    else chassis.stop();
   }
 
   @Override

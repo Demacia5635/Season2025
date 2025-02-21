@@ -54,7 +54,7 @@ public class VisionConstants {
             new Translation2d(inchToMeter(144.00), inchToMeter(158.50)), // 18
             new Translation2d(inchToMeter(160.39), inchToMeter(186.83)), // 19
             new Translation2d(inchToMeter(193.10), inchToMeter(186.83)), // 20
-            new Translation2d(inchToMeter(209.49), inchToMeter(186.83)), // 21
+            new Translation2d(inchToMeter(209.49), inchToMeter(158.50)), // 21
             new Translation2d(inchToMeter(193.10), inchToMeter(130.17)),// 22
 
     };
@@ -78,7 +78,7 @@ public class VisionConstants {
             Rotation2d.fromDegrees(240), // 17
             Rotation2d.fromDegrees(180), // 18
             Rotation2d.fromDegrees(120), // 19
-            Rotation2d.fromDegrees(120), // 20
+            Rotation2d.fromDegrees(60), // 20
             Rotation2d.fromDegrees(0), // 21
             Rotation2d.fromDegrees(300),// 22
     };

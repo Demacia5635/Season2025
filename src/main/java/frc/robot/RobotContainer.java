@@ -4,7 +4,11 @@
 
 package frc.robot;
 
+import java.util.ArrayList;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -19,14 +23,17 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Path.Trajectory.ChangeReefToClosest;
 import frc.robot.Path.Trajectory.FollowTrajectory;
+import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
+import frc.robot.chassis.commands.auto.Test;
 import frc.robot.chassis.commands.auto.AlgaeL3;
 import frc.robot.chassis.commands.auto.AlgaeL3L3;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.RemoveAlgae;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmCalibration;
@@ -35,6 +42,8 @@ import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.climb.command.JoyClimeb;
 import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
+import frc.robot.robot1.gripper.commands.AlignCoral;
+import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.GrabOrDrop;
 import frc.robot.robot1.gripper.commands.GripperDrive;
 import frc.robot.robot1.gripper.subsystems.Gripper;
@@ -56,7 +65,7 @@ public class RobotContainer implements Sendable{
   public static LedManager ledManager;
   public static CommandController driverController;
   public static CommandController operatorController;
-  public static boolean isRed = true;
+  public static boolean isRed;
   public static boolean isComp = DriverStation.isFMSAttached();
   private static boolean hasRemovedFromLog = false;
 
@@ -77,7 +86,6 @@ public class RobotContainer implements Sendable{
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     robotContainer = this;
-    new AutoUtils();
     new LogManager();
     ledManager = new LedManager();
     driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
@@ -89,6 +97,7 @@ public class RobotContainer implements Sendable{
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     
     configureSubsytems();
+    new AutoUtils();
     configureDefaultCommands();
     configureBindings();
 
@@ -233,18 +242,19 @@ public class RobotContainer implements Sendable{
   public Command getAutonomousCommand() {
     timer.reset();
     timer.start();
-    switch (autoChooser.getSelected()) {
-      case LEFT:
-        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, false)));
+    return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm)))).andThen(new Drop(gripper));
+    // switch (autoChooser.getSelected()) {
+    //   case LEFT:
+    //     return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, false)));
 
-      case MIDDLE:
-        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3(chassis)));
+    //   case MIDDLE:
+    //     return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3(chassis)));
       
-      case RIGHT: 
-        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, true)));
+    //   case RIGHT: 
+    //     return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, true)));
     
-      default:
-        return new ArmCalibration(arm);
-    }
+    //   default:
+    //     return new ArmCalibration(arm);
+    // }
   }
 }

@@ -4,6 +4,8 @@
 
 package frc.robot.robot1.gripper.commands;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -29,6 +31,8 @@ public class Drop extends Command {
 
   private Command settingArmDown;
 
+  private Timer timer;
+
   /**
    * creates a new Drop command
    * <br>
@@ -43,6 +47,7 @@ public class Drop extends Command {
     hasSeenCoral = false;
     settingArmDown = new WaitUntilCommand(()-> RobotContainer.chassis.getPose().getTranslation().getDistance(RobotContainer.isRed ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6).andThen(
       new InstantCommand(()-> {if (RobotContainer.arm.state != ARM_ANGLE_STATES.CORAL_STATION) RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING);}));
+    timer = new Timer();
     addRequirements(gripper);
   }
 
@@ -56,6 +61,7 @@ public class Drop extends Command {
   public void initialize() {
     RobotContainer.robot1Strip.setDrop();
     hasSeenCoral = false;
+    timer.start();
   }
 
   /**
@@ -82,7 +88,9 @@ public class Drop extends Command {
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
-    if (!interrupted) {
+    timer.stop();
+    timer.reset();
+    if (!interrupted && !DriverStation.isAutonomous()) {
       settingArmDown.schedule();
     }
   }
@@ -97,6 +105,6 @@ public class Drop extends Command {
    */
   @Override
   public boolean isFinished() {
-    return !gripper.isCoralDownSensor() && hasSeenCoral;
+    return (!gripper.isCoralDownSensor() && hasSeenCoral) || timer.hasElapsed(0.8);
   }
 }

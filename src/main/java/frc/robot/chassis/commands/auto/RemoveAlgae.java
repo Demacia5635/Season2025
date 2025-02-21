@@ -33,7 +33,7 @@ public class RemoveAlgae extends Command {
 
     @Override
     public void initialize() {
-        chassis.setVelocities(new ChassisSpeeds(-0.5, 0, 
+        chassis.setRobotRelVelocities(new ChassisSpeeds(0, 0, 
         4.5 * (isAlgaeRight ? -1 : 1)));
         steerTimer.start();
 
@@ -54,15 +54,13 @@ public class RemoveAlgae extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        if(!isAuto){
-            
-            chassis.stop();
-            steerTimer.stop();
-            steerTimer.reset();
-            driveBackTimer.stop();
-            driveBackTimer.reset();
-    
-        }
+        
+        chassis.stop();
+        
+        steerTimer.stop();
+        steerTimer.reset();
+        driveBackTimer.stop();
+        driveBackTimer.reset();
     }
 
     @Override

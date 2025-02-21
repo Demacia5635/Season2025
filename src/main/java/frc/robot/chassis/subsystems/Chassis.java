@@ -79,8 +79,8 @@ public class Chassis extends SubsystemBase {
         fieldTag = new Field2d();
         reefTag = new Tag(() -> getGyroAngle(), 0);
         fiderTag = new Tag(() -> getGyroAngle(), 1);
-        bargeTag = new Tag(() -> getGyroAngle(), 2);
-        backTag = new Tag(() -> getGyroAngle(), 3);
+        bargeTag = new Tag(() -> getGyroAngle(), 3);
+        backTag = new Tag(() -> getGyroAngle(), 2);
         visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
 
         this.pathsAccel = ChassisConstants.AccelPaths.DEFAULT;
@@ -395,6 +395,8 @@ public class Chassis extends SubsystemBase {
         else {
             double vX = MathUtil.clamp(-drivePID.calculate(diffVector.getX(), 0), -3.2, 3.2);
             double vY = MathUtil.clamp(-drivePID.calculate(diffVector.getY(), 0), -3.2, 3.2);
+
+            LogManager.log("VX: " + vX + " VY: " + vY); 
 
             setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation(), true);
         }

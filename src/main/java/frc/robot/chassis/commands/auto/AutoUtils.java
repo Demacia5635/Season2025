@@ -22,48 +22,85 @@ import frc.robot.chassis.subsystems.Chassis;
 
 public class AutoUtils {
 
-
-    static Chassis chassis = RobotContainer.chassis;
+    static Chassis chassis;
     static double maxVel = MAX_DRIVE_VELOCITY;
     static Translation2d cornerOffsetLeft = new Translation2d(0.480, 0.93212813);
     static Translation2d cornerOffsetRight = new Translation2d(0.480, -0.93212813);
     public static final Translation2d blueReefCenter = new Translation2d(4.490, 4.035);
     public static final Translation2d redReefCenter = new Translation2d(13.058902, 4.035);
+    public static final int[] reefCams = {0, 3};
+
+    public AutoUtils(){
+        chassis = RobotContainer.chassis;
+    }
     
 
     public static Segment[] REEF_SEGMENTS = {
-        getSegments(6),
-        getSegments(7),
-        getSegments(8),
-        getSegments(9),
-        getSegments(10),
-        getSegments(11)
+            getSegments(6),
+            getSegments(7),
+            getSegments(8),
+            getSegments(9),
+            getSegments(10),
+            getSegments(11)
     };
 
-    public static Segment getSegments(int elementTag){
-        return new Segment(O_TO_TAG[elementTag].plus(cornerOffsetRight.rotateBy(TAG_ANGLE[elementTag])), O_TO_TAG[elementTag].plus(cornerOffsetLeft.rotateBy(TAG_ANGLE[elementTag])));
+    public static Segment getSegments(int elementTag) {
+        return new Segment(O_TO_TAG[elementTag].plus(cornerOffsetRight.rotateBy(TAG_ANGLE[elementTag])),
+                O_TO_TAG[elementTag].plus(cornerOffsetLeft.rotateBy(TAG_ANGLE[elementTag])));
     }
-    public boolean isSeeTag(int id, int cameraId, double distance){
+
+    public boolean isSeeTag(int id, int cameraId, double distance) {
         return chassis.isSeeTag(id, cameraId, distance);
     }
 
     public static void addCommands(Command c, SequentialCommandGroup cmd) {
         cmd.addCommands(c);
     }
-    
+
     public static PathPoint offset(Translation2d from, double x, double y, double angle) {
-        return offset(from, x, y, angle,0);
+        return offset(from, x, y, angle, 0);
     }
 
     public static PathPoint offset(Translation2d from, double x, double y, double angle, double radius) {
-        return new PathPoint(from.getX()+x, from.getY()+ y, Rotation2d.fromDegrees(angle),radius);
+        return new PathPoint(from.getX() + x, from.getY() + y, Rotation2d.fromDegrees(angle), radius);
     }
 
     public static Command leave() {
-        return new RunCommand(()-> chassis.setVelocities(
-            new ChassisSpeeds(1.5, 0, 0)), chassis).withTimeout(3);
+        return new RunCommand(() -> chassis.setVelocities(
+                new ChassisSpeeds(1.5, 0, 0)), chassis).withTimeout(3);
     }
-    
 
-    
+    public static Command goTo(Pose2d wantedPose, double threshold) {
+        return goTo(wantedPose, threshold, new int[0], new int[0]);
+    }
+
+    public static Command   goTo(Pose2d wantedPose, double threshold, int[] cameraID, int[] tagID) {
+
+        return new Command() {
+
+            @Override
+            public void execute() {
+                chassis.goTo(wantedPose, threshold, true);
+            }
+
+
+            @Override
+            public boolean isFinished() {
+                if (cameraID.length == 0 || tagID.length == 0)
+                    return chassis.getPose().getTranslation().getDistance(wantedPose.getTranslation()) <= threshold;
+                else {
+                    for (int cID : cameraID) {
+                        for (int tID : tagID) {
+                            if (chassis.isSeeTag(tID, cID, Double.MAX_VALUE)) {
+                                return true;
+                            }
+                        }
+                    }
+                    return false;
+                }
+            }
+        };
+
+    }
+
 }
