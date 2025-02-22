@@ -52,23 +52,7 @@ public class VisionFuse {
     }
 
     public Rotation2d getRotationEstimation() {
-        // Only calculate if both cameras see the same tag and have sufficient confidence
-        if (tags[0].getTagId() == tags[3].getTagId() && 
-            tags[0].getPose() != null && 
-            tags[3].getPose() != null &&
-            tags[0].getPoseEstemationConfidence() > 0.1 &&
-            tags[3].getPoseEstemationConfidence() > 0.1) {
-                
-            // // Get the camera to tag translations
-            // Translation2d cam0Translation = tags[0].getCameraToTag();
-            // Translation2d cam3Translation = tags[3].getCameraToTag();
-            
-            // // Calculate robot rotation based on the position difference between cameras
-            // Rotation2d robotRotation = cam3Translation.minus(cam0Translation).getAngle();
-            return null;
-        }
-        
-        return null;
+        return Rotation2d.fromDegrees(tags[2].getAngle());
     }
 
     public double getVisionTimestamp() {

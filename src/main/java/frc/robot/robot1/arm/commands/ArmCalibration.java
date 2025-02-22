@@ -52,6 +52,7 @@ public class ArmCalibration extends Command {
   public void initialize() {
     timer.start();
     arm.armAngleNeutralMode(true);
+    arm.gripperAngleNeutralMode(true);
     arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_START_POWER);
   }
 

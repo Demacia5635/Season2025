@@ -91,7 +91,10 @@ public class FollowTrajectory extends Command {
   @Override
   public void initialize() {
     RobotContainer.robot1Strip.setAutoPath();
-    if(useElasticTarget) this.target = isScoring ? RobotContainer.scoringTarget : getClosestFeeder();
+    if(useElasticTarget) {
+      this.target = isScoring ? RobotContainer.scoringTarget : getClosestFeeder();
+      isAlgaeRight = target.position == POSITION.C || target.position == POSITION.D || target.position == POSITION.E;
+    }
 
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
@@ -133,6 +136,7 @@ public class FollowTrajectory extends Command {
 
         chassis.stop();
         if (DriverStation.isAutonomous()) {
+          LogManager.log("Drop is schedueled");
           new Drop(RobotContainer.gripper).schedule();
         } else {
           new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new Drop(RobotContainer.gripper)).schedule();

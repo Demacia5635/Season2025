@@ -30,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
+import frc.robot.RobotContainer.AutoMode;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.utils.ChassisConstants;
@@ -87,14 +88,17 @@ public class Chassis extends SubsystemBase {
         this.pathsAccel = ChassisConstants.AccelPaths.DEFAULT;
         this.driveAccel = ChassisConstants.AccelDrive.DEFAULT;
 
-        SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.fromDegrees(0))));
-        SmartDashboard.putData("set gyro to 3D tag",
-        new InstantCommand(() -> setYaw(visionFuse.getVisionEstimatedAngle())));
-        LogManager.addEntry("gyro", ()-> gyro.getYaw().getValueAsDouble());
+        SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.kZero)));
+        SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(() -> setYaw(
+                Rotation2d.fromDegrees(RobotContainer.robotContainer.autoChooser.getSelected() == AutoMode.MIDDLE
+                        ? reefTag.getAngle()
+                        : backTag.getAngle())))
+                .ignoringDisable(true));
+        LogManager.addEntry("gyro", () -> gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
         SmartDashboard.putData("ultfielf", fieldTag);
         LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
-        getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
+                getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
         LogManager.addEntry("Chassis vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
         LogManager.addEntry("Chassis vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
         SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)));
@@ -401,7 +405,6 @@ public class Chassis extends SubsystemBase {
         setVelocities(speeds);
     }
 
-
     PIDController drivePID = new PIDController(2, 0, 0);
 
     public void goTo(Pose2d pose, double threshold, boolean stopWhenFinished) {
@@ -414,7 +417,8 @@ public class Chassis extends SubsystemBase {
                 setVelocitiesRotateToAngleOld(new ChassisSpeeds(0, 0, 0), pose.getRotation(), true);
             else
                 setVelocitiesRotateToAngleOld(
-                        new ChassisSpeeds(0.5 * diffVector.getAngle().getCos(), 0.5 * diffVector.getAngle().getSin(), 0),
+                        new ChassisSpeeds(0.5 * diffVector.getAngle().getCos(), 0.5 * diffVector.getAngle().getSin(),
+                                0),
                         pose.getRotation(), true);
         }
 
@@ -422,7 +426,7 @@ public class Chassis extends SubsystemBase {
             double vX = MathUtil.clamp(-drivePID.calculate(diffVector.getX(), 0), -3.2, 3.2);
             double vY = MathUtil.clamp(-drivePID.calculate(diffVector.getY(), 0), -3.2, 3.2);
 
-            LogManager.log("VX: " + vX + " VY: " + vY); 
+            LogManager.log("VX: " + vX + " VY: " + vY);
 
             setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation(), true);
         }

@@ -149,8 +149,8 @@ public class ArmConstants {
 
     /** All the constants of the calibration */
     public static class CalibrationConstants {
-        public static final double ARM_ANGLE_POWER = -0.2;
-        public static final double ARM_ANGLE_START_POWER = 0.2;
+        public static final double ARM_ANGLE_POWER = -0.3;
+        public static final double ARM_ANGLE_START_POWER = 0.3;
         public static final double TIME_TO_CHANGE_POWER = 0.75;
     }
 
@@ -165,7 +165,7 @@ public class ArmConstants {
     /** all the constants angles */
     public static class ANGLES {
         public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.4, 4.4);
+        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.5, 4.42);
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
         public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.67048828125, 4.4);
         public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.2, 4.4);

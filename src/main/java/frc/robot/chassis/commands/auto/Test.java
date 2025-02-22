@@ -110,8 +110,7 @@ public class Test extends SequentialCommandGroup {
             .until(() -> chassis.isSeeTag(coralLeft.position.getId(), 0, 2.5)
                 || chassis.isSeeTag(coralLeft.position.getId(), 3, 2.5)),
         new FollowTrajectory(chassis, backupCoral),
-        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis));
-
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
+        );
   }
-
 }

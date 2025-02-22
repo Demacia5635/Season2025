@@ -191,7 +191,7 @@ public class DemaciaTrajectory {
 
         double wantedOmega = Math
                 .abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
-                        : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 1.5;
+                        : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 1.3;
 
         if ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD

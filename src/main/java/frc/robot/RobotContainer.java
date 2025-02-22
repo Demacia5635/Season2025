@@ -76,8 +76,8 @@ public class RobotContainer implements Sendable{
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
 
   private final Timer timer;
-  private final SendableChooser<AutoMode> autoChooser;
-  private enum AutoMode {
+  public final SendableChooser<AutoMode> autoChooser;
+  public enum AutoMode {
     LEFT, MIDDLE, RIGHT
   }
   
@@ -87,7 +87,7 @@ public class RobotContainer implements Sendable{
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
@@ -242,19 +242,19 @@ public class RobotContainer implements Sendable{
   public Command getAutonomousCommand() {
     timer.reset();
     timer.start();
-    return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
-    // switch (autoChooser.getSelected()) {
-    //   case LEFT:
-    //     return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, false)));
+    // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
+    switch (autoChooser.getSelected()) {
+      case LEFT:
+        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false)));
 
-    //   case MIDDLE:
-    //     return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3(chassis)));
+      case MIDDLE:
+        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper)));
       
-    //   case RIGHT: 
-    //     return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, isRed, true)));
+      case RIGHT: 
+        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true)));
     
-    //   default:
-    //     return new ArmCalibration(arm);
-    // }
+      default:
+        return new ArmCalibration(arm);
+    }
   }
 }
