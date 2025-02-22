@@ -70,16 +70,16 @@ public class Robot1Strip extends LedStrip {
             setColor(Color.kYellow);
         }
         
-        if (!grabTimer.hasElapsed(2) && grabTimer.get() != 0) {
+        if (!grabTimer.hasElapsed(1) && grabTimer.get() != 0) {
             setBlink(Color.kYellow);
-        } else if (grabTimer.hasElapsed(2)) {
+        } else if (grabTimer.hasElapsed(1)) {
             grabTimer.stop();
             grabTimer.reset();
         }
 
-        if (!dropTimer.hasElapsed(2) && dropTimer.get() != 0) {
+        if (!dropTimer.hasElapsed(1) && dropTimer.get() != 0) {
             setBlink(Color.kPurple);
-        } else if (dropTimer.hasElapsed(2)) {
+        } else if (dropTimer.hasElapsed(1)) {
             dropTimer.stop();
             dropTimer.reset();
         }
@@ -111,9 +111,9 @@ public class Robot1Strip extends LedStrip {
             autoPathTimer.reset();
         }
 
-        if (!coralStationTimer.hasElapsed(2) && coralStationTimer.get() != 0) {
+        if (!coralStationTimer.hasElapsed(0.75) && coralStationTimer.get() != 0) {
             setBlink(Color.kBlue);
-        } else if (coralStationTimer.hasElapsed(2)) {
+        } else if (coralStationTimer.hasElapsed(0.75)) {
             coralStationTimer.stop();
             coralStationTimer.reset();
         }
