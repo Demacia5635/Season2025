@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
+import frc.robot.PracticeOffsets.OffsetType;
 import frc.robot.Path.Trajectory.ChangeReefToClosest;
 import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.chassis.commands.Drive;
@@ -160,6 +161,7 @@ public class RobotContainer implements Sendable{
     driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
 
     operatorController.getRightStickkMove().onTrue(new JoyClimeb(operatorController, climb));
+    operatorController.leftStick().onTrue(new InstantCommand(()-> startPracticeOffsets()));
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
@@ -216,6 +218,18 @@ public class RobotContainer implements Sendable{
    */
   public Command getEnableInitCommand() {
     return new ArmCalibration(arm);
+  }
+
+  public void startPracticeOffsets() {
+    new PracticeOffsets(OffsetType.L3_LEFT).schedule();
+    new PracticeOffsets(OffsetType.L3_RIGHT).schedule();
+    new PracticeOffsets(OffsetType.L2_LEFT).schedule();
+    new PracticeOffsets(OffsetType.L2_RIGHT).schedule();
+    new PracticeOffsets(OffsetType.FEEDER).schedule();
+    new PracticeOffsets(OffsetType.ALGAE_BOTTOM_LEFT).schedule();
+    new PracticeOffsets(OffsetType.ALGAE_BOTTOM_RIGHT).schedule();
+    new PracticeOffsets(OffsetType.ALGAE_TOP_LEFT).schedule();
+    new PracticeOffsets(OffsetType.ALGAE_TOP_RIGHT).schedule();
   }
 
   /**

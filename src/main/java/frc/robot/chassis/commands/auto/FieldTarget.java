@@ -20,15 +20,21 @@ public class FieldTarget {
     public static final Translation2d approachOffsetAlgaeLeft = new Translation2d(1, -0.6);
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);
-    public static final Translation2d intakeOffset = new Translation2d(0.73, 0);
-    public static final Translation2d topAlgeaRightOffset = new Translation2d(0.50,0.5);
-    public static final Translation2d topAlgeaLeftOffset = new Translation2d(0.50,-0.5);
-    public static final Translation2d bottomAlgeaRightOffset = new Translation2d(0.55, 0.47);
-    public static final Translation2d bottomAlgeaLeftOffset = new Translation2d(0.55, -0.47);
+    public static Translation2d intakeOffset = new Translation2d(0.73, 0);
+    public static Translation2d topAlgeaRightOffset = new Translation2d(0.50,0.5);
+    public static Translation2d topAlgeaLeftOffset = new Translation2d(0.50,-0.5);
+    public static Translation2d bottomAlgeaRightOffset = new Translation2d(0.55, 0.47);
+    public static Translation2d bottomAlgeaLeftOffset = new Translation2d(0.55, -0.47);
     public static final Translation2d l2Offset = new Translation2d(0.64, 0);
     public static final Translation2d l3Offset = new Translation2d(0.5, 0);
     public static final Translation2d realLeftReefOffset = new Translation2d(-0.05,-0.16);
     public static final Translation2d realRightReefOffset = new Translation2d(-0.05,0.16);
+
+    public static Translation2d l2Left = new Translation2d(0.64, -0.11);
+    public static Translation2d l2Right = new Translation2d(0.64, 0.25);
+    public static Translation2d l3Left = new Translation2d(0.5, -0.11);
+    public static Translation2d l3Right = new Translation2d(0.5, 0.25);
+
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
     public LEVEL level;
@@ -145,9 +151,19 @@ public class FieldTarget {
         Translation2d calculatedOffset = new Translation2d();
 
         if(isScoring){
-            Translation2d levelOffset = level == LEVEL.L3 ? l3Offset : l2Offset;
-            Translation2d elementOffset = elementPosition == ELEMENT_POSITION.CORAL_LEFT ? reefOffsetLeft : reefOffsetRight;
-            calculatedOffset = levelOffset.plus(elementOffset);
+            if (level == LEVEL.L2) {
+                if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
+                    calculatedOffset = l2Right;
+                } else {
+                    calculatedOffset = l2Left;
+                }
+            } else if (level == LEVEL.L3) {
+                if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
+                    calculatedOffset = l3Right;
+                } else {
+                    calculatedOffset = l3Left;
+                }
+            }
         }
         else{
             if(level == LEVEL.FEEDER){
