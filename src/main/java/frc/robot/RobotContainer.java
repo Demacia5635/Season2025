@@ -19,7 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
 import frc.robot.Path.Trajectory.ChangeReefToClosest;
@@ -137,6 +137,7 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
+    driverController.leftStick().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L1)));
     driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
 
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));

@@ -15,6 +15,7 @@ import frc.robot.utils.LogManager;
 
 public class FieldTarget {
 
+    public static final Translation2d l1Offset = new Translation2d(0.55, 0);
     public static final Translation2d approachOffset = new Translation2d(1, 0);
     public static final Translation2d approachOffsetAlgaeRight = new Translation2d(1, 0.6);
     public static final Translation2d approachOffsetAlgaeLeft = new Translation2d(1, -0.6);
@@ -54,14 +55,12 @@ public class FieldTarget {
         new FieldTarget(POSITION.F, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
     };
 
-
-
-
     public enum ELEMENT_POSITION{
-        CORAL_LEFT, CORAL_RIGHT, ALGEA, FEEDER
+        CORAL_MIDDLE, CORAL_LEFT, CORAL_RIGHT, ALGEA, FEEDER
     }
     
     public enum LEVEL{
+        L1,
         L2,
         L3,
         FEEDER,
@@ -141,12 +140,12 @@ public class FieldTarget {
     }
 
     public Translation2d getCalcOffset(boolean isAlgaeRight) {
-        boolean isScoring = level == LEVEL.L2 || level == LEVEL.L3;
+        boolean isScoring = level == LEVEL.L2 || level == LEVEL.L3 || level == LEVEL.L1;
         Translation2d calculatedOffset = new Translation2d();
 
         if(isScoring){
-            Translation2d levelOffset = level == LEVEL.L3 ? l3Offset : l2Offset;
-            Translation2d elementOffset = elementPosition == ELEMENT_POSITION.CORAL_LEFT ? reefOffsetLeft : reefOffsetRight;
+            Translation2d levelOffset = level == LEVEL.L3 ? l3Offset : level == LEVEL.L2 ? l2Offset : l1Offset;
+            Translation2d elementOffset = elementPosition == ELEMENT_POSITION.CORAL_LEFT ? reefOffsetLeft : elementPosition == ELEMENT_POSITION.CORAL_RIGHT ? reefOffsetRight : Translation2d.kZero;
             calculatedOffset = levelOffset.plus(elementOffset);
         }
         else{

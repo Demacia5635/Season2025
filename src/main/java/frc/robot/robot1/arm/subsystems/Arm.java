@@ -136,6 +136,7 @@ public class Arm extends SubsystemBase {
 
     /* add state chooser through the netwrok tables */
     SendableChooser<ARM_ANGLE_STATES> stateChooser = new SendableChooser<>();
+    stateChooser.addOption("L1", ARM_ANGLE_STATES.L1);
     stateChooser.addOption("L2", ARM_ANGLE_STATES.L2);
     stateChooser.addOption("L3", ARM_ANGLE_STATES.L3);
     stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);
@@ -143,6 +144,7 @@ public class Arm extends SubsystemBase {
     stateChooser.addOption("Climb", ARM_ANGLE_STATES.CLIMB);
     stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
     stateChooser.addOption("Idle", ARM_ANGLE_STATES.IDLE);
+    stateChooser.addOption("Idle2", ARM_ANGLE_STATES.IDLE);
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
 
@@ -171,6 +173,10 @@ public class Arm extends SubsystemBase {
 
   public void setState(LEVEL level) {
     switch (level) {
+      case L1:
+        setState(ARM_ANGLE_STATES.L1);
+        break;
+
       case L2:
         setState(ARM_ANGLE_STATES.L2);
         break;
