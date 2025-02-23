@@ -9,9 +9,9 @@
         "containers": [
           {
             "title": "FMSInfo",
-            "x": 0.0,
-            "y": 640.0,
-            "width": 384.0,
+            "x": 768.0,
+            "y": 256.0,
+            "width": 512.0,
             "height": 128.0,
             "type": "FMSInfo",
             "properties": {
@@ -79,8 +79,8 @@
           },
           {
             "title": "set gyro to 3D tag",
-            "x": 1024.0,
-            "y": 0.0,
+            "x": 768.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -193,7 +193,7 @@
           {
             "title": "limelight-front",
             "x": 1024.0,
-            "y": 128.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Camera Stream",
@@ -505,7 +505,7 @@
             }
           },
           {
-            "title": "IsReady",
+            "title": "Is Arm Ready",
             "x": 0.0,
             "y": 384.0,
             "width": 128.0,
@@ -522,7 +522,7 @@
             }
           },
           {
-            "title": "state",
+            "title": "Arm State",
             "x": 0.0,
             "y": 512.0,
             "width": 256.0,
@@ -547,20 +547,6 @@
               "period": 0.06,
               "show_robot_rotation": true,
               "rotation_unit": "Radians"
-            }
-          },
-          {
-            "title": "climeb Angle",
-            "x": 128.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Log/Climb/climeb Angle",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
             }
           },
           {
@@ -856,7 +842,7 @@
           {
             "title": "set gyro to 3D tag",
             "x": 1280.0,
-            "y": 384.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -912,6 +898,19 @@
             "properties": {
               "topic": "/CameraPublisher/limelight-backup",
               "period": 0.06
+            }
+          },
+          {
+            "title": "reset gyro 180",
+            "x": 1280.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/reset gyro 180",
+              "period": 0.06,
+              "show_type": true
             }
           }
         ]
@@ -1014,7 +1013,7 @@
           },
           {
             "title": "Arm Angle",
-            "x": 384.0,
+            "x": 256.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
@@ -1028,7 +1027,7 @@
           },
           {
             "title": "Gripper Angle",
-            "x": 512.0,
+            "x": 384.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
@@ -1042,7 +1041,7 @@
           },
           {
             "title": "IsReady",
-            "x": 256.0,
+            "x": 512.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
@@ -1490,6 +1489,19 @@
               "topic": "/CameraPublisher/limelight-backup",
               "period": 0.06
             }
+          },
+          {
+            "title": "reset gyro 180",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/reset gyro 180",
+              "period": 0.06,
+              "show_type": true
+            }
           }
         ]
       }
@@ -1609,16 +1621,28 @@
             }
           },
           {
-            "title": "set gyro to 3D tag",
-            "x": 640.0,
-            "y": 384.0,
+            "title": "reset gyro 180",
+            "x": 896.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
             "properties": {
-              "topic": "/SmartDashboard/set gyro to 3D tag",
+              "topic": "/SmartDashboard/reset gyro 180",
               "period": 0.06,
               "show_type": true
+            }
+          },
+          {
+            "title": "Chassis",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Subsystem",
+            "properties": {
+              "topic": "/SmartDashboard/Chassis",
+              "period": 0.06
             }
           }
         ]
@@ -1659,8 +1683,8 @@
           },
           {
             "title": "Arm Angle Limit Switch",
-            "x": 640.0,
-            "y": 128.0,
+            "x": 1024.0,
+            "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -1676,7 +1700,7 @@
           },
           {
             "title": "IsReady",
-            "x": 512.0,
+            "x": 1024.0,
             "y": 128.0,
             "width": 128.0,
             "height": 128.0,
@@ -1719,7 +1743,7 @@
             "title": "Arm State Chooser",
             "x": 0.0,
             "y": 128.0,
-            "width": 512.0,
+            "width": 640.0,
             "height": 128.0,
             "type": "Split Button Chooser",
             "properties": {
@@ -1817,6 +1841,20 @@
             "properties": {
               "topic": "/SmartDashboard/Arm",
               "period": 0.06
+            }
+          },
+          {
+            "title": "state",
+            "x": 1024.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Arm/state",
+              "period": 0.06,
+              "data_type": "string",
+              "show_submit_button": false
             }
           }
         ]
@@ -1920,8 +1958,8 @@
           },
           {
             "title": "set Brake",
-            "x": 256.0,
-            "y": 384.0,
+            "x": 0.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -2015,6 +2053,392 @@
       "grid_layout": {
         "layouts": [],
         "containers": []
+      }
+    },
+    {
+      "name": "Practice",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "pracice",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/pracice",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "Command Scheduler",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Scheduler",
+            "properties": {
+              "topic": "/SmartDashboard/Command Scheduler",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Reef",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 512.0,
+            "height": 384.0,
+            "type": "Reef",
+            "properties": {
+              "topic": "/SmartDashboard/Reef",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "field",
+            "x": 1280.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/field",
+              "period": 0.06,
+              "field_game": "Reefscape",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": -90.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295
+            }
+          },
+          {
+            "title": "limelight-bottom",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-bottom",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "limelight-backup",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-backup",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "L3 Left X",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/L3 Left/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L3 Left Y",
+            "x": 128.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/L3 Left/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L3 Right X",
+            "x": 256.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/L3 Right/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L3 Right Y",
+            "x": 384.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/L3 Right/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L2 Left X",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/L2 Left/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L2 Left Y",
+            "x": 128.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/L2 Left/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L2 Right X",
+            "x": 256.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/L2 Right/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L2 Right Y",
+            "x": 384.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/L2 Right/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Feeder X",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Feeder/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Feeder Y",
+            "x": 384.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Feeder/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Bottom Left X",
+            "x": 1024.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/AlgaeBottomLeft/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Bottom Left Y",
+            "x": 1152.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/AlgaeBottomLeft/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Bottom Right X",
+            "x": 1280.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/AlgaeBottomRight/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Bottom Right Y",
+            "x": 1408.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/AlgaeBottomRight/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Top Left X",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/AlgaeTopLeft/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Top Left Y",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/AlgaeTopLeft/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Top Right X",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/AlgaeTopRight/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Top Right Y",
+            "x": 1408.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/AlgaeTopRight/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "limelight-front",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-front",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Timer",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/Log/Timer",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 15,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "Is Arm Ready",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/Log/Arm/IsReady",
+              "period": 0.06,
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
+            }
+          }
+        ]
       }
     }
   ]

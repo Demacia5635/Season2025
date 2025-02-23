@@ -100,8 +100,8 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("ultfielf", fieldTag);
         LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
                 getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
-        LogManager.addEntry("Chassis vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
-        LogManager.addEntry("Chassis vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
+        LogManager.addEntry("Chassis/vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
+        LogManager.addEntry("Chassis/vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
         SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)));
         SmartDashboard.putData("Chassis/set brake", new InstantCommand(() -> setNeutralMode(true)));
         SmartDashboard.putData(getName() + "/Swerve Drive", getChassisWidget());
@@ -427,7 +427,7 @@ public class Chassis extends SubsystemBase {
             double vX = MathUtil.clamp(-drivePID.calculate(diffVector.getX(), 0), -3.2, 3.2);
             double vY = MathUtil.clamp(-drivePID.calculate(diffVector.getY(), 0), -3.2, 3.2);
 
-            LogManager.log("VX: " + vX + " VY: " + vY);
+            // LogManager.log("VX: " + vX + " VY: " + vY);
 
             setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation(), true);
         }

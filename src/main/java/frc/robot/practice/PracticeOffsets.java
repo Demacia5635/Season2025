@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.practice;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -12,7 +12,7 @@ public class PracticeOffsets extends Command{
     private double y;
     private OffsetType type;
 
-    enum OffsetType{
+    public enum OffsetType{
         L3_LEFT,
         L3_RIGHT,
         L2_LEFT,
@@ -29,7 +29,6 @@ public class PracticeOffsets extends Command{
         this.y = 0;
         this.type = type;
         SmartDashboard.putData(type.name(), this);
-        ignoringDisable(true);
     }
 
     @Override
