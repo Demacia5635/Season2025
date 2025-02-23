@@ -72,7 +72,7 @@ public class Tag extends SubsystemBase {
 
     field = new Field2d();
     latency = 0;
-    SmartDashboard.putData("Tag" + cameraId, this);
+    // SmartDashboard.putData("Tag" + cameraId, this);
     SmartDashboard.putData("field-tag" + cameraId, field);
   }
 

@@ -31,7 +31,7 @@ public class LedStrip extends SubsystemBase{
     
     /*puts on the network table all the colors */
     setName(name);
-    SmartDashboard.putData(name, this);
+    // SmartDashboard.putData(name, this);
   }
 
   /**

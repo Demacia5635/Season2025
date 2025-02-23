@@ -11,9 +11,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,14 +20,12 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
-import frc.robot.PracticeOffsets.OffsetType;
 import frc.robot.Path.Trajectory.ChangeReefToClosest;
 import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
-import frc.robot.chassis.commands.auto.Test;
 import frc.robot.chassis.commands.auto.AlgaeL3;
 import frc.robot.chassis.commands.auto.AlgaeL3L3;
 import frc.robot.chassis.commands.auto.AutoUtils;
@@ -42,12 +38,12 @@ import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.climb.command.JoyClimeb;
 import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
-import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.GrabOrDrop;
 import frc.robot.robot1.gripper.commands.GripperDrive;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.leds.Robot1Strip;
 import frc.robot.leds.subsystems.LedManager;
+import frc.robot.practice.AllOffsets;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
@@ -76,7 +72,6 @@ public class RobotContainer implements Sendable{
   
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
 
-  private final Timer timer;
   public final SendableChooser<AutoMode> autoChooser;
   public enum AutoMode {
     LEFT, MIDDLE, RIGHT
@@ -84,7 +79,7 @@ public class RobotContainer implements Sendable{
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
+    // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
@@ -92,8 +87,7 @@ public class RobotContainer implements Sendable{
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
-    timer = new Timer();
-    LogManager.addEntry("Timer",()-> 15-timer.get());
+    LogManager.addEntry("Timer", DriverStation::getMatchTime);
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     
@@ -161,7 +155,8 @@ public class RobotContainer implements Sendable{
     driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
 
     operatorController.getRightStickkMove().onTrue(new JoyClimeb(operatorController, climb));
-    operatorController.leftStick().onTrue(new InstantCommand(()-> startPracticeOffsets()));
+    operatorController.leftStick().onTrue(new AllOffsets());
+    SmartDashboard.putData("pracice", new AllOffsets());
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
@@ -220,18 +215,6 @@ public class RobotContainer implements Sendable{
     return new ArmCalibration(arm);
   }
 
-  public void startPracticeOffsets() {
-    new PracticeOffsets(OffsetType.L3_LEFT).schedule();
-    new PracticeOffsets(OffsetType.L3_RIGHT).schedule();
-    new PracticeOffsets(OffsetType.L2_LEFT).schedule();
-    new PracticeOffsets(OffsetType.L2_RIGHT).schedule();
-    new PracticeOffsets(OffsetType.FEEDER).schedule();
-    new PracticeOffsets(OffsetType.ALGAE_BOTTOM_LEFT).schedule();
-    new PracticeOffsets(OffsetType.ALGAE_BOTTOM_RIGHT).schedule();
-    new PracticeOffsets(OffsetType.ALGAE_TOP_LEFT).schedule();
-    new PracticeOffsets(OffsetType.ALGAE_TOP_RIGHT).schedule();
-  }
-
   /**
    * This command is schedules at the start of disable.
    * Put here all the stop functions of all the subsytems and then add them to the requirments
@@ -245,7 +228,6 @@ public class RobotContainer implements Sendable{
       arm.stop();
       gripper.stop();
       climb.stopClimb();
-      timer.stop();
     }, chassis, arm, gripper, climb
     ).withName("initDisableCommand").ignoringDisable(true);
   }
@@ -256,8 +238,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    timer.reset();
-    timer.start();
     // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
     switch (autoChooser.getSelected()) {
       case LEFT:
