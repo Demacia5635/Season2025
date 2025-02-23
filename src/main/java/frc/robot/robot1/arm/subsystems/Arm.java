@@ -136,6 +136,7 @@ public class Arm extends SubsystemBase {
 
     /* add state chooser through the netwrok tables */
     SendableChooser<ARM_ANGLE_STATES> stateChooser = new SendableChooser<>();
+    stateChooser.addOption("L1", ARM_ANGLE_STATES.L1);
     stateChooser.addOption("L2", ARM_ANGLE_STATES.L2);
     stateChooser.addOption("L3", ARM_ANGLE_STATES.L3);
     stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);

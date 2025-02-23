@@ -164,6 +164,7 @@ public class ArmConstants {
 
     /** all the constants angles */
     public static class ANGLES {
+        public static final Pair<Double, Double> L1 = new Pair<Double, Double>(Math.toRadians(37.3), 4.6);
         public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
         public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.416357421875, 4.50135263197252);
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
@@ -175,6 +176,7 @@ public class ArmConstants {
 
     /** the arm angle states */
     public static enum ARM_ANGLE_STATES {
+        L1,
         L2,
         L3,
         ALGAE_BOTTOM,

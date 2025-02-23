@@ -73,7 +73,11 @@ public class Drop extends Command {
    */
   @Override
   public void execute() {
-    gripper.setPower(DropConstants.DROP_POWER);
+    if (RobotContainer.arm.getState() == ARM_ANGLE_STATES.L1) {
+      gripper.setPower(-0.55);
+    } else {
+      gripper.setPower(DropConstants.DROP_POWER);
+    }
     if (gripper.isCoralUpSensor() || gripper.isCoralDownSensor()) {
       hasSeenCoral = true;
     }
@@ -105,6 +109,6 @@ public class Drop extends Command {
    */
   @Override
   public boolean isFinished() {
-    return (!gripper.isCoralDownSensor() && hasSeenCoral) || timer.hasElapsed(0.8);
+    return ((!gripper.isCoralDownSensor() && hasSeenCoral) && RobotContainer.arm.getState() != ARM_ANGLE_STATES.L1) || timer.hasElapsed(3);
   }
 }
