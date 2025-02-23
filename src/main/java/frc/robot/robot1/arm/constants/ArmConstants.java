@@ -165,7 +165,7 @@ public class ArmConstants {
     /** all the constants angles */
     public static class ANGLES {
         public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.5, 4.37);
+        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.416357421875, 4.50135263197252);
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
         public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.67048828125, 4.4);
         public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.35, 4.4);

@@ -3,6 +3,7 @@ package frc.robot.leds;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
@@ -10,6 +11,8 @@ import frc.robot.leds.subsystems.LedStrip;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.subsystems.Gripper;
+import frc.robot.utils.CommandController;
+import frc.robot.utils.CommandController.ControllerType;
 import frc.robot.vision.utils.VisionConstants;
 
 public class Robot1Strip extends LedStrip {
@@ -63,7 +66,6 @@ public class Robot1Strip extends LedStrip {
     @Override
     public void periodic() {
 
-
         setColor(Color.kWhite);
 
         if (arm.getState().equals(ARM_ANGLE_STATES.CORAL_STATION)) {
@@ -103,8 +105,12 @@ public class Robot1Strip extends LedStrip {
                 }
             }
         }
+
+        if (RobotContainer.robotContainer.getEnableInitCommand().isScheduled()) {
+            setSolidGay();
+        }
             
-            if (!autoPathTimer.hasElapsed(1) && autoPathTimer.get() != 0) {
+        if (!autoPathTimer.hasElapsed(1) && autoPathTimer.get() != 0) {
             setBlink(Color.kRed);
         } else if (autoPathTimer.hasElapsed(1)) {
             autoPathTimer.stop();

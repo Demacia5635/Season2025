@@ -118,7 +118,7 @@ public class CommandController extends CommandGenericHID{
     public Trigger rightSetting() {
         switch (controllerType) {
             case kXbox:
-                return button(XboxController.Button.kStart.value, CommandScheduler.getInstance().getDefaultButtonLoop());
+                return button(XboxController.Button.kBack.value, CommandScheduler.getInstance().getDefaultButtonLoop());
             case kPS5:
                 return button(PS5Controller.Button.kOptions.value, CommandScheduler.getInstance().getDefaultButtonLoop());
             default:
@@ -129,7 +129,7 @@ public class CommandController extends CommandGenericHID{
     public Trigger leftSettings() {
         switch (controllerType) {
             case kXbox:
-                return button(XboxController.Button.kBack.value, CommandScheduler.getInstance().getDefaultButtonLoop());
+                return button(XboxController.Button.kStart.value, CommandScheduler.getInstance().getDefaultButtonLoop());
             case kPS5:
                 return button(PS5Controller.Button.kCreate.value, CommandScheduler.getInstance().getDefaultButtonLoop());
             default:

@@ -89,6 +89,7 @@ public class Chassis extends SubsystemBase {
         this.driveAccel = ChassisConstants.AccelDrive.DEFAULT;
 
         SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.kZero)));
+        SmartDashboard.putData("reset gyro 180", new InstantCommand(() -> setYaw(Rotation2d.kPi)));
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(() -> setYaw(
                 Rotation2d.fromDegrees(RobotContainer.robotContainer.autoChooser.getSelected() == AutoMode.MIDDLE
                         ? reefTag.getAngle()

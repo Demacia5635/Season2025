@@ -149,7 +149,6 @@ public class ArmCommand extends Command {
 
       case TESTING:
         wantedAngle = new Pair<Double, Double>(testArmAngle, testGripperAngle);
-        LogManager.log(wantedAngle);
         arm.setPositionVoltage(testArmAngle, testGripperAngle);
         break;
 

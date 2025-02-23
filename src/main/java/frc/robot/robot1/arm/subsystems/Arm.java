@@ -143,6 +143,7 @@ public class Arm extends SubsystemBase {
     stateChooser.addOption("Climb", ARM_ANGLE_STATES.CLIMB);
     stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
     stateChooser.addOption("Idle", ARM_ANGLE_STATES.IDLE);
+    stateChooser.addOption("Idle2", ARM_ANGLE_STATES.IDLE);
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
 
@@ -350,10 +351,6 @@ public class Arm extends SubsystemBase {
     // if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
     //   hasGripperAngleReachedTarget = true;
     // }
-
-    if (armAngleMotor.getCurrentClosedLoopSP() <= GripperAngleStarting.WHEN_MOVING_GRIPPER) {
-      targetAngle = GripperAngleStarting.ANGLE_TO_GRIPPER;
-    }
 
     if (targetAngle < GripperAngleMotorConstants.BACK_LIMIT) {
       targetAngle = GripperAngleMotorConstants.BACK_LIMIT;

@@ -136,18 +136,19 @@ public class FollowTrajectory extends Command {
 
         chassis.stop();
         if (DriverStation.isAutonomous()) {
-          LogManager.log("Drop is schedueled");
-          new Drop(RobotContainer.gripper).schedule();
+          new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(0.3, 0, 0)), chassis).withTimeout(0.08).andThen(new Drop(RobotContainer.gripper)).schedule();
         } else {
           new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new Drop(RobotContainer.gripper)).schedule();
         }
       }
+
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         if (!DriverStation.isAutonomous()) {
           new RemoveAlgae(chassis, target, isAlgaeRight).schedule();
         } else {
           chassis.stop();
         }
+        
         // LogManager.log("i do algea");
       }
 

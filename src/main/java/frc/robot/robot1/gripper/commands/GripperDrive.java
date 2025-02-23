@@ -8,17 +8,31 @@ public class GripperDrive extends Command {
 
     private final Gripper gripper;
     private final CommandController controller;
+    private boolean leftBoost;
+    private boolean rightBoost;
 
     public GripperDrive(Gripper gripper, CommandController controller) {
         this.gripper = gripper;
         this.controller = controller;
+        this.leftBoost = leftBoost;
+        this.rightBoost = rightBoost;
         addRequirements(gripper);
     }
 
     @Override
+    public void initialize() {
+        leftBoost = false;
+        rightBoost = false;
+    }
+
+    @Override
     public void execute() {
+        leftBoost = controller.leftBumper().getAsBoolean();
+        rightBoost = controller.rightBumper().getAsBoolean();
+
         gripper.setPower(
-            (controller.getLeftTrigger() - controller.getRightTrigger()) * 0.3
+            ((leftBoost ? controller.getLeftTrigger() * 2 : controller.getLeftTrigger()) - 
+            (rightBoost ? controller.getRightTrigger() * 2 : controller.getRightTrigger())) * 0.3
         );
     }
 

@@ -478,7 +478,7 @@ public class TalonMotor extends TalonFX {
   @Override
   public void initSendable(SendableBuilder builder) {
     builder.setSmartDashboardType("TalonMotor");
-    builder.addStringProperty("ControlMode", this::getCurrentControlMode, null);
+    // builder.addStringProperty("ControlMode", this::getCurrentControlMode, null);
     builder.addBooleanProperty("IsInverted", ()-> config.inverted, null);
     builder.addDoubleProperty("CloseLoopSP", this::getCurrentClosedLoopSP, null);
     builder.addDoubleProperty("CloseLoopError", this::getCurrentClosedLoopError,null);
