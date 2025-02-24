@@ -53,7 +53,6 @@ public class ArmCalibration extends Command {
     timer.start();
     arm.armAngleNeutralMode(true);
     arm.gripperAngleNeutralMode(true);
-    arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_START_POWER);
   }
 
   /**
@@ -66,6 +65,8 @@ public class ArmCalibration extends Command {
   public void execute() {
     if (timer.hasElapsed(CalibrationConstants.TIME_TO_CHANGE_POWER)) {
       arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_POWER);
+    } else {
+      arm.armAngleMotorSetPower(CalibrationConstants.ARM_ANGLE_START_POWER);
     }
   }
 
