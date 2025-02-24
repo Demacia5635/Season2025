@@ -38,7 +38,6 @@ public class AlgaeL3 extends SequentialCommandGroup {
             new WaitCommand(0.1).alongWith(new InstantCommand(() -> arm.setState(LEVEL.L3))),
             new FollowTrajectory(chassis, eCoral),
             new WaitUntilCommand(() -> !gripper.isCoralUpSensor()).alongWith(new InstantCommand(() -> new Drop(gripper).schedule())),
-            new WaitUntilCommand(() -> gripper.isCoralUpSensor()),
             new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.3)
         );
     }

@@ -136,7 +136,6 @@ public class FollowTrajectory extends Command {
 
         chassis.stop();
         if (DriverStation.isAutonomous()) {
-          new InstantCommand(() -> new Drop(RobotContainer.gripper)).schedule();
         } else {
           new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new Drop(RobotContainer.gripper)).schedule();
         }
