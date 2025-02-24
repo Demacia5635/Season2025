@@ -29,6 +29,7 @@ import frc.robot.robot1.gripper.commands.AlignCoral;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.robot1.gripper.subsystems.Gripper;
+import frc.robot.utils.LogManager;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -59,7 +60,13 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     addCommands(
         new FollowTrajectory(chassis, algaePoint, !isRight), (new RemoveAlgae(chassis, algaePoint, !isRight)
             .alongWith(new InstantCommand(() -> new AlignCoral(gripper).schedule()))),
-        new InstantCommand(() -> arm.setState(LEVEL.L3)),
+        (new FollowTrajectory(chassis,new ArrayList<PathPoint>() {
+          {
+            add(dummyPoint);
+            add(infrontReef);
+          }
+        }, correctRotation(60)))
+        .alongWith(new InstantCommand(() -> arm.setState(LEVEL.L3))),
         // new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
         // {
         // add(dummyPoint);
@@ -69,8 +76,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         // chassis.isSeeTag(coralRight.position.getId(), 0, 2)
         // || chassis.isSeeTag(coralRight.position.getId(), 3, 2)),
         new FollowTrajectory(chassis, coralLeft),
-        new WaitUntilCommand(() -> !gripper.isCoralUpSensor()).alongWith(new InstantCommand(() -> new Drop(gripper))),
-        new WaitCommand(0.1),
+        new WaitCommand(0.2),
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.1),
         // new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 4)), chassis).withTimeout(0.1),
         (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
@@ -97,7 +103,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
                 || chassis.isSeeTag(coralRight.position.getId(), 3, 10)),
         new FollowTrajectory(chassis, coralRight),
         !(gripper.getCurrentCommand() instanceof Drop) ? new InstantCommand(()-> new Drop(gripper).schedule()) : new InstantCommand(),
-        new WaitUntilCommand(() -> !gripper.isCoralUpSensor()).alongWith(new InstantCommand(() -> new Drop(gripper))),
+        new WaitUntilCommand(() -> !gripper.isCoralUpSensor()).alongWith(new InstantCommand(() -> new Drop(gripper).schedule())),
         new WaitCommand(0.1),
         new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.2),
         (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
@@ -110,7 +116,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         .until(() -> chassis.isSeeTag(feeder.position.getId(), 1, 10)),
         new FollowTrajectory(chassis, feeder),
 
-        new WaitUntilCommand(gripper::isCoralDownSensor),
+        new WaitUntilCommand(()-> gripper.isCoralDownSensor()),
         (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
           {
             add(dummyPoint);
