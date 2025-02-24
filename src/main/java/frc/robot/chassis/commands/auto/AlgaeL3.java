@@ -20,6 +20,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.AlignCoral;
+import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
 public class AlgaeL3 extends SequentialCommandGroup {
@@ -36,8 +37,9 @@ public class AlgaeL3 extends SequentialCommandGroup {
             .alongWith(new InstantCommand(()-> new AlignCoral(gripper).schedule())),
             new WaitCommand(0.1).alongWith(new InstantCommand(() -> arm.setState(LEVEL.L3))),
             new FollowTrajectory(chassis, eCoral),
+            new WaitUntilCommand(() -> !gripper.isCoralUpSensor()).alongWith(new InstantCommand(() -> new Drop(gripper).schedule())),
             new WaitUntilCommand(() -> gripper.isCoralUpSensor()),
-            new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
+            new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.3)
         );
     }
 }
