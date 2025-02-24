@@ -90,14 +90,6 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    
-    if (!m_hasScheduled) {
-      m_enableInitCommand = m_robotContainer.getEnableInitCommand();
-      if (m_enableInitCommand != null) {
-        m_enableInitCommand.schedule();
-        m_hasScheduled = true;
-      }
-    }
 
     if (RobotContainer.isComp()) {
       Elastic.selectTab("Teleoperated");
