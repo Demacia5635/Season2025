@@ -76,7 +76,8 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         // chassis.isSeeTag(coralRight.position.getId(), 0, 2)
         // || chassis.isSeeTag(coralRight.position.getId(), 3, 2)),
         new FollowTrajectory(chassis, coralLeft),
-        new WaitCommand(0.2),
+        new WaitUntilCommand(() -> !gripper.isCoralUpSensor()).alongWith(new InstantCommand(() -> new Drop(gripper).schedule())),
+        new WaitCommand(0.1),
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.1),
         // new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 4)), chassis).withTimeout(0.1),
         (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
