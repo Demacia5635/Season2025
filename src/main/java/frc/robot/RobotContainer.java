@@ -90,6 +90,7 @@ public class RobotContainer implements Sendable{
     LogManager.addEntry("Timer", DriverStation::getMatchTime);
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
+    SmartDashboard.putData("pracice", new AllOffsets());
     
     configureSubsytems();
     new AutoUtils();
@@ -156,7 +157,6 @@ public class RobotContainer implements Sendable{
 
     operatorController.getRightStickkMove().onTrue(new JoyClimeb(operatorController, climb));
     operatorController.leftStick().onTrue(new AllOffsets());
-    SmartDashboard.putData("pracice", new AllOffsets());
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));

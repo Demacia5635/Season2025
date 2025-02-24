@@ -17,9 +17,4 @@ public class AllOffsets extends ParallelCommandGroup{
             new AlgaeTopRight()
         );
     }
-
-    @Override
-    public boolean runsWhenDisabled() {
-        return true;
-    }
 }
