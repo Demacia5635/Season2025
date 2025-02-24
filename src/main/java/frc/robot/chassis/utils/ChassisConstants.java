@@ -116,25 +116,25 @@ public class ChassisConstants {
 
     public static final SwerveModuleConfigs FRONT_LEFT = new SwerveModuleConfigs(
         0,
-        -0.6911503837897545124617815443215,
+        -0.67034675723768290163668191983741,
         0.1
     );
 
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
         1,
-        0.02454212180984346477887017011018,
+        0.01227106090492173238943508505509,
         0.1
     );
 
     public static final SwerveModuleConfigs BACK_LEFT = new SwerveModuleConfigs(
         2,
-        2.7771679057733772228009767508191,
+        2.8332641841958765708669657110709,
         0.1
     );
 
     public static final SwerveModuleConfigs BACK_RIGHT = new SwerveModuleConfigs(
         3,
-        -0.67801852649774917672500769497938,
+        -0.66574746559282744433557260992429,
         0.1
     );
 }

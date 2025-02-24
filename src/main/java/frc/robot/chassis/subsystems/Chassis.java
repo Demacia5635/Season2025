@@ -88,8 +88,8 @@ public class Chassis extends SubsystemBase {
         this.pathsAccel = ChassisConstants.AccelPaths.DEFAULT;
         this.driveAccel = ChassisConstants.AccelDrive.DEFAULT;
 
-        SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.kZero)));
-        SmartDashboard.putData("reset gyro 180", new InstantCommand(() -> setYaw(Rotation2d.kPi)));
+        SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
+        SmartDashboard.putData("reset gyro 180", new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(() -> setYaw(
                 Rotation2d.fromDegrees(RobotContainer.robotContainer.autoChooser.getSelected() == AutoMode.MIDDLE
                         ? reefTag.getAngle()
@@ -102,8 +102,8 @@ public class Chassis extends SubsystemBase {
                 getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
         LogManager.addEntry("Chassis/vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
         LogManager.addEntry("Chassis/vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
-        SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)));
-        SmartDashboard.putData("Chassis/set brake", new InstantCommand(() -> setNeutralMode(true)));
+        SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
+        SmartDashboard.putData("Chassis/set brake", new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
         SmartDashboard.putData(getName() + "/Swerve Drive", getChassisWidget());
         SmartDashboard.putData("Chassis", this);
     }
