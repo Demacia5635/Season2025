@@ -417,7 +417,7 @@ public class Arm extends SubsystemBase {
    * @return is the motors at the right angles
    */
   public boolean isReady() {
-    return armAngleMotor.getCurrentClosedLoopError() <= Math.toRadians(5) && gripperAngleMotor.getCurrentClosedLoopError() <= Math.toRadians(5);
+    return armAngleMotor.getCurrentClosedLoopError() <= Math.toRadians(2) && gripperAngleMotor.getCurrentClosedLoopError() <= Math.toRadians(2);
   }
 
   /**
