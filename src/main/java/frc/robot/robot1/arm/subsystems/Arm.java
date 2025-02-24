@@ -159,6 +159,7 @@ public class Arm extends SubsystemBase {
    * used in the {@link frc.robot.robot1.arm.commands.ArmCalibration}
    */
   public void hadCalibrated() {
+    armAngleSetPosition(ArmAngleMotorConstants.BASE_ANGLE);
     isCalibrated = true;
   }
 

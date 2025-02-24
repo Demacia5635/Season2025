@@ -72,9 +72,6 @@ public class Robot extends TimedRobot {
       m_autonomousCommand.schedule();
     }
 
-    if (RobotContainer.isComp()) {
-      Elastic.selectTab("Autonomous");
-    }
   }
 
   /** This function is called periodically during autonomous. */
@@ -89,10 +86,6 @@ public class Robot extends TimedRobot {
     // this line or comment it out.
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
-    }
-
-    if (RobotContainer.isComp()) {
-      Elastic.selectTab("Teleoperated");
     }
   }
 

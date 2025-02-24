@@ -32,6 +32,7 @@ import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
+import frc.robot.robot1.arm.commands.ArmDrive;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
@@ -174,6 +175,8 @@ public class RobotContainer implements Sendable{
     operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
     operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
     operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
+
+    operatorController.rightBumper().onTrue(new InstantCommand(()-> arm.hadCalibrated()).ignoringDisable(true));
     
     operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
@@ -240,10 +243,10 @@ public class RobotContainer implements Sendable{
     // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
     switch (autoChooser.getSelected()) {
       case LEFT:
-        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false)));
+        return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
 
       case MIDDLE:
-        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper)));
+        return new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
       
       case RIGHT: 
         return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));

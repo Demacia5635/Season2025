@@ -82,7 +82,7 @@ public class FollowTrajectory extends Command {
 
   private FieldTarget getClosestFeeder() {
     if (chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_LEFT.getId()]) > chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()])) {
-      return RobotContainer.isRed() ? FieldTarget.kFeederLeft : FieldTarget.kFeederRight;
+      return RobotContainer.isRed() ? FieldTarget.kFeederRight : FieldTarget.kFeederRight;
     } else {
       return RobotContainer.isRed() ? FieldTarget.kFeederLeft : FieldTarget.kFeederLeft;
     }
