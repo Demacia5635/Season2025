@@ -155,8 +155,7 @@ public class RobotContainer implements Sendable{
     driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
     driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
 
-    operatorController.getRightStickkMove().onTrue(new JoyClimeb(operatorController, climb));
-    operatorController.leftStick().onTrue(new AllOffsets());
+    operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
@@ -247,7 +246,7 @@ public class RobotContainer implements Sendable{
         return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper)));
       
       case RIGHT: 
-        return new ArmCalibration(arm).andThen(new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true)));
+        return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
     
       default:
         return new ArmCalibration(arm);
