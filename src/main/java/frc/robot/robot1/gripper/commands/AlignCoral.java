@@ -55,7 +55,7 @@ public class AlignCoral extends Command {
         }
       
         if (upCount > 3) {
-            gripper.setPower(-0.3);
+            gripper.setPower(-0.22);
         } else if (downCount > 3) {
             gripper.setPower(AlignCoralConstants.DOWN_POWER);
         }
