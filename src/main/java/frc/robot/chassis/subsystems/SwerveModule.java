@@ -21,11 +21,7 @@ public class SwerveModule {
         cancoder = new Cancoder(configs.CANCODER_CONFIG);
         name = configs.NAME;
 
-        if (configs.NAME != "Back Left") {
-            steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
-        } else {
-            steerMotor.setPosition(Math.PI);
-        }
+        steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
 
         // SmartDashboard.putData(configs.DRIVE_CONFIG.name, driveMotor);
         // SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);

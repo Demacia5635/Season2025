@@ -31,7 +31,7 @@ public class FieldTarget {
     public static final Translation2d realRightReefOffset = new Translation2d(-0.05,0.16);
 
     public static Translation2d l2Left = new Translation2d(0.58, -0.12);
-    public static Translation2d l2Right = new Translation2d(0.57, 0.2);
+    public static Translation2d l2Right = new Translation2d(0.57, 0.24);
     public static Translation2d l3Left = new Translation2d(0.47, -0.12);
     public static Translation2d l3Right = new Translation2d(0.47, 0.24);
 
