@@ -21,8 +21,8 @@ public class FieldTarget {
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);
     public static Translation2d intakeOffset = new Translation2d(0.66, 0);
-    public static Translation2d topAlgeaRightOffset = new Translation2d(0.4,0.47);
-    public static Translation2d topAlgeaLeftOffset = new Translation2d(0.4,-0.47);
+    public static Translation2d topAlgeaRightOffset = new Translation2d(0.4,0.4);
+    public static Translation2d topAlgeaLeftOffset = new Translation2d(0.4,-0.4);
     public static Translation2d bottomAlgeaRightOffset = new Translation2d(0.46, 0.47);
     public static Translation2d bottomAlgeaLeftOffset = new Translation2d(0.46, -0.47);
     public static final Translation2d l2Offset = new Translation2d(0.64, 0);
@@ -30,10 +30,10 @@ public class FieldTarget {
     public static final Translation2d realLeftReefOffset = new Translation2d(-0.05,-0.16);
     public static final Translation2d realRightReefOffset = new Translation2d(-0.05,0.16);
 
-    public static Translation2d l2Left = new Translation2d(0.64, -0.09);
-    public static Translation2d l2Right = new Translation2d(0.64, 0.24);
-    public static Translation2d l3Left = new Translation2d(0.48, -0.09);
-    public static Translation2d l3Right = new Translation2d(0.48, 0.24);
+    public static Translation2d l2Left = new Translation2d(0.58, -0.12);
+    public static Translation2d l2Right = new Translation2d(0.57, 0.2);
+    public static Translation2d l3Left = new Translation2d(0.47, -0.12);
+    public static Translation2d l3Right = new Translation2d(0.47, 0.24);
 
     public POSITION position;
     public ELEMENT_POSITION elementPosition;

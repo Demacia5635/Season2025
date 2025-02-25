@@ -169,7 +169,7 @@ public class ArmConstants {
         public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.5, 4.6);
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.58, 5.3);
         public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.67048828125, 4.4);
-        public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.35, 4.4);
+        public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.2, 4.6);
         public static final Pair<Double, Double> CLIMB = new Pair<Double, Double>(2.9 ,5.45);
         public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(Math.toRadians(33.7), 3.64);
     }
