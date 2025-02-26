@@ -34,6 +34,8 @@ import frc.robot.RobotContainer.AutoMode;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import static frc.robot.chassis.utils.ChassisConstants.*;
+
+import frc.robot.chassis.utils.ChassisConstants.AccelConstants;
 import frc.robot.chassis.utils.SwerveKinematics;
 import frc.robot.utils.LogManager;
 import frc.robot.vision.subsystem.Tag;
@@ -145,20 +147,18 @@ public class Chassis extends SubsystemBase {
     public Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();
     }
-
-    /*public void setVelocitiesWithAccel(ChassisSpeeds speeds, boolean isPaths) {
-        ChassisSpeeds limitedAccel = limitAccel(speeds, isPaths);
-
-        speeds = ChassisSpeeds.fromFieldRelativeSpeeds(limitedAccel, getGyroAngle());
-
-        SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
-        setModuleStates(states);
-    }*/
-    
     
 
     Translation2d lastWantedSpeeds = new Translation2d();
-    private void setVelocitiesWithAccel(ChassisSpeeds wantedSpeeds){
+    public void setVelocitiesWithAccel(ChassisSpeeds wantedSpeeds){
+        if(wantedSpeeds.vxMetersPerSecond == 0 && wantedSpeeds.vyMetersPerSecond == 0 && wantedSpeeds.omegaRadiansPerSecond == 0){
+            setVelocities(new ChassisSpeeds(0, 0, 0));
+            return;
+        }
+        if(wantedSpeeds.vxMetersPerSecond == 0 && wantedSpeeds.vyMetersPerSecond == 0){
+            setVelocities(new ChassisSpeeds(0, 0, wantedSpeeds.omegaRadiansPerSecond));
+            return;
+        }
         Translation2d wantedVector = new Translation2d(wantedSpeeds.vxMetersPerSecond, wantedSpeeds.vyMetersPerSecond);
         Translation2d limitedVelocitiesVector = calculateVelocity(wantedVector, lastWantedSpeeds);
         ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocitiesVector.getX(), limitedVelocitiesVector.getY(), wantedSpeeds.omegaRadiansPerSecond);
@@ -177,10 +177,14 @@ public class Chassis extends SubsystemBase {
 
     private double calculateLinearVelocity(Translation2d wantedSpeeds, Translation2d lastWantedSpeeds) {
         double deltaV = wantedSpeeds.getNorm() - lastWantedSpeeds.getNorm();
-        if(Math.abs(deltaV) > AccelConstants.MAX_LINEAR_ACCEL * 0.02){
-            return lastWantedSpeeds.getNorm() + (Math.signum(deltaV) * AccelConstants.MAX_LINEAR_ACCEL * 0.02);
+        double maxDelta = AccelConstants.MAX_LINEAR_ACCEL * CYCLE_DT;
+        if(deltaV > maxDelta){
+            return lastWantedSpeeds.getNorm() + maxDelta;
         }
-        return wantedSpeeds.getNorm();
+        else if(deltaV < 0 && Math.abs(deltaV) > maxDelta){
+            return lastWantedSpeeds.getNorm() - maxDelta;
+        }
+        else return wantedSpeeds.getNorm();
     }
     private Translation2d calculateVelocity(Translation2d wantedSpeeds, Translation2d lastWantedSpeeds){
         double angleDiff = wantedSpeeds.getAngle().getRadians() - lastWantedSpeeds.getAngle().getRadians();
@@ -190,12 +194,20 @@ public class Chassis extends SubsystemBase {
 
         double radius = wantedSpeeds.getNorm() / AccelConstants.MAX_OMEGA_VELOCITY;
         if(radius > AccelConstants.MAX_RADIUS){
+            radius = AccelConstants.MAX_RADIUS;
             wantedLinearVelocity = AccelConstants.MAX_RADIUS * AccelConstants.MAX_OMEGA_VELOCITY;
              
         }
+        Rotation2d wantedAngle = wantedSpeeds.getAngle();
+        if(angleDiff > 90){
+            wantedLinearVelocity = -wantedLinearVelocity;
+            wantedAngle = Rotation2d.k180deg.minus(wantedAngle);
+        }
+        LogManager.log("RADIUS: " + radius);
+
         return new Translation2d(wantedLinearVelocity,
-            lastWantedSpeeds.getAngle().plus(
-                new Rotation2d(AccelConstants.MAX_OMEGA_VELOCITY * CYCLE_DT * Math.signum(angleDiff))));
+            wantedAngle.plus(
+                new Rotation2d(AccelConstants.MAX_OMEGA_VELOCITY * CYCLE_DT)));
 
     }
 

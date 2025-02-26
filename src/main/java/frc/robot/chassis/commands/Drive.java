@@ -53,6 +53,7 @@ public class Drive extends Command {
         
         speeds = new ChassisSpeeds(velX, velY,velRot);
  
-        chassis.setVelocitiesWithAccel(speeds);
+        if(precisionMode) chassis.setVelocities(speeds);
+        else chassis.setVelocitiesWithAccel(speeds);
     }
 }

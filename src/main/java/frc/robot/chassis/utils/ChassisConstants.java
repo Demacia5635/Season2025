@@ -33,10 +33,10 @@ public class ChassisConstants {
     }
 
     public static class AccelConstants{
-        public static final double MAX_LINEAR_ACCEL = 4;
-        public static final double MAX_OMEGA_VELOCITY = Math.toRadians(90);
-        public static final double MAX_RADIUS = 0.7;
-        public static final double MIN_OMEGA_DIFF = Math.toRadians(5);
+        public static final double MAX_LINEAR_ACCEL = 6;
+        public static final double MAX_OMEGA_VELOCITY = Math.toRadians(130);
+        public static final double MAX_RADIUS = 1;
+        public static final double MIN_OMEGA_DIFF = Math.toRadians(1);
     }
     
     public static final int GYRO_ID = 14;
