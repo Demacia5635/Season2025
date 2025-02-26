@@ -182,12 +182,12 @@ private void crop() {
 
     private double getCropOfset() {
       double dist = GetDistFromCamera();
-      return dist / 10.0;
+      return dist * 0.35;
     }
 
     private double getYawCrop(){
       double TagYaw = ((-camToTagYaw) + CAM_YAW[cameraId]) / 31.25;
-      return TagYaw + speeds.get().vxMetersPerSecond*0.1;
+      return TagYaw + speeds.get().vxMetersPerSecond*0.3 + speeds.get().omegaRadiansPerSecond*0.3;
     }
 
     private double getPitchCrop(){
