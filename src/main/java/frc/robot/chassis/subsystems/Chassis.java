@@ -79,10 +79,10 @@ public class Chassis extends SubsystemBase {
         poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
         field = new Field2d();
         fieldTag = new Field2d();
-        reefTag = new Tag(() -> getGyroAngle(), 0);
-        fiderTag = new Tag(() -> getGyroAngle(), 1);
-        bargeTag = new Tag(() -> getGyroAngle(), 3);
-        backTag = new Tag(() -> getGyroAngle(), 2);
+        reefTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 0);
+        fiderTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 1);
+        bargeTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 2);
+        backTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 3);
         visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
 
         this.pathsAccel = ChassisConstants.AccelPaths.DEFAULT;

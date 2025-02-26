@@ -3,6 +3,7 @@ package frc.robot.vision.subsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -40,9 +41,10 @@ public class Tag extends SubsystemBase {
   private Translation2d robotToTagRR;
   public Pose2d pose;
 
-  private NetworkTableEntry cropEntry;
+private NetworkTableEntry cropEntry;
 
   private Supplier<Rotation2d> getRobotAngle;
+  private Supplier<ChassisSpeeds> speeds;
   private Field2d field;
 
   private double latency;
@@ -61,11 +63,12 @@ public class Tag extends SubsystemBase {
   /**
    * Creates a new Tag subsystem
    * 
-   * @param robot_angle_from_pose Pigeon2 gyroscope for determining robot
+   * @param getRobotAngle Pigeon2 gyroscope for determining robot
    *                              orientation
    */
-  public Tag(Supplier<Rotation2d> robot_angle_from_pose, int cameraId) {
-    this.getRobotAngle = robot_angle_from_pose;
+  public Tag(Supplier<Rotation2d> getRobotAngle, Supplier<ChassisSpeeds> speeds, int cameraId) {
+    this.getRobotAngle = getRobotAngle;
+    this.speeds = speeds;
     this.cameraId = cameraId;
 
     Table = NetworkTableInstance.getDefault().getTable(TABLE[cameraId]);
@@ -170,12 +173,27 @@ public class Tag extends SubsystemBase {
 
   }
 
-  private void crop() {
-    double YawCrop = ((-camToTagYaw) + CAM_YAW[cameraId]) / 31.25;
-    double PitchCrop = camToTagPitch / 24.45;
-    double[] crop = { YawCrop - CROP_OFSET, YawCrop + CROP_OFSET, PitchCrop - CROP_OFSET, PitchCrop + CROP_OFSET };
+private void crop() {
+    double YawCrop = getYawCrop();
+    double PitchCrop = getPitchCrop();
+    double[] crop = { YawCrop - getCropOfset(), YawCrop + getCropOfset(), PitchCrop - getCropOfset(), PitchCrop + getCropOfset() };
     cropEntry.setDoubleArray(crop);
-  }
+    }
+
+    private double getCropOfset() {
+      double dist = GetDistFromCamera();
+      return dist / 10.0;
+    }
+
+    private double getYawCrop(){
+      double TagYaw = ((-camToTagYaw) + CAM_YAW[cameraId]) / 31.25;
+      return TagYaw + speeds.get().vxMetersPerSecond*0.1;
+    }
+
+    private double getPitchCrop(){
+      double TagPitch = camToTagPitch / 24.45;
+      return TagPitch + speeds.get().vyMetersPerSecond*0.1;
+    }
 
   private void cropStop() {
     double[] crop = { -1, 1, -1, 1 };
