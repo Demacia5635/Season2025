@@ -4,6 +4,7 @@
 
 package frc.robot.robot2.elevator.subsystem;
 
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Alert.AlertType;
@@ -19,6 +20,10 @@ import frc.robot.robot2.elevator.ElevatorConstants;
 import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
 import frc.robot.robot2.elevator.ElevatorConstants.ElevatorLimits;
 import frc.robot.robot2.elevator.ElevatorConstants.ElevatorMotorConstants;
+import static frc.robot.robot2.elevator.ElevatorConstants.ElevatorMotorConstants.*;
+
+import com.ctre.phoenix.motorcontrol.VelocityMeasPeriod;
+
 import frc.robot.utils.LogManager;
 
 public class Elevator extends SubsystemBase {
@@ -28,6 +33,8 @@ public class Elevator extends SubsystemBase {
   DigitalInput bottomLimitSwitch;
 
   ELEVATOR_STATE state;
+
+  double error;
 
   boolean isCalibrated;
   double voltest = 0;
@@ -102,6 +109,20 @@ public class Elevator extends SubsystemBase {
     return hasLimitSwitch(topLimitSwitch);
   }
   
+  public void setMagicMotion(double position){
+    if (!isCalibrated) {
+      LogManager.log("Elevator has not calibrated", AlertType.kError);
+      return;
+    }
+    if (position > ElevatorLimits.TOP_LIMIT_POSITION) {
+      position = ElevatorLimits.TOP_LIMIT_POSITION;
+    }
+    if (position < ElevatorLimits.BOTTOM_LIMIT_POSITION) {
+      position = ElevatorLimits.BOTTOM_LIMIT_POSITION;
+    }
+    motor.setMotionMagic(position);
+  }
+
   /*
    * position in meters
    */
@@ -119,6 +140,45 @@ public class Elevator extends SubsystemBase {
     }
 
     motor.setPositionVoltage(position,0.22614986964940442); //kg
+  }
+
+  /*
+   * position in meters
+   */
+  public void setPosition(double position){
+    if (!isCalibrated) {
+      LogManager.log("Elevator has not calibrated", AlertType.kError);
+      return;
+    }
+
+    if (position > ElevatorLimits.TOP_LIMIT_POSITION) {
+      position = ElevatorLimits.TOP_LIMIT_POSITION;
+    }
+    if (position < ElevatorLimits.BOTTOM_LIMIT_POSITION) {
+      position = ElevatorLimits.BOTTOM_LIMIT_POSITION;
+    }
+
+    double curretPotion = motor.getCurrentPosition();
+    error = position - curretPotion;
+    if(Math.abs(error) < ALLOWED_ERROR) {
+      motor.setDuty(0);
+      return;
+    }
+    double tgtVel = 0;
+    double direction = error > 0? 1 : -1;
+    double curretVel = motor.getCurrentVelocity();
+    if(Math.abs(error) < DEACCEL_DISTANCE) {
+      tgtVel = Math.sqrt(2 * error * direction * ACC);
+    } else {
+      if(direction > 0) {
+        tgtVel = Math.min(MAX_VEL, curretVel + DELATA_VEL);
+      } else {
+        tgtVel = Math.max(-MAX_VEL, curretVel - DELATA_VEL);
+      }
+    }
+    double a = (tgtVel - curretVel) / DELATA_TIME;
+    double p = kS*direction + curretVel*kV + a*kA + kG;
+    motor.setDuty(p/12.0);
   }
 
   public void setHeight(double height) {
