@@ -150,7 +150,5 @@ public class VisionConstants {
     public static final String[] TABLE = {"limelight-bottom", "limelight-front", "limelight-back",
             "limelight-backup"};
 
-    // resolution of cam
-    public static final double CROP_OFSET = 0.5;
 
 }
