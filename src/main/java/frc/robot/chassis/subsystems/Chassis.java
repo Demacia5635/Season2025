@@ -151,18 +151,9 @@ public class Chassis extends SubsystemBase {
 
     Translation2d lastWantedSpeeds = new Translation2d();
     public void setVelocitiesWithAccel(ChassisSpeeds wantedSpeeds){
-        if(wantedSpeeds.vxMetersPerSecond == 0 && wantedSpeeds.vyMetersPerSecond == 0 && wantedSpeeds.omegaRadiansPerSecond == 0){
-            setVelocities(new ChassisSpeeds(0, 0, 0));
-            return;
-        }
-        if(wantedSpeeds.vxMetersPerSecond == 0 && wantedSpeeds.vyMetersPerSecond == 0){
-            setVelocities(new ChassisSpeeds(0, 0, wantedSpeeds.omegaRadiansPerSecond));
-            return;
-        }
         Translation2d wantedVector = new Translation2d(wantedSpeeds.vxMetersPerSecond, wantedSpeeds.vyMetersPerSecond);
-        Translation2d limitedVelocitiesVector = calculateVelocity(wantedVector, lastWantedSpeeds);
+        Translation2d limitedVelocitiesVector = calculateVelocity(wantedVector, new Translation2d(getChassisSpeedsFieldRel().vxMetersPerSecond, getChassisSpeedsFieldRel().vyMetersPerSecond));//lastWantedSpeeds);
         ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocitiesVector.getX(), limitedVelocitiesVector.getY(), wantedSpeeds.omegaRadiansPerSecond);
-        limitedVelocities = ChassisSpeeds.discretize(limitedVelocities, CYCLE_DT);
         lastWantedSpeeds = limitedVelocitiesVector;
         setVelocities(limitedVelocities);
 
@@ -170,6 +161,9 @@ public class Chassis extends SubsystemBase {
 
     public void setVelocities(ChassisSpeeds speeds) {
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
+        speeds = ChassisSpeeds.discretize(speeds, CYCLE_DT);
+        
+
 
         SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
         setModuleStates(states);
@@ -178,37 +172,43 @@ public class Chassis extends SubsystemBase {
     private double calculateLinearVelocity(Translation2d wantedSpeeds, Translation2d lastWantedSpeeds) {
         double deltaV = wantedSpeeds.getNorm() - lastWantedSpeeds.getNorm();
         double maxDelta = AccelConstants.MAX_LINEAR_ACCEL * CYCLE_DT;
-        if(deltaV > maxDelta){
-            return lastWantedSpeeds.getNorm() + maxDelta;
+        if(Math.abs(deltaV) > maxDelta){
+            return lastWantedSpeeds.getNorm() + (maxDelta * Math.signum(deltaV));
         }
-        else if(deltaV < 0 && Math.abs(deltaV) > maxDelta){
-            return lastWantedSpeeds.getNorm() - maxDelta;
-        }
-        else return wantedSpeeds.getNorm();
+        return wantedSpeeds.getNorm();
+        
     }
     private Translation2d calculateVelocity(Translation2d wantedSpeeds, Translation2d lastWantedSpeeds){
+        
         double angleDiff = wantedSpeeds.getAngle().getRadians() - lastWantedSpeeds.getAngle().getRadians();
-        double wantedLinearVelocity = calculateLinearVelocity(wantedSpeeds, lastWantedSpeeds);
+        double wantedLinearVelocity = Math.min(MAX_DRIVE_VELOCITY, calculateLinearVelocity(wantedSpeeds, lastWantedSpeeds));
+        Translation2d accelVectorDriveRelative = getAccelVectorDriveRelative(wantedSpeeds, lastWantedSpeeds);
+        if(wantedSpeeds.getNorm() == 0) return new Translation2d(wantedLinearVelocity, lastWantedSpeeds.getAngle());
+        if()
         if(Math.abs(angleDiff) <= AccelConstants.MIN_OMEGA_DIFF)
-            return wantedSpeeds.times(wantedLinearVelocity / wantedSpeeds.getNorm());
+            return new Translation2d(wantedLinearVelocity, wantedSpeeds.getAngle());
 
+        
         double radius = wantedSpeeds.getNorm() / AccelConstants.MAX_OMEGA_VELOCITY;
         if(radius > AccelConstants.MAX_RADIUS){
             radius = AccelConstants.MAX_RADIUS;
-            wantedLinearVelocity = AccelConstants.MAX_RADIUS * AccelConstants.MAX_OMEGA_VELOCITY;
+            wantedLinearVelocity = Math.min(wantedSpeeds.getNorm(), 
+                    (AccelConstants.MAX_RADIUS * AccelConstants.MAX_OMEGA_VELOCITY) + (1 / Math.abs((angleDiff * 0.05))));
              
         }
-        Rotation2d wantedAngle = wantedSpeeds.getAngle();
+        Rotation2d wantedAngle = lastWantedSpeeds.getAngle().plus(
+            new Rotation2d(AccelConstants.MAX_OMEGA_VELOCITY * CYCLE_DT * Math.signum(angleDiff)));
         if(angleDiff > 90){
             wantedLinearVelocity = -wantedLinearVelocity;
             wantedAngle = Rotation2d.k180deg.minus(wantedAngle);
         }
-        LogManager.log("RADIUS: " + radius);
 
-        return new Translation2d(wantedLinearVelocity,
-            wantedAngle.plus(
-                new Rotation2d(AccelConstants.MAX_OMEGA_VELOCITY * CYCLE_DT)));
+        LogManager.log("watned angle: " + wantedAngle);
+        return new Translation2d(wantedLinearVelocity, wantedAngle);
 
+    }
+    private Translation2d getAccelVectorDriveRelative(Translation2d wantedSpeeds, Translation2d lastWantedSpeeds){
+        return (wantedSpeeds.minus(lastWantedSpeeds)).rotateBy(lastWantedSpeeds.getAngle());
     }
 
     public void setSteerPositions(double[] positions) {
