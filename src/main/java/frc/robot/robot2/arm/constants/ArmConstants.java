@@ -40,6 +40,9 @@ public class ArmConstants {
      * All the constants of the arm angle motor
      */
     public static class ArmAngleMotorConstants {
+
+        public static final double Angle_OFFSET = Math.toRadians(0.0);//TODO: find right offset
+
         /* all the main configs of the motor */
         public static final int ID = 20;
         public static final CANBus CAN_BUS = CANBuses.ARM_CAN_BUS;
@@ -48,7 +51,7 @@ public class ArmConstants {
         /* All the main configs of the cancoder*/
         public static final int CANCODER_ID = 22;//TODO: find right id
         public static final String CANCODER_NAME = "Arm Cancoder";
-        public static final double CANCODER_OFFSET = Math.toRadians(0.0);//TODO: find right offset
+
 
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
         public static final double KP = 20;
@@ -113,10 +116,12 @@ public class ArmConstants {
     /** All the constants for the gripper angle motor */
     public static class GripperAngleMotorConstants {
 
+        public static final double Angle_OFFSET = Math.toRadians(0.0);//TODO: find right offset
+
         /* All the main configs of the cancoder*/
         public static final int CANCODER_ID = 22;//TODO: find right id
         public static final String CANCODER_NAME = "Gripper Cancoder";
-        public static final double CANCODER_OFFSET = Math.toRadians(0.0);//TODO: find right offset
+
 
         /* All the main configs of the motor */
         public static final int ID = 21;
@@ -190,6 +195,7 @@ public class ArmConstants {
     public static class ANGLES {
         public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
         public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.4, 4.4);
+        public static final Pair<Double, Double> L4 = new Pair<Double,Double>(0.0, 0.0);//TODO: find angles
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
         public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.55, 4.4);
         public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.2, 4.4);
@@ -200,6 +206,7 @@ public class ArmConstants {
     public static enum ARM_ANGLE_STATES {
         L2,
         L3,
+        L4,
         ALGAE_BOTTOM,
         ALGAE_TOP,
         CORAL_STATION,
@@ -222,6 +229,7 @@ public class ArmConstants {
 
         public static final double L2_HEIGHT = 0.81;
         public static final double L3_HEIGHT = 1.02;
+        public static final double L4_HEIGHT = 0;//TODO:find hight
         public static final double CORAL_STATION_HEIGHT = 0;
     }
 }

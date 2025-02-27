@@ -104,6 +104,10 @@ public class ArmCommand extends Command {
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
         break;
 
+      case L4:
+        wantedAngle = ANGLES.L4;
+        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
+
       case ALGAE_BOTTOM:
         wantedAngle = ANGLES.ALGAE_BOTTOM;
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
