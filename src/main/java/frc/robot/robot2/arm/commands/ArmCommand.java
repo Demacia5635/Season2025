@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot2.arm.constants.ArmConstants.ANGLES;
+import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.arm.subsystems.Arm;
 import frc.robot.utils.LogManager;
 
@@ -56,10 +57,11 @@ public class ArmCommand extends Command {
 
     testArmAngle = arm.getArmAngle();
     testGripperAngle = arm.getGripperAngle();
-
-    SmartDashboard.putData(this);
+    SmartDashboard.putData("Arm Command", this);
     addRequirements(arm);
   }
+  
+
 
   /**
    * this function is called at the start of the command
@@ -146,6 +148,22 @@ public class ArmCommand extends Command {
     }
   }
 
+  public double getGripperAngle() {
+    return testGripperAngle;
+  }
+
+  public void setGripperAngle(double testGripperAngle) {
+    this.testGripperAngle = testGripperAngle;
+  }
+
+  public double getArmAngle() {
+    return testArmAngle;
+  }
+
+  public void setArmAngle(double testArmAngle) {
+    this.testArmAngle = testArmAngle;
+  }
+
   /**
    * the init sendable of the command
    * <br>
@@ -158,6 +176,8 @@ public class ArmCommand extends Command {
 
     builder.addDoubleProperty("Test Arm Angle", () -> testArmAngle, value -> testArmAngle = value);
     builder.addDoubleProperty("Test Gripper Angle", () -> testGripperAngle, value -> testGripperAngle = value);
+    builder.addDoubleProperty("ArmAngle test Angle", this::getArmAngle, this::setArmAngle);
+    builder.addDoubleProperty("GripperAngle test Angle", this::getGripperAngle, this::setGripperAngle);
   }
 
   /**
