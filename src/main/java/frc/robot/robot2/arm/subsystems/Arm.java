@@ -50,8 +50,7 @@ import static frc.robot.robot2.arm.constants.ArmConstants.*;
  */
 public class Arm extends SubsystemBase {
 
-  /**canconder arm to elovetor */
-  private final Cancoder armCancoder;
+
 
 
   /** The motor that change the angle of the arm */
@@ -59,19 +58,15 @@ public class Arm extends SubsystemBase {
   /** The motor that change the angle of the gripper */
   private final TalonMotor gripperAngleMotor;
 
-  /** The digital sensor that help with calibrate the arm */
-  private final DigitalInput armAngleLimit;
+  /**canconder arm to elovetor */
+  private final Cancoder armCancoder;
   /**
    * The absolute sensor that tells the gripper angle motor what is the real angle
    * of the gripper
    */
   private final DutyCycleEncoder gripperAngleAbsoluteSensor;
 
-  /**
-   * A variable that tells the arm if it was calibrated if it wasn't its will not
-   * listen to go to angles
-   */
-  public boolean isCalibrated;
+
 
   /**
    * The state of the arm used in the
@@ -101,7 +96,6 @@ public class Arm extends SubsystemBase {
     gripperAngleMotor = new TalonMotor(GripperAngleMotorConstants.CONFIG);
 
     /* configure the sensors */
-    armAngleLimit = new DigitalInput(ArmAngleMotorConstants.LIMIT_SWITCH_CHANNEL);
     gripperAngleAbsoluteSensor = new DutyCycleEncoder(GripperAngleMotorConstants.ABSOLUTE_SENSOR_CHANNEL);
 
 
@@ -110,8 +104,7 @@ public class Arm extends SubsystemBase {
 
 
 
-    /* set is calibrated to false at the start */
-    isCalibrated = false;
+
 
     /* make the default state to idle */
     state = ARM_ANGLE_STATES.IDLE;
@@ -126,19 +119,18 @@ public class Arm extends SubsystemBase {
     addNT();
   }
 
-  /** armCancoder get angle */
-  public double getCancoderArmAngle(){
-    return armCancoder.getCurrentAbsPosition();
-  }
+ 
 
   /**
    * add to network tables all the variables
    */
   public void addNT() {
     /* add to log the important stuff */
+    LogManager.addEntry(getName() + "/Arm Abs Angle", this::getCancoderArmAngle, 4);
+    LogManager.addEntry(getName() + "/Gripper Abs Angle", this::getGripperAngle, 4);
+    
     LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle, 4);
-    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngle, 4);
-    LogManager.addEntry(getName() + "/Arm Angle Limit Switch", this::getArmAngleLimit, 3);
+    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngleMotor, 4);
     LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
     /* add to smart dashboard the widgets of the talon motor */
@@ -159,6 +151,7 @@ public class Arm extends SubsystemBase {
     SendableChooser<ARM_ANGLE_STATES> stateChooser = new SendableChooser<>();
     stateChooser.addOption("L2", ARM_ANGLE_STATES.L2);
     stateChooser.addOption("L3", ARM_ANGLE_STATES.L3);
+    stateChooser.addOption("L4", ARM_ANGLE_STATES.L4);
     stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);
     stateChooser.addOption("Starting", ARM_ANGLE_STATES.STARTING);
     stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
@@ -170,15 +163,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData(this);
   }
 
-  /**
-   * set the arm to calibrated
-   * <br>
-   * </br>
-   * used in the {@link frc.robot.robot1.arm.commands.ArmCalibration}
-   */
-  public void hadCalibrated() {
-    isCalibrated = true;
-  }
+
 
   /**
    * set the state of the arm
@@ -259,10 +244,6 @@ public class Arm extends SubsystemBase {
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
     targetAngle += ArmAngleMotorConstants.Angle_OFFSET;
-    if (!isCalibrated) {
-      LogManager.log("Can not move motor before calibration", AlertType.kError);
-      return;
-    }
     if (Double.isNaN(targetAngle)) {
       LogManager.log("arm target Angle is NaN", AlertType.kError);
       return;
@@ -289,8 +270,8 @@ public class Arm extends SubsystemBase {
     }
 
     if (hasArmAngleReachedTarget) {
-      if (getArmAngle() > targetAngle) {
-        if (getArmAngle() - targetAngle > MaxErrors.ARM_ANGLE_UP_ERROR) {
+      if (getCancoderArmAngle() > targetAngle) {
+        if (getCancoderArmAngle() - targetAngle > MaxErrors.ARM_ANGLE_UP_ERROR) {
           armAngleMotor.setPositionVoltage(targetAngle);
           hasArmAngleReachedTarget = false;
         } else {
@@ -325,10 +306,6 @@ public class Arm extends SubsystemBase {
    */
   public void gripperAngleMotorSetPositionVoltage(double targetAngle) {
     targetAngle += GripperAngleMotorConstants.Angle_OFFSET;
-    if (!isCalibrated) {
-      LogManager.log("Can not move motor before calibration", AlertType.kError);
-      return;
-    }
     if (Double.isNaN(targetAngle)) {
       LogManager.log("gripper target Angle is NaN", AlertType.kError);
       return;
@@ -426,6 +403,11 @@ public class Arm extends SubsystemBase {
     return armAngleMotor.getCurrentPosition();
   }
 
+   /** armCancoder get angle */
+   public double getCancoderArmAngle(){
+    return armCancoder.getCurrentAbsPosition();
+  }
+
   /**
    * @return the gripper angle motor position, position in radians
    */
@@ -442,14 +424,7 @@ public class Arm extends SubsystemBase {
     return (gripperAngleAbsoluteSensor.get() * 2 * Math.PI) - GripperAngleMotorConstants.ENCODER_BASE_ANGLE;
   }
 
-  /**
-   * get the arm angle digital input
-   * 
-   * @return if the digital input is closed
-   */
-  public boolean getArmAngleLimit() {
-    return !armAngleLimit.get();
-  }
+
 
   /**
    * the init sendable of the command
