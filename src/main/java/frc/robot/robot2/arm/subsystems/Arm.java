@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.robot2.arm.constants.ArmConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.arm.constants.ArmConstants.ArmAngleMotorConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleMotorConstants;
@@ -256,6 +258,7 @@ public class Arm extends SubsystemBase {
    *      automaticly be the forward limit
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
+    targetAngle += ArmAngleMotorConstants.Angle_OFFSET;
     if (!isCalibrated) {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
@@ -321,6 +324,7 @@ public class Arm extends SubsystemBase {
    *      to go to the back limit
    */
   public void gripperAngleMotorSetPositionVoltage(double targetAngle) {
+    targetAngle += GripperAngleMotorConstants.Angle_OFFSET;
     if (!isCalibrated) {
       LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
