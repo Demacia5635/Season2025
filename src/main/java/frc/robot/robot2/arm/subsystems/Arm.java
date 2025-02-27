@@ -159,6 +159,7 @@ public class Arm extends SubsystemBase {
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
 
+    /*added pid motors to elastic */
     armAngleMotor.configPidFf(0);
     gripperAngleMotor.configPidFf(0);
 

@@ -30,11 +30,11 @@ public class ArmConstants {
     /**
      * All the constnats of the calculation
      */
-    public static class CalculationsConstants {
-        public static final double BASE_HEIGHT = 0.86;
-        public static final double ARM_1_LEN = 0.53;
-        public static final double ARM_2_LEN = 0.32;
-    }
+    // public static class CalculationsConstants {//TODO: what is that?
+    //     public static final double BASE_HEIGHT = 0.86;
+    //     public static final double ARM_1_LEN = 0.53;
+    //     public static final double ARM_2_LEN = 0.32;
+    // }
 
     /**
      * All the constants of the arm angle motor
@@ -62,7 +62,7 @@ public class ArmConstants {
         public static final double KA = 0;
         public static final double KG = 0;
 
-        /* the motion magic constants of the motor */
+        /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
         public static final double MOTION_MAGIC_VELOCITY = 1.5;
         public static final double MOTION_MAGIC_ACCELERATION = 3;
         public static final double MOTION_MAGIC_JERK = 6;
@@ -87,7 +87,7 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double BASE_ANGLE = 0;
+        public static final double BASE_ANGLE = 0; //TODO:
         public static final double BACK_LIMIT = Math.toRadians(33.7);
         public static final double FWD_LIMIT = 2.501220703125;
 
@@ -229,7 +229,7 @@ public class ArmConstants {
 
         public static final double L2_HEIGHT = 0.81;
         public static final double L3_HEIGHT = 1.02;
-        public static final double L4_HEIGHT = 0;//TODO:find hight
-        public static final double CORAL_STATION_HEIGHT = 0;
+        public static final double L4_HEIGHT = 1.82866;//TODO:find hight
+        public static final double CORAL_STATION_HEIGHT = 0.95098;
     }
 }
