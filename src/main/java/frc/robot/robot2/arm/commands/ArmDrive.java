@@ -3,6 +3,7 @@ package frc.robot.robot2.arm.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.robot2.arm.subsystems.Arm;
+import frc.robot.utils.CommandController;
 
 /**
  * command to control the arm with controller
@@ -13,7 +14,7 @@ import frc.robot.robot2.arm.subsystems.Arm;
 public class ArmDrive extends Command {
 
     /** the controller */
-    private final CommandXboxController controller;
+    private final CommandController controller;
     /** the arm subsystem */
     private final Arm arm;
 
@@ -32,7 +33,7 @@ public class ArmDrive extends Command {
      * @param arm        the wanted arm to drive
      * @param controller the controller to drive with
      */
-    public ArmDrive(Arm arm, CommandXboxController controller) {
+    public ArmDrive(Arm arm, CommandController controller) {
         this.arm = arm;
         this.controller = controller;
 

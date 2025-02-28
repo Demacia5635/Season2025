@@ -14,6 +14,9 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.robot2.arm.commands.ArmCommand;
+import frc.robot.robot2.arm.commands.ArmDrive;
+import frc.robot.robot2.arm.subsystems.Arm;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
@@ -32,6 +35,7 @@ public class RobotContainer implements Sendable{
   public static boolean isRed = true;
   public static boolean isComp = DriverStation.isFMSAttached();
   private static boolean hasRemovedFromLog = false;
+  public static Arm arm;
 
   Timer timer;
 
@@ -39,7 +43,7 @@ public class RobotContainer implements Sendable{
   public RobotContainer() {
     robotContainer = this;
     new LogManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
@@ -57,6 +61,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor.
    */
   private void configureSubsytems() {
+    arm = new Arm();
   }
 
   /**
@@ -65,6 +70,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
+    arm.setDefaultCommand(new ArmDrive(arm, driverController));
   }
 
 

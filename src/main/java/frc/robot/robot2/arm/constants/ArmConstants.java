@@ -41,7 +41,7 @@ public class ArmConstants {
      */
     public static class ArmAngleMotorConstants {
 
-        public static final double Angle_OFFSET = Math.toRadians(0.0);//TODO: find right offset
+        public static final double Angle_OFFSET = -1.0200972239439514;//TODO: find right offset
 
         /* all the main configs of the motor */
         public static final int ID = 20;
@@ -68,15 +68,12 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_JERK = 6;
 
         /* the channel of the absolute sensor */
-        public static final int ABSOLUTE_SENSOR_CHANNEL = 1;
-
-        /* the channel of the limit switch of the arm angle motor */
-        public static final int LIMIT_SWITCH_CHANNEL = 0;
+        //public static final int ABSOLUTE_SENSOR_CHANNEL = 22;
 
         /* the basic configues of the motor */
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = false;
-        public static final double GEAR_RATIO = 48.0 * (60.0 / 48.0);
+        public static final boolean IS_INVERTED = true;
+        public static final double GEAR_RATIO = 80;
 
         /* the ramp time of the motor */
         public static final double RAMP_TIME = 0.5;
@@ -87,7 +84,7 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double BASE_ANGLE = 0; //TODO:
+        //public static final double BASE_ANGLE = 0; //TODO:
         public static final double BACK_LIMIT = Math.toRadians(33.7);
         public static final double FWD_LIMIT = 2.501220703125;
 
@@ -104,23 +101,9 @@ public class ArmConstants {
         public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME);
     }
 
-    /**
-     * The constants for the gripper going automaticly to a specific angle when the
-     * arm is less than a specific angle
-     */
-    public static class GripperAngleStarting {
-        public static final double WHEN_MOVING_GRIPPER = Math.toRadians(38);
-        public static final double ANGLE_TO_GRIPPER = 3.75;
-    }
-
     /** All the constants for the gripper angle motor */
     public static class GripperAngleMotorConstants {
 
-        public static final double Angle_OFFSET = Math.toRadians(0.0);//TODO: find right offset
-
-        /* All the main configs of the cancoder*/
-        public static final int CANCODER_ID = 22;//TODO: find right id
-        public static final String CANCODER_NAME = "Gripper Cancoder";
 
 
         /* All the main configs of the motor */
@@ -143,12 +126,12 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_JERK = 0;
 
         /* the channel of the absolute sensor */
-        public static final int ABSOLUTE_SENSOR_CHANNEL = 1;
+        public static final int ABSOLUTE_SENSOR_CHANNEL = 7;
 
         /* all the basic configs of the motor */
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = false;
-        public static final double GEAR_RATIO = 48.0 * (57.0 / 48.0);
+        public static final boolean IS_INVERTED = true;
+        public static final double GEAR_RATIO = 52;
 
         /* the ramp time of the motor */
         public static final double RAMP_TIME = 0.5;
@@ -159,7 +142,7 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double ENCODER_BASE_ANGLE = -1.6270964174482998;
+        public static final double Angle_OFFSET = 0;
         public static final double BACK_LIMIT = 3.7;
         public static final double FWD_LIMIT = 5.4;
 
@@ -174,13 +157,6 @@ public class ArmConstants {
  
         /* The config of the motor based on the constants cancoder */
 
-    }
-
-    /** All the constants of the calibration */
-    public static class CalibrationConstants {
-        public static final double ARM_ANGLE_POWER = -0.2;
-        public static final double ARM_ANGLE_START_POWER = 0.2;
-        public static final double TIME_TO_CHANGE_POWER = 0.75;
     }
 
     /** The max errors of the arm and gripper angles */

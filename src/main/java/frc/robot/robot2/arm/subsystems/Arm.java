@@ -17,7 +17,6 @@ import frc.robot.robot2.arm.constants.ArmConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.arm.constants.ArmConstants.ArmAngleMotorConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleMotorConstants;
-import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleStarting;
 import frc.robot.robot2.arm.constants.ArmConstants.MaxErrors;
 import frc.robot.utils.Cancoder;
 import frc.robot.utils.LogManager;
@@ -126,10 +125,10 @@ public class Arm extends SubsystemBase {
    */
   public void addNT() {
     /* add to log the important stuff */
-    LogManager.addEntry(getName() + "/Arm Abs Angle", this::getCancoderArmAngle, 4);
+    LogManager.addEntry(getName() + "/Arm Abs Angle", this::getArmAngle, 4);
     LogManager.addEntry(getName() + "/Gripper Abs Angle", this::getGripperAngle, 4);
     
-    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngle, 4);
+    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngleMotor, 4);
     LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngleMotor, 4);
     LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
@@ -247,7 +246,6 @@ public class Arm extends SubsystemBase {
    *      automaticly be the forward limit
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
-    targetAngle += ArmAngleMotorConstants.Angle_OFFSET;
     if (Double.isNaN(targetAngle)) {
       LogManager.log("arm target Angle is NaN", AlertType.kError);
       return;
@@ -258,11 +256,11 @@ public class Arm extends SubsystemBase {
       lastArmAngleTarget = targetAngle;
     }
 
-    if (targetAngle > getCancoderArmAngle()) {
+    if (targetAngle > getArmAngle()) {
       targetAngle += 2.5*MaxErrors.ARM_ANGLE_DOWN_ERROR;
     }
 
-    if (Math.abs(targetAngle - getCancoderArmAngle()) <= Math.toRadians(1)) {
+    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
       hasArmAngleReachedTarget = true;
     }
 
@@ -274,15 +272,15 @@ public class Arm extends SubsystemBase {
     }
 
     if (hasArmAngleReachedTarget) {
-      if (getCancoderArmAngle() > targetAngle) {
-        if (getCancoderArmAngle() - targetAngle > MaxErrors.ARM_ANGLE_UP_ERROR) {
+      if (getArmAngle() > targetAngle) {
+        if (getArmAngle() - targetAngle > MaxErrors.ARM_ANGLE_UP_ERROR) {
           armAngleMotor.setPositionVoltage(targetAngle);
           hasArmAngleReachedTarget = false;
         } else {
           armAngleMotor.stopMotor();
         }
       } else {
-        if (targetAngle - getCancoderArmAngle() > MaxErrors.ARM_ANGLE_DOWN_ERROR) {
+        if (targetAngle - getArmAngle() > MaxErrors.ARM_ANGLE_DOWN_ERROR) {
           armAngleMotor.setPositionVoltage(targetAngle);
           hasArmAngleReachedTarget = false;
         } else {
@@ -326,10 +324,6 @@ public class Arm extends SubsystemBase {
     // if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
     //   hasGripperAngleReachedTarget = true;
     // }
-
-    if (armAngleMotor.getCurrentClosedLoopSP() <= GripperAngleStarting.WHEN_MOVING_GRIPPER) {
-      targetAngle = GripperAngleStarting.ANGLE_TO_GRIPPER;
-    }
 
     if (targetAngle < GripperAngleMotorConstants.BACK_LIMIT) {
       targetAngle = GripperAngleMotorConstants.BACK_LIMIT;
@@ -382,7 +376,7 @@ public class Arm extends SubsystemBase {
   }
 
   /**
-   * stop both motors
+   * stop both motorss
    */
   public void stop() {
     armAngleMotor.stopMotor();
@@ -403,13 +397,13 @@ public class Arm extends SubsystemBase {
    * 
    * @return the arm angle motor position, position in radians
    */
-  public double getArmAngle() {
+  public double getArmAngleMotor() {
     return armAngleMotor.getCurrentPosition();
   }
 
    /** armCancoder get angle */
-   public double getCancoderArmAngle(){
-    return armCancoder.getCurrentAbsPosition();
+   public double getArmAngle(){
+    return armCancoder.getCurrentAbsPosition()-ArmAngleMotorConstants.Angle_OFFSET;
   }
 
   /**
@@ -425,7 +419,7 @@ public class Arm extends SubsystemBase {
    * @return the gripper angle in radians
    */
   public double getGripperAngle() {
-    return (gripperAngleAbsoluteSensor.get() * 2 * Math.PI) - GripperAngleMotorConstants.ENCODER_BASE_ANGLE;
+    return (gripperAngleAbsoluteSensor.get() * 2 * Math.PI) - GripperAngleMotorConstants.Angle_OFFSET;
   }
 
 

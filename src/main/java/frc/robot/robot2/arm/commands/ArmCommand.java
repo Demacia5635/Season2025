@@ -109,6 +109,7 @@ public class ArmCommand extends Command {
       case L4:
         wantedAngle = ANGLES.L4;
         arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
+        break;
 
       case ALGAE_BOTTOM:
         wantedAngle = ANGLES.ALGAE_BOTTOM;
@@ -145,6 +146,7 @@ public class ArmCommand extends Command {
         arm.setState(ARM_ANGLE_STATES.IDLE);
         wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
+        break;
     }
   }
 
