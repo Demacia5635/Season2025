@@ -15,10 +15,14 @@ public class ChassisConstants {
 
 
     public static class AccelConstants{
-        public static final double MAX_LINEAR_ACCEL = 12;
-        public static final double MAX_OMEGA_VELOCITY = Math.toRadians(180);
-        public static final double MAX_RADIUS = 2;
-        public static final double MIN_OMEGA_DIFF = Math.toRadians(10);
+        public static final double MAX_LINEAR_ACCEL = 10;
+        public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
+        public static final double MAX_RADIAL_ACCEL = 6;
+        public static final double MAX_RADIUS = 0.4;
+        public static final double MIN_OMEGA_DIFF = Math.toRadians(20);
+        public static final double MAX_DELTA_VELOCITY = MAX_LINEAR_ACCEL * CYCLE_DT;
+        public static final double MAX_VELOCITY_TO_IGNORE_RADIUS = MAX_RADIUS * MAX_OMEGA_VELOCITY;
+        public static final double MIN_VELOCITY = 1.5;
     }
     
     public static final int GYRO_ID = 14;
