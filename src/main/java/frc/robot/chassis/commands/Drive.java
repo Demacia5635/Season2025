@@ -43,7 +43,7 @@ public class Drive extends Command {
         
         double velX = Math.pow(joyX, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyX);
         double velY = Math.pow(joyY, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyY);
-        double velRot = Math.pow(rot, 2) * ChassisConstants.MAX_OMEGA_VELOCITY * Math.signum(rot);
+        double velRot = Math.pow(rot, 2) * ChassisConstants.MAX_ROTATIONAL_VELOCITY * Math.signum(rot);
 
         if (precisionMode) {
             velX /= 4d;
@@ -53,6 +53,7 @@ public class Drive extends Command {
         
         speeds = new ChassisSpeeds(velX, velY,velRot);
  
-        chassis.setVelocitiesWithAccel(speeds, false);
+        if(precisionMode) chassis.setVelocities(speeds);
+        else chassis.setVelocitiesWithAccel(speeds);
     }
 }

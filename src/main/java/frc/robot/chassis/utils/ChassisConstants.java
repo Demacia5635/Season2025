@@ -10,26 +10,19 @@ import frc.robot.utils.TalonConfig;
 public class ChassisConstants {
     public static final double CYCLE_DT = 0.02;
     public static final double MAX_DRIVE_VELOCITY = 3.6;
-    public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
+    public static final double MAX_ROTATIONAL_VELOCITY = Math.toRadians(360);
     public static final double MIN_DRIVE_VELOCITY_FOR_ROTATION = 0.2;
 
-    public static class AccelPaths{
-        public static final double DEFAULT = 25;
-        public static final double L2 = 25;
-        public static final double L3 = 25;
-        public static final double INTAKE = 25;
-        public static final double ALGAE_BOTTOM = 25;
-        public static final double ALGAE_TOP = 25;
-    }
-    
-    public static class AccelDrive{
-        
-        public static final double DEFAULT = 40;
-        public static final double L2 = 35;
-        public static final double L3 = 30;
-        public static final double INTAKE = 32;
-        public static final double ALGAE_BOTTOM = 35;
-        public static final double ALGAE_TOP = 30;
+
+    public static class AccelConstants{
+        public static final double MAX_LINEAR_ACCEL = 10;
+        public static final double MAX_OMEGA_VELOCITY = Math.toRadians(360);
+        public static final double MAX_RADIAL_ACCEL = 6;
+        public static final double MAX_RADIUS = 0.4;
+        public static final double MIN_OMEGA_DIFF = Math.toRadians(20);
+        public static final double MAX_DELTA_VELOCITY = MAX_LINEAR_ACCEL * CYCLE_DT;
+        public static final double MAX_VELOCITY_TO_IGNORE_RADIUS = MAX_RADIUS * MAX_OMEGA_VELOCITY;
+        public static final double MIN_VELOCITY = 1.5;
     }
     
     public static final int GYRO_ID = 14;
