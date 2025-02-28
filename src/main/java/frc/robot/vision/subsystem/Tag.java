@@ -1,5 +1,6 @@
 package frc.robot.vision.subsystem;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -27,6 +28,8 @@ public class Tag extends SubsystemBase {
   private Translation2d cameraToTag;
   private double alpha;
 
+  private double wantedPip = 0;
+
   // NetworkTables communication for each camera
   private NetworkTable Table;
 
@@ -42,6 +45,7 @@ public class Tag extends SubsystemBase {
   public Pose2d pose;
 
 private NetworkTableEntry cropEntry;
+private NetworkTableEntry pipeEntry;
 
   private Supplier<Rotation2d> getRobotAngle;
   private Supplier<ChassisSpeeds> speeds;
@@ -83,6 +87,7 @@ private NetworkTableEntry cropEntry;
   public void periodic() {
     // Process data from each camera
     cropEntry = Table.getEntry("crop");
+    pipeEntry = Table.getEntry("pipeline");
     camToTagPitch = Table.getEntry("ty").getDouble(0.0);
     camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) + CAM_YAW[cameraId];
     id = getTagId();
@@ -96,11 +101,18 @@ private NetworkTableEntry cropEntry;
         pose = new Pose2d(getOriginToRobot(), getRobotAngle.get());
         field.setRobotPose(pose);
         confidence = getConfidence();
+        wantedPip = GetDistFromCamera() > 1 ? 0 : 1;
       }
     } else {
       cropStop();
+      wantedPip = 0;
       pose = null;
     }
+
+    if(wantedPip != Table.getEntry("getpipe").getDouble(0.0)){
+      pipeEntry.setDouble(wantedPip);
+    }
+
   }
 
   public int getTagId(){
@@ -181,18 +193,18 @@ private void crop() {
     }
 
     private double getCropOfset() {
-      double dist = GetDistFromCamera();
-      return dist * 0.35;
+      double crop = GetDistFromCamera() * CROP_CONSTAT;
+      return MathUtil.clamp(crop, MIN_CROP, MAX_CROP);
     }
 
     private double getYawCrop(){
       double TagYaw = ((-camToTagYaw) + CAM_YAW[cameraId]) / 31.25;
-      return TagYaw + speeds.get().vxMetersPerSecond*0.3 + speeds.get().omegaRadiansPerSecond*0.3;
+      return TagYaw + speeds.get().vyMetersPerSecond*PREDICT_Y + speeds.get().omegaRadiansPerSecond*PREDICT_OMEGA;
     }
 
     private double getPitchCrop(){
       double TagPitch = camToTagPitch / 24.45;
-      return TagPitch + speeds.get().vyMetersPerSecond*0.1;
+      return TagPitch + speeds.get().vxMetersPerSecond*PREDICT_X;
     }
 
   private void cropStop() {

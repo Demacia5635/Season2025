@@ -151,4 +151,11 @@ public class VisionConstants {
             "limelight-backup"};
 
 
+        public static final double MIN_CROP = 0.4;
+        public static final double MAX_CROP = 0.5;
+        public static final double CROP_CONSTAT = 0.35;
+        public static final double PREDICT_X = -0.1;
+        public static final double PREDICT_Y = 0.15;
+        public static final double PREDICT_OMEGA = 0.2;
+
 }
