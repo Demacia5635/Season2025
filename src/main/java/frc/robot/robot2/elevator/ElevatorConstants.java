@@ -20,16 +20,16 @@ public class ElevatorConstants {
         private static final CANBus CANBUS = CANBuses.ARM_CAN_BUS;
         private static final String NAME = "Elevator/Motor";
         private static final double GEAR_RATIO = 1.0/0.007;
-        public static final double kP = 40;
-        public static final double kI = 20;
-        public static final double kD = 15;
-        public static final double kG = 0.22614986964940442;
+        public static final double kP = 50;
+        public static final double kI = 6;
+        public static final double kD = 0;
+        public static final double kG = 0.45;
         public static final double kV = 16;
-        public static final double kS = 0;
-        public static final double kA = 0;
-        private static final double VELOCITY = 0;
-        private static final double ACCELERATION = 0;
-        private static final double JERK = 0;
+        public static final double kS = 0.1;
+        public static final double kA = 0.4;
+        private static final double VELOCITY = 10;
+        private static final double ACCELERATION = 15;
+        private static final double JERK = 25;
         private static final boolean NETURAL_MODE = true;
         private static final boolean IS_INVERTED = true;
         private static final double RAMP_TIME = 0.15;
@@ -61,7 +61,8 @@ KG= 0.22614986964940442
 
     public static class CalibrationConstants {
         public static final double POWER = 0.2;
-        public static final double HEIGHT = 0;
+        public static final double TOP_HEIGHT = 0.6;
+        public static final double BOTTOM_HEIGHT = 0;
     }
 
     public enum ELEVATOR_STATE {

@@ -72,6 +72,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putData(getName() + "/State Chooser", stateChooser);
 
     motor.configPidFf(0);
+    motor.configMotionMagic();
 
     SmartDashboard.putData(getName() + "/Motor" + "/Set Brake", new InstantCommand(()-> motor.setNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/Motor" + "/Set Coast", new InstantCommand(()-> motor.setNeutralMode(false)).ignoringDisable(true));
@@ -120,7 +121,7 @@ public class Elevator extends SubsystemBase {
     if (position < ElevatorLimits.BOTTOM_LIMIT_POSITION) {
       position = ElevatorLimits.BOTTOM_LIMIT_POSITION;
     }
-    motor.setMotionMagic(position);
+    motor.setMotionMagic(position, kG);
   }
 
   /*
@@ -139,7 +140,7 @@ public class Elevator extends SubsystemBase {
       position = ElevatorLimits.BOTTOM_LIMIT_POSITION;
     }
 
-    motor.setPositionVoltage(position,0.22614986964940442); //kg
+    motor.setPositionVoltage(position, ElevatorMotorConstants.kG); //kg
   }
 
   /*

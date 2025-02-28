@@ -35,12 +35,16 @@ public class ElevatorCalibration extends Command {
     elevator.stop();
 
     elevator.calibrated();
-    elevator.setHeight(CalibrationConstants.HEIGHT);
+    elevator.setPosition(
+      elevator.hasReachedBottom()
+      ? CalibrationConstants.BOTTOM_HEIGHT
+      : CalibrationConstants.TOP_HEIGHT
+    );
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return elevator.hasReachedBottom();
+    return elevator.hasReachedBottom() || elevator.hasReachedTop();
   }
 }

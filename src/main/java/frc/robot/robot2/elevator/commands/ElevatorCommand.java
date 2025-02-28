@@ -41,11 +41,11 @@ public class ElevatorCommand extends Command {
       case L2:
       case CORAL_STATION:
       case STARTING:
-        elevator.setPositionVoltage(elevator.getState().HEIGHT);
+        elevator.setMagicMotion(elevator.getState().HEIGHT);
         break;
 
       case TESTING:
-        elevator.setPositionVoltage(testHeight);
+        elevator.setMagicMotion(testHeight);
         break;
 
       case IDLE:
