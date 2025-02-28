@@ -55,8 +55,8 @@ KG= 0.22614986964940442
     public class ElevatorLimits{
         public static final double TOP_LIMIT_POSITION = 0.6;
         public static final double BOTTOM_LIMIT_POSITION = 0.01;
-        public static final int TOP_SWITCH_ID = 0;
-        public static final int BOTTOM_SWITCH_ID = 1;
+        public static final int TOP_SWITCH_ID = 1;
+        public static final int BOTTOM_SWITCH_ID = 0;
     }
 
     public static class CalibrationConstants {
