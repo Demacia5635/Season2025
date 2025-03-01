@@ -97,7 +97,6 @@ public class ChassisConstants {
             DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CAN_BUS, NAME + " Drive")
                 .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
                 .withBrake(true)
-                .withInvert(true)
                 .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(wheelDiameter * Math.PI);
             CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CAN_BUS, NAME + " Cancoder");
             POSITION = new Translation2d(
