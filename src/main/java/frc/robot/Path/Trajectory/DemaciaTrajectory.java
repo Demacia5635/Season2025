@@ -150,7 +150,7 @@ public class DemaciaTrajectory {
 
         else {
 
-            return chassisPose.getTranslation().getDistance(currentLastPoint) < 0.65;
+            return chassisPose.getTranslation().getDistance(currentLastPoint) < 1;
 
         }
     }

@@ -183,7 +183,7 @@ public class Chassis extends SubsystemBase {
         if(wantedSpeeds.getNorm() == 0 && currentSpeeds.getNorm() == 0) return new Translation2d();
         double curNorm = currentSpeeds.getNorm();
         if(curNorm <0.1){
-            LogManager.log("SMALL VEL");
+            // LogManager.log("SMALL VEL");
             double v = MathUtil.clamp(wantedSpeeds.getNorm(), 0, curNorm + AccelConstants.MAX_DELTA_VELOCITY);
             return new Translation2d(v, wantedSpeeds.getAngle());
         }
@@ -191,14 +191,14 @@ public class Chassis extends SubsystemBase {
         
         double angleDiff = MathUtil.angleModulus(wantedSpeeds.getAngle().getRadians() - currentSpeeds.getAngle().getRadians());
         double radius = curNorm / AccelConstants.MAX_OMEGA_VELOCITY;
-        LogManager.log("RADIUS: " + radius);
+        // LogManager.log("RADIUS: " + radius);
         if(Math.abs(angleDiff) < 0.6 || radius < AccelConstants.MAX_RADIUS){
             
             return new Translation2d(calculateLinearVelocity(wantedSpeeds, currentSpeeds), wantedSpeeds.getAngle());
         }
 
         double velocity = Math.min(AccelConstants.MAX_VELOCITY_TO_IGNORE_RADIUS, Math.max(curNorm - (AccelConstants.MAX_DELTA_VELOCITY), AccelConstants.MIN_VELOCITY));
-       LogManager.log("NEW VELOCITY: " + velocity);
+    //    LogManager.log("NEW VELOCITY: " + velocity);
         double radChange = Math.min(AccelConstants.MAX_OMEGA_VELOCITY, (velocity / AccelConstants.MAX_RADIUS) * CYCLE_DT);
         Rotation2d newHeading = currentSpeeds.getAngle().plus(new Rotation2d(radChange * Math.signum(angleDiff)));
         return new Translation2d(velocity, newHeading);

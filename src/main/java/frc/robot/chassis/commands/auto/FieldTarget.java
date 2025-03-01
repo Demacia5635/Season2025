@@ -12,6 +12,7 @@ import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.LogManager;
+import frc.robot.vision.utils.VisionConstants;
 
 public class FieldTarget {
 
@@ -128,6 +129,18 @@ public class FieldTarget {
         } else {
             return position.getApproachPoint(approachOffset);
         }
+    }
+
+    public PathPoint getSmartApproachPoint(boolean isAlgaeRight) {
+        Translation2d robotToTag = RobotContainer.chassis.getPose().getTranslation().minus(getFinishPoint().getTranslation()).rotateBy(VisionConstants.TAG_ANGLE[position.getId()].unaryMinus());
+        Translation2d offset = new Translation2d();
+        if (robotToTag.getX() > 0.4 && robotToTag.getX() < 0.8) {
+            offset = new Translation2d(robotToTag.getX(), 0);
+        }
+        
+        if(robotToTag.getX() < 0.4) offset = new Translation2d(0.4, 0);
+        if(robotToTag.getX() > 0.8) offset = new Translation2d(0.8, 0);
+        return position.getApproachPoint(offset);
     }
 
     public PathPoint getApproachingPoint() {

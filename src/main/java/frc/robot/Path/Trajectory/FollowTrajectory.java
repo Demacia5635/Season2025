@@ -101,7 +101,8 @@ public class FollowTrajectory extends Command {
       this.wantedAngle = target.getFinishPoint(isAlgaeRight).getRotation();
       points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
       
-      points.add(target.getApproachingPoint(isAlgaeRight));
+      points.add(target.getSmartApproachPoint(isAlgaeRight));
+      LogManager.log("approach: " + points.get(points.size() - 1));
       
       points.add(target.getFinishPoint(isAlgaeRight));
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
@@ -137,7 +138,10 @@ public class FollowTrajectory extends Command {
         chassis.stop();
         if (DriverStation.isAutonomous()) {
         } else {
-          new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new Drop(RobotContainer.gripper)).schedule();
+          new WaitUntilCommand(RobotContainer.arm::isReady)
+          .andThen(new Drop(RobotContainer.gripper), 
+          new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
+          .withTimeout(0.2)).schedule();
         }
       }
 
