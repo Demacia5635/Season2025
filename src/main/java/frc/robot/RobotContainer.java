@@ -20,31 +20,31 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
-import frc.robot.Path.Trajectory.ChangeReefToClosest;
-import frc.robot.Path.Trajectory.FollowTrajectory;
+// import frc.robot.Path.Trajectory.ChangeReefToClosest;
+// import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.chassis.commands.Drive;
-import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
-import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
-import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
-import frc.robot.chassis.commands.auto.AlgaeL3;
-import frc.robot.chassis.commands.auto.AlgaeL3L3;
-import frc.robot.chassis.commands.auto.AutoUtils;
-import frc.robot.chassis.commands.auto.FieldTarget;
+// import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
+// import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
+// import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
+// import frc.robot.chassis.commands.auto.AlgaeL3;
+// import frc.robot.chassis.commands.auto.AlgaeL3L3;
+// import frc.robot.chassis.commands.auto.AutoUtils;
+// import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.robot1.arm.commands.ArmCommand;
-import frc.robot.robot1.arm.commands.ArmDrive;
-import frc.robot.robot1.arm.commands.ArmCalibration;
-import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
-import frc.robot.robot1.arm.subsystems.Arm;
-import frc.robot.robot1.climb.command.JoyClimeb;
-import frc.robot.robot1.climb.command.OpenClimber;
-import frc.robot.robot1.climb.subsystem.Climb;
-import frc.robot.robot1.gripper.commands.GrabOrDrop;
-import frc.robot.robot1.gripper.commands.GripperDrive;
-import frc.robot.robot1.gripper.subsystems.Gripper;
-import frc.robot.leds.Robot1Strip;
-import frc.robot.leds.subsystems.LedManager;
-import frc.robot.practice.AllOffsets;
+// import frc.robot.robot1.arm.commands.ArmCommand;
+// import frc.robot.robot1.arm.commands.ArmDrive;
+// import frc.robot.robot1.arm.commands.ArmCalibration;
+// import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+// import frc.robot.robot1.arm.subsystems.Arm;
+// import frc.robot.robot1.climb.command.JoyClimeb;
+// import frc.robot.robot1.climb.command.OpenClimber;
+// import frc.robot.robot1.climb.subsystem.Climb;
+// import frc.robot.robot1.gripper.commands.GrabOrDrop;
+// import frc.robot.robot1.gripper.commands.GripperDrive;
+// import frc.robot.robot1.gripper.subsystems.Gripper;
+// import frc.robot.leds.Robot1Strip;
+// import frc.robot.leds.subsystems.LedManager;
+// import frc.robot.practice.AllOffsets;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
@@ -58,7 +58,7 @@ import frc.robot.utils.CommandController.ControllerType;
 public class RobotContainer implements Sendable{
 
   public static RobotContainer robotContainer;
-  public static LedManager ledManager;
+  // public static LedManager ledManager;
   public static CommandController driverController;
   public static CommandController operatorController;
   public static boolean isRed;
@@ -66,12 +66,12 @@ public class RobotContainer implements Sendable{
   private static boolean hasRemovedFromLog = false;
 
   public static Chassis chassis;  
-  public static Arm arm;
-  public static Gripper gripper;
-  public static Climb climb;
-  public static Robot1Strip robot1Strip;
+  // public static Arm arm;
+  // public static Gripper gripper;
+  // public static Climb climb;
+  // public static Robot1Strip robot1Strip;
   
-  public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
+  // public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
 
   public final SendableChooser<AutoMode> autoChooser;
   public enum AutoMode {
@@ -83,18 +83,18 @@ public class RobotContainer implements Sendable{
     // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     robotContainer = this;
     new LogManager();
-    ledManager = new LedManager();
+    // ledManager = new LedManager();
     driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
     LogManager.addEntry("Timer", DriverStation::getMatchTime);
-    SmartDashboard.putData("Reef", ReefWidget.getInstance());
+    // SmartDashboard.putData("Reef", ReefWidget.getInstance());
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
-    SmartDashboard.putData("pracice", new AllOffsets());
+    // SmartDashboard.putData("pracice", new AllOffsets());
     
     configureSubsytems();
-    new AutoUtils();
+    // new AutoUtils();
     configureDefaultCommands();
     configureBindings();
 
@@ -114,10 +114,10 @@ public class RobotContainer implements Sendable{
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
     chassis = new Chassis();
-    arm = new Arm();
-    gripper = new Gripper();
-    climb = new Climb();
-    robot1Strip = new Robot1Strip(chassis, arm, gripper);
+    // arm = new Arm();
+    // gripper = new Gripper();
+    // climb = new Climb();
+    // robot1Strip = new Robot1Strip(chassis, arm, gripper);
   }
 
   /**
@@ -127,59 +127,59 @@ public class RobotContainer implements Sendable{
    */
   private void configureDefaultCommands() {
     chassis.setDefaultCommand(new Drive(chassis, driverController));
-    arm.setDefaultCommand(new ArmCommand(arm));
+    // arm.setDefaultCommand(new ArmCommand(arm));
   }
 
 
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
-    driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
-    driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
-    driverController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
+    // driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
+    // driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
+    // driverController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
 
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
-    driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
-    driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
-    driverController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
+    // driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
+    // driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
+    // driverController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
     
-    driverController.leftBumper().onTrue(new InstantCommand(()-> {
-      chassis.stop();
-      arm.stop();
-      gripper.stop();
-      climb.stopClimb();
-    }, chassis, arm, gripper, climb).ignoringDisable(true));
-    driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
+    // driverController.leftBumper().onTrue(new InstantCommand(()-> {
+    //   chassis.stop();
+    //   arm.stop();
+    //   gripper.stop();
+    //   climb.stopClimb();
+    // }, chassis, arm, gripper, climb).ignoringDisable(true));
+    // driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
-    driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
-    driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
-    driverController.povLeft().onTrue(new InstantCommand(()-> arm.setState(LEVEL.ALGAE_TOP)).ignoringDisable(true));       
+    // driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
+    // driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
+    // driverController.povLeft().onTrue(new InstantCommand(()-> arm.setState(LEVEL.ALGAE_TOP)).ignoringDisable(true));       
 
-    driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
-    driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
+    // driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
+    // driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
 
-    operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
+    // operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
     
     operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
-    operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
-    operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
-    operatorController.leftButton().onTrue(new ArmCalibration(arm));
+    // operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
+    // operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
+    // operatorController.leftButton().onTrue(new ArmCalibration(arm));
     
-    operatorController.leftBumper().onTrue(new InstantCommand(()-> {
-      chassis.stop();
-      arm.stop();
-      gripper.stop();
-      arm.setState(ARM_ANGLE_STATES.IDLE);
-      climb.stopClimb();
-    }, chassis, arm, gripper, climb).ignoringDisable(true));
+    // operatorController.leftBumper().onTrue(new InstantCommand(()-> {
+    //   chassis.stop();
+    //   arm.stop();
+    //   gripper.stop();
+    //   arm.setState(ARM_ANGLE_STATES.IDLE);
+    //   climb.stopClimb();
+    // }, chassis, arm, gripper, climb).ignoringDisable(true));
 
-    operatorController.povUp().onTrue(new InstantCommand(climb::stopClimb ,climb).ignoringDisable(true));
-    operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
+    // operatorController.povUp().onTrue(new InstantCommand(climb::stopClimb ,climb).ignoringDisable(true));
+    // operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
     operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
-    operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
+    // operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
 
-    operatorController.rightBumper().onTrue(new InstantCommand(()-> arm.hadCalibrated()).ignoringDisable(true));
+    // operatorController.rightBumper().onTrue(new InstantCommand(()-> arm.hadCalibrated()).ignoringDisable(true));
     
-    operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
+    // operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
   }
 
@@ -215,7 +215,8 @@ public class RobotContainer implements Sendable{
    * @return the ommand that start at the start at enable
    */
   public Command getEnableInitCommand() {
-    return new ArmCalibration(arm);
+    return null;
+    // return new ArmCalibration(arm);
   }
 
   /**
@@ -228,10 +229,11 @@ public class RobotContainer implements Sendable{
   public Command getDisableInitCommand() {
     return new InstantCommand(()-> {
       chassis.stop();
-      arm.stop();
-      gripper.stop();
-      climb.stopClimb();
-    }, chassis, arm, gripper, climb
+      // arm.stop();
+      // gripper.stop();
+      // climb.stopClimb();
+    }, chassis
+    // }, chassis, arm, gripper, climb
     ).withName("initDisableCommand").ignoringDisable(true);
   }
 
@@ -241,19 +243,20 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return null;
     // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
-    switch (autoChooser.getSelected()) {
-      case LEFT:
-        return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
+    // switch (autoChooser.getSelected()) {
+    //   case LEFT:
+    //     return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
 
-      case MIDDLE:
-        return new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
+    //   case MIDDLE:
+    //     return new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
       
-      case RIGHT: 
-        return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
+    //   case RIGHT: 
+    //     return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
     
-      default:
-        return new ArmCalibration(arm);
-    }
+    //   default:
+    //     return new ArmCalibration(arm);
+    // }
   }
 }

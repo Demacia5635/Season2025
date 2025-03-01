@@ -14,17 +14,19 @@ public class SwerveModule {
     private TalonMotor driveMotor;
     private Cancoder cancoder;
     public String name;
+    private double offset;
 
     public SwerveModule(SwerveModuleConfigs configs) {
         steerMotor = new TalonMotor(configs.STEER_CONFIG);
         driveMotor = new TalonMotor(configs.DRIVE_CONFIG);
         cancoder = new Cancoder(configs.CANCODER_CONFIG);
         name = configs.NAME;
+        this.offset = configs.STEER_OFFSET;
 
-        steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
+        steerMotor.setPosition(getAbsoluteAngle());
 
         // SmartDashboard.putData(configs.DRIVE_CONFIG.name, driveMotor);
-        // SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
+        SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
     }
 
     public void setNeutralMode(boolean isBrake) {
@@ -37,7 +39,7 @@ public class SwerveModule {
     }
 
     public double getAbsoluteAngle() {
-        return cancoder.getCurrentAbsPosition();
+        return cancoder.getCurrentAbsPosition() - offset;
     }
 
     public void setDrivePower(double power) {

@@ -28,7 +28,7 @@ public class ChassisConstants {
     public static final int GYRO_ID = 14;
     public static final CANBus CAN_BUS = CANBuses.CHASSIS_CAN_BUS;
     public static final CANBus GYRO_CAN_BUS = CANBuses.ARM_CAN_BUS;
-    public static final double STEER_GEAR_RATIO = 151.0/7.0;
+    public static final double STEER_GEAR_RATIO = 12.8;
     public static final double DRIVE_GEAR_RATIO = 8.14;
     
     public static final double STEER_KP = 4.1;
@@ -91,6 +91,7 @@ public class ChassisConstants {
                 .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
                 .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
                 .withBrake(true)
+                .withInvert(true)
                 .withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
                 .withRampTime(RAMP_TIME_STEER);
             DRIVE_CONFIG = new TalonConfig(swerveId * 3 + 1, CAN_BUS, NAME + " Drive")
@@ -100,8 +101,8 @@ public class ChassisConstants {
                 .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(wheelDiameter * Math.PI);
             CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CAN_BUS, NAME + " Cancoder");
             POSITION = new Translation2d(
-                swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
-                swerveId == 0 || swerveId == 2 ? 0.29 : -0.29
+                swerveId == 0 || swerveId == 1 ? 0.315 : -0.315,
+                swerveId == 0 || swerveId == 2 ? 0.265 : -0.265
             );
             STEER_OFFSET = steerOffset;
         }
@@ -109,25 +110,25 @@ public class ChassisConstants {
 
     public static final SwerveModuleConfigs FRONT_LEFT = new SwerveModuleConfigs(
         0,
-        -0.67188613763794190032352861509522,
+        -0.12578936984973532126804424106651,
         0.1
     );
 
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
         1,
-        0.01380415811987355148980485502613,
+        -1.1903683060010941968129263537849,
         0.1
     );
 
     public static final SwerveModuleConfigs BACK_LEFT = new SwerveModuleConfigs(
         2,
-        -0.41417500907866398138596105307804 + Math.PI,
+        0.71329861199756255479294318017361,
         0.1
     );
 
     public static final SwerveModuleConfigs BACK_RIGHT = new SwerveModuleConfigs(
         3,
-        -0.66268127116292380613483306998221,
+        1.3146245786358776989806008248804,
         0.1
     );
 }
