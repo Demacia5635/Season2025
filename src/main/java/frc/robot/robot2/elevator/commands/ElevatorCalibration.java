@@ -12,6 +12,7 @@ import frc.robot.robot2.elevator.subsystem.Elevator;
 public class ElevatorCalibration extends Command {
 
   private final Elevator elevator;
+  private boolean hasReechedBottom = false;
 
   /** Creates a new ElevatorCalibration. */
   public ElevatorCalibration(Elevator elevator) {
@@ -21,7 +22,9 @@ public class ElevatorCalibration extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    hasReechedBottom = false;
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -36,15 +39,17 @@ public class ElevatorCalibration extends Command {
 
     elevator.calibrated();
     elevator.setPosition(
-      elevator.hasReachedBottom()
+      hasReechedBottom
       ? CalibrationConstants.BOTTOM_HEIGHT
       : CalibrationConstants.TOP_HEIGHT
     );
+    hasReechedBottom = false;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    hasReechedBottom = elevator.hasReachedBottom();
     return elevator.hasReachedBottom() || elevator.hasReachedTop();
   }
 }

@@ -31,6 +31,10 @@ import frc.robot.chassis.commands.Drive;
 // import frc.robot.chassis.commands.auto.AutoUtils;
 // import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
+import frc.robot.robot2.elevator.commands.ElevatorCalibration;
+import frc.robot.robot2.elevator.commands.ElevatorCommand;
+import frc.robot.robot2.elevator.subsystem.Elevator;
 // import frc.robot.robot1.arm.commands.ArmCommand;
 // import frc.robot.robot1.arm.commands.ArmDrive;
 // import frc.robot.robot1.arm.commands.ArmCalibration;
@@ -69,6 +73,7 @@ public class RobotContainer implements Sendable{
   // public static Arm arm;
   // public static Gripper gripper;
   // public static Climb climb;
+  public static Elevator elevator;
   // public static Robot1Strip robot1Strip;
   
   // public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
@@ -117,6 +122,7 @@ public class RobotContainer implements Sendable{
     // arm = new Arm();
     // gripper = new Gripper();
     // climb = new Climb();
+    elevator = new Elevator();
     // robot1Strip = new Robot1Strip(chassis, arm, gripper);
   }
 
@@ -127,6 +133,7 @@ public class RobotContainer implements Sendable{
    */
   private void configureDefaultCommands() {
     chassis.setDefaultCommand(new Drive(chassis, driverController));
+    elevator.setDefaultCommand(new ElevatorCommand(elevator));
     // arm.setDefaultCommand(new ArmCommand(arm));
   }
 
@@ -164,7 +171,7 @@ public class RobotContainer implements Sendable{
     // operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
     // operatorController.leftButton().onTrue(new ArmCalibration(arm));
     
-    // operatorController.leftBumper().onTrue(new InstantCommand(()-> {
+  // operatorController.leftBumper().onTrue(new InstantCommand(()-> {
     //   chassis.stop();
     //   arm.stop();
     //   gripper.stop();
@@ -181,6 +188,8 @@ public class RobotContainer implements Sendable{
     
     // operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
+    driverController.upButton().onTrue(new ElevatorCalibration(elevator));
+    driverController.leftButton().onTrue(new InstantCommand(()->elevator.setState(ELEVATOR_STATE.L4)));
   }
 
   public static boolean isRed() {
@@ -215,7 +224,8 @@ public class RobotContainer implements Sendable{
    * @return the ommand that start at the start at enable
    */
   public Command getEnableInitCommand() {
-    return null;
+    // return null;
+    return new ElevatorCalibration(elevator);
     // return new ArmCalibration(arm);
   }
 

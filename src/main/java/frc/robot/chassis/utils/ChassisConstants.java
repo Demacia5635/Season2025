@@ -23,6 +23,9 @@ public class ChassisConstants {
         public static final double MAX_DELTA_VELOCITY = MAX_LINEAR_ACCEL * CYCLE_DT;
         public static final double MAX_VELOCITY_TO_IGNORE_RADIUS = MAX_RADIUS * MAX_OMEGA_VELOCITY;
         public static final double MIN_VELOCITY = 1.5;
+        public static final double aHEIGHT = -20;
+        public static final double bHEIGHT = -4.82;
+        public static final double cHEIGHT = 12;
     }
     
     public static final int GYRO_ID = 14;

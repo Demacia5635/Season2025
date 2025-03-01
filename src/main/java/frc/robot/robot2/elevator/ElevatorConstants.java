@@ -23,7 +23,7 @@ public class ElevatorConstants {
         public static final double kP = 50;
         public static final double kI = 6;
         public static final double kD = 0;
-        public static final double kG = 0.45;
+        public static final double kG = 0.225;
         public static final double kV = 16;
         public static final double kS = 0.1;
         public static final double kA = 0.4;
@@ -53,7 +53,7 @@ KG= 0.22614986964940442
     }
 
     public class ElevatorLimits{
-        public static final double TOP_LIMIT_POSITION = 0.6;
+        public static final double TOP_LIMIT_POSITION = 0.64;
         public static final double BOTTOM_LIMIT_POSITION = 0.01;
         public static final int TOP_SWITCH_ID = 1;
         public static final int BOTTOM_SWITCH_ID = 0;
@@ -61,12 +61,12 @@ KG= 0.22614986964940442
 
     public static class CalibrationConstants {
         public static final double POWER = 0.2;
-        public static final double TOP_HEIGHT = 0.6;
+        public static final double TOP_HEIGHT = 0.64;
         public static final double BOTTOM_HEIGHT = 0;
     }
 
     public enum ELEVATOR_STATE {
-        L4(0.55),
+        L4(0.63),
         L3(0.5),
         L2(0.2),
         CORAL_STATION(0.1),

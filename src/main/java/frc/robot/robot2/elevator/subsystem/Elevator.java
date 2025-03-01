@@ -55,8 +55,8 @@ public class Elevator extends SubsystemBase {
   }
   
   private void addNT() {
-    LogManager.addEntry(getName() + "/Top Limit Switch", () -> hasReachedTop() ? 1 : 0);
-    LogManager.addEntry(getName() + "/Bottom Limit Switch", () -> hasReachedBottom() ? 1 : 0);
+    LogManager.addEntry(getName() + "/Top Limit Switch", () -> hasReachedTop());
+    LogManager.addEntry(getName() + "/Bottom Limit Switch", () -> hasReachedBottom());
 
     SmartDashboard.putData(getName() + "/Motor", motor);
 
@@ -121,7 +121,7 @@ public class Elevator extends SubsystemBase {
     if (position < ElevatorLimits.BOTTOM_LIMIT_POSITION) {
       position = ElevatorLimits.BOTTOM_LIMIT_POSITION;
     }
-    motor.setMotionMagic(position, kG);
+    motor.setMotionMagic(position);
   }
 
   /*
@@ -184,6 +184,10 @@ public class Elevator extends SubsystemBase {
 
   public void setHeight(double height) {
     motor.setPosition(height);
+  }
+
+  public double getHeight() {
+    return motor.getCurrentPosition();
   }
 
   public void setPower(double power) {

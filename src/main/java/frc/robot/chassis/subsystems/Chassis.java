@@ -175,26 +175,34 @@ public class Chassis extends SubsystemBase {
         return wantedSpeeds.getNorm();
         
     }
-    
+    private double getAccel(double height){
+        return AccelConstants.aHEIGHT * Math.pow(height, 2) + AccelConstants.bHEIGHT * height + AccelConstants.cHEIGHT;
+    }
     private Translation2d calculateVelocity(Translation2d wantedSpeeds, Translation2d currentSpeeds){
         if(wantedSpeeds.getNorm() == 0 && currentSpeeds.getNorm() == 0) return new Translation2d();
+        
+        double accel = getAccel(RobotContainer.elevator.getHeight());
+        LogManager.log("HEIGHT: " + RobotContainer.elevator.getHeight());
+        LogManager.log("ACCEL: " + accel);
+        double maxDeltaV = accel * CYCLE_DT;
         double curNorm = currentSpeeds.getNorm();
         if(curNorm <0.1){
             // LogManager.log("SMALL VEL");
-            double v = MathUtil.clamp(wantedSpeeds.getNorm(), 0, curNorm + AccelConstants.MAX_DELTA_VELOCITY);
+            double v = MathUtil.clamp(wantedSpeeds.getNorm(), 0, curNorm + maxDeltaV);
             return new Translation2d(v, wantedSpeeds.getAngle());
         }
         if(wantedSpeeds.getNorm() == 0 && currentSpeeds.getNorm() > 0.1) return new Translation2d(calculateLinearVelocity(wantedSpeeds, currentSpeeds), currentSpeeds.getAngle());
         
         double angleDiff = MathUtil.angleModulus(wantedSpeeds.getAngle().getRadians() - currentSpeeds.getAngle().getRadians());
         double radius = curNorm / AccelConstants.MAX_OMEGA_VELOCITY;
+        if(Math.abs(angleDiff) >= 170 && Math.abs(angleDiff) <= 190) accel *= 0.3;
         // LogManager.log("RADIUS: " + radius);
         if(Math.abs(angleDiff) < 0.6 || radius < AccelConstants.MAX_RADIUS){
-            
+                
             return new Translation2d(calculateLinearVelocity(wantedSpeeds, currentSpeeds), wantedSpeeds.getAngle());
         }
 
-        double velocity = Math.min(AccelConstants.MAX_VELOCITY_TO_IGNORE_RADIUS, Math.max(curNorm - (AccelConstants.MAX_DELTA_VELOCITY), AccelConstants.MIN_VELOCITY));
+        double velocity = Math.min(AccelConstants.MAX_VELOCITY_TO_IGNORE_RADIUS, Math.max(curNorm - (maxDeltaV), AccelConstants.MIN_VELOCITY));
     //    LogManager.log("NEW VELOCITY: " + velocity);
         double radChange = Math.min(AccelConstants.MAX_OMEGA_VELOCITY, (velocity / AccelConstants.MAX_RADIUS) * CYCLE_DT);
         Rotation2d newHeading = currentSpeeds.getAngle().plus(new Rotation2d(radChange * Math.signum(angleDiff)));
