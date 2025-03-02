@@ -176,7 +176,7 @@ public class Chassis extends SubsystemBase {
         
     }
     private double getAccel(double height){
-        return AccelConstants.aHEIGHT * Math.pow(height, 2) + AccelConstants.bHEIGHT * height + AccelConstants.cHEIGHT;
+        return AccelConstants.mHeight * height + AccelConstants.bHeight;
     }
     private Translation2d calculateVelocity(Translation2d wantedSpeeds, Translation2d currentSpeeds){
         if(wantedSpeeds.getNorm() == 0 && currentSpeeds.getNorm() == 0) return new Translation2d();
