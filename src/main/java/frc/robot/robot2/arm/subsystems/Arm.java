@@ -314,6 +314,10 @@ public class Arm extends SubsystemBase {
       return;
     }
 
+    if (Math.abs(armAngleMotor.getCurrentVelocity()) >= 0.3) {
+      targetAngle += Math.signum(armAngleMotor.getCurrentVelocity()) * Math.toRadians(7);
+    }
+
     // if (lastGripperAngleTarget != targetAngle) {
     //   hasGripperAngleReachedTarget = false;
     //   lastGripperAngleTarget = targetAngle;
