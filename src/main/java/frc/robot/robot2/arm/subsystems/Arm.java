@@ -77,6 +77,7 @@ public class Arm extends SubsystemBase {
 
   private boolean hasArmAngleReachedTarget;
   private double lastArmAngleTarget;
+  private double lastGripperAngleTarget;
 
   private boolean hasGripperAngleReachedTarget;
 
@@ -134,8 +135,8 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
     /* add to smart dashboard the widgets of the talon motor */
-    // SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
-    // SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
+    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
+    SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
     /* add to smart dashboard the coast and brake of both motors */
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set brake",
@@ -262,7 +263,6 @@ public class Arm extends SubsystemBase {
       targetAngle = ArmAngleMotorConstants.FWD_LIMIT;
     }
  
-    targetAngle += getArmAngleMotor() - getArmAngle();
     // if (lastArmAngleTarget != targetAngle) {
     //   hasArmAngleReachedTarget = false;
     //   lastArmAngleTarget = targetAngle;
@@ -274,6 +274,13 @@ public class Arm extends SubsystemBase {
 
     if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
       hasArmAngleReachedTarget = true;
+    }
+
+    if (targetAngle != lastArmAngleTarget) {
+      lastArmAngleTarget = targetAngle;
+      targetAngle += getArmAngleMotor() - getArmAngle();
+    } else {
+      targetAngle = lastArmAngleTarget + getArmAngleMotor() - getArmAngle();
     }
    
    
@@ -298,6 +305,12 @@ public class Arm extends SubsystemBase {
   public void gripperAngleMotorSetPositionVoltage(double targetAngle) {
     if (Double.isNaN(targetAngle)) {
       LogManager.log("gripper target Angle is NaN", AlertType.kError);
+      return;
+    }
+    
+    /* check if the gripper angle absolute sensor is connected */
+    if (!gripperAngleAbsoluteSensor.isConnected()) {
+      LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
       return;
     }
 
@@ -336,8 +349,13 @@ public class Arm extends SubsystemBase {
     // } else {
     //   gripperAngleMotor.setPositionVoltage(targetAngle);
     // }
-
-    gripperAngleMotor.setMotionMagic(getGripperAngleMotor() + targetAngle - getGripperAngle());
+    if (targetAngle != lastGripperAngleTarget) {
+      lastGripperAngleTarget = targetAngle;
+      targetAngle += getGripperAngleMotor() - getGripperAngle();
+    } else {
+      targetAngle = lastGripperAngleTarget + getGripperAngleMotor() - getGripperAngle();
+    }
+    gripperAngleMotor.setPositionVoltage(targetAngle);
   }
 
   /**
@@ -434,10 +452,7 @@ public class Arm extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    /* check if the gripper angle absolute sensor is connected */
-    if (!gripperAngleAbsoluteSensor.isConnected()) {
-      LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
-    }
+
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */
     // gripperAngleMotor.setPosition(getGripperAngle());

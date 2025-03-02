@@ -143,7 +143,7 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         public static final double Angle_OFFSET = 2.5148163935758916 + Math.PI/2;
-        public static final double BACK_LIMIT = -2.5418177155200903;
+        public static final double BACK_LIMIT = -2.6444868509617248;
         public static final double FWD_LIMIT = -0.3447434245885166 ;
 
         /* The config of the motor based on the constants above */
@@ -169,9 +169,9 @@ public class ArmConstants {
 
     /** all the constants angles */
     public static class ANGLES {
-        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.3, -1.57);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(0.4, -1.57);
-        public static final Pair<Double, Double> L4 = new Pair<Double,Double>(0.0, 0.0);//TODO: find angles
+        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.0, -0.8);
+        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(1.0, -2.5);
+        public static final Pair<Double, Double> L4 = new Pair<Double,Double>(-1.0, -0.8);//TODO: find angles
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
         public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.55, 4.4);
         public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.2, 4.4);
