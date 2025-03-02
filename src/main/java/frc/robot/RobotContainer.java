@@ -70,7 +70,7 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
-    arm.setDefaultCommand(new ArmDrive(arm, driverController));
+    arm.setDefaultCommand(new ArmCommand(arm));
   }
 
 

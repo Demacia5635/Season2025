@@ -62,8 +62,8 @@ public class ArmDrive extends Command {
      */
     @Override
     public void execute() {
-        armAnglePower = Math.abs(controller.getLeftY()) <= 0.2 ? 0 : controller.getLeftY() * -0.5;
-        gripperAnglePower = Math.abs(controller.getRightY()) <= 0.2 ? 0 : controller.getRightY() * -0.3;
+        armAnglePower = controller.getLeftY() * -0.7;
+        gripperAnglePower = controller.getRightY() * -0.4 + (armAnglePower / 8);
 
         arm.setPower(armAnglePower, gripperAnglePower);
     }

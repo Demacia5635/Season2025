@@ -41,7 +41,7 @@ public class ArmConstants {
      */
     public static class ArmAngleMotorConstants {
 
-        public static final double Angle_OFFSET = -1.0200972239439514;//TODO: find right offset
+        public static final double Angle_OFFSET = -2.5571459734053636; 
 
         /* all the main configs of the motor */
         public static final int ID = 20;
@@ -54,25 +54,25 @@ public class ArmConstants {
 
 
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
-        public static final double KP = 20;
-        public static final double KI = 1.0;
-        public static final double KD = 0.5;
-        public static final double KS = 0;
-        public static final double KV = 0;
-        public static final double KA = 0;
+        public static final double KP = 4;
+        public static final double KI = 0;
+        public static final double KD = 0;
+        public static final double KS = 0.15683740301663393;
+        public static final double KV = 1.4949232212224017;
+        public static final double KA = 0.0029824872796242463;
         public static final double KG = 0;
 
         /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
         public static final double MOTION_MAGIC_VELOCITY = 1.5;
-        public static final double MOTION_MAGIC_ACCELERATION = 3;
-        public static final double MOTION_MAGIC_JERK = 6;
+        public static final double MOTION_MAGIC_ACCELERATION = 6;
+        public static final double MOTION_MAGIC_JERK = 20;
 
         /* the channel of the absolute sensor */
         //public static final int ABSOLUTE_SENSOR_CHANNEL = 22;
 
         /* the basic configues of the motor */
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = true;
+        public static final boolean IS_INVERTED = false;
         public static final double GEAR_RATIO = 80;
 
         /* the ramp time of the motor */
@@ -85,8 +85,8 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         //public static final double BASE_ANGLE = 0; //TODO:
-        public static final double BACK_LIMIT = Math.toRadians(33.7);
-        public static final double FWD_LIMIT = 2.501220703125;
+        public static final double BACK_LIMIT = -Math.PI/2;
+        public static final double FWD_LIMIT = Math.PI/2;
 
         /* The config of the motors based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -112,25 +112,25 @@ public class ArmConstants {
         public static final String NAME = "Gripper Angle Motor";
 
         /* the pid and ff of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
-        public static final double KP = 9.5;
-        public static final double KI = 1.75;
-        public static final double KD = 0.25;
-        public static final double KS = 0;
-        public static final double KV = 0;
-        public static final double KA = 0;
+        public static final double KP = 2;
+        public static final double KI = 0;
+        public static final double KD = 0;
+        public static final double KS = 0.1;
+        public static final double KV = 1.0065855602048472;
+        public static final double KA = 0.0025034812871556067;
         public static final double KG = 0;
 
         /* the motion magic constants of the motor */
-        public static final double MOTION_MAGIC_VELOCITY = 0;
-        public static final double MOTION_MAGIC_ACCELERATION = 0;
-        public static final double MOTION_MAGIC_JERK = 0;
+        public static final double MOTION_MAGIC_VELOCITY = 2;
+        public static final double MOTION_MAGIC_ACCELERATION = 6;
+        public static final double MOTION_MAGIC_JERK = 10;
 
         /* the channel of the absolute sensor */
         public static final int ABSOLUTE_SENSOR_CHANNEL = 7;
 
         /* all the basic configs of the motor */
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = true;
+        public static final boolean IS_INVERTED = false;
         public static final double GEAR_RATIO = 52;
 
         /* the ramp time of the motor */
@@ -142,9 +142,9 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double Angle_OFFSET = 0;
-        public static final double BACK_LIMIT = 3.7;
-        public static final double FWD_LIMIT = 5.4;
+        public static final double Angle_OFFSET = 2.5148163935758916 + Math.PI/2;
+        public static final double BACK_LIMIT = -2.5418177155200903;
+        public static final double FWD_LIMIT = -0.3447434245885166 ;
 
         /* The config of the motor based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -169,8 +169,8 @@ public class ArmConstants {
 
     /** all the constants angles */
     public static class ANGLES {
-        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.4, 4.4);
+        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.3, -1.57);
+        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(0.4, -1.57);
         public static final Pair<Double, Double> L4 = new Pair<Double,Double>(0.0, 0.0);//TODO: find angles
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
         public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.55, 4.4);
