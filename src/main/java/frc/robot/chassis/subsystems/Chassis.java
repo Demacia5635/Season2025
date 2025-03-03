@@ -181,9 +181,8 @@ public class Chassis extends SubsystemBase {
     private Translation2d calculateVelocity(Translation2d wantedSpeeds, Translation2d currentSpeeds){
         if(wantedSpeeds.getNorm() == 0 && currentSpeeds.getNorm() == 0) return new Translation2d();
         
-        double accel = getAccel(RobotContainer.elevator.getHeight());
-        LogManager.log("HEIGHT: " + RobotContainer.elevator.getHeight());
-        LogManager.log("ACCEL: " + accel);
+        //double accel = getAccel(RobotContainer.elevator.getHeight());
+        double accel = 8;
         double maxDeltaV = accel * CYCLE_DT;
         double curNorm = currentSpeeds.getNorm();
         if(curNorm <0.1){

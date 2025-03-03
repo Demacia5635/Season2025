@@ -21,14 +21,6 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
-import frc.robot.robot2.elevator.commands.ElevatorCalibration;
-import frc.robot.robot2.elevator.commands.ElevatorCommand;
-import frc.robot.robot2.elevator.subsystem.Elevator;
-import frc.robot.robot2.gripper.commands.GrabOrDrop;
-import frc.robot.robot2.gripper.subsystems.Gripper;
-import frc.robot.robot2.arm.commands.ArmCommand;
-import frc.robot.robot2.arm.subsystems.Arm;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
@@ -50,10 +42,6 @@ public class RobotContainer implements Sendable{
   private static boolean hasRemovedFromLog = false;
 
   public static Chassis chassis;  
-  public static Arm arm;
-  public static Gripper gripper;
-  // public static Climb climb;
-  public static Elevator elevator;
   // public static robot2Strip robot2Strip;
   
   // public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
@@ -99,10 +87,6 @@ public class RobotContainer implements Sendable{
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
     chassis = new Chassis();
-    arm = new Arm();
-    gripper = new Gripper();
-    // climb = new Climb();
-    elevator = new Elevator();
     // robot2Strip = new robot2Strip(chassis, arm, gripper);
   }
 
@@ -113,8 +97,6 @@ public class RobotContainer implements Sendable{
    */
   private void configureDefaultCommands() {
     chassis.setDefaultCommand(new Drive(chassis, driverController));
-    elevator.setDefaultCommand(new ElevatorCommand(elevator));
-    arm.setDefaultCommand(new ArmCommand(arm));
   }
 
 
@@ -129,47 +111,7 @@ public class RobotContainer implements Sendable{
     // driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
     // driverController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
     
-    driverController.leftBumper().onTrue(new InstantCommand(()-> {
-      chassis.stop();
-      arm.stop();
-      gripper.stop();
-      elevator.stop();
-    }, chassis, arm, gripper, elevator).ignoringDisable(true));
-    driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
-    
-    // driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
-    // driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
-    // driverController.povLeft().onTrue(new InstantCommand(()-> arm.setState(LEVEL.ALGAE_TOP)).ignoringDisable(true));       
-
-    // driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
-    // driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
-
-    // operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
-    
-    operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
-    // operatorController.rightButton().onTrue(new InstantCommand((robot2Strip::setCoralStation)).ignoringDisable(true));
-    // operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
-    // operatorController.leftButton().onTrue(new ArmCalibration(arm));
-    
-  // operatorController.leftBumper().onTrue(new InstantCommand(()-> {
-    //   chassis.stop();
-    //   arm.stop();
-    //   gripper.stop();
-    //   arm.setState(ARM_ANGLE_STATES.IDLE);
-    //   climb.stopClimb();
-    // }, chassis, arm, gripper, climb).ignoringDisable(true));
-
-    // operatorController.povUp().onTrue(new InstantCommand(climb::stopClimb ,climb).ignoringDisable(true));
-    // operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
-    operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
-    // operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
-
-    // operatorController.rightBumper().onTrue(new InstantCommand(()-> arm.hadCalibrated()).ignoringDisable(true));
-    
-    // operatorController.rightSetting().onTrue(new InstantCommand(robot2Strip::setManualOrAuto).ignoringDisable(true));
-    operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
-    driverController.upButton().onTrue(new ElevatorCalibration(elevator));
-    driverController.leftButton().onTrue(new InstantCommand(()->elevator.setState(ELEVATOR_STATE.L4)));
+   
   }
 
   public static boolean isRed() {
@@ -198,16 +140,6 @@ public class RobotContainer implements Sendable{
     builder.addBooleanProperty("isComp", RobotContainer::isComp, RobotContainer::setIsComp);
   }
 
-  /**
-   * This command is schedules at the start of teleop.
-   * Look in {@link Robot} for more details.
-   * @return the ommand that start at the start at enable
-   */
-  public Command getEnableInitCommand() {
-    // return null;
-    return new ElevatorCalibration(elevator);
-    // return new ArmCalibration(arm);
-  }
 
   /**
    * This command is schedules at the start of disable.
