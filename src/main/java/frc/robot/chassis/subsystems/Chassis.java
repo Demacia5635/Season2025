@@ -273,8 +273,7 @@ public class Chassis extends SubsystemBase {
     }
 
     private void updateVision(Pose2d pose) {
-        poseEstimator.setVisionMeasurementStdDevs(getSTD());
-        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
+        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05, getSTD());
     }
 
     private Matrix<N3, N1> getSTD() {
