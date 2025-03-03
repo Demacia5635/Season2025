@@ -9,8 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 /** Add your docs here. */
 public class DemaciaOdometry<T> {
-    private double[] odometrySTD = new double[3];
-    private DemaciaKinematics<T> kinematics = new DemaciaKinematics<>();
+    private DemaciaKinematics<T> kinematics;
 
     private Pose2d pose;
 
@@ -18,13 +17,15 @@ public class DemaciaOdometry<T> {
     private Rotation2d prevAngle;
     private T prevWheelPositions;
 
-    public DemaciaOdometry(double[] odometrySTD) {
-        this.odometrySTD = odometrySTD;
+    public DemaciaOdometry(Rotation2d gyroAngle,
+            T wheelPositions,
+            Pose2d initialPoseMeters, DemaciaKinematics<T> kinematics) {
+        this.kinematics = kinematics;
+        pose = initialPoseMeters;
+        gyroOffset = pose.getRotation().minus(gyroAngle);
+        prevAngle = pose.getRotation();
+        prevWheelPositions = kinematics.copy(wheelPositions);
 
-    }
-
-    public void setOdometrySTD(double[] odometrySTD) {
-        this.odometrySTD = odometrySTD;
     }
 
     public Pose2d update(Rotation2d gyroAngle, T wheelPositions) {
@@ -41,6 +42,11 @@ public class DemaciaOdometry<T> {
 
         return pose;
     }
+
+    private boolean isSkidding(T wheelPosition, T lastWheelPosition){
+        
+    }
+    private boolean isSKidding(){}
 
     public Pose2d getEstimatedPosition() {
         return pose;
