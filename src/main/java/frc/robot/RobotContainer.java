@@ -37,6 +37,7 @@ import frc.robot.robot1.arm.commands.ArmDrive;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
+import frc.robot.robot1.climb.command.ClimbUntilSensor;
 import frc.robot.robot1.climb.command.JoyClimeb;
 import frc.robot.robot1.climb.command.OpenClimber;
 import frc.robot.robot1.climb.subsystem.Climb;
@@ -85,8 +86,9 @@ public class RobotContainer implements Sendable{
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
+
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
     LogManager.addEntry("Timer", DriverStation::getMatchTime);
@@ -167,6 +169,7 @@ public class RobotContainer implements Sendable{
     operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
     operatorController.leftButton().onTrue(new ArmCalibration(arm));
     
+    operatorController.rightBumper().onTrue(new ClimbUntilSensor(climb));
     operatorController.leftBumper().onTrue(new InstantCommand(()-> {
       chassis.stop();
       arm.stop();

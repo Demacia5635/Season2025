@@ -9,6 +9,7 @@ import static frc.robot.Path.Trajectory.TrajectoryConstants.*;
 import java.util.ArrayList;
 import java.util.function.Supplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -189,16 +190,27 @@ public class DemaciaTrajectory {
         
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
 
-        double wantedOmega = Math
-                .abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
-                        : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 1.3;
+        // double wantedOmega = Math
+        //         .abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
+        //                 : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 1.3;
 
+        double wantedOmega = getOmega(wantedAngle.getRadians() - chassisPose.getRotation().getRadians());
+        LogManager.log("ANGLE DIFF: " + Math.toDegrees(wantedAngle.getRadians() - chassisPose.getRotation().getRadians()));
+        LogManager.log("OMEGA: " + wantedOmega);
+        
         if ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))
             wantedVelocity = new Translation2d();
 
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
+    }
+
+
+    PIDController rotationPID = new PIDController(2, 0.2, 0);
+    private double getOmega(double distanceLeft){
+        if(distanceLeft <= Math.toRadians(1)) return 0;
+        return rotationPID.calculate(-distanceLeft, 0);
     }
 
     public boolean isFinishedTrajectory() {
