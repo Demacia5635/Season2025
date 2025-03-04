@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.util.sendable.Sendable;
@@ -113,6 +114,8 @@ public class RobotContainer implements Sendable{
    */
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
+    CameraServer.startAutomaticCapture(0);
+
     chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();
