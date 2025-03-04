@@ -40,6 +40,7 @@ public class DemaciaOdometry {
     }
 
     public Pose2d update(Rotation2d gyroAngle, SwerveModulePosition[] wheelPositions) {
+        ChassisSpeeds curSpeeds = kinematics.toChassisSpeeds(wheelPositions);
         if(isColliding()) return pose; 
         var angle = gyroAngle.plus(gyroOffset);
 

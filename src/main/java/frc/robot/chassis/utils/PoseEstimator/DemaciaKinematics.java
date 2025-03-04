@@ -4,17 +4,18 @@
 
 package frc.robot.chassis.utils.PoseEstimator;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
-/** Add your docs here. */
 public class DemaciaKinematics extends SwerveDriveKinematics {
-    public DemaciaKinematics() {
-
+    public DemaciaKinematics(Translation2d... moduleTranslationsMeters) {
+        super(moduleTranslationsMeters);
     }
 
+    @Override
     public void copyInto(SwerveModulePosition[] positions, SwerveModulePosition[] output) {
         if (positions.length != output.length) {
             throw new IllegalArgumentException("Inconsistent number of modules!");
@@ -25,6 +26,7 @@ public class DemaciaKinematics extends SwerveDriveKinematics {
         }
     }
 
+    @Override
     public SwerveModulePosition[] copy(SwerveModulePosition[] positions) {
         var newPositions = new SwerveModulePosition[positions.length];
         for (int i = 0; i < positions.length; ++i) {
@@ -45,6 +47,6 @@ public class DemaciaKinematics extends SwerveDriveKinematics {
             newPositions[i] = new SwerveModulePosition(end[i].distanceMeters - start[i].distanceMeters, start[i].angle.plus((end[i].angle.plus(start[i].angle)).div(2)));
         }
         return super.toTwist2d(newPositions);
-    }
+    }   
 
 }
