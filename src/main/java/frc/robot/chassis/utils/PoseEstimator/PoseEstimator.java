@@ -22,12 +22,13 @@ import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.Kinematics;
 import edu.wpi.first.math.kinematics.Odometry;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 
 /** Add your docs here. */
-public class PoseEstimator<T> {
-  private final DemaciaOdometry<T> odometry;
+public class PoseEstimator {
+  private final DemaciaOdometry odometry;
   private double[] visionSTD = new double[3];
 
   private double MAX_STD = 1.5;
@@ -44,12 +45,11 @@ public class PoseEstimator<T> {
   private Pose2d poseEstimation;
 
   public PoseEstimator(
-      DemaciaOdometry<T> odometry,
-      double[] odometrySTD, double[] visionSTD) {
+      DemaciaOdometry odometry,
+      double[] visionSTD) {
 
     this.odometry = odometry;
     setVisionSTD(visionSTD);
-    setOdometrySTD(odometrySTD);
 
     this.poseEstimation = odometry.getEstimatedPosition();
 
@@ -73,9 +73,7 @@ public class PoseEstimator<T> {
     this.visionSTD = visionMeasurementStdDevs;
   }
 
-  public void setOdometrySTD(double[] odometryMeasurementStdDevs) {
-    odometry.setOdometrySTD(odometryMeasurementStdDevs);
-  }
+  
 
   /**
    * Return the pose at a given timestamp, if the buffer is not empty.
@@ -193,12 +191,12 @@ public class PoseEstimator<T> {
    * @param wheelPositions The current encoder readings.
    * @return The estimated pose of the robot in meters.
    */
-  public Pose2d update(Rotation2d gyroAngle, T wheelPositions) {
+  public Pose2d update(Rotation2d gyroAngle, SwerveModulePosition[] wheelPositions) {
     return updateWithTime(MathSharedStore.getTimestamp(), gyroAngle, wheelPositions);
   }
 
 
-  public Pose2d updateWithTime(double currentTimeSeconds, Rotation2d gyroAngle, T wheelPositions) {
+  public Pose2d updateWithTime(double currentTimeSeconds, Rotation2d gyroAngle, SwerveModulePosition[] wheelPositions) {
     var odometryEstimate = odometry.update(gyroAngle, wheelPositions);
 
     m_odometryPoseBuffer.addSample(currentTimeSeconds, odometryEstimate);
