@@ -60,12 +60,13 @@ public class DemaciaTrajectory {
         if (isRed)
             points = convertAlliance();
         fixFirstPoint(initialPose);
-
-        initCorners();
-
+            
+        
         if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
             points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
         }
+        initCorners();
+
 
         createSegments();
         trajectoryLength = calcTrajectoryLength();
@@ -189,12 +190,12 @@ public class DemaciaTrajectory {
         double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
         
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
-
-        // double wantedOmega = Math
-        //         .abs(wantedAngle.minus(chassisPose.getRotation()).getRadians()) < MAX_ROTATION_THRESHOLD ? 0
-        //                 : wantedAngle.minus(chassisPose.getRotation()).getRadians() * 1.3;
-
-        double wantedOmega = getOmega(wantedAngle.getRadians() - chassisPose.getRotation().getRadians());
+        double diffAngle = wantedAngle.minus(chassisPose.getRotation()).getRadians();
+        double wantedOmega = 0;
+        if(Math.abs(diffAngle) > Math.toDegrees(10)) wantedOmega = diffAngle * 20;
+        else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
+        else wantedOmega = diffAngle * 1.6; 
+        
         LogManager.log("ANGLE DIFF: " + Math.toDegrees(wantedAngle.getRadians() - chassisPose.getRotation().getRadians()));
         LogManager.log("OMEGA: " + wantedOmega);
         
@@ -206,12 +207,6 @@ public class DemaciaTrajectory {
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
 
-
-    PIDController rotationPID = new PIDController(2, 0.2, 0);
-    private double getOmega(double distanceLeft){
-        if(distanceLeft <= Math.toRadians(1)) return 0;
-        return rotationPID.calculate(-distanceLeft, 0);
-    }
 
     public boolean isFinishedTrajectory() {
         if (isAlgae)
