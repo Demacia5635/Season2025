@@ -10,11 +10,7 @@ public class AllOffsets extends ParallelCommandGroup{
             new L3Right(),
             new L2Left(),
             new L2Right(),
-            new Feeder(),
-            new AlgaeBottomLeft(),
-            new AlgaeBottomRight(),
-            new AlgaeTopLeft(),
-            new AlgaeTopRight()
+            new Feeder()
         );
     }
 }

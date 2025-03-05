@@ -32,7 +32,7 @@ public class RoundedPoint{
             //case for radius bigger then max possible radius
             if(radius > getMaxRadius()){
                 radius = getMaxRadius();
-                // System.out.println("radius is bigger then possible, new radius is: " + radius);
+                // //System.out.println("radius is bigger then possible, new radius is: " + radius);
             }
     
         }

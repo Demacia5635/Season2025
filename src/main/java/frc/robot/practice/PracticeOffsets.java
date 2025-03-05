@@ -59,26 +59,6 @@ public class PracticeOffsets extends Command{
                 y = FieldTarget.intakeOffset.getY();
                 break;
             
-            case ALGAE_TOP_LEFT:
-                x = FieldTarget.topAlgeaLeftOffset.getX();
-                y = FieldTarget.topAlgeaLeftOffset.getY();
-                break;
-            
-            case ALGAE_TOP_RIGHT:
-                x = FieldTarget.topAlgeaRightOffset.getX();
-                y = FieldTarget.topAlgeaRightOffset.getY();
-                break;
-            
-            case ALGAE_BOTTOM_RIGHT:
-                x = FieldTarget.bottomAlgeaRightOffset.getX();
-                y = FieldTarget.bottomAlgeaRightOffset.getY();
-                break;
-            
-            case ALGAE_BOTTOM_LEFT:
-                x = FieldTarget.bottomAlgeaLeftOffset.getX();
-                y = FieldTarget.bottomAlgeaLeftOffset.getY();
-                break;
-
             default:
                 break;
         }
@@ -107,22 +87,6 @@ public class PracticeOffsets extends Command{
                 FieldTarget.intakeOffset = new Translation2d(x, y);
                 break;
 
-            case ALGAE_TOP_LEFT:
-                FieldTarget.topAlgeaLeftOffset = new Translation2d(x, y);
-                break;
-                
-            case ALGAE_TOP_RIGHT:
-                FieldTarget.topAlgeaRightOffset = new Translation2d(x, y);
-                break;
-
-            case ALGAE_BOTTOM_RIGHT:
-                FieldTarget.bottomAlgeaRightOffset = new Translation2d(x, y);
-                break;
-
-            case ALGAE_BOTTOM_LEFT:
-                FieldTarget.bottomAlgeaLeftOffset = new Translation2d(x, y);
-                break;
-            
             default:
                 break;
         }
