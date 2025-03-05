@@ -380,11 +380,11 @@ public class Chassis extends SubsystemBase {
         }
     }
 
-    public void setVelocitiesRotateToAngleOld(ChassisSpeeds speeds, Rotation2d angle, boolean isPaths) {
+    public void setVelocitiesRotateToAngleOld(ChassisSpeeds speeds, Rotation2d angle) {
         double angleError = angle.minus(getGyroAngle()).getRadians();
         double angleErrorabs = Math.abs(angleError);
         if (angleErrorabs > Math.toRadians(1.5)) {
-            speeds.omegaRadiansPerSecond = angleError * 2.3;
+            speeds.omegaRadiansPerSecond = angleError * 1.5;
         }
 
         setVelocitiesWithAccel(speeds);
@@ -409,12 +409,12 @@ public class Chassis extends SubsystemBase {
         double distance = diffVector.getNorm();
         if (distance <= threshold) {
             if (stopWhenFinished)
-                setVelocitiesRotateToAngleOld(new ChassisSpeeds(0, 0, 0), pose.getRotation(), true);
+                setVelocitiesRotateToAngleOld(new ChassisSpeeds(0, 0, 0), pose.getRotation());
             else
                 setVelocitiesRotateToAngleOld(
                         new ChassisSpeeds(0.5 * diffVector.getAngle().getCos(), 0.5 * diffVector.getAngle().getSin(),
                                 0),
-                        pose.getRotation(), true);
+                        pose.getRotation());
         }
 
         else {
@@ -423,7 +423,7 @@ public class Chassis extends SubsystemBase {
 
             // LogManager.log("VX: " + vX + " VY: " + vY);
 
-            setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation(), true);
+            setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation());
         }
 
     }

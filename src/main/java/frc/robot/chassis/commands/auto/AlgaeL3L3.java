@@ -51,8 +51,8 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     PathPoint infrontReef = new PathPoint(correctTranslation(3.3, FIELD_HEIGHT - 6), correctRotation(60));
     FieldTarget algaePoint = new FieldTarget(isRight ? POSITION.C : POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM);
     FieldTarget feeder = isRight 
-    ? new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER)
-    : new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
+    ? new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER)
+    : new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER);
     FieldTarget coralLeft = new FieldTarget(isRight ? POSITION.C : POSITION.A, isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
     FieldTarget coralRight = new FieldTarget(isRight ? POSITION.C : POSITION.A, isRight ? ELEMENT_POSITION.CORAL_LEFT : ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
     FieldTarget backupCoral = new FieldTarget(POSITION.B, isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);

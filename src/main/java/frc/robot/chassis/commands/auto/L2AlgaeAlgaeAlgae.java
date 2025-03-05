@@ -30,7 +30,7 @@ public class L2AlgaeAlgaeAlgae extends SequentialCommandGroup {
       new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0 ,0)), chassis).withTimeout(0.35),
       new FollowTrajectory(chassis, new FieldTarget(POSITION.B, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_TOP)),
       new RemoveAlgae(chassis, new FieldTarget(POSITION.B, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_TOP)),
-      new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER))
+      new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER))
     );
   }
 }

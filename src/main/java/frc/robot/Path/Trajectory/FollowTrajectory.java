@@ -76,9 +76,9 @@ public class FollowTrajectory extends Command {
 
   private FieldTarget getClosestFeeder() {
     if (chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_LEFT.getId()]) > chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()])) {
-      return RobotContainer.isRed() ? FieldTarget.kFeederRight : FieldTarget.kFeederRight;
+      return FieldTarget.kFeederRight;
     } else {
-      return RobotContainer.isRed() ? FieldTarget.kFeederLeft : FieldTarget.kFeederLeft;
+      return FieldTarget.kFeederLeft;
     }
   }
 
@@ -97,7 +97,7 @@ public class FollowTrajectory extends Command {
       points.add(target.getApproachingPoint());
       
       points.add(target.getFinishPoint());
-      if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
+      if (target.elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
         grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
       }
@@ -120,7 +120,7 @@ public class FollowTrajectory extends Command {
   public void end(boolean interrupted) {
     if (!interrupted && !usePoints) {
       
-      if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
+      if (target.elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
         chassis.stop();
       } 
 

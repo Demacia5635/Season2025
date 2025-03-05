@@ -18,9 +18,12 @@ public class FieldTarget {
 
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);
-    public static Translation2d intakeOffset = new Translation2d(0.66, 0);
     public static Translation2d topAlgaeOffset = new Translation2d(0.52, 0);
     public static Translation2d bottomAlgaeOffset = new Translation2d(0.60, 0);
+    
+    public static Translation2d intakeOffset = new Translation2d(0.66, 0);
+    public static Translation2d rightIntakeOffset = new Translation2d(0, 0.75);
+    public static Translation2d leftIntakeOffset = new Translation2d(0, -0.75);
 
     public static final Translation2d l2Offset = new Translation2d(0.64, 0);
     public static final Translation2d l3Offset = new Translation2d(0.5, 0);
@@ -37,8 +40,8 @@ public class FieldTarget {
     public LEVEL level;
 
 
-    public static final FieldTarget kFeederLeft = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
-    public static final FieldTarget kFeederRight = new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER);
+    public static final FieldTarget kFeederLeft = new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER);
+    public static final FieldTarget kFeederRight = new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER);
 
     public FieldTarget(POSITION position, ELEMENT_POSITION elementPosition, LEVEL level){
         this.position = position;
@@ -49,19 +52,21 @@ public class FieldTarget {
 
     
     public static PathPoint[] REEF_POINTS = new PathPoint[]{
-        new FieldTarget(POSITION.A, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.B, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.C, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.D, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.E, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.F, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.A, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.B, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.C, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.D, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.E, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.F, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
     };
 
-
-
-
     public enum ELEMENT_POSITION{
-        CORAL_LEFT, CORAL_RIGHT, ALGEA, FEEDER
+        CORAL_LEFT, 
+        CORAL_RIGHT, 
+        ALGEA, 
+        FEEDER_LEFT,
+        FEEDER_MIDDLE, 
+        FEEDER_RIGHT
     }
     
     public enum LEVEL{
@@ -115,6 +120,10 @@ public class FieldTarget {
             return position.getApproachPoint(smartApproachOffset.plus(realLeftReefOffset));
         } else if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
             return position.getApproachPoint(smartApproachOffset.plus(realRightReefOffset));
+        } else if (elementPosition == ELEMENT_POSITION.FEEDER_LEFT) {
+            return position.getApproachPoint(smartApproachOffset.plus(leftIntakeOffset));
+        } else if (elementPosition == ELEMENT_POSITION.FEEDER_RIGHT) {
+            return position.getApproachPoint(smartApproachOffset.plus(rightIntakeOffset));
         } else {
             return position.getApproachPoint(smartApproachOffset);
         }
@@ -162,7 +171,13 @@ public class FieldTarget {
         }
         else{
             if(level == LEVEL.FEEDER){
-                calculatedOffset = intakeOffset;
+                if (elementPosition == ELEMENT_POSITION.FEEDER_LEFT) {
+                    calculatedOffset = intakeOffset.plus(leftIntakeOffset);
+                } else if (elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
+                    calculatedOffset = intakeOffset;
+                } else if (elementPosition == ELEMENT_POSITION.FEEDER_RIGHT) {
+                    calculatedOffset = intakeOffset.plus(rightIntakeOffset);
+                }
             }
             else if(level == LEVEL.ALGAE_TOP){
                 calculatedOffset = topAlgaeOffset.plus(reefOffsetLeft);

@@ -65,7 +65,7 @@ public class DemaciaTrajectory {
        /* if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
             points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
         } */
-       
+
         initCorners();
 
 
@@ -193,7 +193,7 @@ public class DemaciaTrajectory {
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double diffAngle = wantedAngle.minus(chassisPose.getRotation()).getRadians();
         double wantedOmega = 0;
-        if(Math.abs(diffAngle) > Math.toDegrees(10)) wantedOmega = diffAngle * 20;
+        if(Math.abs(diffAngle) > Math.toRadians(10)) wantedOmega = diffAngle * 3;
         else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
         else wantedOmega = diffAngle * 1.4; 
         if ((chassisPose.getTranslation()

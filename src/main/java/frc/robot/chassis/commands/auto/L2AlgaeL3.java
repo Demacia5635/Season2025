@@ -27,7 +27,7 @@ public class L2AlgaeL3 extends SequentialCommandGroup {
     addCommands(
         new FollowTrajectory(chassis, new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L2)),
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.3),
-        new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER)),
+        new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER)),
         new WaitUntilCommand(() -> RobotContainer.gripper.isCoralDownSensor()),
         new RunCommand(() -> chassis.goTo(new Pose2d(14.764765315220112, 2.2, Rotation2d.fromDegrees(125)), 0.3, true),
             chassis)
@@ -38,7 +38,7 @@ public class L2AlgaeL3 extends SequentialCommandGroup {
         new RemoveAlgae(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM)),
         new FollowTrajectory(chassis, new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3)),
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.3),
-        new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER, LEVEL.FEEDER)),
+        new FollowTrajectory(chassis, new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER)),
         new WaitUntilCommand(() -> RobotContainer.gripper.isCoralDownSensor()));
   }
 }
