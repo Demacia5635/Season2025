@@ -2,6 +2,8 @@ package frc.robot.chassis.subsystems;
 
 import static frc.robot.vision.utils.VisionConstants.*;
 
+import java.util.List;
+
 import org.ejml.simple.SimpleMatrix;
 
 import com.ctre.phoenix6.StatusCode;
@@ -20,6 +22,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -48,6 +53,7 @@ public class Chassis extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
     private Field2d fieldTag;
+    private Field2d fieldTest;
     public Tag reefTag;
     public Tag fiderTag;
     public Tag bargeTag;
@@ -79,6 +85,7 @@ public class Chassis extends SubsystemBase {
         poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
         field = new Field2d();
         fieldTag = new Field2d();
+        fieldTest = new Field2d();
         reefTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 0);
         fiderTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 1);
         bargeTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 2);
@@ -96,6 +103,7 @@ public class Chassis extends SubsystemBase {
         LogManager.addEntry("gyro", () -> gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
         SmartDashboard.putData("ultfielf", fieldTag);
+        SmartDashboard.putData("fieldTest", fieldTest);
         LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
                 getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
         LogManager.addEntry("Chassis/vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
@@ -328,10 +336,14 @@ public class Chassis extends SubsystemBase {
         if (visionFusePoseEstimation != null) {
             updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(), getGyroAngle()));
             // fieldTag.setRobotPose(visionFusePoseEstimation);
+            // if (visionFuse.get2dAngle() != null){
+            //     fieldTest.setRobotPose(new Pose2d(visionFusePoseEstimation.getTranslation(), visionFuse.get2dAngle()));
+            // }
         }
         poseEstimator.update(getGyroAngle(), getModulePositions());
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
+
     }
 
     public boolean isRed() {
@@ -431,5 +443,13 @@ public class Chassis extends SubsystemBase {
     @Override
     public void initSendable(SendableBuilder builder) {
         super.initSendable(builder);
+    }
+
+    public Trajectory vector(Translation2d start, Translation2d end){
+      return TrajectoryGenerator.generateTrajectory(
+            List.of(
+              new Pose2d(start, end.getAngle().minus(start.getAngle())),
+              new Pose2d(end, end.getAngle().minus(start.getAngle()))),
+            new TrajectoryConfig(4.0, 4.0));
     }
 }

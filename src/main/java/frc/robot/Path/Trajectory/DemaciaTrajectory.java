@@ -194,11 +194,7 @@ public class DemaciaTrajectory {
         double wantedOmega = 0;
         if(Math.abs(diffAngle) > Math.toDegrees(10)) wantedOmega = diffAngle * 20;
         else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
-        else wantedOmega = diffAngle * 1.6; 
-        
-        LogManager.log("ANGLE DIFF: " + Math.toDegrees(wantedAngle.getRadians() - chassisPose.getRotation().getRadians()));
-        LogManager.log("OMEGA: " + wantedOmega);
-        
+        else wantedOmega = diffAngle * 1.4; 
         if ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))

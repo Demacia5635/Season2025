@@ -58,7 +58,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     FieldTarget backupCoral = new FieldTarget(POSITION.B, isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
 
     addCommands(
-        new FollowTrajectory(chassis, algaePoint, !isRight), (new RemoveAlgae(chassis, algaePoint, !isRight)
+        new FollowTrajectory(chassis, algaePoint), (new RemoveAlgae(chassis, algaePoint, !isRight)
             .alongWith(new InstantCommand(() -> new AlignCoral(gripper).schedule()))),
         (new FollowTrajectory(chassis,new ArrayList<PathPoint>() {
           {

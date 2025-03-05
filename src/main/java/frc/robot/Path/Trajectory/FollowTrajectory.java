@@ -46,7 +46,6 @@ public class FollowTrajectory extends Command {
   private boolean isScoring;
   private boolean useElasticTarget;
   private Command grabCommand;
-  private boolean isAlgaeRight;
   
 
   public FollowTrajectory(Chassis chassis, boolean isScoring) {
@@ -58,17 +57,12 @@ public class FollowTrajectory extends Command {
     addRequirements(chassis);
     // this.points.add(target.getFinishPoint());
   }
-  public FollowTrajectory(Chassis chassis, FieldTarget newTarget, boolean isAlgaeRight) {
+  public FollowTrajectory(Chassis chassis, FieldTarget newTarget) {
     this.chassis = chassis;
     this.target = newTarget;
     this.useElasticTarget = false;
     this.usePoints = false;
-    this.isAlgaeRight = isAlgaeRight;
     addRequirements(chassis);
-  }
-
-  public FollowTrajectory(Chassis chassis, FieldTarget newTarget) {
-    this(chassis, newTarget, newTarget.position == POSITION.C || newTarget.position == POSITION.D || newTarget.position == POSITION.E);
   }
 
   public FollowTrajectory(Chassis chassis, ArrayList<PathPoint> points, Rotation2d wantedAngle) {
@@ -93,18 +87,17 @@ public class FollowTrajectory extends Command {
     RobotContainer.robot1Strip.setAutoPath();
     if(useElasticTarget) {
       this.target = isScoring ? RobotContainer.scoringTarget : getClosestFeeder();
-      isAlgaeRight = target.position == POSITION.C || target.position == POSITION.D || target.position == POSITION.E;
-    }
+      }
 
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
-      this.wantedAngle = target.getFinishPoint(isAlgaeRight).getRotation();
+      this.wantedAngle = target.getFinishPoint().getRotation();
       points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
       
-      points.add(target.getSmartApproachPoint(isAlgaeRight));
+      points.add(target.getApproachingPoint());
       LogManager.log("approach: " + points.get(points.size() - 1));
       
-      points.add(target.getFinishPoint(isAlgaeRight));
+      points.add(target.getFinishPoint());
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
         grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
@@ -146,13 +139,14 @@ public class FollowTrajectory extends Command {
       }
 
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
-        if (!DriverStation.isAutonomous()) {
-          new RemoveAlgae(chassis, target, isAlgaeRight).schedule();
-        } else {
-          chassis.stop();
-        }
-        
-        // LogManager.log("i do algea");
+        if(target.level == LEVEL.ALGAE_TOP) new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_TOP))
+          .andThen(new WaitCommand(0.05).andThen(new RunCommand(()->chassis.setRobotRelVelocities(
+            new ChassisSpeeds(-1, 0, 0)), chassis)).withTimeout(0.7)).schedule();
+
+        else new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
+          .andThen(new WaitCommand(0.2)).andThen(
+            new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)),
+              chassis).withTimeout(0.7)).schedule();
       }
 
     }

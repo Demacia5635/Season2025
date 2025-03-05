@@ -86,7 +86,7 @@ public class RobotContainer implements Sendable{
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
@@ -116,7 +116,7 @@ public class RobotContainer implements Sendable{
    */
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
-    CameraServer.startAutomaticCapture("POV Cam",0);
+    CameraServer.startAutomaticCapture("POV Cam", 0);
 
     chassis = new Chassis();
     arm = new Arm();
@@ -183,7 +183,7 @@ public class RobotContainer implements Sendable{
     operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
     operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
 
-    operatorController.rightBumper().onTrue(new InstantCommand(()-> arm.hadCalibrated()).ignoringDisable(true));
+    // operatorController.rightBumper().onTrue(new InstantCommand(()-> arm.hadCalibrated()).ignoringDisable(true));
     
     operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));

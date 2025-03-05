@@ -143,6 +143,10 @@ public class Arm extends SubsystemBase {
     stateChooser.addOption("Starting", ARM_ANGLE_STATES.STARTING);
     stateChooser.addOption("Climb", ARM_ANGLE_STATES.CLIMB);
     stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
+    stateChooser.addOption("PRE ALGAE BOTTOM", ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM);
+    stateChooser.addOption("PRE ALGAE TOP", ARM_ANGLE_STATES.PRE_ALGAE_TOP);
+    stateChooser.addOption("AFTER ALGAE BOTTOM", ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM);
+    stateChooser.addOption("AFTER ALGAE TOP", ARM_ANGLE_STATES.AFTER_ALGAE_TOP);
     stateChooser.addOption("Idle", ARM_ANGLE_STATES.IDLE);
     stateChooser.addOption("Idle2", ARM_ANGLE_STATES.IDLE);
     stateChooser.onChange(state -> this.state = state);
@@ -183,11 +187,11 @@ public class Arm extends SubsystemBase {
         break;
       
       case ALGAE_BOTTOM:
-        setState(ARM_ANGLE_STATES.ALGAE_BOTTOM);
+        setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM);
         break;
       
       case ALGAE_TOP:
-        setState(ARM_ANGLE_STATES.ALGAE_TOP);
+        setState(ARM_ANGLE_STATES.PRE_ALGAE_TOP);
         break;
       
       case FEEDER:
@@ -286,7 +290,7 @@ public class Arm extends SubsystemBase {
       targetAngle += 2.5*MaxErrors.ARM_ANGLE_DOWN_ERROR;
     }
 
-    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1.75)) {
       hasArmAngleReachedTarget = true;
     }
 

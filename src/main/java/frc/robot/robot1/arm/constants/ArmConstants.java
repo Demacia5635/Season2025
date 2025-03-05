@@ -156,8 +156,8 @@ public class ArmConstants {
 
     /** The max errors of the arm and gripper angles */
     public static class MaxErrors {
-        public static final double ARM_ANGLE_UP_ERROR = 0.017;
-        public static final double ARM_ANGLE_DOWN_ERROR = 0.03;
+        public static final double ARM_ANGLE_UP_ERROR = 0.02;
+        public static final double ARM_ANGLE_DOWN_ERROR = 0.04;
         public static final double GRIPPER_ANGLE_UP_ERROR = 0.017;
         public static final double GRIPPER_ANGLE_DOWN_ERROR = 0.03;
     }
@@ -168,10 +168,16 @@ public class ArmConstants {
         public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
         public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.5, 4.6);
         public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.58, 5.3);
-        public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.67048828125, 4.4);
-        public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.2, 4.6);
         public static final Pair<Double, Double> CLIMB = new Pair<Double, Double>(2.8 ,5.45);
         public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(Math.toRadians(33.7), 3.64);
+        public static class Algae{
+            
+            public static final Pair<Double, Double> PRE_ALGAE_TOP = new Pair<Double, Double>(1.8, 3.7);
+            public static final Pair<Double, Double> AFTER_ALGAE_TOP = new Pair<Double, Double>(2.5, 4.6);
+
+            public static final Pair<Double, Double> PRE_ALGAE_BOTTOM = new Pair<Double, Double>(2.5, 2.5);
+            public static final Pair<Double, Double> AFTER_ALGAE_BOTTOM = new Pair<Double, Double>(1.7, 2.5);
+        }
     }
 
     /** the arm angle states */
@@ -179,8 +185,10 @@ public class ArmConstants {
         L1,
         L2,
         L3,
-        ALGAE_BOTTOM,
-        ALGAE_TOP,
+        PRE_ALGAE_BOTTOM,
+        PRE_ALGAE_TOP,
+        AFTER_ALGAE_BOTTOM,
+        AFTER_ALGAE_TOP,
         CORAL_STATION,
         CLIMB,
         TESTING,
