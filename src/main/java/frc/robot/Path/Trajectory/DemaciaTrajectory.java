@@ -62,9 +62,10 @@ public class DemaciaTrajectory {
         fixFirstPoint(initialPose);
             
         
-        if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
+       /* if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
             points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
-        }
+        } */
+       
         initCorners();
 
 

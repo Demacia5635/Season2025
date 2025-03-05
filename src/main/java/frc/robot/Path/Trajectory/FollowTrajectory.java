@@ -95,7 +95,6 @@ public class FollowTrajectory extends Command {
       points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
       
       points.add(target.getApproachingPoint());
-      LogManager.log("approach: " + points.get(points.size() - 1));
       
       points.add(target.getFinishPoint());
       if (target.elementPosition == ELEMENT_POSITION.FEEDER) {
