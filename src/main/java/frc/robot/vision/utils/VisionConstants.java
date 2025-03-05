@@ -137,8 +137,8 @@ public class VisionConstants {
 
 // if the robot tihnk it is behined the tag swap id 1 with id 2 in line 150
     // TAG Camera mounting configuration
-    public static final double[] CAM_HEIGHT = { 0.795, 0.91, 0.89, 0.815};
-    public static final double[] CAM_PITHC = { 54.369, 20, 53, 56.804};
+    public static final double[] CAM_HEIGHT = { 0.545, 0.91, 0.89, 0.565};
+    public static final double[] CAM_PITHC = {65.3, 20, 53, 70.6};
     public static final double[] CAM_YAW = { 0, 0, 180, 0 };
 
     // Camera to Tag position relative to robot center
@@ -151,8 +151,8 @@ public class VisionConstants {
             "limelight-backup"};
 
 
-        public static final double MIN_CROP = 0.4;
-        public static final double MAX_CROP = 0.5;
+        public static final double MIN_CROP = 0.5;
+        public static final double MAX_CROP = 0.6;
         public static final double CROP_CONSTAT = 0.35;
         public static final double PREDICT_X = -0.1;
         public static final double PREDICT_Y = 0.15;
