@@ -283,7 +283,6 @@ public class Arm extends SubsystemBase {
       targetAngle = lastArmAngleTarget + getArmAngleMotor() - getArmAngle();
     }
    
-   
     armAngleMotor.setMotionMagic(targetAngle);
     
 
@@ -427,7 +426,7 @@ public class Arm extends SubsystemBase {
    * @return the gripper angle in radians
    */
   public double getGripperAngle() {
-    return (gripperAngleAbsoluteSensor.get() * 2 * Math.PI) - GripperAngleMotorConstants.Angle_OFFSET;
+    return MathUtil.angleModulus((gripperAngleAbsoluteSensor.get() * 2 * Math.PI) - GripperAngleMotorConstants.Angle_OFFSET);
   }
 
 

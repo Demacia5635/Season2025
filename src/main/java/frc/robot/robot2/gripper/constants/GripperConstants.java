@@ -27,7 +27,7 @@ public class GripperConstants {
         // public static final int UP_FRONT_SENSOR_CHANNEL = 1;
         // public static final int UP_BACK_SENSOR_CHANNEL = 2;
         public static final Pair<Integer, Integer> DOWN_SENSOR_CHANNEL = new Pair<Integer,Integer>(9, 8);
-        public static final Pair<Integer, Integer> UP_SENSOR_CHANNELS = new Pair<Integer, Integer>(3,4);
+        public static final Pair<Integer, Integer> UP_SENSOR_CHANNELS = new Pair<Integer, Integer>(3, 5);
         public static final double CORAL_IN_SENSOR = 0.05;
     }
 

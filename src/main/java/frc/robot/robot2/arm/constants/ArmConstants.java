@@ -41,7 +41,7 @@ public class ArmConstants {
      */
     public static class ArmAngleMotorConstants {
 
-        public static final double Angle_OFFSET = -2.5571459734053636; 
+        public static final double Angle_OFFSET = -0.2101536989692356288937200664811; 
 
         /* all the main configs of the motor */
         public static final int ID = 20;
@@ -72,7 +72,7 @@ public class ArmConstants {
 
         /* the basic configues of the motor */
         public static final boolean IS_BRAKE = true;
-        public static final boolean IS_INVERTED = false;
+        public static final boolean IS_INVERTED = true;
         public static final double GEAR_RATIO = 80;
 
         /* the ramp time of the motor */
@@ -98,7 +98,8 @@ public class ArmConstants {
                 .withRampTime(RAMP_TIME);
 
         /* The config of the motor based on the constants cancoder */
-        public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME);
+        public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME)
+            .withInvert(IS_INVERTED);
     }
 
     /** All the constants for the gripper angle motor */
@@ -142,9 +143,9 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double Angle_OFFSET = 2.5148163935758916 + Math.PI/2;
-        public static final double BACK_LIMIT = -2.6444868509617248;
-        public static final double FWD_LIMIT = -0.3447434245885166 ;
+        public static final double Angle_OFFSET = -3.2004349986698966192313216916398;
+        public static final double BACK_LIMIT = -2.52685546875;
+        public static final double FWD_LIMIT = -0.083740234375;
 
         /* The config of the motor based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
