@@ -46,7 +46,6 @@ public class FollowTrajectory extends Command {
   private boolean isScoring;
   private boolean useElasticTarget;
   private Command grabCommand;
-  
 
   public FollowTrajectory(Chassis chassis, boolean isScoring) {
     this.chassis = chassis;
@@ -57,6 +56,7 @@ public class FollowTrajectory extends Command {
     addRequirements(chassis);
     // this.points.add(target.getFinishPoint());
   }
+
   public FollowTrajectory(Chassis chassis, FieldTarget newTarget) {
     this.chassis = chassis;
     this.target = newTarget;
@@ -75,7 +75,16 @@ public class FollowTrajectory extends Command {
   }
 
   private FieldTarget getClosestFeeder() {
-    if (chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_LEFT.getId()]) > chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()])) {
+    ChassisSpeeds currSpeeds = chassis.getChassisSpeedsFieldRel();
+    Translation2d vecVel = new Translation2d(currSpeeds.vxMetersPerSecond, currSpeeds.vyMetersPerSecond);
+    if (vecVel.getNorm() >= 1) {
+      if (vecVel.getY() > 0) {
+        return RobotContainer.isRed() ? FieldTarget.kFeederRight : FieldTarget.kFeederLeft;
+      } else {
+        return RobotContainer.isRed() ? FieldTarget.kFeederLeft : FieldTarget.kFeederRight;
+      }
+    } else if (chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_LEFT.getId()]) > chassis
+        .getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()])) {
       return FieldTarget.kFeederRight;
     } else {
       return FieldTarget.kFeederLeft;
@@ -85,28 +94,29 @@ public class FollowTrajectory extends Command {
   @Override
   public void initialize() {
     RobotContainer.robot1Strip.setAutoPath();
-    if(useElasticTarget) {
+    if (useElasticTarget) {
       this.target = isScoring ? RobotContainer.scoringTarget : getClosestFeeder();
-      }
+    }
 
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
       this.wantedAngle = target.getFinishPoint().getRotation();
       points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
-      
+
       points.add(target.getApproachingPoint());
-      
+
       points.add(target.getFinishPoint());
       if (target.elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
-        grabCommand = new Grab(RobotContainer.gripper).andThen(new InstantCommand(()-> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
+        grabCommand = new Grab(RobotContainer.gripper)
+            .andThen(new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
       }
-      
-     this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), target.elementPosition == ELEMENT_POSITION.ALGEA);
-    
 
-    }
-    else this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), false);
+      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(),
+          target.elementPosition == ELEMENT_POSITION.ALGEA);
+
+    } else
+      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), false);
     if (this.target != null)
       RobotContainer.arm.setState(this.target.level);
   }
@@ -119,10 +129,10 @@ public class FollowTrajectory extends Command {
   @Override
   public void end(boolean interrupted) {
     if (!interrupted && !usePoints) {
-      
+
       if (target.elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
         chassis.stop();
-      } 
+      }
 
       if (target.elementPosition == ELEMENT_POSITION.CORAL_LEFT
           || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
@@ -131,32 +141,37 @@ public class FollowTrajectory extends Command {
         if (DriverStation.isAutonomous()) {
         } else {
           new WaitUntilCommand(RobotContainer.arm::isReady)
-          .andThen(new Drop(RobotContainer.gripper), 
-          new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
-          .withTimeout(0.2)).schedule();
+              .andThen(new Drop(RobotContainer.gripper),
+                  new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
+                      .withTimeout(0.2))
+              .schedule();
         }
       }
 
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
-        if(target.level == LEVEL.ALGAE_TOP) new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_TOP))
-          .andThen(new WaitCommand(0.05).andThen(new RunCommand(()->chassis.setRobotRelVelocities(
-            new ChassisSpeeds(-1, 0, 0)), chassis)).withTimeout(0.7)).schedule();
+        if (target.level == LEVEL.ALGAE_TOP)
+          new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_TOP))
+              .andThen(new WaitCommand(0.05).andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
+                  new ChassisSpeeds(-1, 0, 0)), chassis)).withTimeout(0.7))
+              .schedule();
 
-        else new InstantCommand(()->RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
-          .andThen(new WaitCommand(0.2)).andThen(
-            new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)),
-              chassis).withTimeout(0.7)).schedule();
+        else
+          new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
+              .andThen(new WaitCommand(0.2)).andThen(
+                  new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)),
+                      chassis).withTimeout(0.7))
+              .schedule();
       }
 
-    }
-    else if(!DriverStation.isAutonomous()) chassis.stop();
+    } else if (!DriverStation.isAutonomous())
+      chassis.stop();
   }
 
   @Override
   public boolean isFinished() {
-    return (trajectory.isFinishedTrajectory()) || 
-    (!usePoints 
-    && (target.position == POSITION.FEEDER_LEFT || target.position == POSITION.FEEDER_RIGHT) 
-    && RobotContainer.gripper.isCoralDownSensor());
+    return (trajectory.isFinishedTrajectory()) ||
+        (!usePoints
+            && (target.position == POSITION.FEEDER_LEFT || target.position == POSITION.FEEDER_RIGHT)
+            && RobotContainer.gripper.isCoralDownSensor());
   }
 }
