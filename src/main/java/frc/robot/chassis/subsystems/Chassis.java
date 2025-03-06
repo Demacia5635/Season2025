@@ -17,6 +17,7 @@ import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -43,23 +44,28 @@ import static frc.robot.chassis.utils.ChassisConstants.*;
 import frc.robot.chassis.utils.ChassisConstants.AccelConstants;
 import frc.robot.chassis.utils.SwerveKinematics;
 import frc.robot.utils.LogManager;
+import frc.robot.vision.Camera;
+import frc.robot.vision.Camera.CameraType;
 import frc.robot.vision.subsystem.Tag;
 import frc.robot.vision.utils.VisionFuse;
 
 public class Chassis extends SubsystemBase {
     private SwerveModule[] modules;
     private Pigeon2 gyro;
-    private SwerveKinematics kinematicsFIx;
+    private SwerveKinematics kinematicsFix;
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
     private Field2d fieldTag;
     private Field2d fieldTest;
-    public Tag reefTag;
-    public Tag fiderTag;
-    public Tag bargeTag;
-    public Tag backTag;
+
+    public Tag reefRight;
+    public Tag feeder;
+    public Tag barge;
+    public Tag reefLeft;
+
     public VisionFuse visionFuse;
 
+    private Camera[] camers; 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
 
@@ -72,33 +78,44 @@ public class Chassis extends SubsystemBase {
         };
         gyro = new Pigeon2(GYRO_ID, GYRO_CAN_BUS);
         addStatus();
-        kinematicsFIx = new SwerveKinematics(
+        kinematicsFix = new SwerveKinematics(
                 FRONT_LEFT.POSITION,
                 FRONT_RIGHT.POSITION,
                 BACK_LEFT.POSITION,
                 BACK_RIGHT.POSITION
 
         );
-        poseEstimator = new SwerveDrivePoseEstimator(kinematicsFIx, getGyroAngle(), getModulePositions(), new Pose2d());
+        poseEstimator = new SwerveDrivePoseEstimator(kinematicsFix, getGyroAngle(), getModulePositions(), new Pose2d());
 
         SimpleMatrix std = new SimpleMatrix(new double[] { 0.02, 0.02, 0 });
         poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
         field = new Field2d();
         fieldTag = new Field2d();
         fieldTest = new Field2d();
-        reefTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 0);
-        fiderTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 1);
-        bargeTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 2);
-        backTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 3);
-        visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
+
+        
+        
+        reefRight = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
+            new Camera("right", new Translation3d(0.13, -0.27, 0.545), 65.3, 0, CameraType.REEF));
+
+        reefLeft = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
+            new Camera("left", new Translation3d(0.13, 0.284, 0.565),  70.6, 0, CameraType.REEF));
+       
+        feeder = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(),
+            new Camera("feeder", new Translation3d(0.11, -0.285, 0.91), 20, 0, CameraType.FEEDER));
+
+        barge = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
+            new Camera("barge", new Translation3d(0.13, 0.284, 0.89), 53, 180, CameraType.BARGE));
+            
+        visionFuse = new VisionFuse(reefRight, feeder, barge, reefLeft);
 
 
         SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("reset gyro 180", new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(() -> setYaw(
                 Rotation2d.fromDegrees(RobotContainer.robotContainer.autoChooser.getSelected() == AutoMode.MIDDLE
-                        ? reefTag.getAngle()
-                        : backTag.getAngle())))
+                        ? reefRight.getAngle()
+                        : reefLeft.getAngle())))
                 .ignoringDisable(true));
         LogManager.addEntry("gyro", () -> gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
@@ -173,7 +190,7 @@ public class Chassis extends SubsystemBase {
         
 
 
-        SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states = kinematicsFix.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
 
@@ -240,7 +257,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public void setRobotRelVelocities(ChassisSpeeds speeds) {
-        SwerveModuleState[] states = kinematicsFIx.toSwerveModuleStates(speeds);
+        SwerveModuleState[] states = kinematicsFix.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
 
@@ -351,11 +368,11 @@ public class Chassis extends SubsystemBase {
     }
 
     public ChassisSpeeds getChassisSpeedsRobotRel() {
-        return kinematicsFIx.toChassisSpeeds(getModuleStates());
+        return kinematicsFix.toChassisSpeeds(getModuleStates());
     }
 
     public ChassisSpeeds getChassisSpeedsFieldRel() {
-        return ChassisSpeeds.fromRobotRelativeSpeeds(kinematicsFIx.toChassisSpeeds(getModuleStates()), getGyroAngle());
+        return ChassisSpeeds.fromRobotRelativeSpeeds(kinematicsFix.toChassisSpeeds(getModuleStates()), getGyroAngle());
     }
 
     /**
@@ -435,7 +452,7 @@ public class Chassis extends SubsystemBase {
     }
 
     public boolean isSeeTag(int id, int cameraId, double distance) {
-        Tag[] tags = { reefTag, fiderTag, bargeTag, backTag };
+        Tag[] tags = { reefRight, feeder, barge, reefLeft };
 
         return tags[cameraId].isSeeTag(id, distance);
     }
