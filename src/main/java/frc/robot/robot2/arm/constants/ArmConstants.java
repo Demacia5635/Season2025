@@ -54,13 +54,21 @@ public class ArmConstants {
 
 
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
-        public static final double KP = 4;
-        public static final double KI = 0;
-        public static final double KD = 0;
-        public static final double KS = 0.15683740301663393;
-        public static final double KV = 1.4949232212224017;
-        public static final double KA = 0.0029824872796242463;
-        public static final double KG = 0;
+        public static final double KP0 = 4;
+        public static final double KI0 = 0;
+        public static final double KD0 = 0;
+        public static final double KS0 = 0.15683740301663393;
+        public static final double KV0 = 1.4949232212224017;
+        public static final double KA0 = 0.0029824872796242463;
+        public static final double KG0 = 0;
+
+        public static final double KP1 = 4;
+        public static final double KI1 = 0;
+        public static final double KD1 = 0;
+        public static final double KS1 = 0.15683740301663393;
+        public static final double KV1 = 1.4949232212224017;
+        public static final double KA1 = 0.0029824872796242463;
+        public static final double KG1 = 0;
 
         /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
         public static final double MOTION_MAGIC_VELOCITY = 4;
@@ -85,12 +93,13 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         //public static final double BASE_ANGLE = 0; //TODO:
-        public static final double BACK_LIMIT = -Math.PI/2;
-        public static final double FWD_LIMIT = Math.PI/2;
+        public static final double BACK_LIMIT = -3*Math.PI/4;
+        public static final double FWD_LIMIT = 3*Math.PI/4;
 
         /* The config of the motors based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
-                .withPID(KP, KI, KD, KS, KV, KA, KG)
+                .withPID(KP0, KI0, KD0, KS0, KV0, KA0, KG0)
+                .withPID1(KP0, KI0, KD0, KS0, KV0, KA0, KG0)
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)

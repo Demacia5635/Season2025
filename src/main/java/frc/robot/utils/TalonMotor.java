@@ -367,7 +367,7 @@ public class TalonMotor extends TalonFX {
       getConfigurator().apply(cfg);
     }).ignoringDisable(true);
 
-    SmartDashboard.putData(name + "/PID+FF config", new Sendable() {
+    SmartDashboard.putData(name + "/PID+FF config" + "/" + slot, new Sendable() {
       @Override
       public void initSendable(SendableBuilder builder) {
         builder.setSmartDashboardType("PID+FF Config");

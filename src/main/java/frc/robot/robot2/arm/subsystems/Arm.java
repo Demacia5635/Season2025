@@ -162,6 +162,7 @@ public class Arm extends SubsystemBase {
 
     /*added pid motors to elastic */
     armAngleMotor.configPidFf(0);
+    armAngleMotor.configPidFf(1);
     gripperAngleMotor.configPidFf(0);
 
     armAngleMotor.configMotionMagic();
@@ -456,6 +457,11 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
 
+    if (Math.abs(getArmAngle()) < Math.PI/2) {
+      armAngleMotor.changeSlot(0);
+    } else {
+      armAngleMotor.changeSlot(1);
+    }
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */
     // gripperAngleMotor.setPosition(getGripperAngle());

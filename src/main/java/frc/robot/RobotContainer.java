@@ -69,12 +69,12 @@ public class RobotContainer implements Sendable{
     robotContainer = this;
     new LogManager();
     // ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
     LogManager.addEntry("Timer", DriverStation::getMatchTime);
-    // SmartDashboard.putData("Reef", ReefWidget.getInstance());
+    // SmartDashboard.putData("Reef", ReefWidget.getInstance());  
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     // SmartDashboard.putData("pracice", new AllOffsets());
     
