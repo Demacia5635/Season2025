@@ -145,8 +145,6 @@ public class DemaciaTrajectory {
                 : (segments.get(segmentIndex) instanceof Leg ? segments.get(segmentIndex).getPoints()[1]
                         : segments.get(segmentIndex + 1).getPoints()[0]);
 
-        if (isAlgae)
-            return chassisPose.getTranslation().getDistance(currentLastPoint) <= 0.1;
 
         if (segmentIndex == segments.size() - 1)
             return chassisPose.getTranslation().getDistance(currentLastPoint) <= MAX__POSITION_THRESHOLD;

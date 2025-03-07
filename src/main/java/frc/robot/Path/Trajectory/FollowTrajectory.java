@@ -104,6 +104,7 @@ public class FollowTrajectory extends Command {
       points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
 
       points.add(target.getApproachingPoint());
+      LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
       if (target.elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
@@ -151,13 +152,13 @@ public class FollowTrajectory extends Command {
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         if (target.level == LEVEL.ALGAE_TOP)
           new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_TOP))
-              .andThen(new WaitCommand(0.05).andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
+              .andThen(new WaitCommand(0.1).andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
                   new ChassisSpeeds(-1, 0, 0)), chassis)).withTimeout(0.7))
               .schedule();
 
         else
           new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
-              .andThen(new WaitCommand(0.2)).andThen(
+              .andThen(new WaitCommand(0.18)).andThen(
                   new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)),
                       chassis).withTimeout(0.7))
               .schedule();
