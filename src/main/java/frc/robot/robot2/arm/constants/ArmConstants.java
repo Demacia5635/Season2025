@@ -54,7 +54,7 @@ public class ArmConstants {
 
 
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
-        public static final double KP = 5;
+        public static final double KP = 4;
         public static final double KI = 0;
         public static final double KD = 0;
         public static final double KS = 0.15683740301663393;
@@ -64,8 +64,8 @@ public class ArmConstants {
 
         /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
         public static final double MOTION_MAGIC_VELOCITY = 4;
-        public static final double MOTION_MAGIC_ACCELERATION = 10;
-        public static final double MOTION_MAGIC_JERK = 15;
+        public static final double MOTION_MAGIC_ACCELERATION = 8;
+        public static final double MOTION_MAGIC_JERK = 12;
 
         /* the channel of the absolute sensor */
         //public static final int ABSOLUTE_SENSOR_CHANNEL = 22;
@@ -113,7 +113,7 @@ public class ArmConstants {
         public static final String NAME = "Gripper Angle Motor";
 
         /* the pid and ff of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
-        public static final double KP = 3;
+        public static final double KP = 4.5;
         public static final double KI = 0;
         public static final double KD = 0;
         public static final double KS = 0.1;
@@ -143,7 +143,7 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double Angle_OFFSET = -3.2004349986698966192313216916398;
+        public static final double Angle_OFFSET = 4.0101840213501761192313216916398;
         public static final double BACK_LIMIT = -2.52685546875;
         public static final double FWD_LIMIT = -0.083740234375;
 

@@ -182,8 +182,6 @@ public class Chassis extends SubsystemBase {
         if(wantedSpeeds.getNorm() == 0 && currentSpeeds.getNorm() == 0) return new Translation2d();
         
         double accel = getAccel(RobotContainer.elevator.getHeight());
-        LogManager.log("HEIGHT: " + RobotContainer.elevator.getHeight());
-        LogManager.log("ACCEL: " + accel);
         double maxDeltaV = accel * CYCLE_DT;
         double curNorm = currentSpeeds.getNorm();
         if(curNorm <0.1){
@@ -195,7 +193,11 @@ public class Chassis extends SubsystemBase {
         
         double angleDiff = MathUtil.angleModulus(wantedSpeeds.getAngle().getRadians() - currentSpeeds.getAngle().getRadians());
         double radius = curNorm / AccelConstants.MAX_OMEGA_VELOCITY;
-        if(Math.abs(angleDiff) >= 170 && Math.abs(angleDiff) <= 190) accel *= 0.3;
+        LogManager.log("ANGLE DIFF: " + Math.toDegrees(angleDiff));
+        if(Math.abs(Math.toDegrees(angleDiff)) >= 170 && Math.abs(Math.toDegrees(angleDiff)) <= 190){
+            accel *= 0.3;
+            LogManager.log("HEHE");
+        }
         // LogManager.log("RADIUS: " + radius);
         if(Math.abs(angleDiff) < 0.6 || radius < AccelConstants.MAX_RADIUS){
                 
