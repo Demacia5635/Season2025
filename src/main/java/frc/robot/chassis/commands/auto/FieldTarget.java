@@ -18,8 +18,8 @@ public class FieldTarget {
 
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);
-    public static Translation2d topAlgaeOffset = new Translation2d(0.54, -0.2);
-    public static Translation2d bottomAlgaeOffset = new Translation2d(0.54, -0.2);
+    public static Translation2d topAlgaeOffset = new Translation2d(0.54, -0.18);
+    public static Translation2d bottomAlgaeOffset = new Translation2d(0.54, -0.18);
     
     public static Translation2d intakeOffset = new Translation2d(0.66, 0);
     public static Translation2d rightIntakeOffset = new Translation2d(0, 0.75);
@@ -32,8 +32,8 @@ public class FieldTarget {
 
     public static Translation2d l2Left = new Translation2d(0.58, -0.12);
     public static Translation2d l2Right = new Translation2d(0.57, 0.24);
-    public static Translation2d l3Left = new Translation2d(0.47, -0.12);
-    public static Translation2d l3Right = new Translation2d(0.47, 0.24);
+    public static Translation2d l3Left = new Translation2d(0.5, -0.12);
+    public static Translation2d l3Right = new Translation2d(0.5, 0.24);
 
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
@@ -130,9 +130,22 @@ public class FieldTarget {
 
     public Translation2d getSmartApproachOffset(){
         Translation2d robotToTag = RobotContainer.chassis.getPose().getTranslation().minus(getFinishPoint().getTranslation()).rotateBy(VisionConstants.TAG_ANGLE[position.getId()].unaryMinus());
-
+        
         double minDistance = 0.7;
         double maxDistance = 1.2;
+        double algaeMinDistance = 1.2;
+        double algaeMaxDistance = 1.6;
+        
+        
+        if(elementPosition == ELEMENT_POSITION.ALGEA){
+            if (robotToTag.getX() > algaeMinDistance && robotToTag.getX() < algaeMaxDistance) {
+                return new Translation2d(robotToTag.getX(), 0);
+            }
+            
+            if(robotToTag.getX() < algaeMinDistance) return new Translation2d(algaeMinDistance, 0);
+            return new Translation2d(algaeMaxDistance, 0);
+        }
+
         if (robotToTag.getX() > minDistance && robotToTag.getX() < maxDistance) {
             return new Translation2d(robotToTag.getX(), 0);
         }

@@ -150,18 +150,8 @@ public class FollowTrajectory extends Command {
       }
 
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
-        if (target.level == LEVEL.ALGAE_TOP)
-          new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_TOP))
-              .andThen(new WaitCommand(0.1).andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
-                  new ChassisSpeeds(-1, 0, 0)), chassis)).withTimeout(0.7))
-              .schedule();
-
-        else
-          new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
-              .andThen(new WaitCommand(0.18)).andThen(
-                  new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)),
-                      chassis).withTimeout(0.7))
-              .schedule();
+        if(!DriverStation.isAutonomous()) AutoUtils.removeAlgae(target.level == LEVEL.ALGAE_TOP).schedule();
+        else chassis.stop();
       }
 
     } else if (!DriverStation.isAutonomous())

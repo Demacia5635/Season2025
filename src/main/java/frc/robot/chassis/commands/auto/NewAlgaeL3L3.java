@@ -34,7 +34,7 @@ import frc.robot.utils.LogManager;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AlgaeL3L3 extends SequentialCommandGroup {
+public class NewAlgaeL3L3 extends SequentialCommandGroup {
 
   final double FIELD_LENGTH = 17.54824934;
   final double FIELD_HEIGHT = 8.05180000;
@@ -42,7 +42,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
   final boolean isRed;
   final boolean isRight;
 
-  public AlgaeL3L3(Chassis chassis, Arm arm, Gripper gripper, boolean isRed, boolean isRight) {
+  public NewAlgaeL3L3(Chassis chassis, Arm arm, Gripper gripper, boolean isRed, boolean isRight) {
 
     this.isRed = isRed;
     this.isRight = isRight;
@@ -58,15 +58,30 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     FieldTarget backupCoral = new FieldTarget(POSITION.B, isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
 
     addCommands(
-        new FollowTrajectory(chassis, algaePoint),
-        AutoUtils.removeAlgae(false),
+        new FollowTrajectory(chassis, algaePoint), (new RemoveAlgae(chassis, algaePoint, !isRight)
+            .alongWith(new InstantCommand(() -> new AlignCoral(gripper).schedule()))),
+        (new FollowTrajectory(chassis,new ArrayList<PathPoint>() {
+          {
+            add(dummyPoint);
+            add(infrontReef);
+          }
+        }, correctRotation(60)))
+        .alongWith(new InstantCommand(() -> arm.setState(LEVEL.L3))),
+        // new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
+        // {
+        // add(dummyPoint);
+        // add(new PathPoint(new Translation2d(3.3, 6), Rotation2d.fromDegrees(-60)));
+        // }
+        // }, Rotation2d.fromDegrees(-60)).until(() ->
+        // chassis.isSeeTag(coralRight.position.getId(), 0, 2)
+        // || chassis.isSeeTag(coralRight.position.getId(), 3, 2)),
         new FollowTrajectory(chassis, coralLeft),
-        new WaitCommand(0.1),
         (new WaitUntilCommand(() -> !gripper.isCoralUpSensor())
         .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
-        .withTimeout(0.5),
-        new WaitCommand(0.1)
-        /* 
+        .withTimeout(2),
+        new WaitCommand(0.1),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.1),
+        // new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 4)), chassis).withTimeout(0.1),
         (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
           {
             add(dummyPoint);
@@ -115,7 +130,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
             .until(() -> chassis.isSeeTag(coralRight.position.getId(), 0, 10)
                 || chassis.isSeeTag(coralRight.position.getId(), 3, 10)),
         new FollowTrajectory(chassis, backupCoral),
-        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)*/
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
     );
   }
 

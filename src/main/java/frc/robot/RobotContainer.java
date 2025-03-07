@@ -28,6 +28,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AlgaeL3;
+import frc.robot.chassis.commands.auto.AlgaeL3AlgaeL3;
 import frc.robot.chassis.commands.auto.AlgaeL3L3;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
@@ -247,8 +248,9 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    return new AlgaeL3AlgaeL3(chassis, arm, gripper, isRed, false).alongWith(new ArmCommand(arm));
     // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
-    switch (autoChooser.getSelected()) {
+    /*switch (autoChooser.getSelected()) {
       case LEFT:
         return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
 
@@ -260,6 +262,6 @@ public class RobotContainer implements Sendable{
     
       default:
         return new ArmCalibration(arm);
-    }
+    }*/
   }
 }

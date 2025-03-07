@@ -339,11 +339,6 @@ public class Chassis extends SubsystemBase {
         return new Matrix<N3, N1>(new SimpleMatrix(new double[] { x, y, theta }));
     }
 
-    private boolean isSeeScoringTag() {
-        return isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5)
-                || isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5);
-
-    }
 
     Pose2d visionFusePoseEstimation;
 
