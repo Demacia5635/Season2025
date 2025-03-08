@@ -314,9 +314,7 @@ public class Arm extends SubsystemBase {
       return;
     }
 
-    if (Math.abs(armAngleMotor.getCurrentVelocity()) >= 0.3) {
-      targetAngle += Math.signum(armAngleMotor.getCurrentVelocity()) * Math.toRadians(7);
-    }
+    
 
     // if (lastGripperAngleTarget != targetAngle) {
     //   hasGripperAngleReachedTarget = false;
@@ -332,6 +330,10 @@ public class Arm extends SubsystemBase {
     }
     if (targetAngle > GripperAngleMotorConstants.FWD_LIMIT) {
       targetAngle = GripperAngleMotorConstants.FWD_LIMIT;
+    }
+
+    if (Math.abs(getArmVel()) >= 0.01) {
+      targetAngle -= getArmVel() * 0.4;
     }
 
     // if (hasGripperAngleReachedTarget) {
@@ -390,6 +392,23 @@ public class Arm extends SubsystemBase {
     armAngleMotor.stopMotor();
     gripperAngleMotor.stopMotor();
   }
+
+  /**
+   * @return griper motor velocity
+   */
+  public double getGripperVel(){
+    return gripperAngleMotor.getCurrentVelocity();
+  }
+
+  /**
+   * @return arm motor velocity
+   */
+  
+  public double getArmVel(){
+    return armAngleMotor.getCurrentVelocity();
+  }
+
+  
 
   /**
    * get is the motors closed loop error are less than the max errors
