@@ -60,15 +60,14 @@ public class AlgaeL3AlgaeL3 extends SequentialCommandGroup {
         ? new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER)
         : new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER);
 
-    FieldTarget firstCoral = new FieldTarget(isRight ? POSITION.D : POSITION.F, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
+    FieldTarget firstCoral = new FieldTarget(isRight ? POSITION.D : POSITION.F, isRight ? ELEMENT_POSITION.CORAL_LEFT : ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
 
-    FieldTarget secondCoral = new FieldTarget(isRight ? POSITION.C : POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
-    FieldTarget backupCoral = new FieldTarget(isRight ? POSITION.C : POSITION.A, ELEMENT_POSITION.CORAL_RIGHT,
-        LEVEL.L3);
+    FieldTarget secondCoral = new FieldTarget(isRight ? POSITION.C : POSITION.A, isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
+    FieldTarget thirdCoral = new FieldTarget(isRight ? POSITION.C : POSITION.A, isRight ? ELEMENT_POSITION.CORAL_LEFT : ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
+    FieldTarget backupCoral = new FieldTarget(POSITION.B, isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION. CORAL_LEFT, LEVEL.L2);
 
     addCommands(
         new FollowTrajectory(chassis, algaePointFirst),
-        new InstantCommand(()->chassis.stop()),
         new WaitCommand(0.08),
         AutoUtils.removeAlgae(true),
         new InstantCommand(() -> chassis.stop()),
@@ -80,16 +79,12 @@ public class AlgaeL3AlgaeL3 extends SequentialCommandGroup {
             .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
             .withTimeout(0.7),
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)),
-            chassis).withTimeout(0.5),
-        new InstantCommand(() -> chassis.stop()),
-        new WaitCommand(0.2),
-        new FollowTrajectory(chassis, feeder).alongWith(new InstantCommand(() -> new Grab(gripper).schedule())),
+            chassis).withTimeout(0.2),
+        new WaitCommand(0.1),
+        new FollowTrajectory(chassis, feeder),
         new WaitUntilCommand(() -> gripper.isCoralDownSensor()),
-          
-        new WaitCommand(0.2),
         (new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 1, 0)), chassis).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM)))).withTimeout(0.1),
         new FollowTrajectory(chassis, algaePointSecond),
-        new InstantCommand(()->chassis.stop()),
         new WaitCommand(0.08),
         AutoUtils.removeAlgae(false),
         new InstantCommand(() -> chassis.stop()),
@@ -99,7 +94,26 @@ public class AlgaeL3AlgaeL3 extends SequentialCommandGroup {
         new WaitCommand(0.1).alongWith(new InstantCommand(() -> new AlignCoral(gripper).schedule())),
         (new WaitUntilCommand(() -> !gripper.isCoralDownSensor())
             .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
-            .withTimeout(0.7)
+            .withTimeout(0.7),
+
+        new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
+            .withTimeout(0.2),
+        new FollowTrajectory(chassis, feeder),
+        new WaitUntilCommand(gripper::isCoralDownSensor),
+        
+        (new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 1, 0)), chassis).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM)))).withTimeout(0.1),
+        new FollowTrajectory(chassis, thirdCoral),
+        new WaitCommand(0.1).alongWith(new InstantCommand(() -> new AlignCoral(gripper).schedule())),
+        (new WaitUntilCommand(() -> !gripper.isCoralDownSensor())
+            .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
+            .withTimeout(0.7),
+        
+        new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
+            .withTimeout(0.3),
+        gripper.isCoralDownSensor() ? new FollowTrajectory(chassis, backupCoral) : new InstantCommand(),
+        (new WaitUntilCommand(() -> !gripper.isCoralDownSensor())
+        .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
+        .withTimeout(0.7)
 
         
 
