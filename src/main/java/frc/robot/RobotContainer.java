@@ -12,6 +12,7 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -81,6 +82,8 @@ public class RobotContainer implements Sendable{
   public enum AutoMode {
     LEFT, MIDDLE, RIGHT
   }
+
+  Timer timer = new Timer();
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -93,7 +96,7 @@ public class RobotContainer implements Sendable{
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
-    LogManager.addEntry("Timer", DriverStation::getMatchTime);
+    LogManager.addEntry("Timer", ()-> 15 - timer.get());
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     SmartDashboard.putData("pracice", new AllOffsets());
@@ -104,9 +107,9 @@ public class RobotContainer implements Sendable{
     configureBindings();
 
     autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("left", AutoMode.LEFT);
-    autoChooser.addOption("middle", AutoMode.MIDDLE);
-    autoChooser.addOption("right", AutoMode.RIGHT);
+    autoChooser.setDefaultOption("LEFT", AutoMode.LEFT);
+    autoChooser.addOption("MIDDLE", AutoMode.MIDDLE);
+    autoChooser.addOption("RIGHT", AutoMode.RIGHT);
     SmartDashboard.putData("AutoChooser", autoChooser);
 
     currentFeederSide = FEEDER_SIDE.MIDDLE;
@@ -242,6 +245,7 @@ public class RobotContainer implements Sendable{
       arm.stop();
       gripper.stop();
       climb.stopClimb();
+      timer.stop();
     }, chassis, arm, gripper, climb
     ).withName("initDisableCommand").ignoringDisable(true);
   }
@@ -252,6 +256,8 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    timer.reset();
+    timer.start();
     return new AlgaeL3AlgaeL3(chassis, arm, gripper, isRed, false).alongWith(new ArmCommand(arm));
     // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
     /*switch (autoChooser.getSelected()) {
