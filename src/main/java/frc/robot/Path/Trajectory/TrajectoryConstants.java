@@ -14,7 +14,7 @@ public class TrajectoryConstants {
     public static final double MAX_ROTATION_THRESHOLD = Math.toRadians(0.75);
 
     public class PathsConstraints{
-        public static final double MAX_VELOCITY = 2.5;
+        public static final double MAX_VELOCITY = 3;
         public static final double MAX_ACCEL = 3;
         
     public static final double MAX_ROTATIONAL_VELOCITY = Math.toRadians(360); //in radians;

@@ -1,11 +1,18 @@
 package frc.robot.leds;
 
+import static frc.robot.vision.utils.VisionConstants.O_TO_TAG;
+
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.RobotContainer;
+import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
+import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.leds.subsystems.LedStrip;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
@@ -63,13 +70,47 @@ public class Robot1Strip extends LedStrip {
         isManual = !isManual;
     }
 
+    private ELEMENT_POSITION getFeederElementPosition() {
+        ChassisSpeeds currSpeeds = chassis.getChassisSpeedsFieldRel();
+        Translation2d vecVel = new Translation2d(currSpeeds.vxMetersPerSecond, currSpeeds.vyMetersPerSecond);
+        if (vecVel.getNorm() >= 1) {
+            if (vecVel.getY() > 0) {
+                return RobotContainer.isRed() ? FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT) : FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT);
+            } else {
+                return RobotContainer.isRed() ? FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT) : FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT);
+            }
+        } else if (chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_LEFT.getId()]) > chassis
+            .getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()])) {
+            return FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT);
+        } else {
+            return FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT);
+        }
+    }
+
     @Override
     public void periodic() {
 
         setColor(Color.kWhite);
 
         if (arm.getState().equals(ARM_ANGLE_STATES.CORAL_STATION)) {
-            setColor(Color.kYellow);
+            switch (getFeederElementPosition()) {
+                case FEEDER_LEFT:
+                    setColorSides(Color.kYellow, Color.kBlack);
+                    break;
+
+                case FEEDER_MIDDLE:
+                    setColor(Color.kYellow);
+                    break;
+
+                case FEEDER_RIGHT:
+                    setColorSides(Color.kBlack, Color.kYellow);
+                    break;
+
+                default:
+                    setColor(Color.kYellow);
+                    break;
+
+            }
         }
         
         if (!grabTimer.hasElapsed(1) && grabTimer.get() != 0) {

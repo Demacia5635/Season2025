@@ -25,6 +25,7 @@ import frc.robot.Path.Trajectory.ChangeReefToClosest;
 import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AlgaeL3;
@@ -108,6 +109,7 @@ public class RobotContainer implements Sendable{
     autoChooser.addOption("right", AutoMode.RIGHT);
     SmartDashboard.putData("AutoChooser", autoChooser);
 
+    currentFeederSide = FEEDER_SIDE.MIDDLE;
   }
 
   /**
@@ -136,6 +138,7 @@ public class RobotContainer implements Sendable{
     arm.setDefaultCommand(new ArmCommand(arm));
   }
 
+  public static FEEDER_SIDE currentFeederSide;
 
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
@@ -157,8 +160,9 @@ public class RobotContainer implements Sendable{
     driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
     driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
+    driverController.povRight().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.FAR));
     driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
-    driverController.povLeft().onTrue(new InstantCommand(()-> arm.setState(LEVEL.ALGAE_TOP)).ignoringDisable(true));       
+    driverController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
 
     driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
     driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));

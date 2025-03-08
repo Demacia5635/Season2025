@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -27,6 +28,7 @@ import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.RemoveAlgae;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
@@ -79,15 +81,15 @@ public class FollowTrajectory extends Command {
     Translation2d vecVel = new Translation2d(currSpeeds.vxMetersPerSecond, currSpeeds.vyMetersPerSecond);
     if (vecVel.getNorm() >= 1) {
       if (vecVel.getY() > 0) {
-        return RobotContainer.isRed() ? FieldTarget.kFeederRight : FieldTarget.kFeederLeft;
+        return RobotContainer.isRed() ? new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT), LEVEL.FEEDER) : new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER);
       } else {
-        return RobotContainer.isRed() ? FieldTarget.kFeederLeft : FieldTarget.kFeederRight;
+        return RobotContainer.isRed() ? new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER) : new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT), LEVEL.FEEDER);
       }
     } else if (chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_LEFT.getId()]) > chassis
         .getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()])) {
-      return FieldTarget.kFeederRight;
+      return new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT), LEVEL.FEEDER);
     } else {
-      return FieldTarget.kFeederLeft;
+      return new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER);
     }
   }
 
@@ -96,6 +98,7 @@ public class FollowTrajectory extends Command {
     RobotContainer.robot1Strip.setAutoPath();
     if (useElasticTarget) {
       this.target = isScoring ? RobotContainer.scoringTarget : getClosestFeeder();
+      if (!isScoring) RobotContainer.currentFeederSide = FEEDER_SIDE.MIDDLE;
     }
 
     if (!usePoints) {
@@ -141,7 +144,7 @@ public class FollowTrajectory extends Command {
         chassis.stop();
         if (DriverStation.isAutonomous()) {
         } else {
-          new WaitUntilCommand(RobotContainer.arm::isReady)
+          new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new WaitCommand(0.2))
               .andThen(new Drop(RobotContainer.gripper),
                   new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
                       .withTimeout(0.2))

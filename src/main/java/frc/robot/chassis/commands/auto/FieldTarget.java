@@ -66,7 +66,30 @@ public class FieldTarget {
         ALGEA, 
         FEEDER_LEFT,
         FEEDER_MIDDLE, 
-        FEEDER_RIGHT
+        FEEDER_RIGHT;
+    }
+
+    public enum FEEDER_SIDE {
+        CLOSE, MIDDLE, FAR
+    }
+
+    public static ELEMENT_POSITION getFeeder(FEEDER_SIDE feederSide, POSITION feederPosition) {
+        if (feederSide == FEEDER_SIDE.MIDDLE) return ELEMENT_POSITION.FEEDER_MIDDLE;
+        if (feederPosition == POSITION.FEEDER_LEFT) {
+            if (feederSide == FEEDER_SIDE.CLOSE) {
+                return ELEMENT_POSITION.FEEDER_LEFT;
+            } else {
+                return ELEMENT_POSITION.FEEDER_RIGHT;
+            }
+        } else if (feederPosition == POSITION.FEEDER_RIGHT) {
+            if (feederSide == FEEDER_SIDE.FAR) {
+                return ELEMENT_POSITION.FEEDER_RIGHT;
+            } else {
+                return ELEMENT_POSITION.FEEDER_LEFT;
+            }
+        } else {
+            return ELEMENT_POSITION.FEEDER_MIDDLE;
+        }
     }
     
     public enum LEVEL{
