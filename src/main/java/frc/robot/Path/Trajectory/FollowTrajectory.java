@@ -110,7 +110,7 @@ public class FollowTrajectory extends Command {
       LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
-      if (target.elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
+      if (target.level == LEVEL.FEEDER) {
         grabCommand = new Grab(RobotContainer.gripper)
             .andThen(new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
         grabCommand.schedule();
