@@ -10,8 +10,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
-import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.utils.LogManager;
 import frc.robot.vision.utils.VisionConstants;
 
 public class FieldTarget {
@@ -62,6 +60,7 @@ public class FieldTarget {
 
     public enum ELEMENT_POSITION{
         CORAL_LEFT, 
+        CORAL_MIDDLE,
         CORAL_RIGHT, 
         ALGEA, 
         FEEDER_LEFT,
@@ -93,6 +92,7 @@ public class FieldTarget {
     }
     
     public enum LEVEL{
+        L1,
         L2,
         L3,
         FEEDER,
