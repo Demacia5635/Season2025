@@ -74,7 +74,7 @@ public class Drop extends Command {
   @Override
   public void execute() {
     if (RobotContainer.arm.getState() == ARM_ANGLE_STATES.L1) {
-      gripper.setPower(-0.55);
+      gripper.setPower(-0.65);
     } else {
       gripper.setPower(DropConstants.DROP_POWER);
     }
