@@ -96,10 +96,10 @@ public class Chassis extends SubsystemBase {
         
         
         reefRight = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
-            new Camera("right", new Translation3d(0.14310487, -0.28932432, 0.77239801), 55, 0, CameraType.REEF));
+            new Camera("right", new Translation3d(0.14310487, -0.28932432, 0.795), 55, 0, CameraType.REEF));
 
         reefLeft = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
-            new Camera("left", new Translation3d(0.16242541, 0.28927192, 0.732556),  60, 0, CameraType.REEF));
+            new Camera("left", new Translation3d(0.13, 0.28, 0.71),  62, 0, CameraType.REEF));
        
         feeder = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(),
             new Camera("feeder", new Translation3d(0.11, -0.285, 0.91), 20, 0, CameraType.FEEDER));
