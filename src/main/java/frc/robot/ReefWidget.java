@@ -40,9 +40,9 @@ public class ReefWidget implements Sendable {
             case 0:
                 return index == 6 || index == 7;
             case 1:
-                return index == 3;
+                return index == 4 || index == 5 || index == 6;
             case 2:
-                return index == 2;
+                return index == 3;
             default:
                 return false;
         }
