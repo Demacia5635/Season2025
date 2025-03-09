@@ -91,7 +91,7 @@ public class RobotContainer implements Sendable{
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
@@ -258,9 +258,9 @@ public class RobotContainer implements Sendable{
   public Command getAutonomousCommand() {
     timer.reset();
     timer.start();
-    return new AlgaeL3AlgaeL3(chassis, arm, gripper, isRed, false).alongWith(new ArmCommand(arm));
+    // return new AlgaeL3AlgaeL3(chassis, arm, gripper, isRed, false).alongWith(new ArmCommand(arm));
     // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
-    /*switch (autoChooser.getSelected()) {
+    switch (autoChooser.getSelected()) {
       case LEFT:
         return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
 
@@ -272,6 +272,6 @@ public class RobotContainer implements Sendable{
     
       default:
         return new ArmCalibration(arm);
-    }*/
+    }
   }
 }

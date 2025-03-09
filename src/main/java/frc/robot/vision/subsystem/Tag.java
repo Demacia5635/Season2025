@@ -102,7 +102,7 @@ private NetworkTableEntry pipeEntry;
         pose = new Pose2d(getOriginToRobot(), getRobotAngle.get());
         field.setRobotPose(pose);
         confidence = getConfidence();
-        wantedPip = GetDistFromCamera() > 1 ? 0 : 0;//> 1 ? 0 : 1;
+        wantedPip = GetDistFromCamera() > 1 ? 0 : 1;
       }
     } else {
       cropStop();
