@@ -102,7 +102,7 @@ private NetworkTableEntry pipeEntry;
         pose = new Pose2d(getOriginToRobot(), getRobotAngle.get());
         field.setRobotPose(pose);
         confidence = getConfidence();
-        wantedPip = GetDistFromCamera() > 1 ? 0 : 1;
+        wantedPip = GetDistFromCamera() > 1 ? 0 : 0;
       }
     } else {
       cropStop();
@@ -131,7 +131,7 @@ private NetworkTableEntry pipeEntry;
       alpha = camToTagPitch + camera.getPitch();
       dist = (Math.abs(height - camera.getHeight())) * (Math.tan(Math.toRadians(alpha)));
       dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-      //System.out.println(cameraId + ":" + dist);
+      //LogManager.log(camera.getName() + ":" + dist);
       return Math.abs(dist);
     }
     alpha = camToTagPitch + camera.getPitch();
