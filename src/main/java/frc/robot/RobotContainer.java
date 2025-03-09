@@ -51,8 +51,11 @@ import frc.robot.leds.Robot1Strip;
 import frc.robot.leds.subsystems.LedManager;
 import frc.robot.practice.AllOffsets;
 import frc.robot.utils.CommandController;
+import frc.robot.utils.Elastic;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
+import frc.robot.utils.Elastic.Notification;
+import frc.robot.utils.Elastic.Notification.NotificationLevel;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -91,7 +94,7 @@ public class RobotContainer implements Sendable{
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
@@ -100,6 +103,7 @@ public class RobotContainer implements Sendable{
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     SmartDashboard.putData("pracice", new AllOffsets());
+    Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Start Robot Code", ""));
     
     configureSubsytems();
     new AutoUtils();
