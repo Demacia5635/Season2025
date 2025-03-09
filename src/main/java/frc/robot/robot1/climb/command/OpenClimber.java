@@ -11,6 +11,7 @@ import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.climb.ClimebConstants;
 import frc.robot.robot1.climb.subsystem.Climb;
 import frc.robot.utils.CommandController;
+import frc.robot.utils.Elastic;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class OpenClimber extends Command {
@@ -25,6 +26,7 @@ public class OpenClimber extends Command {
 
   @Override
   public void initialize() {
+    Elastic.selectTab("End Game");
     RobotContainer.arm.setState(ARM_ANGLE_STATES.CLIMB);
   }
 
