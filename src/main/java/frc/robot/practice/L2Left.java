@@ -22,7 +22,7 @@ public class L2Left extends Command {
         this.lastX = 0;
         this.lastY = 0;
         
-        SmartDashboard.putData("L2 Left", this);
+        SmartDashboard.putData("Offsets/L2 Left", this);
     }
 
     @Override

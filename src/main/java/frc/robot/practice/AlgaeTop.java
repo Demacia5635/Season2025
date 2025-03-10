@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.utils.LogManager;
 
-public class Feeder extends Command {
+public class AlgaeTop extends Command {
 
     double x;
     double y;
@@ -15,20 +15,20 @@ public class Feeder extends Command {
     double lastX;
     double lastY;
 
-    public Feeder() {
+    public AlgaeTop() {
         this.x = 0;
         this.y = 0;
 
         this.lastX = 0;
         this.lastY = 0;
         
-        SmartDashboard.putData("Offsets/Feeder", this);
+        SmartDashboard.putData("Offsets/Algae Top", this);
     }
 
     @Override
     public void initialize() {
-        x = FieldTarget.intakeOffset.getX();
-        y = FieldTarget.intakeOffset.getY();
+        x = FieldTarget.topAlgaeOffset.getX();
+        y = FieldTarget.topAlgaeOffset.getY();
 
         lastX = x;
         lastY = y;
@@ -37,7 +37,7 @@ public class Feeder extends Command {
     @Override
     public void execute() {
         if (lastX != x || lastY != y) {
-            FieldTarget.intakeOffset = new Translation2d(x, y);
+            FieldTarget.topAlgaeOffset = new Translation2d(x, y);
             
             lastX = x;
             lastY = y;
@@ -46,7 +46,7 @@ public class Feeder extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        LogManager.log("Offset: Feeder x: " + x + "y: " + y);
+        LogManager.log("Offset: Algae Top x: " + x + "y: " + y);
     }
 
     @Override

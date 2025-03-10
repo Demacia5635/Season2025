@@ -106,7 +106,7 @@ public class RobotContainer implements Sendable{
     LogManager.addEntry("Timer", ()-> DriverStation.getMatchTime());
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
-    SmartDashboard.putData("pracice", new AllOffsets());
+    SmartDashboard.putData("Offsets/Practice", new AllOffsets());
     Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Start Robot Code", ""));
     
     configureSubsytems();
