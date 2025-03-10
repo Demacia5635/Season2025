@@ -91,8 +91,6 @@ public class RobotContainer implements Sendable{
   public static Command middleAuto;
   public static Command rightAuto;
 
-  Timer timer = new Timer();
-  
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
@@ -105,7 +103,7 @@ public class RobotContainer implements Sendable{
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
-    LogManager.addEntry("Timer", ()-> 15 - timer.get());
+    LogManager.addEntry("Timer", ()-> DriverStation.getMatchTime());
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     SmartDashboard.putData("pracice", new AllOffsets());
@@ -289,7 +287,6 @@ public class RobotContainer implements Sendable{
       arm.stop();
       gripper.stop();
       climb.stopClimb();
-      timer.stop();
     }, chassis, arm, gripper, climb
     ).withName("initDisableCommand").ignoringDisable(true);
   }
@@ -300,10 +297,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    timer.reset();
-    timer.start();
-    // return new AlgaeL3AlgaeL3(chassis, arm, gripper, isRed, false).alongWith(new ArmCommand(arm));
-    // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
     switch (autoChooser.getSelected()) {
       case LEFT:
         return leftAuto;
