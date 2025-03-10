@@ -8,18 +8,6 @@
         "layouts": [],
         "containers": [
           {
-            "title": "FMSInfo",
-            "x": 768.0,
-            "y": 256.0,
-            "width": 512.0,
-            "height": 128.0,
-            "type": "FMSInfo",
-            "properties": {
-              "topic": "/FMSInfo",
-              "period": 0.06
-            }
-          },
-          {
             "title": "isComp",
             "x": 128.0,
             "y": 0.0,
@@ -79,8 +67,8 @@
           },
           {
             "title": "set gyro to 3D tag",
-            "x": 768.0,
-            "y": 128.0,
+            "x": 1024.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -157,9 +145,9 @@
           {
             "title": "Console",
             "x": 1280.0,
-            "y": 256.0,
+            "y": 384.0,
             "width": 256.0,
-            "height": 384.0,
+            "height": 256.0,
             "type": "Alerts",
             "properties": {
               "topic": "/SmartDashboard/Console",
@@ -167,51 +155,81 @@
             }
           },
           {
-            "title": "limelight-back",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06
-            }
-          },
-          {
             "title": "limelight-bottom",
-            "x": 1024.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "limelight-front",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "limelight-backup",
             "x": 768.0,
             "y": 384.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Camera Stream",
             "properties": {
+              "topic": "/CameraPublisher/limelight-bottom",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-front",
+            "x": 1024.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-front",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-backup",
+            "x": 768.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
               "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-back",
+            "x": 1024.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-back",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "POV Cam",
+            "x": 1280.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
+            }
+          },
+          {
+            "title": "Render Auto",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Render Auto",
+              "period": 0.06,
+              "show_type": true
             }
           }
         ]
@@ -237,7 +255,7 @@
               "robot_length": 0.85,
               "show_other_objects": true,
               "show_trajectories": true,
-              "field_rotation": -90.0,
+              "field_rotation": 90.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
             }
@@ -351,7 +369,7 @@
           },
           {
             "title": "VELOCITY NORM: ",
-            "x": 512.0,
+            "x": 256.0,
             "y": 384.0,
             "width": 256.0,
             "height": 256.0,
@@ -379,7 +397,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -391,7 +410,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -403,7 +423,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -415,7 +436,21 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "POV Cam",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
             }
           }
         ]
@@ -453,7 +488,7 @@
               "robot_length": 0.85,
               "show_other_objects": true,
               "show_trajectories": true,
-              "field_rotation": -90.0,
+              "field_rotation": 90.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
             }
@@ -574,7 +609,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -586,7 +622,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -598,7 +635,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -610,7 +648,96 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-backup",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "POV Cam",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "End Game",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "POV Cam",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 640.0,
+            "height": 640.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
+            }
+          },
+          {
+            "title": "Command Scheduler",
+            "x": 1280.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Scheduler",
+            "properties": {
+              "topic": "/SmartDashboard/Command Scheduler",
               "period": 0.06
+            }
+          },
+          {
+            "title": "Timer",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/Log/Timer",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 10,
+              "yellow_start_time": 20
+            }
+          },
+          {
+            "title": "Reef",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 512.0,
+            "height": 384.0,
+            "type": "Reef",
+            "properties": {
+              "topic": "/SmartDashboard/Reef",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Swerve Drive",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "SwerveDrive",
+            "properties": {
+              "topic": "/SmartDashboard/Chassis/Swerve Drive",
+              "period": 0.06,
+              "show_robot_rotation": true,
+              "rotation_unit": "Radians"
             }
           }
         ]
@@ -673,7 +800,7 @@
               "robot_length": 0.85,
               "show_other_objects": true,
               "show_trajectories": true,
-              "field_rotation": 0.0,
+              "field_rotation": -180.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
             }
@@ -861,7 +988,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -873,7 +1001,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -885,7 +1014,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -897,7 +1027,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -909,6 +1040,404 @@
             "type": "Command",
             "properties": {
               "topic": "/SmartDashboard/reset gyro 180",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "POV Cam",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Practice",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Command Scheduler",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Scheduler",
+            "properties": {
+              "topic": "/SmartDashboard/Command Scheduler",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "field",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 640.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/field",
+              "period": 0.06,
+              "field_game": "Reefscape",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 90.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295
+            }
+          },
+          {
+            "title": "limelight-bottom",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-bottom",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-backup",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-backup",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-front",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-front",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "Timer",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Match Time",
+            "properties": {
+              "topic": "/Log/Timer",
+              "period": 0.06,
+              "data_type": "double",
+              "time_display_mode": "Minutes and Seconds",
+              "red_start_time": 15,
+              "yellow_start_time": 30
+            }
+          },
+          {
+            "title": "Arm State Chooser",
+            "x": 640.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Arm/Arm State Chooser",
+              "period": 0.06,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "Reef",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 512.0,
+            "height": 384.0,
+            "type": "Reef",
+            "properties": {
+              "topic": "/SmartDashboard/Reef",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Arm Angle",
+            "x": 512.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Log/Arm/Arm Angle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Gripper Angle",
+            "x": 640.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Log/Arm/Gripper Angle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Test Arm Angle",
+            "x": 512.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/ArmCommand/Test Arm Angle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Test Gripper Angle",
+            "x": 640.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/ArmCommand/Test Gripper Angle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Bottom X",
+            "x": 1024.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/Algae Bottom/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Bottom Y",
+            "x": 1152.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/Algae Bottom/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Top X",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/Algae Top/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Algae Top Y",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/Algae Top/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Feeder X",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/Feeder/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Feeder Y",
+            "x": 384.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/Feeder/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L2 Left X",
+            "x": 0.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/L2 Left/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L2 Left Y",
+            "x": 128.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/L2 Left/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L2 Right X",
+            "x": 256.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/L2 Right/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L2 Right Y",
+            "x": 384.0,
+            "y": 512.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/L2 Right/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L3 Left X",
+            "x": 0.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/L3 Left/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L3 Left Y",
+            "x": 128.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/L3 Left/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L3 Right X",
+            "x": 256.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/L3 Right/x",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "L3 Right Y",
+            "x": 384.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/L3 Right/y",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Practice",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Offsets/Practice",
               "period": 0.06,
               "show_type": true
             }
@@ -1161,7 +1690,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -1173,7 +1703,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -1185,7 +1716,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -1197,7 +1729,21 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "POV Cam",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
             }
           }
         ]
@@ -1419,7 +1965,7 @@
           {
             "title": "reset gyro",
             "x": 256.0,
-            "y": 256.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -1432,7 +1978,7 @@
           {
             "title": "set gyro to 3D tag",
             "x": 256.0,
-            "y": 384.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -1451,7 +1997,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -1463,7 +2010,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -1475,7 +2023,8 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
@@ -1487,13 +2036,14 @@
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06
+              "period": 0.06,
+              "rotation_turns": 0
             }
           },
           {
             "title": "reset gyro 180",
             "x": 256.0,
-            "y": 128.0,
+            "y": 512.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -1501,6 +2051,19 @@
               "topic": "/SmartDashboard/reset gyro 180",
               "period": 0.06,
               "show_type": true
+            }
+          },
+          {
+            "title": "POV Cam",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
             }
           }
         ]
@@ -1644,6 +2207,26 @@
               "topic": "/SmartDashboard/Chassis",
               "period": 0.06
             }
+          },
+          {
+            "title": "field",
+            "x": 1152.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 640.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/SmartDashboard/field",
+              "period": 0.06,
+              "field_game": "Reefscape",
+              "robot_width": 0.85,
+              "robot_length": 0.85,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": -90.0,
+              "robot_color": 4294198070,
+              "trajectory_color": 4294967295
+            }
           }
         ]
       }
@@ -1700,8 +2283,8 @@
           },
           {
             "title": "IsReady",
-            "x": 1024.0,
-            "y": 128.0,
+            "x": 1152.0,
+            "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -1743,7 +2326,7 @@
             "title": "Arm State Chooser",
             "x": 0.0,
             "y": 128.0,
-            "width": 640.0,
+            "width": 1152.0,
             "height": 128.0,
             "type": "Split Button Chooser",
             "properties": {
@@ -1833,8 +2416,8 @@
           },
           {
             "title": "Arm",
-            "x": 768.0,
-            "y": 128.0,
+            "x": 1024.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Subsystem",
@@ -1847,7 +2430,7 @@
             "title": "state",
             "x": 1024.0,
             "y": 256.0,
-            "width": 128.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -1855,6 +2438,18 @@
               "period": 0.06,
               "data_type": "string",
               "show_submit_button": false
+            }
+          },
+          {
+            "title": "Console",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/Console",
+              "period": 0.06
             }
           }
         ]
@@ -2044,6 +2639,19 @@
               "topic": "/SmartDashboard/Climb",
               "period": 0.06
             }
+          },
+          {
+            "title": "POV Cam",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 512.0,
+            "height": 512.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
+            }
           }
         ]
       }
@@ -2052,390 +2660,18 @@
       "name": "Temporary / Testing",
       "grid_layout": {
         "layouts": [],
-        "containers": []
-      }
-    },
-    {
-      "name": "Practice",
-      "grid_layout": {
-        "layouts": [],
         "containers": [
           {
-            "title": "pracice",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/pracice",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
-            "title": "Command Scheduler",
-            "x": 0.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Scheduler",
-            "properties": {
-              "topic": "/SmartDashboard/Command Scheduler",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "Reef",
-            "x": 768.0,
-            "y": 256.0,
-            "width": 512.0,
-            "height": 384.0,
-            "type": "Reef",
-            "properties": {
-              "topic": "/SmartDashboard/Reef",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "field",
-            "x": 1280.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/field",
-              "period": 0.06,
-              "field_game": "Reefscape",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": -90.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295
-            }
-          },
-          {
-            "title": "limelight-bottom",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "limelight-backup",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "L3 Left X",
-            "x": 0.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/L3 Left/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "L3 Left Y",
-            "x": 128.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/L3 Left/y",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "L3 Right X",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/L3 Right/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "L3 Right Y",
-            "x": 384.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/L3 Right/y",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "L2 Left X",
-            "x": 0.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/L2 Left/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "L2 Left Y",
-            "x": 128.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/L2 Left/y",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "L2 Right X",
-            "x": 256.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/L2 Right/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "L2 Right Y",
-            "x": 384.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/L2 Right/y",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Feeder X",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Feeder/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Feeder Y",
-            "x": 384.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Feeder/y",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Algae Bottom Left X",
-            "x": 1024.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/AlgaeBottomLeft/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Algae Bottom Left Y",
-            "x": 1152.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/AlgaeBottomLeft/y",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Algae Bottom Right X",
-            "x": 1280.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/AlgaeBottomRight/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Algae Bottom Right Y",
-            "x": 1408.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/AlgaeBottomRight/y",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Algae Top Left X",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/AlgaeTopLeft/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Algae Top Left Y",
+            "title": "Arm State Chooser",
             "x": 1152.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
-            "type": "Text Display",
+            "type": "ComboBox Chooser",
             "properties": {
-              "topic": "/SmartDashboard/AlgaeTopLeft/y",
+              "topic": "/SmartDashboard/Arm/Arm State Chooser",
               "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Algae Top Right X",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/AlgaeTopRight/x",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "Algae Top Right Y",
-            "x": 1408.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/AlgaeTopRight/y",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": true
-            }
-          },
-          {
-            "title": "limelight-front",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "Timer",
-            "x": 512.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Match Time",
-            "properties": {
-              "topic": "/Log/Timer",
-              "period": 0.06,
-              "data_type": "double",
-              "time_display_mode": "Minutes and Seconds",
-              "red_start_time": 15,
-              "yellow_start_time": 30
-            }
-          },
-          {
-            "title": "Is Arm Ready",
-            "x": 512.0,
-            "y": 384.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Arm/IsReady",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
+              "sort_options": false
             }
           }
         ]
