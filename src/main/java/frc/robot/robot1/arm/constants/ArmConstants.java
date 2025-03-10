@@ -175,8 +175,8 @@ public class ArmConstants {
             public static final Pair<Double, Double> PRE_ALGAE_TOP = new Pair<Double, Double>(1.8, 3.7);
             public static final Pair<Double, Double> AFTER_ALGAE_TOP = new Pair<Double, Double>(2.5, 4.6);
 
-            public static final Pair<Double, Double> PRE_ALGAE_BOTTOM = new Pair<Double, Double>(2.5, 2.5);
-            public static final Pair<Double, Double> AFTER_ALGAE_BOTTOM = new Pair<Double, Double>(1.7, 2.5);
+            public static final Pair<Double, Double> PRE_ALGAE_BOTTOM = new Pair<Double, Double>(2.4, 2.5);
+            public static final Pair<Double, Double> AFTER_ALGAE_BOTTOM = new Pair<Double, Double>(1.6, 2.5);
         }
     }
 

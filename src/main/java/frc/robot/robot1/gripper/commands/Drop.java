@@ -78,6 +78,7 @@ public class Drop extends Command {
     } else {
       gripper.setPower(DropConstants.DROP_POWER);
     }
+    
     if (gripper.isCoralUpSensor() || gripper.isCoralDownSensor()) {
       hasSeenCoral = true;
     }

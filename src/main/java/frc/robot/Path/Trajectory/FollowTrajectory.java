@@ -104,7 +104,6 @@ public class FollowTrajectory extends Command {
     RobotContainer.robot1Strip.setAutoPath();
     if (useElasticTarget) {
       this.target = isScoring ? RobotContainer.scoringTarget : getClosestFeeder();
-      if (!isScoring) RobotContainer.currentFeederSide = FEEDER_SIDE.MIDDLE;
     }
 
     if (!usePoints) {
@@ -140,7 +139,8 @@ public class FollowTrajectory extends Command {
   public void end(boolean interrupted) {
     if (!interrupted && !usePoints) {
 
-      if (target.elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
+      if (target.level == LEVEL.FEEDER) {
+        RobotContainer.currentFeederSide = FEEDER_SIDE.MIDDLE;
         chassis.stop();
       }
 
@@ -171,7 +171,7 @@ public class FollowTrajectory extends Command {
   public boolean isFinished() {
     return (trajectory.isFinishedTrajectory()) ||
         (!usePoints
-            && (target.position == POSITION.FEEDER_LEFT || target.position == POSITION.FEEDER_RIGHT)
-            && RobotContainer.gripper.isCoralDownSensor());
+            && (target.level == LEVEL.FEEDER)
+            && RobotContainer.gripper.isCoral());
   }
 }

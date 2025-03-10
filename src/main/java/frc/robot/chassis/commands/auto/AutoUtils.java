@@ -80,13 +80,13 @@ public class AutoUtils {
     public static Command removeAlgae(boolean algaeTop) {
         if (algaeTop)
             return new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_TOP))
-                    .andThen(new WaitCommand(0.3).andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
-                            new ChassisSpeeds(-2, 0, 0)), chassis)).withTimeout(0.7));
+                    .andThen(new WaitCommand(0.1).andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
+                            new ChassisSpeeds(-4, 0, 0)), chassis)).withTimeout(0.6));
 
         return new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
                 .andThen(new WaitCommand(0.3)).andThen(
-                        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)),
-                                chassis).withTimeout(0.7));
+                        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-4, 0, 0)),
+                                chassis).withTimeout(0.6));
     }
 
     public static Command goTo(Pose2d wantedPose, double threshold, int[] cameraID, int[] tagID) {

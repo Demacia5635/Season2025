@@ -6,6 +6,7 @@ package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.net.WebServer;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
@@ -19,7 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
 import frc.robot.Path.Trajectory.ChangeReefToClosest;
@@ -57,6 +58,7 @@ import frc.robot.utils.CommandController.ControllerType;
 import frc.robot.utils.Elastic.Notification;
 import frc.robot.utils.Elastic.Notification.NotificationLevel;
 
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -69,6 +71,7 @@ public class RobotContainer implements Sendable{
   public static LedManager ledManager;
   public static CommandController driverController;
   public static CommandController operatorController;
+  public static CommandController backUpController;
   public static boolean isRed;
   public static boolean isComp = DriverStation.isFMSAttached();
   private static boolean hasRemovedFromLog = false;
@@ -85,6 +88,9 @@ public class RobotContainer implements Sendable{
   public enum AutoMode {
     LEFT, MIDDLE, RIGHT
   }
+  public static Command leftAuto;
+  public static Command middleAuto;
+  public static Command rightAuto;
 
   Timer timer = new Timer();
   
@@ -96,6 +102,7 @@ public class RobotContainer implements Sendable{
     ledManager = new LedManager();
     driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
+    backUpController = new CommandController(OperatorConstants.BACKUP_CONTROLLER_POERT, ControllerType.kXbox);
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
@@ -115,6 +122,14 @@ public class RobotContainer implements Sendable{
     autoChooser.addOption("MIDDLE", AutoMode.MIDDLE);
     autoChooser.addOption("RIGHT", AutoMode.RIGHT);
     SmartDashboard.putData("AutoChooser", autoChooser);
+    leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
+    middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
+    rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
+    SmartDashboard.putData("Render Auto", new InstantCommand(() -> {
+      RobotContainer.leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
+      RobotContainer.middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
+      RobotContainer.rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
+    }).ignoringDisable(true));
 
     currentFeederSide = FEEDER_SIDE.MIDDLE;
   }
@@ -199,6 +214,32 @@ public class RobotContainer implements Sendable{
     
     operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
+
+    backUpController.getLeftStickMove().onTrue(new Drive(chassis, backUpController));
+    backUpController.getRightStickkMove().onTrue(new JoyClimeb(backUpController, climb));
+    backUpController.rightStick().onTrue(new OpenClimber(backUpController, climb));
+    backUpController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
+
+    backUpController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
+    backUpController.downButton().onTrue(new FollowTrajectory(chassis, false));
+    backUpController.leftButton().onTrue(new FollowTrajectory(chassis, true));
+    backUpController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
+    
+    backUpController.leftBumper().onTrue(new InstantCommand(()-> {
+      chassis.stop();
+      arm.stop();
+      gripper.stop();
+      climb.stopClimb();
+    }, chassis, arm, gripper, climb).ignoringDisable(true));
+    backUpController.rightBumper().onTrue(new GrabOrDrop(gripper));
+    
+    backUpController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
+    backUpController.povRight().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.FAR));
+    backUpController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
+    backUpController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
+
+    backUpController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
+    backUpController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
   }
 
   public static boolean isRed() {
@@ -266,16 +307,16 @@ public class RobotContainer implements Sendable{
     // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
     switch (autoChooser.getSelected()) {
       case LEFT:
-        return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
+        return leftAuto;
 
       case MIDDLE:
-        return new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
+        return middleAuto;
       
       case RIGHT: 
-        return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
+        return rightAuto;
     
       default:
-        return new ArmCalibration(arm);
+        return new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(2, 0, 0)), chassis).withTimeout(1);
     }
   }
 }

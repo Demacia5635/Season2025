@@ -71,7 +71,7 @@ public class AlgaeL3AlgaeL3 extends SequentialCommandGroup {
         new WaitCommand(0.08),
         AutoUtils.removeAlgae(true),
         new InstantCommand(() -> chassis.stop()),
-        new WaitCommand(0.3),
+        new WaitCommand(0.1),
 
         new FollowTrajectory(chassis, firstCoral),
         new WaitCommand(0.1).alongWith(new InstantCommand(() -> new AlignCoral(gripper).schedule())),
@@ -81,9 +81,11 @@ public class AlgaeL3AlgaeL3 extends SequentialCommandGroup {
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)),
             chassis).withTimeout(0.2),
         new WaitCommand(0.1),
-        new FollowTrajectory(chassis, feeder),
-        new WaitUntilCommand(() -> gripper.isCoralDownSensor()),
+
+        new FollowTrajectory(chassis, feeder).raceWith(new RunCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
+        new WaitUntilCommand(() -> gripper.isCoral()),
         (new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 1, 0)), chassis).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM)))).withTimeout(0.1),
+
         new FollowTrajectory(chassis, algaePointSecond),
         new WaitCommand(0.08),
         AutoUtils.removeAlgae(false),
@@ -98,8 +100,9 @@ public class AlgaeL3AlgaeL3 extends SequentialCommandGroup {
 
         new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
             .withTimeout(0.2),
-        new FollowTrajectory(chassis, feeder),
-        new WaitUntilCommand(gripper::isCoralDownSensor),
+      
+        new FollowTrajectory(chassis, feeder).raceWith(new RunCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
+        new WaitUntilCommand(gripper::isCoral),
         
         (new RunCommand(()->chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 1, 0)), chassis).alongWith(new InstantCommand(()->arm.setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM)))).withTimeout(0.1),
         new FollowTrajectory(chassis, thirdCoral),
@@ -113,7 +116,8 @@ public class AlgaeL3AlgaeL3 extends SequentialCommandGroup {
         gripper.isCoralDownSensor() ? new FollowTrajectory(chassis, backupCoral) : new InstantCommand(),
         (new WaitUntilCommand(() -> !gripper.isCoralDownSensor())
         .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
-        .withTimeout(0.7)
+        .withTimeout(0.7),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)), chassis)
 
         
 
