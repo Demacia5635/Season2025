@@ -26,7 +26,6 @@ import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
-import frc.robot.chassis.commands.auto.RemoveAlgae;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
