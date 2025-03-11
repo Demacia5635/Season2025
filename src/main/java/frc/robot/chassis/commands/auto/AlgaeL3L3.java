@@ -67,24 +67,10 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
 
     addCommands(
-        new FollowTrajectory(chassis, fAlgaeTarget),
-        AutoUtils.removeAlgae(true),
-        new InstantCommand(()-> chassis.stop(), chassis),
-        new WaitCommand(0.1),
-        new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
-            .withTimeout(0.1),
-
         new FollowTrajectory(chassis, aAlgaePoint),
         AutoUtils.removeAlgae(false),
         new InstantCommand(() -> chassis.stop(), chassis),
         new WaitCommand(0.2),
-
-        new FollowTrajectory(chassis, feeder)
-            .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
-        new WaitUntilCommand(() -> gripper.isCoral()),
-        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
-            .withTimeout(0.1)
-            .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
 
         new FollowTrajectory(chassis, coralLeft),
         (new WaitUntilCommand(() -> !gripper.isCoral())
