@@ -76,22 +76,12 @@ public class FollowTrajectory extends Command {
   }
 
   private FieldTarget getClosestFeeder() {
-    ChassisSpeeds currSpeeds = chassis.getChassisSpeedsFieldRel();
-    Translation2d vecVel = new Translation2d(currSpeeds.vxMetersPerSecond, currSpeeds.vyMetersPerSecond);
+    // ChassisSpeeds currSpeeds = chassis.getChassisSpeedsFieldRel();
+    // Translation2d vecVel = new Translation2d(currSpeeds.vxMetersPerSecond, currSpeeds.vyMetersPerSecond);
     double distanceFromLeft = chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_LEFT.getId()]);
     double distanceFromRight = chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()]);
 
-    if (distanceFromLeft <= 3) {
-      return new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER);
-    } else if (distanceFromRight <= 3) {
-      return new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER);
-    } else if (vecVel.getNorm() >= 2.5) {
-      if (vecVel.getY() > 0) {
-        return RobotContainer.isRed() ? new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT), LEVEL.FEEDER) : new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER);
-      } else {
-        return RobotContainer.isRed() ? new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER) : new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT), LEVEL.FEEDER);
-      }
-    } else if (distanceFromLeft > distanceFromRight) {
+    if (distanceFromLeft > distanceFromRight) {
       return new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT), LEVEL.FEEDER);
     } else {
       return new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER);
@@ -111,7 +101,7 @@ public class FollowTrajectory extends Command {
       points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
 
       points.add(target.getApproachingPoint());
-      LogManager.log("APPROACH: " + points.get(points.size() - 1));
+      // LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
       if (target.level == LEVEL.FEEDER) {

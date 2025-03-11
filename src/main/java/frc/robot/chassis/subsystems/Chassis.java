@@ -115,7 +115,7 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(() -> setYaw(
                 Rotation2d.fromDegrees(RobotContainer.robotContainer.autoChooser.getSelected() == AutoMode.MIDDLE
                         ? reefRight.getAngle()
-                        : reefLeft.getAngle())))
+                        : barge.getAngle())))
                 .ignoringDisable(true));
         LogManager.addEntry("gyro", () -> gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
