@@ -97,7 +97,7 @@ public class ChassisConstants {
                 .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
                 .withBrake(true)
                 .withInvert(true)
-                .withMotorRatio(DRIVE_GEAR_RATIO).withMeterMotor(wheelDiameter * Math.PI);
+                .withMotorRatio(swerveId != 0 ? DRIVE_GEAR_RATIO : 5.9).withMeterMotor(wheelDiameter * Math.PI);
             CANCODER_CONFIG = new CancoderConfig(swerveId * 3 + 3, CAN_BUS, NAME + " Cancoder");
             POSITION = new Translation2d(
                 swerveId == 0 || swerveId == 1 ? 0.34 : -0.34,
@@ -108,9 +108,23 @@ public class ChassisConstants {
     }
 
     public static final SwerveModuleConfigs FRONT_LEFT = new SwerveModuleConfigs(
-        0,
+        new TalonConfig(2, CAN_BUS, "Front Left" + " Steer")
+            .withPID(STEER_KP, STEER_KI, STEER_KD, STEER_KS, STEER_KV, STEER_KA, 0)
+            .withMotionMagic(MOTION_MAGIC_VEL, MOTION_MAGIC_ACCEL, MOTION_MAGIC_JERK)
+            .withBrake(true)
+            .withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
+            .withRampTime(RAMP_TIME_STEER),
+        new TalonConfig(1, CAN_BUS, "Front Left" + " Drive")
+            .withPID(0.2/ (0.1 * Math.PI), 0.005/ (0.1 * Math.PI), 0, 0.28/ (0.1 * Math.PI), 0.11 / (0.1 * Math.PI), 0, 0)
+            .withBrake(true)
+            .withInvert(true)
+            .withMotorRatio(5.9).withMeterMotor(0.1 * Math.PI),
+        new CancoderConfig(3, CAN_BUS, "Front Left" + " Cancoder"),
+        new Translation2d(0.34, 0.29),
         -0.68108472092765281492574723492146,
-        0.1
+        "Front Left"
+
+
     );
 
     public static final SwerveModuleConfigs FRONT_RIGHT = new SwerveModuleConfigs(
