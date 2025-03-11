@@ -6,8 +6,10 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.Constants;
 import frc.robot.chassis.utils.ChassisConstants.SwerveModuleConfigs;
 import frc.robot.utils.Cancoder;
+import frc.robot.utils.CancoderConfig;
 import frc.robot.utils.TalonMotor;
 
 public class SwerveModule {
@@ -20,11 +22,11 @@ public class SwerveModule {
     public SwerveModule(SwerveModuleConfigs configs) {
         steerMotor = new TalonMotor(configs.STEER_CONFIG);
         driveMotor = new TalonMotor(configs.DRIVE_CONFIG);
-        cancoder = new Cancoder(configs.CANCODER_CONFIG);
         name = configs.NAME;
         isDisabled = false;
-
+        
         if (configs.NAME.equals("Front Left")) {
+            cancoder = new Cancoder(new CancoderConfig(6, Constants.CANBuses.CHASSIS_CAN_BUS, ""));
             steerMotor.setPosition(0);
             SmartDashboard.putData("Reset Front Left Module", new InstantCommand(()-> steerMotor.setPosition(0)).ignoringDisable(true));
             SmartDashboard.putData("Disable Front Left Module", new InstantCommand(()-> {
@@ -33,6 +35,7 @@ public class SwerveModule {
                 isDisabled = true;
             }));
         }else {
+            cancoder = new Cancoder(configs.CANCODER_CONFIG);
             steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
         }
 
