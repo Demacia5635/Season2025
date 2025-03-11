@@ -152,6 +152,8 @@ public class Arm extends SubsystemBase {
     stateChooser.onChange(state -> this.state = state);
     SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
 
+    SmartDashboard.putData("Manual Calibration", new InstantCommand(()-> hadCalibrated()).ignoringDisable(true));
+
     /* add the arm itself to the network tables */
     SmartDashboard.putData(this);
   }
