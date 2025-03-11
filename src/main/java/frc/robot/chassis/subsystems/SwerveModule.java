@@ -22,23 +22,21 @@ public class SwerveModule {
     public SwerveModule(SwerveModuleConfigs configs) {
         steerMotor = new TalonMotor(configs.STEER_CONFIG);
         driveMotor = new TalonMotor(configs.DRIVE_CONFIG);
+        cancoder = new Cancoder(configs.CANCODER_CONFIG);
         name = configs.NAME;
         isDisabled = false;
         
         if (configs.NAME.equals("Front Left")) {
-            cancoder = new Cancoder(new CancoderConfig(6, Constants.CANBuses.CHASSIS_CAN_BUS, ""));
-            steerMotor.setPosition(0);
             SmartDashboard.putData("Reset Front Left Module", new InstantCommand(()-> steerMotor.setPosition(0)).ignoringDisable(true));
             SmartDashboard.putData("Disable Front Left Module", new InstantCommand(()-> {
                 driveMotor.setNeutralMode(false);
                 steerMotor.setNeutralMode(false);
                 isDisabled = true;
             }));
-        }else {
-            cancoder = new Cancoder(configs.CANCODER_CONFIG);
-            steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
         }
 
+        steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
+        
         // SmartDashboard.putData(configs.DRIVE_CONFIG.name, driveMotor);
         // SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
     }
