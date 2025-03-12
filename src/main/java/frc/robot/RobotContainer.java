@@ -123,9 +123,9 @@ public class RobotContainer implements Sendable{
     middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
     rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
     SmartDashboard.putData("Render Auto", new InstantCommand(() -> {
-      RobotContainer.leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
+      RobotContainer.leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, RobotContainer.isRed(), false));
       RobotContainer.middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
-      RobotContainer.rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
+      RobotContainer.rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, RobotContainer.isRed(), true));
     }).ignoringDisable(true));
 
     currentFeederSide = FEEDER_SIDE.MIDDLE;
