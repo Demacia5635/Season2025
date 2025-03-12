@@ -32,7 +32,7 @@ public class GripperDrive extends Command {
 
         gripper.setPower(
             ((leftBoost ? controller.getLeftTrigger() * 2 : controller.getLeftTrigger()) - 
-            (rightBoost ? controller.getRightTrigger() * 2 : controller.getRightTrigger())) * 0.3
+            (rightBoost ? controller.getRightTrigger() * 2 : controller.getRightTrigger())) * 0.4
         );
     }
 

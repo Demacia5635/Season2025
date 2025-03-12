@@ -33,12 +33,12 @@ public class GripperConstants {
 
     /** All the constants for the grab command */
     public static class GrabConstants {
-        public static final double FEED_POWER = 0.3;
+        public static final double FEED_POWER = 0.4;
     }
     
     public static class AlignCoralConstants {
-        public static final double DOWN_POWER = 0.175;
-        public static final double UP_POWER = -0.175;
+        public static final double DOWN_POWER = 0.27;
+        public static final double UP_POWER = -0.35;
     }
 
     /** All the constants for the drop command */
