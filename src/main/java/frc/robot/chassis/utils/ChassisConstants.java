@@ -116,7 +116,7 @@ public class ChassisConstants {
             .withMotorRatio(STEER_GEAR_RATIO).withRadiansMotor()
             .withRampTime(RAMP_TIME_STEER),
         new TalonConfig(1, CAN_BUS, "Front Left" + " Drive")
-            .withPID(6.283185307179586476925286766559, 6.283185307179586476925286766559, 0, DRIVE_KS, DRIVE_KV, DRIVE_KA, 0)
+            .withPID(DRIVE_KP, DRIVE_KI, DRIVE_KD, 0.28/ (0.1 * Math.PI), 0.11 / (0.1 * Math.PI), 0, 0)
             // .withPID(10/ (0.1 * Math.PI), 0.005/ (0.1 * Math.PI), 0, 0.28/ (0.1 * Math.PI), 0.11 / (0.1 * Math.PI), 0, 0)
             .withBrake(true)
             .withInvert(true)
