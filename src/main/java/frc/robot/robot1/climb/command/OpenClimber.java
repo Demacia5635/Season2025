@@ -27,13 +27,13 @@ public class OpenClimber extends Command {
   @Override
   public void initialize() {
     Elastic.selectTab("End Game");
-    RobotContainer.arm.setState(ARM_ANGLE_STATES.CLIMB);
   }
 
 
   @Override
   public void execute() {
     climb.setClimbPower(ClimebConstants.ClimbConstants.prepareClimbPower);
+    RobotContainer.arm.setState(ARM_ANGLE_STATES.CLIMB);
   }
 
   @Override

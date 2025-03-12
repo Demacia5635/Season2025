@@ -86,6 +86,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
             new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
             .withTimeout(0.1)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
+            new InstantCommand(()-> chassis.stop(), chassis),
             
         (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
             {
