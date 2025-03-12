@@ -48,7 +48,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     this.isRight = isRight;
 
     PathPoint dummyPoint = new PathPoint(Translation2d.kZero, Rotation2d.kZero);
-    PathPoint infrontReef = new PathPoint(correctTranslation(3.3, FIELD_HEIGHT - 6), correctRotation(60));
+    PathPoint infrontReef = new PathPoint(correctTranslation(3.3, FIELD_HEIGHT - 6), correctRotation(120));
     FieldTarget fAlgaeTarget = new FieldTarget(isRight ? POSITION.D : POSITION.F, ELEMENT_POSITION.ALGEA,
         LEVEL.ALGAE_TOP);
     FieldTarget aAlgaePoint = new FieldTarget(isRight ? POSITION.C : POSITION.A, ELEMENT_POSITION.ALGEA,
@@ -97,7 +97,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
                 add(dummyPoint);
                 add(infrontReef);
             }
-        }, correctRotation(60))
+        }, correctRotation(120))
         .alongWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))))
         .until(() -> chassis.isSeeTag(coralRight.position.getId(), 0, 10)
             || chassis.isSeeTag(coralRight.position.getId(), 3, 10)),

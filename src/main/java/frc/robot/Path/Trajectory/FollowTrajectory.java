@@ -139,7 +139,7 @@ public class FollowTrajectory extends Command {
         chassis.stop();
         if (DriverStation.isAutonomous()) {
         } else {
-          new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new WaitCommand(0.2))
+          new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new WaitCommand(0.4))
               .andThen(new Drop(RobotContainer.gripper),
                   new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
                       .withTimeout(0.2))
