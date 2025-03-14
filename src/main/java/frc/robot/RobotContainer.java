@@ -84,6 +84,15 @@ public class RobotContainer implements Sendable{
     // SmartDashboard.putData("Reef", ReefWidget.getInstance());  
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     // SmartDashboard.putData("pracice", new AllOffsets());
+
+    robotState = DemaciaRobotState.IDLE;
+    SendableChooser<DemaciaRobotState> robotStateChooser = new SendableChooser<>();
+    robotStateChooser.setDefaultOption("IDLE2", DemaciaRobotState.IDLE);
+    for (DemaciaRobotState state : DemaciaRobotState.values()) {
+      robotStateChooser.addOption(state.name(), state);
+    }
+    robotStateChooser.onChange(state -> robotState = state);
+    SmartDashboard.putData("Robot State Chooser", robotStateChooser);
     
     configureSubsytems();
     // new AutoUtils();
