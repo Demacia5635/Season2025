@@ -62,9 +62,10 @@ public class DemaciaTrajectory {
         fixFirstPoint(initialPose);
             
         
-       /* if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
-            points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
-        } */
+       if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
+            LogManager.log("GOING THROUGH");
+            this.points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
+        }
 
         initCorners();
 
@@ -174,6 +175,7 @@ public class DemaciaTrajectory {
     }
 
     double lastDistance = 0;
+    
 
     public ChassisSpeeds calculate(Pose2d chassisPose) {
         this.chassisPose = chassisPose;

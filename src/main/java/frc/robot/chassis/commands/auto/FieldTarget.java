@@ -13,6 +13,8 @@ import frc.robot.Path.Utils.PathPoint;
 import frc.robot.vision.utils.VisionConstants;
 
 public class FieldTarget {
+    public static final Translation2d avoidReefOffset = new Translation2d(1.5, 0);
+
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);
     public static Translation2d topAlgaeOffset = new Translation2d(0.54, -0.18);
@@ -50,12 +52,12 @@ public class FieldTarget {
 
     
     public static PathPoint[] REEF_POINTS = new PathPoint[]{
-        new FieldTarget(POSITION.A, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.B, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.C, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.D, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.E, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
-        new FieldTarget(POSITION.F, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getApproachingPoint(),
+        new FieldTarget(POSITION.A, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.B, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.C, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.D, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.E, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.F, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
     };
 
     public enum ELEMENT_POSITION{
@@ -130,6 +132,9 @@ public class FieldTarget {
         return getElement(position.getId(), new Translation2d(0.6, 0).plus(elementPosition == ELEMENT_POSITION.CORAL_LEFT ? realLeftReefOffset : realRightReefOffset)).getTranslation();
     }
 
+    public PathPoint getReefAvoidPoint(){
+        return getElement(position.getId(), avoidReefOffset);
+    }
 
     public PathPoint getApproachingPoint(){
         if(RobotContainer.chassis == null) return new PathPoint(new Translation2d(), new Rotation2d());

@@ -23,13 +23,19 @@ public class AvoidReef {
 
         ArrayList<PathPoint> pointsList = new ArrayList<>();
 
+        LogManager.log("LAST POINT: " + point1);
         PathPoint entryPoint = getClosetPoint(point0);
         PathPoint leavePoint = getClosetPoint(point1);
 
+        LogManager.log("ENTRY: " + entryPoint);
+        LogManager.log("LEAVE: " + leavePoint);
         int id = findIndex(entryPoint);
         int leaveId = findIndex(leavePoint);
         boolean ascending = isPathAscending(id, leaveId);
 
+
+        LogManager.log("ENTRY ID: " + id);
+        LogManager.log("LEAVE ID: " + leaveId);
         pointsList.add(new PathPoint(point0, new Rotation2d()));
         pointsList.add(entryPoint);
 
@@ -40,6 +46,7 @@ public class AvoidReef {
             
         }
         pointsList.add(new PathPoint(point1, wantedAngle));
+        LogManager.log("NEW POINTS: " + pointsList);
         return pointsList;
 
     }
@@ -49,6 +56,7 @@ public class AvoidReef {
         int index = -1;
         for (int i = 0; i < FieldTarget.REEF_POINTS.length; i++) {
             if (FieldTarget.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance) {
+                LogManager.log("REEF POINT " + i +": "+ (FieldTarget.REEF_POINTS[i]));
                 index = i;
                 closetDistance = FieldTarget.REEF_POINTS[i].getTranslation().getDistance(startingPos);
             }
@@ -84,14 +92,17 @@ public class AvoidReef {
     }
 
     public static boolean isGoingThroughReef(Segment segment) {
-        for (int i = 0; i < AutoUtils.REEF_SEGMENTS.length; i++) {
-            if (isIntersecting(segment, Math.sqrt(2) / 2, AutoUtils.REEF_SEGMENTS[i])) {
+        for (Segment reefSegment : AutoUtils.REEF_SEGMENTS) {
+            boolean intersects = isIntersecting(segment, reefSegment);
+            LogManager.log("IS INTERSECTING: " + intersects);
+            if (intersects) {
                 return true;
             }
-        }return false;
+        }
+        return false;
     }
-
-    private static boolean isIntersecting(Segment segment, double segmentWidth, Segment segmentBase) {
+    
+    private static boolean isIntersecting(Segment segment, Segment segmentBase) {
         double x0 = segment.getPoints()[0].getX();
         double y0 = segment.getPoints()[0].getY();
         double x1 = segment.getPoints()[1].getX();
@@ -100,25 +111,41 @@ public class AvoidReef {
         double y2 = segmentBase.getPoints()[0].getY();
         double x3 = segmentBase.getPoints()[1].getX();
         double y3 = segmentBase.getPoints()[1].getY();
-
-        double m1 = (y0 - y1) / (x0 - x1);
-        double m2 = (y2 - y3) / (x2 - x3);
-
-        if (m1 == m2) {
-            return false;
-        }
-
-        double x = (m2 * x2 - m1 * x1 + y1 - y2) / (m2 - m1);
-        double y = m2 * x - m2 * x2 + y2;
-
-        boolean withinSegment1 = (x >= Math.min(x0, x1) && x <= Math.max(x0, x1)) &&
-                (y >= Math.min(y0, y1) && y <= Math.max(y0, y1));
-
-        boolean withinSegment2 = (x >= Math.min(x2, x3) && x <= Math.max(x2, x3)) &&
-                (y >= Math.min(y2, y3) && y <= Math.max(y2, y3));
-
-        return withinSegment1 && withinSegment2;
+    
+        return doIntersect(x0, y0, x1, y1, x2, y2, x3, y3);
     }
+    
+    private static boolean doIntersect(double x1, double y1, double x2, double y2,
+                                       double x3, double y3, double x4, double y4) {
+        int d1 = direction(x3, y3, x4, y4, x1, y1);
+        int d2 = direction(x3, y3, x4, y4, x2, y2);
+        int d3 = direction(x1, y1, x2, y2, x3, y3);
+        int d4 = direction(x1, y1, x2, y2, x4, y4);
+    
+        if (d1 != d2 && d3 != d4) {
+            return true;
+        }
+    
+        if (d1 == 0 && onSegment(x3, y3, x4, y4, x1, y1)) return true;
+        if (d2 == 0 && onSegment(x3, y3, x4, y4, x2, y2)) return true;
+        if (d3 == 0 && onSegment(x1, y1, x2, y2, x3, y3)) return true;
+        if (d4 == 0 && onSegment(x1, y1, x2, y2, x4, y4)) return true;
+    
+        return false;
+    }
+    
+    private static int direction(double xi, double yi, double xj, double yj, double xk, double yk) {
+        double val = (yj - yi) * (xk - xj) - (xj - xi) * (yk - yj);
+        if (val > 0) return 1;
+        if (val < 0) return -1;
+        return 0;
+    }
+    
+    private static boolean onSegment(double xi, double yi, double xj, double yj, double xk, double yk) {
+        return (xk >= Math.min(xi, xj) && xk <= Math.max(xi, xj)) &&
+               (yk >= Math.min(yi, yj) && yk <= Math.max(yi, yj));
+    }
+    
 
 
 
