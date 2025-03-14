@@ -17,23 +17,12 @@ public class SwerveModule {
     private TalonMotor driveMotor;
     private Cancoder cancoder;
     public String name;
-    private boolean isDisabled;
 
     public SwerveModule(SwerveModuleConfigs configs) {
         steerMotor = new TalonMotor(configs.STEER_CONFIG);
         driveMotor = new TalonMotor(configs.DRIVE_CONFIG);
         cancoder = new Cancoder(configs.CANCODER_CONFIG);
         name = configs.NAME;
-        isDisabled = false;
-        
-        if (configs.NAME.equals("Front Left")) {
-            SmartDashboard.putData("Reset Front Left Module", new InstantCommand(()-> steerMotor.setPosition(0)).ignoringDisable(true));
-            SmartDashboard.putData("Disable Front Left Module", new InstantCommand(()-> {
-                driveMotor.setNeutralMode(false);
-                steerMotor.setNeutralMode(false);
-                isDisabled = true;
-            }));
-        }
 
         steerMotor.setPosition(getAbsoluteAngle() - configs.STEER_OFFSET);
         
@@ -55,30 +44,18 @@ public class SwerveModule {
     }
 
     public void setDrivePower(double power) {
-        if (isDisabled) {
-            return;
-        }
         driveMotor.set(power);
     }
 
     public void setSteerVelocity(double velocityRadsPerSecond) {
-        if (isDisabled) {
-            return;
-        }
         steerMotor.setVelocity(velocityRadsPerSecond);
     }
 
     public void setDriveVelocity(double velocityMetersPerSecond) {
-        if (isDisabled) {
-            return;
-        }
         driveMotor.setVelocity(velocityMetersPerSecond);
     }
 
     public void setSteerPosition(double positionRadians) {
-        if (isDisabled) {
-            return;
-        }
         steerMotor.setPositionVoltage(positionRadians);
         // steerMotor.setMotionMagic(positionRadians);
     }
@@ -101,9 +78,6 @@ public class SwerveModule {
     }
 
     public void setState(SwerveModuleState state) {
-        if (isDisabled) {
-            return;
-        }
         double wantedAngle = state.angle.getRadians();
         double diff = wantedAngle - steerMotor.getCurrentPosition();
         double vel = state.speedMetersPerSecond;
