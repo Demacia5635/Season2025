@@ -154,6 +154,8 @@ public class Arm extends SubsystemBase {
     stateChooser.addOption("L3", ARM_ANGLE_STATES.L3);
     stateChooser.addOption("L4", ARM_ANGLE_STATES.L4);
     stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);
+    stateChooser.addOption("Algae Bottom", ARM_ANGLE_STATES.ALGAE_BOTTOM);
+    stateChooser.addOption("Algae Top", ARM_ANGLE_STATES.ALGAE_TOP);
     stateChooser.addOption("Starting", ARM_ANGLE_STATES.STARTING);
     stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
     stateChooser.addOption("Idle", ARM_ANGLE_STATES.IDLE);
@@ -337,6 +339,10 @@ public class Arm extends SubsystemBase {
       targetAngle = GripperAngleMotorConstants.FWD_LIMIT;
     }
 
+    if (Math.abs(getArmVel()) >= 0.01) {
+      targetAngle -= getArmVel() * 0.4;
+    }
+
     // if (hasGripperAngleReachedTarget) {
     //   if (getGripperAngle() > targetAngle) {
     //     if (getGripperAngle() - targetAngle > MaxErrors.GRIPPER_ANGLE_UP_ERROR) {
@@ -393,6 +399,23 @@ public class Arm extends SubsystemBase {
     armAngleMotor.stopMotor();
     gripperAngleMotor.stopMotor();
   }
+
+  /**
+   * @return griper motor velocity
+   */
+  public double getGripperVel(){
+    return gripperAngleMotor.getCurrentVelocity();
+  }
+
+  /**
+   * @return arm motor velocity
+   */
+  
+  public double getArmVel(){
+    return armAngleMotor.getCurrentVelocity();
+  }
+
+  
 
   /**
    * get is the motors closed loop error are less than the max errors

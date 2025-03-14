@@ -29,6 +29,7 @@ import frc.robot.robot2.gripper.commands.GrabOrDrop;
 import frc.robot.robot2.gripper.subsystems.Gripper;
 import frc.robot.robot2.DemaciaRobotState;
 import frc.robot.robot2.arm.commands.ArmCommand;
+import frc.robot.robot2.arm.commands.ArmDrive;
 import frc.robot.robot2.arm.subsystems.Arm;
 import frc.robot.robot2.climb.command.JoyClimeb;
 import frc.robot.robot2.climb.command.OpenClimber;
@@ -117,9 +118,10 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
-    chassis.setDefaultCommand(new Drive(chassis, driverController));
-    elevator.setDefaultCommand(new ElevatorCommand(elevator));
+    //chassis.setDefaultCommand(new Drive(chassis, driverController));
+    //elevator.setDefaultCommand(new ElevatorCommand(elevator));
     arm.setDefaultCommand(new ArmCommand(arm));
+    //arm.setDefaultCommand(new ArmDrive(arm, driverController));
   }
 
 
@@ -129,7 +131,7 @@ public class RobotContainer implements Sendable{
     driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
     // driverController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
 
-    driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
+    //driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
     // driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
     // driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
     // driverController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
@@ -140,7 +142,7 @@ public class RobotContainer implements Sendable{
       gripper.stop();
       elevator.stop();
     }, chassis, arm, gripper, elevator).ignoringDisable(true));
-    driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
+    //driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
     // driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
     // driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
@@ -151,7 +153,7 @@ public class RobotContainer implements Sendable{
 
     // operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
     
-    operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
+    //operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
     // operatorController.rightButton().onTrue(new InstantCommand((robot2Strip::setCoralStation)).ignoringDisable(true));
     // operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
     // operatorController.leftButton().onTrue(new ArmCalibration(arm));
@@ -166,7 +168,7 @@ public class RobotContainer implements Sendable{
 
     // operatorController.povUp().onTrue(new InstantCommand(climb::stopClimb ,climb).ignoringDisable(true));
     // operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
-    operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
+    //operatorController.povDown().onTrue(new InstantCommand(chassis::stop, chassis).ignoringDisable(true));
     // operatorController.povLeft().onTrue(new InstantCommand(()-> {arm.stop(); arm.setState(ARM_ANGLE_STATES.IDLE);}, arm).ignoringDisable(true));
 
     // operatorController.rightBumper().onTrue(new InstantCommand(()-> arm.hadCalibrated()).ignoringDisable(true));

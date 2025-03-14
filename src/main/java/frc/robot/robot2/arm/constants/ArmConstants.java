@@ -11,6 +11,7 @@ import com.ctre.phoenix6.CANBus;
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.CANBuses;
+import frc.robot.robot2.arm.subsystems.Arm;
 import frc.robot.utils.Cancoder;
 import frc.robot.utils.CancoderConfig;
 import frc.robot.utils.TalonConfig;
@@ -53,27 +54,29 @@ public class ArmConstants {
         public static final String CANCODER_NAME = "Arm Cancoder";
 
 
-        /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
-        public static final double KP0 = 4;
-        public static final double KI0 = 0;
-        public static final double KD0 = 0;
+        /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg 
+        //Top
+        public static final double KP0 = 3;
+        public static final double KI0 = 0.1;
+        public static final double KD0 = 0.2;
         public static final double KS0 = 0.15683740301663393;
         public static final double KV0 = 1.4949232212224017;
         public static final double KA0 = 0.0029824872796242463;
         public static final double KG0 = 0;
-
-        public static final double KP1 = 4;
-        public static final double KI1 = 0;
-        public static final double KD1 = 0;
+        
+        //butom TODO:find right pid
+        public static final double KP1 = 3;
+        public static final double KI1 = 0.1;
+        public static final double KD1 = 0.2;
         public static final double KS1 = 0.15683740301663393;
         public static final double KV1 = 1.4949232212224017;
-        public static final double KA1 = 0.0029824872796242463;
-        public static final double KG1 = 0;
+        public static final double KA1 =0.0029824872796242463;
+        public static final double KG1 = -0.2;
 
         /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
-        public static final double MOTION_MAGIC_VELOCITY = 4;
+        public static final double MOTION_MAGIC_VELOCITY = 5;
         public static final double MOTION_MAGIC_ACCELERATION = 8;
-        public static final double MOTION_MAGIC_JERK = 12;
+        public static final double MOTION_MAGIC_JERK = 20;
 
         /* the channel of the absolute sensor */
         //public static final int ABSOLUTE_SENSOR_CHANNEL = 22;
@@ -99,7 +102,7 @@ public class ArmConstants {
         /* The config of the motors based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
                 .withPID(KP0, KI0, KD0, KS0, KV0, KA0, KG0)
-                .withPID1(KP0, KI0, KD0, KS0, KV0, KA0, KG0)
+                .withPID1(KP1, KI1, KD1, KS1, KV1, KA1, KG1)
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)
@@ -123,8 +126,8 @@ public class ArmConstants {
 
         /* the pid and ff of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
         public static final double KP = 4.5;
-        public static final double KI = 0;
-        public static final double KD = 0;
+        public static final double KI = 0.5;
+        public static final double KD = 0.1;
         public static final double KS = 0.1;
         public static final double KV = 1.0065855602048472;
         public static final double KA = 0.0025034812871556067;
@@ -152,7 +155,7 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double Angle_OFFSET = 4.0101840213501761192313216916398;
+        public static final double Angle_OFFSET = 2.6171682281515816 + Math.PI/2;
         public static final double BACK_LIMIT = -2.52685546875;
         public static final double FWD_LIMIT = -0.083740234375;
 
@@ -179,13 +182,13 @@ public class ArmConstants {
 
     /** all the constants angles */
     public static class ANGLES {
-        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.0, -0.8);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(1.0, -2.5);
-        public static final Pair<Double, Double> L4 = new Pair<Double,Double>(-1.0, -0.8);//TODO: find angles
-        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.54, 5.3);
-        public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(1.55, 4.4);
-        public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(2.2, 4.4);
-        public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(Math.toRadians(33.7), 3.64);
+        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.3, -1.0);
+        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(0.0, -1.0);
+        public static final Pair<Double, Double> L4 = new Pair<Double,Double>(-1.3, -1.0);//TODO: find angles
+        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(-1.8, -1.0);  
+        public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(-1.8, -1.0);
+        public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(-2.5, -1.0);
+        public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(-2.05, -1.0); //2.25 first
     }
 
     /** the arm angle states */
