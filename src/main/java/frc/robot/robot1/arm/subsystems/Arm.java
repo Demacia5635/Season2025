@@ -4,6 +4,7 @@
 
 package frc.robot.robot1.arm.subsystems;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -212,6 +213,30 @@ public class Arm extends SubsystemBase {
    */
   public ARM_ANGLE_STATES getState() {
     return state;
+  }
+
+  public int getHowMuchReady(int divisions) {
+    double max = state.armAngle;
+    double min = ARM_ANGLE_STATES.STARTING.armAngle;
+    double range = max - min;
+    double part = range / divisions;
+    double value = getState().armAngle;
+
+    if (range <= 0) {
+      return 0;
+    }
+
+    if (value <= max) {
+      return 1 / divisions;
+    }
+    
+    for (int i = 0; i < divisions; i++) {
+      if (value >= i*part + min && value < (i+1)*part + min) {
+        return (divisions - i) / divisions;
+      }
+    }
+
+    return 0;
   }
 
   /**

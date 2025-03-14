@@ -6,7 +6,6 @@ package frc.robot.robot1.arm.constants;
 
 import com.ctre.phoenix6.CANBus;
 
-import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.CANBuses;
 import frc.robot.utils.TalonConfig;
@@ -180,41 +179,27 @@ public class ArmConstants {
     //     }
     // }
 
-
-    public static class ANGLES {
-        public static final Pair<Double, Double> L1 = new Pair<Double, Double>(Math.toRadians(37.3), 4.6);
-        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.8, 4.4);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(2.56, 4.6);
-        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(1.6, 5.3);
-        public static final Pair<Double, Double> CLIMB = new Pair<Double, Double>(2.8 ,5.45);
-        public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(Math.toRadians(33.7), 3.64);
-        public static class Algae{
-            
-            public static final Pair<Double, Double> PRE_ALGAE_TOP = new Pair<Double, Double>(1.8, 3.7);
-            public static final Pair<Double, Double> AFTER_ALGAE_TOP = new Pair<Double, Double>(2.5, 4.6);
-
-            public static final Pair<Double, Double> PRE_ALGAE_BOTTOM = new Pair<Double, Double>(2.5, 2.5);
-            public static final Pair<Double, Double> AFTER_ALGAE_BOTTOM = new Pair<Double, Double>(1.6, 2.5);
-        }
-    }
-
-
     /** the arm angle states */
     public static enum ARM_ANGLE_STATES {
-        L1,
-        L2,
-        L3,
-        PRE_ALGAE_BOTTOM,
-        PRE_ALGAE_TOP,
-        AFTER_ALGAE_BOTTOM,
-        AFTER_ALGAE_TOP,
-        CORAL_STATION,
-        CLIMB,
-        TESTING,
-        STARTING,
-        IDLE;
+        L1(Math.toRadians(37.3), 4.6),
+        L2(1.8, 4.4),
+        L3(2.56, 4.6),
+        PRE_ALGAE_BOTTOM(2.5, 2.5),
+        PRE_ALGAE_TOP(1.8, 3.7),
+        AFTER_ALGAE_BOTTOM(1.6, 2.5),
+        AFTER_ALGAE_TOP(2.5, 4.6),
+        CORAL_STATION(1.6, 5.3),
+        CLIMB(2.8 ,5.45),
+        TESTING(0,0),
+        STARTING(Math.toRadians(33.7), 3.64),
+        IDLE(0,0);
 
-        ARM_ANGLE_STATES() {
+        public final double armAngle;
+        public final double gripperAngle;
+
+        ARM_ANGLE_STATES(double armAngle, double gripperAngle) {
+            this.armAngle = armAngle;
+            this.gripperAngle = gripperAngle;
         }
     }
 

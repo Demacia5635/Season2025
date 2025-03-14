@@ -35,12 +35,14 @@ public class DemaciaTrajectory {
     private RoundedPoint[] corners;
     private int segmentIndex;
     private Rotation2d wantedAngle;
-    private double distanceLeft;
+    public double distanceLeft;
     Pose2d chassisPose = new Pose2d();
     boolean isAlgae;
     private boolean isAuto;
     
     double accel;
+
+    double maxVel = TrajectoryConstants.PathsConstraints.MAX_VELOCITY;
 
     /*
      * 
@@ -170,7 +172,7 @@ public class DemaciaTrajectory {
         accel = getAccel(distanceFromLastPoint);
         
         double v = Math.sqrt((distanceFromLastPoint * 2) / accel) * accel; 
-        return Math.min(PathsConstraints.MAX_VELOCITY,
+        return Math.min(maxVel,
                 Double.isNaN(v) ? 0 : v);
     }
 

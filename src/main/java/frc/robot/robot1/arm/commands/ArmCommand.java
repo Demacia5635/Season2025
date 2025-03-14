@@ -4,21 +4,11 @@
 
 package frc.robot.robot1.arm.commands;
 
-import edu.wpi.first.math.Pair;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.util.sendable.SendableBuilder;
-import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.robot1.arm.constants.ArmConstants.ANGLES;
 import frc.robot.robot1.arm.subsystems.Arm;
-import frc.robot.robot1.arm.utils.ArmUtils;
-import frc.robot.utils.LogManager;
-import frc.robot.vision.utils.VisionConstants;
-
 import static frc.robot.robot1.arm.constants.ArmConstants.*;
-
-import java.util.function.Supplier;
 
 /**
  * the main command of the arm
@@ -41,7 +31,6 @@ public class ArmCommand extends Command {
    */
   private double testGripperAngle;
   /* the wanted angles */
-  private Pair<Double, Double> wantedAngle;
 
   /* current position later will be set from the chassis */
   // Supplier<Translation2d> currentPos;
@@ -117,72 +106,20 @@ public class ArmCommand extends Command {
       //   arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
       //   break;
 
-      case L1:
-        wantedAngle = ANGLES.L1;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case L2:
-        wantedAngle = ANGLES.L2;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case L3:
-        wantedAngle = ANGLES.L3;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case PRE_ALGAE_BOTTOM:
-        wantedAngle = ANGLES.Algae.PRE_ALGAE_BOTTOM;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case PRE_ALGAE_TOP:
-        wantedAngle = ANGLES.Algae.PRE_ALGAE_TOP;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      
-        case AFTER_ALGAE_TOP:
-        wantedAngle = ANGLES.Algae.AFTER_ALGAE_TOP;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-        case AFTER_ALGAE_BOTTOM:
-        wantedAngle = ANGLES.Algae.AFTER_ALGAE_BOTTOM;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-
-      case CORAL_STATION:
-        wantedAngle = ANGLES.CORAL_STATION;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case CLIMB:
-        wantedAngle = ANGLES.CLIMB;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
+      case L1, L2, L3, PRE_ALGAE_BOTTOM, PRE_ALGAE_TOP, AFTER_ALGAE_BOTTOM, AFTER_ALGAE_TOP, CORAL_STATION, CLIMB, STARTING:
+        arm.setPositionVoltage(arm.getState().armAngle, arm.getState().gripperAngle);
         break;
 
       case TESTING:
-        wantedAngle = new Pair<Double, Double>(testArmAngle, testGripperAngle);
         arm.setPositionVoltage(testArmAngle, testGripperAngle);
         break;
 
-      case STARTING:
-        wantedAngle = ANGLES.STARTING;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
       case IDLE:
-        wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
         break;
 
       default:
-        // LogManager.log("Arm state is illegal", AlertType.kError);
         arm.setState(ARM_ANGLE_STATES.IDLE);
-        wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
     }
 
