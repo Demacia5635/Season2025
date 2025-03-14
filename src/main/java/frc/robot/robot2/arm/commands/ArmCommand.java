@@ -12,6 +12,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.robot2.DemaciaRobotState;
 import frc.robot.robot2.arm.constants.ArmConstants.ANGLES;
 import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.arm.subsystems.Arm;
@@ -37,11 +39,6 @@ public class ArmCommand extends Command {
    * tables)
    */
   private double testGripperAngle;
-  /* the wanted angles */
-  private Pair<Double, Double> wantedAngle;
-
-  /* current position later will be set from the chassis */
-  Pose2d currentPose2d;
 
   /**
    * creates a new arm command
@@ -95,56 +92,21 @@ public class ArmCommand extends Command {
    */
   @Override
   public void execute() {
-    switch (arm.getState()) {
-      case L2:
-        wantedAngle = ANGLES.L2;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
+    switch (RobotContainer.robotState) {
+      case L1, L2, L3, L4, FEEDER, STARTING:
+        arm.setPositionVoltage(RobotContainer.robotState.armAngle, RobotContainer.robotState.gripperAngle);
         break;
-
-      case L3:
-        wantedAngle = ANGLES.L3;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case L4:
-        wantedAngle = ANGLES.L4;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case ALGAE_BOTTOM:
-        wantedAngle = ANGLES.ALGAE_BOTTOM;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case ALGAE_TOP:
-        wantedAngle = ANGLES.ALGAE_TOP;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case CORAL_STATION:
-        wantedAngle = ANGLES.CORAL_STATION;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
+      
       case TESTING:
-        wantedAngle = new Pair<Double, Double>(testArmAngle, testGripperAngle);
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
-        break;
-
-      case STARTING:
-        wantedAngle = ANGLES.STARTING;
-        arm.setPositionVoltage(wantedAngle.getFirst(), wantedAngle.getSecond());
+        arm.setPositionVoltage(testArmAngle, testGripperAngle);
         break;
 
       case IDLE:
-        wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
         arm.stop();
         break;
 
       default:
-        LogManager.log("Arm state is illegal", AlertType.kError);
-        arm.setState(ARM_ANGLE_STATES.IDLE);
-        wantedAngle = new Pair<Double, Double>(arm.getArmAngle(), arm.getGripperAngle());
+        RobotContainer.robotState = DemaciaRobotState.IDLE;
         arm.stop();
         break;
     }

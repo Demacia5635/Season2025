@@ -8,6 +8,8 @@ import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.robot2.DemaciaRobotState;
 import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
 import frc.robot.robot2.elevator.subsystem.Elevator;
 import frc.robot.utils.LogManager;
@@ -35,13 +37,14 @@ public class ElevatorCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    switch (elevator.getState()) {
+    switch (RobotContainer.robotState) {
       case L4:
       case L3:
       case L2:
-      case CORAL_STATION:
+      case L1:
+      case FEEDER:
       case STARTING:
-        elevator.setMagicMotion(elevator.getState().HEIGHT);
+        elevator.setMagicMotion(RobotContainer.robotState.elevatorHeight);
         break;
 
       case TESTING:
@@ -53,9 +56,8 @@ public class ElevatorCommand extends Command {
         break;  
 
       default:
-        LogManager.log("Illegul Elevator State", AlertType.kError);
         elevator.stop();
-        elevator.setState(ELEVATOR_STATE.IDLE);
+        RobotContainer.robotState = DemaciaRobotState.IDLE;
         break;
     }
   }

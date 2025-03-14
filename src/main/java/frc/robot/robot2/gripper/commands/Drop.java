@@ -72,7 +72,7 @@ public class Drop extends Command {
    */
   @Override
   public void execute() {
-    gripper.setPower(-DropConstants.DROP_POWER);
+    gripper.setPower(DropConstants.DROP_POWER);
     if (gripper.isCoralUpSensor() || gripper.isCoralDownSensor()) {
       hasSeenCoral = true;
     }

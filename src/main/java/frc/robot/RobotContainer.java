@@ -27,8 +27,12 @@ import frc.robot.robot2.elevator.commands.ElevatorCommand;
 import frc.robot.robot2.elevator.subsystem.Elevator;
 import frc.robot.robot2.gripper.commands.GrabOrDrop;
 import frc.robot.robot2.gripper.subsystems.Gripper;
+import frc.robot.robot2.DemaciaRobotState;
 import frc.robot.robot2.arm.commands.ArmCommand;
 import frc.robot.robot2.arm.subsystems.Arm;
+import frc.robot.robot2.climb.command.JoyClimeb;
+import frc.robot.robot2.climb.command.OpenClimber;
+import frc.robot.robot2.climb.subsystem.Climb;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
@@ -52,7 +56,7 @@ public class RobotContainer implements Sendable{
   public static Chassis chassis;  
   public static Arm arm;
   public static Gripper gripper;
-  // public static Climb climb;
+  public static Climb climb;
   public static Elevator elevator;
   // public static robot2Strip robot2Strip;
   
@@ -62,6 +66,8 @@ public class RobotContainer implements Sendable{
   public enum AutoMode {
     LEFT, MIDDLE, RIGHT
   }
+
+  public static DemaciaRobotState robotState = DemaciaRobotState.IDLE;
   
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -88,7 +94,6 @@ public class RobotContainer implements Sendable{
     autoChooser.addOption("middle", AutoMode.MIDDLE);
     autoChooser.addOption("right", AutoMode.RIGHT);
     SmartDashboard.putData("AutoChooser", autoChooser);
-
   }
 
   /**
@@ -101,7 +106,7 @@ public class RobotContainer implements Sendable{
     chassis = new Chassis();
     arm = new Arm();
     gripper = new Gripper();
-    // climb = new Climb();
+    climb = new Climb();
     elevator = new Elevator();
     // robot2Strip = new robot2Strip(chassis, arm, gripper);
   }
@@ -120,8 +125,8 @@ public class RobotContainer implements Sendable{
 
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
-    // driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
-    // driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
+    driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
+    driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
     // driverController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
 
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
@@ -169,7 +174,11 @@ public class RobotContainer implements Sendable{
     // operatorController.rightSetting().onTrue(new InstantCommand(robot2Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
     driverController.upButton().onTrue(new ElevatorCalibration(elevator));
-    driverController.leftButton().onTrue(new InstantCommand(()->elevator.setState(ELEVATOR_STATE.L4)));
+    driverController.povLeft().onTrue(new InstantCommand(()->robotState = DemaciaRobotState.L4));
+    driverController.povRight().onTrue(new InstantCommand(()->robotState = DemaciaRobotState.FEEDER));
+    driverController.povDown().onTrue(new InstantCommand(()->robotState = DemaciaRobotState.L3));
+    driverController.povUp().onTrue(new InstantCommand(()->robotState = DemaciaRobotState.STARTING));
+
   }
 
   public static boolean isRed() {
@@ -196,6 +205,7 @@ public class RobotContainer implements Sendable{
   public void initSendable(SendableBuilder builder) {
     builder.addBooleanProperty("isRed", RobotContainer::isRed, RobotContainer::setIsRed);
     builder.addBooleanProperty("isComp", RobotContainer::isComp, RobotContainer::setIsComp);
+    builder.addStringProperty("State", ()-> robotState.name(), null);
   }
 
   /**
