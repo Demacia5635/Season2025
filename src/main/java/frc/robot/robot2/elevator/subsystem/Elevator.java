@@ -57,6 +57,7 @@ public class Elevator extends SubsystemBase {
   private void addNT() {
     LogManager.addEntry(getName() + "/Top Limit Switch", () -> hasReachedTop());
     LogManager.addEntry(getName() + "/Bottom Limit Switch", () -> hasReachedBottom());
+    LogManager.addEntry(getName() + "/Height", this::getHeight);
 
     SmartDashboard.putData(getName() + "/Motor", motor);
 
@@ -76,8 +77,6 @@ public class Elevator extends SubsystemBase {
 
     SmartDashboard.putData(getName() + "/Motor" + "/Set Brake", new InstantCommand(()-> motor.setNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/Motor" + "/Set Coast", new InstantCommand(()-> motor.setNeutralMode(false)).ignoringDisable(true));
-
-    SmartDashboard.putData("set voltage", new RunCommand(() -> motor.setVoltage(voltest)));
 
     SmartDashboard.putData(this);
   }

@@ -41,7 +41,7 @@ public class ArmConstants {
      */
     public static class ArmAngleMotorConstants {
 
-        public static final double Angle_OFFSET = -0.2101536989692356288937200664811; 
+        public static final double Angle_OFFSET = -2.9728577121654854436248148071636; 
 
         /* all the main configs of the motor */
         public static final int ID = 20;
@@ -93,8 +93,8 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         //public static final double BASE_ANGLE = 0; //TODO:
-        public static final double BACK_LIMIT = -3*Math.PI/4;
-        public static final double FWD_LIMIT = 3*Math.PI/4;
+        public static final double BACK_LIMIT = -2.569414874465336;
+        public static final double FWD_LIMIT = 2.569414874465336;
 
         /* The config of the motors based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
@@ -136,7 +136,7 @@ public class ArmConstants {
         public static final double MOTION_MAGIC_JERK = 10;
 
         /* the channel of the absolute sensor */
-        public static final int ABSOLUTE_SENSOR_CHANNEL = 7;
+        public static final int ABSOLUTE_SENSOR_CHANNEL = 2;
 
         /* all the basic configs of the motor */
         public static final boolean IS_BRAKE = true;

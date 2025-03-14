@@ -140,13 +140,13 @@ public class Gripper extends SubsystemBase {
 
   public boolean isCoralUpSensor() {
     // return true;
-    return getUpSensor() < 0.10;
+    return getUpSensor() < SensorConstants.CORAL_IN_UP_SENSOR;
     // return getUpFrontSensor() < SensorConstants.CORAL_IN_SENSOR 
     // || getUpBackSensor() < SensorConstants.CORAL_IN_SENSOR;
   }
 
   public boolean isCoralDownSensor() {
-    return getDownSensor() < SensorConstants.CORAL_IN_SENSOR;
+    return getDownSensor() < SensorConstants.CORAL_IN_DOWN_SENSOR;
   }
 
   /**
