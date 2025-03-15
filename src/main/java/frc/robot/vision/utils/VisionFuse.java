@@ -4,22 +4,27 @@
 
 package frc.robot.vision.utils;
 
+import static frc.robot.vision.utils.VisionConstants.TAG_ANGLE;
+
+import java.util.List;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.trajectory.Trajectory;
+import edu.wpi.first.math.trajectory.TrajectoryConfig;
+import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import frc.robot.vision.subsystem.Tag;
 
 /** Add your docs here. */
 public class VisionFuse {
 
-    private Tag[] tags = new Tag[4];
+    private Tag[] tags = new Tag[2];
 
-    public VisionFuse(Tag reefTag, Tag fiderTag, Tag bargeTag, Tag backTag) {
+    public VisionFuse(Tag reefTag, Tag fiderTag) {
 
         this.tags[0] = reefTag;
         this.tags[1] = fiderTag;
-        this.tags[2] = bargeTag;
-        this.tags[3] = backTag;
 
     }
 
@@ -52,7 +57,8 @@ public class VisionFuse {
     }
 
     public Rotation2d getRotationEstimation() {
-        return Rotation2d.fromDegrees(tags[2].getAngle());
+        return null;
+        // return Rotation2d.fromDegrees(tags[2].getAngle());
     }
 
     public double getVisionTimestamp() {
@@ -88,4 +94,19 @@ public class VisionFuse {
     public double getVisionConfidence() {
         return Math.max(getColectedConfidence(), 1);
     }
+
+    public Rotation2d get2dAngle() {
+        // Ensure that 'tags' is not empty or has a valid index before accessing
+        if (tags != null && tags.length > 3 && tags[0].getCameraToTag() != null
+                && tags[3].getCameraToTag() != null
+                && tags[0].getTagId() == tags[3].getTagId()) {
+            return tags[0].getCameraToTag().minus(tags[3].getCameraToTag())
+                    .getAngle().rotateBy(Rotation2d.fromDegrees(90))
+                    .plus(TAG_ANGLE[tags[3].getTagId()]);
+        } else {
+            return null; // If the tags array is not correctly initialized, return null.
+        }
+    }
+    
+    
 }

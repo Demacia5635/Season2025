@@ -16,27 +16,33 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
 import frc.robot.chassis.commands.Drive;
+import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
+import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
+import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
 import frc.robot.robot2.elevator.commands.ElevatorCalibration;
 import frc.robot.robot2.elevator.commands.ElevatorCommand;
 import frc.robot.robot2.elevator.subsystem.Elevator;
-import frc.robot.robot2.gripper.commands.GrabOrDrop;
 import frc.robot.robot2.gripper.subsystems.Gripper;
 import frc.robot.robot2.DemaciaRobotState;
 import frc.robot.robot2.arm.commands.ArmCommand;
-import frc.robot.robot2.arm.commands.ArmDrive;
 import frc.robot.robot2.arm.subsystems.Arm;
+import frc.robot.robot2.climb.command.ClimbUntilSensor;
 import frc.robot.robot2.climb.command.JoyClimeb;
 import frc.robot.robot2.climb.command.OpenClimber;
 import frc.robot.robot2.climb.subsystem.Climb;
 import frc.robot.utils.CommandController;
+import frc.robot.utils.Elastic;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
+import frc.robot.utils.Elastic.Notification;
+import frc.robot.utils.Elastic.Notification.NotificationLevel;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -47,9 +53,9 @@ import frc.robot.utils.CommandController.ControllerType;
 public class RobotContainer implements Sendable{
 
   public static RobotContainer robotContainer;
-  // public static LedManager ledManager;
   public static CommandController driverController;
   public static CommandController operatorController;
+  public static CommandController backUpController;
   public static boolean isRed;
   public static boolean isComp = DriverStation.isFMSAttached();
   private static boolean hasRemovedFromLog = false;
@@ -61,12 +67,7 @@ public class RobotContainer implements Sendable{
   public static Elevator elevator;
   // public static robot2Strip robot2Strip;
   
-  // public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
-
-  public final SendableChooser<AutoMode> autoChooser;
-  public enum AutoMode {
-    LEFT, MIDDLE, RIGHT
-  }
+  public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
 
   public static DemaciaRobotState robotState = DemaciaRobotState.IDLE;
   
@@ -75,14 +76,17 @@ public class RobotContainer implements Sendable{
     // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
     robotContainer = this;
     new LogManager();
-    // ledManager = new LedManager();
     driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
+    backUpController = new CommandController(OperatorConstants.BACKUP_CONTROLLER_POERT, ControllerType.kXbox);
+
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
     LogManager.addEntry("Timer", DriverStation::getMatchTime);
-    // SmartDashboard.putData("Reef", ReefWidget.getInstance());  
+    SmartDashboard.putData("Reef", ReefWidget.getInstance());  
     SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
+    // SmartDashboard.putData("Offsets/Practice", new AllOffsets());
+    Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Start Robot Code", ""));
     // SmartDashboard.putData("pracice", new AllOffsets());
 
     robotState = DemaciaRobotState.IDLE;
@@ -99,11 +103,7 @@ public class RobotContainer implements Sendable{
     configureDefaultCommands();
     configureBindings();
 
-    autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("left", AutoMode.LEFT);
-    autoChooser.addOption("middle", AutoMode.MIDDLE);
-    autoChooser.addOption("right", AutoMode.RIGHT);
-    SmartDashboard.putData("AutoChooser", autoChooser);
+    currentFeederSide = FEEDER_SIDE.MIDDLE;
   }
 
   /**
@@ -127,12 +127,13 @@ public class RobotContainer implements Sendable{
    * This function is called at the robot container constractor
    */
   private void configureDefaultCommands() {
-    //chassis.setDefaultCommand(new Drive(chassis, driverController));
-    //elevator.setDefaultCommand(new ElevatorCommand(elevator));
+    chassis.setDefaultCommand(new Drive(chassis, driverController));
+    elevator.setDefaultCommand(new ElevatorCommand(elevator));
     arm.setDefaultCommand(new ArmCommand(arm));
     //arm.setDefaultCommand(new ArmDrive(arm, driverController));
   }
 
+  public static FEEDER_SIDE currentFeederSide;
 
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
@@ -154,8 +155,9 @@ public class RobotContainer implements Sendable{
     //driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
     // driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
+    // driverController.povRight().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.FAR));
     // driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
-    // driverController.povLeft().onTrue(new InstantCommand(()-> arm.setState(LEVEL.ALGAE_TOP)).ignoringDisable(true));       
+    // driverController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
 
     // driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
     // driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
@@ -167,13 +169,13 @@ public class RobotContainer implements Sendable{
     // operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
     // operatorController.leftButton().onTrue(new ArmCalibration(arm));
     
-  // operatorController.leftBumper().onTrue(new InstantCommand(()-> {
-    //   chassis.stop();
-    //   arm.stop();
-    //   gripper.stop();
-    //   arm.setState(ARM_ANGLE_STATES.IDLE);
-    //   climb.stopClimb();
-    // }, chassis, arm, gripper, climb).ignoringDisable(true));
+    operatorController.rightBumper().onTrue(new ClimbUntilSensor(climb));
+    operatorController.leftBumper().onTrue(new InstantCommand(()-> {
+      chassis.stop();
+      arm.stop();
+      gripper.stop();
+      climb.stopClimb();
+    }, chassis, arm, gripper, climb).ignoringDisable(true));
 
     // operatorController.povUp().onTrue(new InstantCommand(climb::stopClimb ,climb).ignoringDisable(true));
     // operatorController.povRight().onTrue(new InstantCommand(gripper::stop, gripper).ignoringDisable(true));
@@ -254,20 +256,6 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    return null;
-    // return (new ArmCalibration(arm).andThen(new Test().alongWith(new ArmCommand(arm))));
-    // switch (autoChooser.getSelected()) {
-    //   case LEFT:
-    //     return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
-
-    //   case MIDDLE:
-    //     return new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
-      
-    //   case RIGHT: 
-    //     return new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
-    
-    //   default:
-    //     return new ArmCalibration(arm);
-    // }
+    return new RunCommand(()-> chassis.setSteerPositions(0), chassis);
   }
 }

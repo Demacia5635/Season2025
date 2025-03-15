@@ -151,18 +151,18 @@ public class TalonMotor extends TalonFX {
   }
 
   private void addLog() {    
-    LogManager.addEntry(name + "/Position", positionSignal, 1);
-    LogManager.addEntry(name + "/Velocity", velocitySignal, 1);
-    LogManager.addEntry(name + "/Acceleration", accelerationSignal, 1);
-    LogManager.addEntry(name + "/Voltage", voltageSignal, 1);
-    LogManager.addEntry(name + "/Current", getStatorCurrent(), 1);
-    LogManager.addEntry(name + "/CloseLoopError", closedLoopErrorSignal, 1);
+    LogManager.addEntry(name + "/Position", positionSignal, 2);
+    LogManager.addEntry(name + "/Velocity", velocitySignal, 2);
+    LogManager.addEntry(name + "/Acceleration", accelerationSignal, 2);
+    LogManager.addEntry(name + "/Voltage", voltageSignal, 2);
+    LogManager.addEntry(name + "/Current", getStatorCurrent(), 2);
+    LogManager.addEntry(name + "/CloseLoopError", closedLoopErrorSignal, 2);
     LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput(), 1);
     LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput(), 1);
     LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput(), 1);
     LogManager.addEntry(name + "/CloseLoopD", getClosedLoopDerivativeOutput(), 1);
     LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward(), 1);
-    LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal, 1);
+    LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal, 2);
 
     dutyCycleEntry = LogManager.getEntry(name + "/SetDutyCycle");
     velocityEntry = LogManager.getEntry(name + "/SetVelocity");

@@ -38,12 +38,7 @@ public class ElevatorCommand extends Command {
   @Override
   public void execute() {
     switch (RobotContainer.robotState) {
-      case L4:
-      case L3:
-      case L2:
-      case L1:
-      case FEEDER:
-      case STARTING:
+      case L4, L3, L2, L1, FEEDER, STARTING:
         elevator.setMagicMotion(RobotContainer.robotState.elevatorHeight);
         break;
 

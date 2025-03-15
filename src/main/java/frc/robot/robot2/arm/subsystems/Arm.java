@@ -5,6 +5,7 @@
 package frc.robot.robot2.arm.subsystems;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -185,6 +186,33 @@ public class Arm extends SubsystemBase {
     this.state = state;
   }
 
+  // public void setState(LEVEL level) {
+  //   switch (level) {
+  //     case L2:
+  //       setState(ARM_ANGLE_STATES.L2);
+  //       break;
+      
+  //     case L3:
+  //       setState(ARM_ANGLE_STATES.L3);
+  //       break;
+      
+  //     case ALGAE_BOTTOM:
+  //       setState(ARM_ANGLE_STATES.ALGAE_BOTTOM);
+  //       break;
+      
+  //     case ALGAE_TOP:
+  //       setState(ARM_ANGLE_STATES.ALGAE_TOP);
+  //       break;
+      
+  //     case FEEDER:
+  //       setState(ARM_ANGLE_STATES.CORAL_STATION);
+  //       break;
+    
+  //     default:
+  //       break;
+  //   }
+  // }
+
   /**
    * get the current state of the arm
    * 
@@ -193,6 +221,30 @@ public class Arm extends SubsystemBase {
   public ARM_ANGLE_STATES getState() {
     return state;
   }
+
+  // public int getHowMuchReady(int divisions) {
+  //   double max = state.armAngle;
+  //   double min = ARM_ANGLE_STATES.STARTING.armAngle;
+  //   double range = max - min;
+  //   double part = range / divisions;
+  //   double value = getState().armAngle;
+
+  //   if (range <= 0) {
+  //     return 0;
+  //   }
+
+  //   if (value <= max) {
+  //     return 1 / divisions;
+  //   }
+    
+  //   for (int i = 0; i < divisions; i++) {
+  //     if (value >= i*part + min && value < (i+1)*part + min) {
+  //       return (divisions - i) / divisions;
+  //     }
+  //   }
+
+  //   return 0;
+  // }
 
   /**
    * set the arm angle motor neutral mode
@@ -258,7 +310,20 @@ public class Arm extends SubsystemBase {
       LogManager.log("arm target Angle is NaN", AlertType.kError);
       return;
     }
-    
+
+    if (lastArmAngleTarget != targetAngle) {
+      hasArmAngleReachedTarget = false;
+      lastArmAngleTarget = targetAngle;
+    }
+
+    if (targetAngle > getArmAngle()) {
+      targetAngle += 2.5*MaxErrors.ARM_ANGLE_DOWN_ERROR;
+    }
+
+    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
+      hasArmAngleReachedTarget = true;
+    }
+
     if (targetAngle < ArmAngleMotorConstants.BACK_LIMIT) {
       targetAngle = ArmAngleMotorConstants.BACK_LIMIT;
     }
@@ -317,9 +382,9 @@ public class Arm extends SubsystemBase {
     }
 
     if (Math.abs(armAngleMotor.getCurrentVelocity()) >= 0.3) {
-      targetAngle += armAngleMotor.getCurrentVelocity() * Math.toRadians(4);
+      targetAngle += armAngleMotor.getCurrentVelocity() * Math.toRadians(2);
       if (targetAngle >= GripperAngleMotorConstants.FWD_LIMIT || targetAngle <= GripperAngleMotorConstants.BACK_LIMIT) {
-        targetAngle -= armAngleMotor.getCurrentVelocity() * -Math.toRadians(8);
+        targetAngle -= armAngleMotor.getCurrentVelocity() * -Math.toRadians(4);
       }
     }
 

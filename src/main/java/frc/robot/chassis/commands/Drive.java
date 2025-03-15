@@ -5,6 +5,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.chassis.utils.ChassisConstants;
+import frc.robot.robot2.climb.command.OpenClimber;
+import frc.robot.RobotContainer;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.Utils;
@@ -16,11 +18,14 @@ public class Drive extends Command {
     private boolean isRed;
     private ChassisSpeeds speeds;
     private static boolean precisionMode;
+    private boolean hasOpenedClimber;
 
     public Drive(Chassis chassis, CommandController controller) {
         this.chassis = chassis;
         this.controller = controller;
         Drive.precisionMode = false;
+        this.hasOpenedClimber = false;
+        
 
         addRequirements(chassis);
     }
@@ -52,8 +57,14 @@ public class Drive extends Command {
         }
         
         speeds = new ChassisSpeeds(velX, velY,velRot);
+
+        if(!hasOpenedClimber) hasOpenedClimber = RobotContainer.climb.getCurrentCommand() instanceof OpenClimber;
  
         if(precisionMode) chassis.setVelocities(speeds);
-        else chassis.setVelocitiesWithAccel(speeds);
+        else if (hasOpenedClimber && Math.abs(rot) < 0.1 && precisionMode){
+            chassis.setVelocitiesRotateToAngleOld(speeds, isRed ? Rotation2d.kZero : Rotation2d.k180deg);
+        }
+        else {
+            chassis.setVelocitiesWithAccel(speeds);}
     }
 }
