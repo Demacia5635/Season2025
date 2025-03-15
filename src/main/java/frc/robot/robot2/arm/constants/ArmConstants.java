@@ -58,8 +58,8 @@ public class ArmConstants {
         //Top
         public static final double KP0 = 3;
         public static final double KI0 = 0.1;
-        public static final double KD0 = 0.2;
-        public static final double KS0 = 0.15683740301663393;
+        public static final double KD0 = 0.05;
+        public static final double KS0 = 0.1;
         public static final double KV0 = 1.4949232212224017;
         public static final double KA0 = 0.0029824872796242463;
         public static final double KG0 = 0;
@@ -67,11 +67,11 @@ public class ArmConstants {
         //butom TODO:find right pid
         public static final double KP1 = 3;
         public static final double KI1 = 0.1;
-        public static final double KD1 = 0.2;
-        public static final double KS1 = 0.15683740301663393;
+        public static final double KD1 = 0.05;
+        public static final double KS1 = 0.1;
         public static final double KV1 = 1.4949232212224017;
-        public static final double KA1 =0.0029824872796242463;
-        public static final double KG1 = -0.2;
+        public static final double KA1 = 0.0029824872796242463;
+        public static final double KG1 = 0.2;
 
         /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
         public static final double MOTION_MAGIC_VELOCITY = 5;

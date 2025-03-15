@@ -295,9 +295,12 @@ public class Arm extends SubsystemBase {
     }
 
     if (Math.abs(armAngleMotor.getCurrentVelocity()) >= 0.3) {
-      targetAngle += armAngleMotor.getCurrentVelocity() * Math.toRadians(2);
-      if (targetAngle >= GripperAngleMotorConstants.FWD_LIMIT || targetAngle <= GripperAngleMotorConstants.BACK_LIMIT) {
-        targetAngle -= armAngleMotor.getCurrentVelocity() * -Math.toRadians(4);
+      if (targetAngle >= GripperAngleMotorConstants.FWD_LIMIT - Math.toRadians(4) * armAngleMotor.getCurrentVelocity()) {
+        targetAngle = GripperAngleMotorConstants.FWD_LIMIT - Math.toRadians(4) * armAngleMotor.getCurrentVelocity();
+      } else if (targetAngle <= GripperAngleMotorConstants.BACK_LIMIT + Math.toRadians(4) * armAngleMotor.getCurrentVelocity()) {
+        targetAngle = GripperAngleMotorConstants.BACK_LIMIT + Math.toRadians(4) * armAngleMotor.getCurrentVelocity();
+      } else {
+        targetAngle += armAngleMotor.getCurrentVelocity() * Math.toRadians(2);
       }
     }
 
