@@ -123,17 +123,17 @@ public class FieldTarget {
         }
         
         public PathPoint getApproachPoint(Translation2d offset) {
-            return getElement(getId(), offset);
+            return getElement(getId(), offset, this == FEEDER_RIGHT || this == FEEDER_LEFT ? Rotation2d.kCCW_Pi_2 : Rotation2d.kCW_Pi_2);
         }
         
     }
 
     public Translation2d getPole(){
-        return getElement(position.getId(), new Translation2d(0.6, 0).plus(elementPosition == ELEMENT_POSITION.CORAL_LEFT ? realLeftReefOffset : realRightReefOffset)).getTranslation();
+        return getElement(position.getId(), new Translation2d(0.6, 0).plus(elementPosition == ELEMENT_POSITION.CORAL_LEFT ? realLeftReefOffset : realRightReefOffset), Rotation2d.kPi).getTranslation();
     }
 
     public PathPoint getReefAvoidPoint(){
-        return getElement(position.getId(), avoidReefOffset);
+        return getElement(position.getId(), avoidReefOffset, Rotation2d.kPi);
     }
 
     public PathPoint getApproachingPoint(){
@@ -183,11 +183,11 @@ public class FieldTarget {
 
     }
     public PathPoint getFinishPoint() {
-        return getElement(position.getId(), getCalcOffset());
+        return getElement(position.getId(), getCalcOffset(), level == LEVEL.FEEDER ? Rotation2d.kCCW_Pi_2 : Rotation2d.kCW_Pi_2);
     }
 
     public PathPoint getReefPole(){
-        return getElement(position.getId(), (elementPosition == ELEMENT_POSITION.CORAL_LEFT) ? realLeftReefOffset : realRightReefOffset);
+        return getElement(position.getId(), (elementPosition == ELEMENT_POSITION.CORAL_LEFT) ? realLeftReefOffset : realRightReefOffset, Rotation2d.kPi);
     }
 
     public Translation2d getCalcOffset() {
@@ -231,12 +231,12 @@ public class FieldTarget {
     }
 
     public static PathPoint getElement(int elementTag){
-        return getElement(elementTag, new Translation2d());
+        return getElement(elementTag, Translation2d.kZero, Rotation2d.kZero);
     }
-    public static PathPoint getElement(int elementTag, Translation2d offset){
+    public static PathPoint getElement(int elementTag, Translation2d offset, Rotation2d angle){
         Translation2d originToTag = O_TO_TAG[elementTag];
         offset = offset.rotateBy(TAG_ANGLE[elementTag]);
-        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(Rotation2d.kPi),0);
+        return new PathPoint(originToTag.plus(offset), TAG_ANGLE[elementTag].plus(angle),0);
     }
    
     @Override

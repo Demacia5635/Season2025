@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
+import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
@@ -142,8 +143,8 @@ public class RobotContainer implements Sendable{
     // driverController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
 
     //driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
-    // driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
-    // driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
+    driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
+    driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
     // driverController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
     
     driverController.leftBumper().onTrue(new InstantCommand(()-> {

@@ -1,5 +1,7 @@
 package frc.robot.robot2;
 
+import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
+
 public enum DemaciaRobotState {
     L1(-2.55, -1.8, 0),
     L2(1.8, -0.5, 0),
@@ -18,5 +20,24 @@ public enum DemaciaRobotState {
         this.armAngle = armAngle;
         this.gripperAngle = gripperAngle;
         this.elevatorHeight = elevatorHeight;
+    }
+
+    public static DemaciaRobotState getStateBasedOnLevel(LEVEL level) {
+        switch (level) {
+            case L1:
+                return L1;
+            
+            case L2:
+                return L2;
+            
+            case L3:
+                return L3;
+            
+            case FEEDER:
+                return FEEDER;
+        
+            default:
+                return IDLE;
+        }
     }
 }

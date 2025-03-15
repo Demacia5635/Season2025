@@ -32,6 +32,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.robot2.DemaciaRobotState;
 import frc.robot.robot2.arm.constants.ArmConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.gripper.commands.Drop;
@@ -116,8 +117,8 @@ public class FollowTrajectory extends Command {
 
     } else
       this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), false);
-    // if (this.target != null)
-    //   RobotContainer.arm.setState(this.target.level);
+    if (this.target != null)
+      RobotContainer.robotState = DemaciaRobotState.getStateBasedOnLevel(target.level);
   }
 
   @Override
