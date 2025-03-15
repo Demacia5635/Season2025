@@ -16,7 +16,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.robot2.arm.constants.ArmConstants;
-import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.arm.constants.ArmConstants.ArmAngleMotorConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleMotorConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.MaxErrors;
@@ -68,14 +67,6 @@ public class Arm extends SubsystemBase {
   private final DutyCycleEncoder gripperAngleAbsoluteSensor;
 
 
-
-  /**
-   * The state of the arm used in the
-   * {@link frc.robot.robot2.arm.commands.ArmCommand} to tell the arm what angle
-   * to go
-   */
-  public ARM_ANGLE_STATES state;
-
   private boolean hasArmAngleReachedTarget;
   private double lastArmAngleTarget;
   private double lastGripperAngleTarget;
@@ -104,13 +95,6 @@ public class Arm extends SubsystemBase {
     /* configure the cancoder */
     armCancoder = new Cancoder(ArmAngleMotorConstants.CANCODER_CONFIG);
 
-
-
-
-
-    /* make the default state to idle */
-    state = ARM_ANGLE_STATES.IDLE;
-
     hasArmAngleReachedTarget = false;
     lastArmAngleTarget = Double.MAX_VALUE;
 
@@ -120,8 +104,6 @@ public class Arm extends SubsystemBase {
     /* add to network tables everything that needed */
     addNT();
   }
-
- 
 
   /**
    * add to network tables all the variables
@@ -149,77 +131,8 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME + "/gripper angle set coast",
         new InstantCommand(() -> gripperAngleNeutralMode(false)).ignoringDisable(true));
 
-    /* add state chooser through the netwrok tables */
-    SendableChooser<ARM_ANGLE_STATES> stateChooser = new SendableChooser<>();
-    stateChooser.addOption("L2", ARM_ANGLE_STATES.L2);
-    stateChooser.addOption("L3", ARM_ANGLE_STATES.L3);
-    stateChooser.addOption("L4", ARM_ANGLE_STATES.L4);
-    stateChooser.addOption("Coral Station", ARM_ANGLE_STATES.CORAL_STATION);
-    stateChooser.addOption("Algae Bottom", ARM_ANGLE_STATES.ALGAE_BOTTOM);
-    stateChooser.addOption("Algae Top", ARM_ANGLE_STATES.ALGAE_TOP);
-    stateChooser.addOption("Starting", ARM_ANGLE_STATES.STARTING);
-    stateChooser.addOption("Testing", ARM_ANGLE_STATES.TESTING);
-    stateChooser.addOption("Idle", ARM_ANGLE_STATES.IDLE);
-    stateChooser.onChange(state -> this.state = state);
-    SmartDashboard.putData(getName() + "/Arm State Chooser", stateChooser);
-
-    /*added pid motors to elastic */
-    armAngleMotor.configPidFf(0);
-    armAngleMotor.configPidFf(1);
-    gripperAngleMotor.configPidFf(0);
-
-    armAngleMotor.configMotionMagic();
-    gripperAngleMotor.configMotionMagic();
-
     /* add the arm itself to the network tables */
     SmartDashboard.putData(this);
-  }
-
-
-
-  /**
-   * set the state of the arm
-   * 
-   * @param state the wanted state
-   */
-  public void setState(ARM_ANGLE_STATES state) {
-    this.state = state;
-  }
-
-  // public void setState(LEVEL level) {
-  //   switch (level) {
-  //     case L2:
-  //       setState(ARM_ANGLE_STATES.L2);
-  //       break;
-      
-  //     case L3:
-  //       setState(ARM_ANGLE_STATES.L3);
-  //       break;
-      
-  //     case ALGAE_BOTTOM:
-  //       setState(ARM_ANGLE_STATES.ALGAE_BOTTOM);
-  //       break;
-      
-  //     case ALGAE_TOP:
-  //       setState(ARM_ANGLE_STATES.ALGAE_TOP);
-  //       break;
-      
-  //     case FEEDER:
-  //       setState(ARM_ANGLE_STATES.CORAL_STATION);
-  //       break;
-    
-  //     default:
-  //       break;
-  //   }
-  // }
-
-  /**
-   * get the current state of the arm
-   * 
-   * @return the current state
-   */
-  public ARM_ANGLE_STATES getState() {
-    return state;
   }
 
   // public int getHowMuchReady(int divisions) {
@@ -488,7 +401,7 @@ public class Arm extends SubsystemBase {
    * @return is the motors at the right angles
    */
   public boolean isReady() {
-    return hasArmAngleReachedTarget && hasGripperAngleReachedTarget;
+    return hasArmAngleReachedTarget && Math.abs(gripperAngleMotor.getCurrentClosedLoopError()) < 0.03;
   }
 
   /**
@@ -532,8 +445,6 @@ public class Arm extends SubsystemBase {
   @Override
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
-    
-    builder.addStringProperty("state", () -> getState().name(), null);
   }
 
   /**

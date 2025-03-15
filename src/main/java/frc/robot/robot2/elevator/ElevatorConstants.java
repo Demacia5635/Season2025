@@ -64,20 +64,4 @@ KG= 0.22614986964940442
         public static final double TOP_HEIGHT = 0.625;
         public static final double BOTTOM_HEIGHT = 0;
     }
-
-    public enum ELEVATOR_STATE {
-        L4(0.63),
-        L3(0.5),
-        L2(0.2),
-        CORAL_STATION(0.1),
-        STARTING(0),
-        TESTING(0.3),
-        IDLE(0);
-
-        public final double HEIGHT;
-
-        private ELEVATOR_STATE(double height) {
-            this.HEIGHT = height;
-        }
-    }
 }

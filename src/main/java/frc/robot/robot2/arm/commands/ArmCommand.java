@@ -11,8 +11,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.robot2.DemaciaRobotState;
-import frc.robot.robot2.arm.constants.ArmConstants.ANGLES;
-import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.arm.subsystems.Arm;
 import frc.robot.utils.LogManager;
 
@@ -107,7 +105,7 @@ public class ArmCommand extends Command {
         break;
 
       default:
-        arm.setState(ARM_ANGLE_STATES.IDLE);
+        RobotContainer.robotState = DemaciaRobotState.IDLE;
         arm.stop();
         break;
     }

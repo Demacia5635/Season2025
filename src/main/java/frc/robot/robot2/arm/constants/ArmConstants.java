@@ -179,46 +179,4 @@ public class ArmConstants {
         public static final double GRIPPER_ANGLE_UP_ERROR = 0.017;
         public static final double GRIPPER_ANGLE_DOWN_ERROR = 0.03;
     }
-
-    /** all the constants angles */
-    public static class ANGLES {
-        public static final Pair<Double, Double> L2 = new Pair<Double, Double>(1.3, -1.0);
-        public static final Pair<Double, Double> L3 = new Pair<Double, Double>(0.0, -1.0);
-        public static final Pair<Double, Double> L4 = new Pair<Double,Double>(-1.3, -1.0);//TODO: find angles
-        public static final Pair<Double, Double> CORAL_STATION = new Pair<Double, Double>(-1.8, -1.0);  
-        public static final Pair<Double, Double> ALGAE_BOTTOM = new Pair<Double, Double>(-1.8, -1.0);
-        public static final Pair<Double, Double> ALGAE_TOP = new Pair<Double, Double>(-2.5, -1.0);
-        public static final Pair<Double, Double> STARTING = new Pair<Double, Double>(-2.05, -1.0); //2.25 first
-    }
-
-    /** the arm angle states */
-    public static enum ARM_ANGLE_STATES {
-        L2,
-        L3,
-        L4,
-        ALGAE_BOTTOM,
-        ALGAE_TOP,
-        CORAL_STATION,
-        TESTING,
-        STARTING,
-        IDLE;
-
-        ARM_ANGLE_STATES() {
-        }
-    }
-
-    /**
-     * the field objects used for calculating what angles the arm needs to be even
-     * if its not perfectly in the field objects
-     * TODO: needs to remove this class after class of the field is created
-     */
-    public static class FieldConstants {
-        public static final Translation2d REEF = new Translation2d();
-        public static final Translation2d CORAL_STATION = new Translation2d();
-
-        public static final double L2_HEIGHT = 0.81;
-        public static final double L3_HEIGHT = 1.02;
-        public static final double L4_HEIGHT = 1.82866;//TODO:find hight
-        public static final double CORAL_STATION_HEIGHT = 0.95098;
-    }
 }

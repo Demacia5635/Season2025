@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.robot2.DemaciaRobotState;
-import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
 import frc.robot.robot2.elevator.subsystem.Elevator;
 import frc.robot.utils.LogManager;
 

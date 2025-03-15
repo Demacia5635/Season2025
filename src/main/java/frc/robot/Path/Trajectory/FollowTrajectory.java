@@ -34,7 +34,6 @@ import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot2.DemaciaRobotState;
 import frc.robot.robot2.arm.constants.ArmConstants;
-import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.gripper.commands.Drop;
 import frc.robot.robot2.gripper.commands.Grab;
 import frc.robot.utils.LogManager;
@@ -97,7 +96,7 @@ public class FollowTrajectory extends Command {
       this.target = isScoring ? RobotContainer.scoringTarget : getClosestFeeder();
     }
 
-    if (!usePoints) {
+  if (!usePoints) {
       points = new ArrayList<PathPoint>();
       this.wantedAngle = target.getFinishPoint().getRotation();
       points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
@@ -108,7 +107,7 @@ public class FollowTrajectory extends Command {
       points.add(target.getFinishPoint());
       if (target.level == LEVEL.FEEDER) {
         grabCommand = new Grab(RobotContainer.gripper)
-            .andThen(new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.STARTING)));
+            .andThen(new InstantCommand(() -> RobotContainer.robotState = DemaciaRobotState.STARTING));
         grabCommand.schedule();
       }
 
