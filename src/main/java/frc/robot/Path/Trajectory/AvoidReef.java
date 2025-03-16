@@ -23,19 +23,19 @@ public class AvoidReef {
 
         ArrayList<PathPoint> pointsList = new ArrayList<>();
 
-        LogManager.log("LAST POINT: " + point1);
+        // LogManager.log("LAST POINT: " + point1);
         PathPoint entryPoint = getClosetPoint(point0);
         PathPoint leavePoint = getClosetPoint(point1);
 
-        LogManager.log("ENTRY: " + entryPoint);
-        LogManager.log("LEAVE: " + leavePoint);
+        // LogManager.log("ENTRY: " + entryPoint);
+        // LogManager.log("LEAVE: " + leavePoint);
         int id = findIndex(entryPoint);
         int leaveId = findIndex(leavePoint);
         boolean ascending = isPathAscending(id, leaveId);
 
 
-        LogManager.log("ENTRY ID: " + id);
-        LogManager.log("LEAVE ID: " + leaveId);
+        // LogManager.log("ENTRY ID: " + id);
+        // LogManager.log("LEAVE ID: " + leaveId);
         pointsList.add(new PathPoint(point0, new Rotation2d()));
         pointsList.add(entryPoint);
 
@@ -46,7 +46,7 @@ public class AvoidReef {
             
         }
         pointsList.add(new PathPoint(point1, wantedAngle));
-        LogManager.log("NEW POINTS: " + pointsList);
+        // LogManager.log("NEW POINTS: " + pointsList);
         return pointsList;
 
     }
@@ -56,7 +56,7 @@ public class AvoidReef {
         int index = -1;
         for (int i = 0; i < FieldTarget.REEF_POINTS.length; i++) {
             if (FieldTarget.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance) {
-                LogManager.log("REEF POINT " + i +": "+ (FieldTarget.REEF_POINTS[i]));
+                // LogManager.log("REEF POINT " + i +": "+ (FieldTarget.REEF_POINTS[i]));
                 index = i;
                 closetDistance = FieldTarget.REEF_POINTS[i].getTranslation().getDistance(startingPos);
             }
@@ -94,7 +94,7 @@ public class AvoidReef {
     public static boolean isGoingThroughReef(Segment segment) {
         for (Segment reefSegment : AutoUtils.REEF_SEGMENTS) {
             boolean intersects = isIntersecting(segment, reefSegment);
-            LogManager.log("IS INTERSECTING: " + intersects);
+            // LogManager.log("IS INTERSECTING: " + intersects);
             if (intersects) {
                 return true;
             }

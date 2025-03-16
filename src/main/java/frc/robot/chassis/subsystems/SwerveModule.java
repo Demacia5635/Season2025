@@ -29,7 +29,7 @@ public class SwerveModule {
         steerMotor.setPosition(getAbsoluteAngle());
         
         // SmartDashboard.putData(configs.DRIVE_CONFIG.name, driveMotor);
-        SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
+        // SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
     }
 
     public void setNeutralMode(boolean isBrake) {

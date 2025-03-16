@@ -65,7 +65,7 @@ public class DemaciaTrajectory {
             
         
        if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
-            LogManager.log("GOING THROUGH");
+            // LogManager.log("GOING THROUGH");
             this.points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
         }
 

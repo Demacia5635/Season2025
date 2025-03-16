@@ -7,12 +7,13 @@ package frc.robot.robot2.elevator.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot2.elevator.ElevatorConstants.CalibrationConstants;
 import frc.robot.robot2.elevator.subsystem.Elevator;
+import frc.robot.utils.LogManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorCalibration extends Command {
 
   private final Elevator elevator;
-  private boolean hasReechedBottom = false;
+  private boolean hasReachedBottom = false;
 
   /** Creates a new ElevatorCalibration. */
   public ElevatorCalibration(Elevator elevator) {
@@ -23,7 +24,7 @@ public class ElevatorCalibration extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    hasReechedBottom = false;
+    hasReachedBottom = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -38,18 +39,23 @@ public class ElevatorCalibration extends Command {
     elevator.stop();
 
     elevator.calibrated();
-    elevator.setPosition(
-      hasReechedBottom
-      ? CalibrationConstants.BOTTOM_HEIGHT
-      : CalibrationConstants.TOP_HEIGHT
-    );
-    hasReechedBottom = false;
+    if (!interrupted) {
+      LogManager.log("reached bottom: " + hasReachedBottom);
+      LogManager.log("NEW POS: " + (hasReachedBottom
+          ? CalibrationConstants.BOTTOM_HEIGHT
+          : CalibrationConstants.TOP_HEIGHT));
+    }
+    elevator.setMotorPosition(
+        hasReachedBottom
+            ? CalibrationConstants.BOTTOM_HEIGHT
+            : CalibrationConstants.TOP_HEIGHT);
+    hasReachedBottom = false;
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    hasReechedBottom = elevator.hasReachedBottom();
+    hasReachedBottom = elevator.hasReachedBottom();
     return elevator.hasReachedBottom() || elevator.hasReachedTop();
   }
 }

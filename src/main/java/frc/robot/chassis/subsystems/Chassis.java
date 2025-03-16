@@ -1,4 +1,4 @@
-package frc.robot.chassis.subsystems;
+    package frc.robot.chassis.subsystems;
 
 import static frc.robot.vision.utils.VisionConstants.*;
 
@@ -92,13 +92,13 @@ public class Chassis extends SubsystemBase {
         
         
         reefRight = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
-            new Camera("right", new Translation3d(0.24, -0.14, 0.66), 56, -90, CameraType.REEF));
+            new Camera("right", new Translation3d(0.08, 0.27, 0.66), 56, 0, CameraType.REEF));
 
         // reefLeft = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
         //     new Camera("left", new Translation3d(0.13, 0.28, 0.7),  65, 0, CameraType.REEF));
        
         feeder = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(),
-            new Camera("feeder", new Translation3d(0.4, 0.23, 1.02), 60, 90, CameraType.FEEDER));
+            new Camera("feeder", new Translation3d(0.4, 0.23, 1.02), 60, -90, CameraType.FEEDER));
 
         // barge = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
         //     new Camera("barge", new Translation3d(0.13, 0.284, 0.89), 53, 180, CameraType.BARGE));
@@ -115,16 +115,16 @@ public class Chassis extends SubsystemBase {
         //         .ignoringDisable(true));
         LogManager.addEntry("gyro", () -> gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
-        SmartDashboard.putData("ultfielf", fieldTag);
-        SmartDashboard.putData("fieldTest", fieldTest);
-        LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
-                getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
-        LogManager.addEntry("Chassis/vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
-        LogManager.addEntry("Chassis/vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
+        // SmartDashboard.putData("ultfielf", fieldTag);
+        // SmartDashboard.putData("fieldTest", fieldTest);
+        // LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
+        //         getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
+        // LogManager.addEntry("Chassis/vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
+        // LogManager.addEntry("Chassis/vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
         SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
         SmartDashboard.putData("Chassis/set brake", new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
         SmartDashboard.putData(getName() + "/Swerve Drive", getChassisWidget());
-        SmartDashboard.putData("Chassis", this);
+        // SmartDashboard.putData("Chassis", this);
     }
 
     private Sendable getChassisWidget() {
@@ -217,10 +217,9 @@ public class Chassis extends SubsystemBase {
         
         double angleDiff = MathUtil.angleModulus(wantedSpeeds.getAngle().getRadians() - currentSpeeds.getAngle().getRadians());
         double radius = curNorm / AccelConstants.MAX_OMEGA_VELOCITY;
-        LogManager.log("ANGLE DIFF: " + Math.toDegrees(angleDiff));
+        // LogManager.log("ANGLE DIFF: " + Math.toDegrees(angleDiff));
         if(Math.abs(Math.toDegrees(angleDiff)) >= 170 && Math.abs(Math.toDegrees(angleDiff)) <= 190){
             accel *= 0.3;
-            LogManager.log("HEHE");
         }
         // LogManager.log("RADIUS: " + radius);
         if(Math.abs(angleDiff) < 0.6 || radius < AccelConstants.MAX_RADIUS){

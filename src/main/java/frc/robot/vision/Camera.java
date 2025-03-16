@@ -34,7 +34,7 @@ public class Camera {
         return robotToCamPosition;
     }
 
-    public double getHeight() {
+    public double getHeight() { 
         return robotToCamPosition.getZ();
     }
 

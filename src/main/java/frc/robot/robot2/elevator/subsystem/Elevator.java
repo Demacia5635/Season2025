@@ -115,6 +115,9 @@ public class Elevator extends SubsystemBase {
     motor.setPositionVoltage(position, ElevatorMotorConstants.kG); //kg
   }
 
+  public void setMotorPosition(double position){
+    motor.setPosition(position);
+  }
   /*
    * position in meters
    */
