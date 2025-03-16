@@ -7,7 +7,6 @@ package frc.robot.robot2.elevator.commands;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.robot2.elevator.ElevatorConstants.CalibrationConstants;
 import frc.robot.robot2.elevator.subsystem.Elevator;
-import frc.robot.utils.LogManager;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorCalibration extends Command {
@@ -40,16 +39,12 @@ public class ElevatorCalibration extends Command {
 
     elevator.calibrated();
     if (!interrupted) {
-      LogManager.log("reached bottom: " + hasReachedBottom);
-      LogManager.log("NEW POS: " + (hasReachedBottom
-          ? CalibrationConstants.BOTTOM_HEIGHT
-          : CalibrationConstants.TOP_HEIGHT));
-    }
-    elevator.setMotorPosition(
+      elevator.setMotorPosition(
         hasReachedBottom
-            ? CalibrationConstants.BOTTOM_HEIGHT
-            : CalibrationConstants.TOP_HEIGHT);
-    hasReachedBottom = false;
+        ? CalibrationConstants.BOTTOM_HEIGHT
+        : CalibrationConstants.TOP_HEIGHT);
+        hasReachedBottom = false;
+    }
   }
 
   // Returns true when the command should end.

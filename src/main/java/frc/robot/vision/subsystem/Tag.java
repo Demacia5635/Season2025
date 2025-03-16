@@ -81,7 +81,7 @@ private NetworkTableEntry pipeEntry;
     field = new Field2d();
     latency = 0;
     // SmartDashboard.putData("Tag" + cameraId, this);
-    SmartDashboard.putData("field-tag" + camera.getName(), field);
+    // SmartDashboard.putData("field-tag" + camera.getName(), field);
   }
 
   @Override

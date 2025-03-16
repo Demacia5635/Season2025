@@ -77,18 +77,18 @@ public class Gripper extends SubsystemBase {
     // LogManager.addEntry(getName() + "/get up back sensor", this::getUpBackSensor, 3);
     LogManager.addEntry(getName() + "/get up sensor", this::getUpSensor, 3);
     LogManager.addEntry(getName() + "/get down sensor", this::getDownSensor, 3);
-    LogManager.addEntry(getName() + "/Is Coral Up", this::isCoralUpSensor, 4);
-    LogManager.addEntry(getName() + "/Is Coral Down", this::isCoralDownSensor, 4);
+    // LogManager.addEntry(getName() + "/Is Coral Up", this::isCoralUpSensor, 4);
+    // LogManager.addEntry(getName() + "/Is Coral Down", this::isCoralDownSensor, 4);
     LogManager.addEntry(getName() + "/Is Coral", this::isCoral, 4);
 
     /* put function to put the motor at brake and coast */
-    SmartDashboard.putData(getName() + "/Motor" + "/set Brake",
-        new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
-    SmartDashboard.putData(getName() + "/Motor" + "/set Coast",
-        new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
+    // SmartDashboard.putData(getName() + "/Motor" + "/set Brake",
+    //     new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
+    // SmartDashboard.putData(getName() + "/Motor" + "/set Coast",
+    //     new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
 
     /* put the gripper itself in the smart dashboard */
-    SmartDashboard.putData(this);
+    // SmartDashboard.putData(this);
   }
 
   /**

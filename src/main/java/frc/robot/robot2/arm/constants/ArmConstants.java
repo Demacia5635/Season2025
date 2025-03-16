@@ -57,8 +57,8 @@ public class ArmConstants {
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg 
         //Top
         public static final double KP0 = 3;
-        public static final double KI0 = 0.1;
-        public static final double KD0 = 0.05;
+        public static final double KI0 = 0;
+        public static final double KD0 = 0;
         public static final double KS0 = 0.1;
         public static final double KV0 = 1.4949232212224017;
         public static final double KA0 = 0.0029824872796242463;

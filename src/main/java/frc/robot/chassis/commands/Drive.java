@@ -57,14 +57,10 @@ public class Drive extends Command {
         }
         
         speeds = new ChassisSpeeds(velX, velY,velRot);
-
-        if(!hasOpenedClimber) hasOpenedClimber = RobotContainer.climb.getCurrentCommand() instanceof OpenClimber;
  
         if(precisionMode) chassis.setVelocities(speeds);
-        else if (hasOpenedClimber && Math.abs(rot) < 0.1 && precisionMode){
-            chassis.setVelocitiesRotateToAngleOld(speeds, isRed ? Rotation2d.kZero : Rotation2d.k180deg);
-        }
         else {
-            chassis.setVelocitiesWithAccel(speeds);}
+            chassis.setVelocitiesWithAccel(speeds);
+        }
     }
 }

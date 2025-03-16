@@ -85,17 +85,17 @@ public class RobotContainer implements Sendable{
     SmartDashboard.putData("RC", this);
     LogManager.addEntry("Timer", DriverStation::getMatchTime);
     SmartDashboard.putData("Reef", ReefWidget.getInstance());  
-    SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
+    // SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     // SmartDashboard.putData("Offsets/Practice", new AllOffsets());
     Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Start Robot Code", ""));
     // SmartDashboard.putData("pracice", new AllOffsets());
 
     robotState = DemaciaRobotState.IDLE;
     SendableChooser<DemaciaRobotState> robotStateChooser = new SendableChooser<>();
-    robotStateChooser.setDefaultOption("IDLE2", DemaciaRobotState.IDLE);
     for (DemaciaRobotState state : DemaciaRobotState.values()) {
       robotStateChooser.addOption(state.name(), state);
     }
+    robotStateChooser.setDefaultOption("IDLE2", DemaciaRobotState.IDLE);
     robotStateChooser.onChange(state -> robotState = state);
     SmartDashboard.putData("Robot State Chooser", robotStateChooser);
     

@@ -54,12 +54,12 @@ public class Elevator extends SubsystemBase {
     LogManager.addEntry(getName() + "/Bottom Limit Switch", () -> hasReachedBottom());
     LogManager.addEntry(getName() + "/Height", this::getHeight);
 
-    SmartDashboard.putData(getName() + "/Motor", motor);
+    // SmartDashboard.putData(getName() + "/Motor", motor);
 
     SmartDashboard.putData(getName() + "/Motor" + "/Set Brake", new InstantCommand(()-> motor.setNeutralMode(true)).ignoringDisable(true));
     SmartDashboard.putData(getName() + "/Motor" + "/Set Coast", new InstantCommand(()-> motor.setNeutralMode(false)).ignoringDisable(true));
 
-    SmartDashboard.putData(this);
+    // SmartDashboard.putData(this);
   }
 
   public void setNeutalMode(boolean isBrake) {
@@ -84,7 +84,7 @@ public class Elevator extends SubsystemBase {
   
   public void setMagicMotion(double position){
     if (!isCalibrated) {
-      LogManager.log("Elevator has not calibrated", AlertType.kError);
+      // LogManager.log("Elevator has not calibrated", AlertType.kError);
       return;
     }
     if (position > ElevatorLimits.TOP_LIMIT_POSITION) {
@@ -101,7 +101,7 @@ public class Elevator extends SubsystemBase {
    */
   public void setPositionVoltage(double position){
     if (!isCalibrated) {
-      LogManager.log("Elevator has not calibrated", AlertType.kError);
+      // LogManager.log("Elevator has not calibrated", AlertType.kError);
       return;
     }
 
@@ -123,7 +123,7 @@ public class Elevator extends SubsystemBase {
    */
   public void setPosition(double position){
     if (!isCalibrated) {
-      LogManager.log("Elevator has not calibrated", AlertType.kError);
+      // LogManager.log("Elevator has not calibrated", AlertType.kError);
       return;
     }
 

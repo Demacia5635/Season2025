@@ -135,4 +135,23 @@ public class Utils {
 
 
 
+  public static double angleFromTranslation2d(Translation2d translation2d) {
+    double magnitude = hypot(translation2d.getX(), translation2d.getY());
+    if (magnitude > 1e-6) {
+        return Math.atan2(translation2d.getY() / magnitude, translation2d.getX() / magnitude);
+    } 
+    return 0;
+  }
+
+  public static double angleFromTranslation2d(double x, double y) {
+      double magnitude = hypot(x, y);
+      if (magnitude > 1e-6) {
+          return Math.atan2(y / magnitude, x / magnitude);
+      } 
+      return 0;
+  }
+
+  public static double hypot(double x, double y) {
+    return Math.sqrt(x*x + y*y);
+  }
 }

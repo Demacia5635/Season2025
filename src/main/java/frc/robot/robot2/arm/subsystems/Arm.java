@@ -113,13 +113,13 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/Arm Abs Angle", this::getArmAngle, 4);
     LogManager.addEntry(getName() + "/Gripper Abs Angle", this::getGripperAngle, 4);
     
-    LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngleMotor, 4);
-    LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngleMotor, 4);
+    // LogManager.addEntry(getName() + "/Arm Angle", this::getArmAngleMotor, 4);
+    // LogManager.addEntry(getName() + "/Gripper Angle", this::getGripperAngleMotor, 4);
     LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
     /* add to smart dashboard the widgets of the talon motor */
-    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
-    SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
+    // SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
+    // SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
     /* add to smart dashboard the coast and brake of both motors */
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set brake",
@@ -132,7 +132,7 @@ public class Arm extends SubsystemBase {
         new InstantCommand(() -> gripperAngleNeutralMode(false)).ignoringDisable(true));
 
     /* add the arm itself to the network tables */
-    SmartDashboard.putData(this);
+    // SmartDashboard.putData(this);
   }
 
   // public int getHowMuchReady(int divisions) {
