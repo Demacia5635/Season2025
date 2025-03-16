@@ -90,7 +90,7 @@ private NetworkTableEntry pipeEntry;
     cropEntry = Table.getEntry("crop");
     pipeEntry = Table.getEntry("pipeline");
     camToTagPitch = Table.getEntry("ty").getDouble(0.0);
-    camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) + camera.getYaw();
+    camToTagYaw = (-Table.getEntry("tx").getDouble(0.0)) - camera.getYaw();
     id = getTagId();
 
     latency = Table.getEntry("tl").getDouble(0.0) + Table.getEntry("cl").getDouble(0.0);
@@ -130,13 +130,13 @@ private NetworkTableEntry pipeEntry;
     if (camera.getCameraType() == CameraType.REEF) {
       alpha = camToTagPitch + camera.getPitch();
       dist = (Math.abs(height - camera.getHeight())) * (Math.tan(Math.toRadians(alpha)));
-      dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-      // LogManager.log(camera.getName() + ":" + dist);
+      dist = dist/Math.cos(Math.toRadians(camToTagYaw + camera.getYaw()));
+      // //Logmanager.log(camera.getName() + ":" + dist);
       return Math.abs(dist);
     }
     alpha = camToTagPitch + camera.getPitch();
     dist = (Math.abs(height - camera.getHeight())) / (Math.tan(Math.toRadians(alpha)));
-    dist = dist/Math.cos(Math.toRadians(camToTagYaw));
+    dist = dist/Math.cos(Math.toRadians(camToTagYaw + camera.getYaw()));
     return Math.abs(dist);
   }
 
@@ -150,12 +150,12 @@ private NetworkTableEntry pipeEntry;
     // Convert camera measurements to vector
     cameraToTag = new Translation2d(GetDistFromCamera(),
         Rotation2d.fromDegrees(camToTagYaw));
-    // LogManager.log("cameraToTag :" +cameraToTag);
-    // LogManager.log("Camera to Tag Yaw :" + camToTagYaw);
+    // //Logmanager.log("cameraToTag :" +cameraToTag);
+    // //Logmanager.log("Camera to Tag Yaw :" + camToTagYaw);
     // Add camera offset to get robot center to tag vector
     robotToTag = new Translation2d(camera.getRobotToCamPosition().getX(), camera.getRobotToCamPosition().getY())
       .plus(cameraToTag);
-    // LogManager.log("Robot to Tag :" + robotToTag);
+    // //Logmanager.log("Robot to Tag :" + robotToTag);
     return robotToTag;
   }
 
@@ -201,7 +201,7 @@ private void crop() {
     }
 
     private double getYawCrop(){
-      double TagYaw = ((-camToTagYaw) + camera.getYaw()) / 31.25;
+      double TagYaw = ((-camToTagYaw) - camera.getYaw()) / 31.25;
       return TagYaw + speeds.get().vyMetersPerSecond*PREDICT_Y + speeds.get().omegaRadiansPerSecond*PREDICT_OMEGA;
     }
 
