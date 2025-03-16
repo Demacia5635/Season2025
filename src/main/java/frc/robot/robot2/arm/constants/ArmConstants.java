@@ -156,8 +156,8 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         public static final double Angle_OFFSET = 2.6171682281515816 + Math.PI/2;
-        public static final double BACK_LIMIT = -2.52685546875;
-        public static final double FWD_LIMIT = -0.083740234375;
+        public static final double BACK_LIMIT = -2.760034003330906;
+        public static final double FWD_LIMIT = -0.2438946850555146;
 
         /* The config of the motor based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)

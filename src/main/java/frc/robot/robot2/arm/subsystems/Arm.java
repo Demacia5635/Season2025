@@ -294,15 +294,7 @@ public class Arm extends SubsystemBase {
       return;
     }
 
-    if (Math.abs(armAngleMotor.getCurrentVelocity()) >= 0.3) {
-      if (targetAngle >= GripperAngleMotorConstants.FWD_LIMIT - Math.toRadians(4) * armAngleMotor.getCurrentVelocity()) {
-        targetAngle = GripperAngleMotorConstants.FWD_LIMIT - Math.toRadians(4) * armAngleMotor.getCurrentVelocity();
-      } else if (targetAngle <= GripperAngleMotorConstants.BACK_LIMIT + Math.toRadians(4) * armAngleMotor.getCurrentVelocity()) {
-        targetAngle = GripperAngleMotorConstants.BACK_LIMIT + Math.toRadians(4) * armAngleMotor.getCurrentVelocity();
-      } else {
-        targetAngle += armAngleMotor.getCurrentVelocity() * Math.toRadians(2);
-      }
-    }
+    targetAngle -= armAngleMotor.getCurrentVelocity() * 0.5;
 
     // if (lastGripperAngleTarget != targetAngle) {
     //   hasGripperAngleReachedTarget = false;
@@ -314,14 +306,10 @@ public class Arm extends SubsystemBase {
     // }
 
     if (targetAngle < GripperAngleMotorConstants.BACK_LIMIT) {
-      targetAngle = GripperAngleMotorConstants.BACK_LIMIT;
+      targetAngle = GripperAngleMotorConstants.BACK_LIMIT + 0.1;
     }
     if (targetAngle > GripperAngleMotorConstants.FWD_LIMIT) {
-      targetAngle = GripperAngleMotorConstants.FWD_LIMIT;
-    }
-
-    if (Math.abs(getArmVel()) >= 0.01) {
-      targetAngle -= getArmVel() * 0.4;
+      targetAngle = GripperAngleMotorConstants.FWD_LIMIT - 0.1;
     }
 
     // if (hasGripperAngleReachedTarget) {
