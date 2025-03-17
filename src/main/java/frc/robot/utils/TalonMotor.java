@@ -6,6 +6,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.DutyCycleOut;
+import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -36,6 +37,7 @@ public class TalonMotor extends TalonFX {
   VoltageOut voltageOut = new VoltageOut(0);
   VelocityVoltage velocityVoltage = new VelocityVoltage(0).withSlot(0);
   MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
+  MotionMagicExpoVoltage motionMagicExpoVoltage = new MotionMagicExpoVoltage(0).withSlot(0);
   PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
 
   StatusSignal<ControlModeValue> controlModeSignal;
@@ -116,10 +118,14 @@ public class TalonMotor extends TalonFX {
 		cfg.MotionMagic.MotionMagicCruiseVelocity = config.motionMagicVelocity;
 		cfg.MotionMagic.MotionMagicJerk = config.motionMagicJerk;
 
+    cfg.MotionMagic.MotionMagicExpo_kA = config.pid.ka;
+    cfg.MotionMagic.MotionMagicExpo_kV = config.pid.kv;
+
 		dutyCycle.UpdateFreqHz = 200;
     voltageOut.UpdateFreqHz = 200;
 		velocityVoltage.UpdateFreqHz = 200;
 		motionMagicVoltage.UpdateFreqHz = 200;
+    motionMagicExpoVoltage.UpdateFreqHz = 200;
     positionVoltage.UpdateFreqHz = 200;
 
 		getConfigurator().apply(cfg);
@@ -147,12 +153,12 @@ public class TalonMotor extends TalonFX {
   }
 
   private void addLog() {    
-    LogManager.addEntry(name + "/Position", getPosition(), 2);
-    LogManager.addEntry(name + "/Velocity", getVelocity(), 2);
-    LogManager.addEntry(name + "/Acceleration", getAcceleration(), 2);
+    LogManager.addEntry(name + "/Position", getPosition(), 4);
+    LogManager.addEntry(name + "/Velocity", getVelocity(), 4);
+    LogManager.addEntry(name + "/Acceleration", getAcceleration(), 4);
     LogManager.addEntry(name + "/Voltage", getMotorVoltage(), 2);
     LogManager.addEntry(name + "/Current", getStatorCurrent(), 2);
-    LogManager.addEntry(name + "/CloseLoopError", getClosedLoopError(), 2);
+    LogManager.addEntry(name + "/CloseLoopError", getClosedLoopError(), 4);
     // LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput(), 1);
     // LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput(), 1);
     // LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput(), 1);
@@ -185,6 +191,8 @@ public class TalonMotor extends TalonFX {
     }
     velocityVoltage.withSlot(slot);
     motionMagicVoltage.withSlot(slot);
+    motionMagicExpoVoltage.withSlot(slot);
+    positionVoltage.withSlot(slot);
   }
 
   /*
@@ -238,6 +246,14 @@ public class TalonMotor extends TalonFX {
 	public void setMotionMagic(double position) {
 		setMotionMagic(position, 0);
 	}
+
+  public void setMotionMagicExpo(double position){
+    setMotionMagicExpo(position, 0);
+  }
+  
+  public void setMotionMagicExpo(double position, double feedForward){
+    setControl(motionMagicExpoVoltage.withPosition(position).withFeedForward(feedForward));
+  }
 
   public void setPositionVoltage(double position, double feedForward) {
     setControl(positionVoltage.withPosition(position).withFeedForward(feedForward));
