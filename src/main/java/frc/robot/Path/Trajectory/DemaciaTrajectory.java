@@ -194,7 +194,6 @@ public class DemaciaTrajectory {
                 segmentIndex++;
         }
         double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
-        LogManager.log("VEL: " + velocity);
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double diffAngle = wantedAngle.minus(chassisPose.getRotation()).getRadians();
         double wantedOmega = 0;
@@ -205,7 +204,6 @@ public class DemaciaTrajectory {
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))
             wantedVelocity = new Translation2d();
-
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
 
