@@ -30,6 +30,7 @@ import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot2.elevator.commands.ElevatorCalibration;
 import frc.robot.robot2.elevator.commands.ElevatorCommand;
 import frc.robot.robot2.elevator.subsystem.Elevator;
+import frc.robot.robot2.gripper.commands.GrabOrDrop;
 import frc.robot.robot2.gripper.subsystems.Gripper;
 import frc.robot.robot2.DemaciaRobotState;
 import frc.robot.robot2.arm.commands.ArmCommand;
@@ -151,7 +152,7 @@ public class RobotContainer implements Sendable{
       gripper.stop();
       elevator.stop();
     }, chassis, arm, gripper, elevator).ignoringDisable(true));
-    //driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
+    driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
     // driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
     // driverController.povRight().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.FAR));
