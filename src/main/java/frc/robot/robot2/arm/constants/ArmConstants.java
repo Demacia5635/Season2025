@@ -56,29 +56,14 @@ public class ArmConstants {
 
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg 
         //Top
-        public static final double KP0 = 0.9;
-        public static final double KI0 = 0;
-        public static final double KD0 = 0;
-        public static final double KS0 = 0.1;
-        public static final double KV0 = 1.4949232212224017;
-        public static final double KA0 = 0.0029824872796242463;
-        public static final double KG0 = 0;
-        
-        public static final double KP1 = 1.5;
-        public static final double KI1 = 0;
-        public static final double KD1 = 0;
-        public static final double KS1 = 0.1;
-        public static final double KV1 = 1.4949232212224017;
-        public static final double KA1 = 0.0029824872796242463;
-        public static final double KG1 = -0.4;
 
-        public static final double KP2 = 1.5;
-        public static final double KI2 = 0;
-        public static final double KD2 = 0;
-        public static final double KS2 = 0.1;
-        public static final double KV2 = 1.4949232212224017;
-        public static final double KA2 = 0.0029824872796242463;
-        public static final double KG2 = -0.4;
+        public static final double[] KP = {3.5, 5, 5};
+        public static final double[] KI = {0, 0, 0};
+        public static final double[] KD = {0, 0, 0};
+        public static final double[] KS = {0, 0.2, 0.2};
+        public static final double[] KV = {1.5, 1.5, 1.5};
+        public static final double[] KA = {0.003, 0.003, 0.003};
+        public static final double[] KG = {0, 0.1375, -0.1375};
 
         /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
         public static final double MOTION_MAGIC_VELOCITY = 4;
@@ -94,7 +79,7 @@ public class ArmConstants {
         public static final double GEAR_RATIO = 80;
 
         /* the ramp time of the motor */
-        public static final double RAMP_TIME = 0.5;
+        public static final double RAMP_TIME = 1.1;
 
         /*
          * all the angles of the motor
@@ -110,9 +95,9 @@ public class ArmConstants {
 
         /* The config of the motors based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
-                .withPID(KP0, KI0, KD0, KS0, KV0, KA0, KG0)
-                .withPID1(KP1, KI1, KD1, KS1, KV1, KA1, KG1)
-                .withPID2(KP2, KI2, KD2, KS2, KV2, KA2, KG2)
+                .withPID(KP[0], KI[0], KD[0], KS[0], KV[0], KA[0], 0)
+                .withPID1(KP[1], KI[1], KD[1], KS[1], KV[1], KA[1], 0)
+                .withPID2(KP[2], KI[2], KD[2], KS[2], KV[2], KA[2], 0)
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)
@@ -122,6 +107,16 @@ public class ArmConstants {
         /* The config of the motor based on the constants cancoder */
         public static final CancoderConfig CANCODER_CONFIG = new CancoderConfig(CANCODER_ID,CAN_BUS,CANCODER_NAME)
             .withInvert(IS_INVERTED);
+    }
+
+    public static class ArmFFLookupTable {
+        public static final double[][] values = {
+            {-2.204327446948554, 0.275, -0.15},
+            {-1.1642884727620881, 0.275, -0.2},
+            {-0.05, 0.22, -0.23},
+            {1.1642884727620881, 0.2, -0.275},
+            {2.204327446948554, 0.15, -0.275},
+        };
     }
 
     /** All the constants for the gripper angle motor */
@@ -166,7 +161,7 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         public static final double Angle_OFFSET = 2.6171682281515816 + Math.PI/2;
-        public static final double BACK_LIMIT = -2.760034003330906;
+        public static final double BACK_LIMIT = -2.81;
         public static final double FWD_LIMIT = -0.2438946850555146;
 
         /* The config of the motor based on the constants above */

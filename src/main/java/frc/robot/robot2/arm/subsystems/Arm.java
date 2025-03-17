@@ -19,6 +19,7 @@ import frc.robot.robot2.arm.constants.ArmConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.ArmAngleMotorConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleMotorConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.MaxErrors;
+import frc.robot.robot2.arm.utils.LookUpTable;
 import frc.robot.utils.Cancoder;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
@@ -69,6 +70,8 @@ public class Arm extends SubsystemBase {
   private double lastArmAngleTarget;
   private double lastGripperAngleTarget;
 
+  private LookUpTable armFFLookupTable;
+
   /**
    * creates a new Arm, should only be one
    * <br>
@@ -94,6 +97,7 @@ public class Arm extends SubsystemBase {
     lastArmAngleTarget = Double.MAX_VALUE;
     lastGripperAngleTarget = Double.MAX_VALUE;
 
+    armFFLookupTable = new LookUpTable(ArmFFLookupTable.values);
 
     /* add to network tables everything that needed */
     addNT();
@@ -112,7 +116,7 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
     /* add to smart dashboard the widgets of the talon motor */
-    // SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
+    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
     // SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
     /* add to smart dashboard the coast and brake of both motors */
@@ -244,8 +248,13 @@ public class Arm extends SubsystemBase {
     } else {
       targetAngle = lastArmAngleTarget + getArmAngleMotor() - getArmAngle();
     }
+
+    if (Math.abs(targetAngle - getArmAngle()) >= Math.toRadians(2)) {
+      armAngleMotor.setPositionVoltage(targetAngle, armFFLookupTable.get(getArmAngle())[Math.signum(targetAngle - getArmAngle()) == 1 ? 0 : 1]); // , Math.cos(getArmAngle()) * ArmAngleMotorConstants.KG[slot]);
+    } else {
+      armAngleMotor.stopMotor();
+    }
    
-    armAngleMotor.setMotionMagic(targetAngle);
     
 
     // armAngleMotor.setPositionVoltage(targetAngle);
@@ -275,7 +284,7 @@ public class Arm extends SubsystemBase {
       return;
     }
 
-    targetAngle -= armAngleMotor.getCurrentVelocity() * 0.5;
+    targetAngle -= armAngleMotor.getCurrentVelocity() * 0.75;
 
     // if (lastGripperAngleTarget != targetAngle) {
     //   hasGripperAngleReachedTarget = false;
@@ -287,10 +296,10 @@ public class Arm extends SubsystemBase {
     // }
 
     if (targetAngle < GripperAngleMotorConstants.BACK_LIMIT) {
-      targetAngle = GripperAngleMotorConstants.BACK_LIMIT + 0.1;
+      targetAngle = GripperAngleMotorConstants.BACK_LIMIT + 0.15;
     }
     if (targetAngle > GripperAngleMotorConstants.FWD_LIMIT) {
-      targetAngle = GripperAngleMotorConstants.FWD_LIMIT - 0.1;
+      targetAngle = GripperAngleMotorConstants.FWD_LIMIT - 0.15;
     }
 
     // if (hasGripperAngleReachedTarget) {
@@ -419,6 +428,8 @@ public class Arm extends SubsystemBase {
     super.initSendable(builder);
   }
 
+  int slot = 0;
+
   /**
    * This function runs every cycle
    * <br>
@@ -430,15 +441,16 @@ public class Arm extends SubsystemBase {
    */
   @Override
   public void periodic() {
-/*
-    if (getArmAngle() > Math.PI/2) {
-      armAngleMotor.changeSlot(2);
-    } else if (getArmAngle() < -Math.PI/2) {
-      armAngleMotor.changeSlot(1);
-    } else {
-      armAngleMotor.changeSlot(0);
-    }
-*/
+    // if (getArmAngle() > 1.14128465143003) {
+    //   armAngleMotor.changeSlot(1);
+    //   slot = 2;
+    // } else if (getArmAngle() < -1.14128465143003) {
+    //   armAngleMotor.changeSlot(1);
+    //   slot = 1;
+    // } else {
+    //   armAngleMotor.changeSlot(0);
+    //   slot = 0;
+    // }
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */
     // gripperAngleMotor.setPosition(getGripperAngle());
