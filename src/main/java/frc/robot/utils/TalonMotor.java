@@ -56,11 +56,13 @@ public class TalonMotor extends TalonFX {
   double lastAcceleration;
   double lastVoltage;
 
+  int slot;
 
   public TalonMotor(TalonConfig config) {
 		super(config.id, config.canbus);
 		this.config = config;
 		name = config.name;
+    slot = 0;
 		configMotor();
     setSignals();
 		addLog();
@@ -189,10 +191,16 @@ public class TalonMotor extends TalonFX {
       LogManager.log("slot is null, add config for slot 2", AlertType.kError);
       return;
     }
+
+    this.slot = slot;
     velocityVoltage.withSlot(slot);
     motionMagicVoltage.withSlot(slot);
     motionMagicExpoVoltage.withSlot(slot);
     positionVoltage.withSlot(slot);
+  }
+
+  public int getSlot() {
+    return slot;
   }
 
   /*

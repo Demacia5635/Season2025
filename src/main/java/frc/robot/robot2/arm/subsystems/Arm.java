@@ -428,8 +428,6 @@ public class Arm extends SubsystemBase {
     super.initSendable(builder);
   }
 
-  int slot = 0;
-
   /**
    * This function runs every cycle
    * <br>
@@ -443,10 +441,8 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     // if (getArmAngle() > 1.14128465143003) {
     //   armAngleMotor.changeSlot(1);
-    //   slot = 2;
     // } else if (getArmAngle() < -1.14128465143003) {
     //   armAngleMotor.changeSlot(1);
-    //   slot = 1;
     // } else {
     //   armAngleMotor.changeSlot(0);
     //   slot = 0;
