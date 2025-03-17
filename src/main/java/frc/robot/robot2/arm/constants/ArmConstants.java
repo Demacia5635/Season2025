@@ -56,7 +56,7 @@ public class ArmConstants {
 
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg 
         //Top
-        public static final double KP0 = 1.5;
+        public static final double KP0 = 0.9;
         public static final double KI0 = 0;
         public static final double KD0 = 0;
         public static final double KS0 = 0.1;
@@ -70,7 +70,7 @@ public class ArmConstants {
         public static final double KS1 = 0.1;
         public static final double KV1 = 1.4949232212224017;
         public static final double KA1 = 0.0029824872796242463;
-        public static final double KG1 = 0.4;
+        public static final double KG1 = -0.4;
 
         public static final double KP2 = 1.5;
         public static final double KI2 = 0;
@@ -81,9 +81,9 @@ public class ArmConstants {
         public static final double KG2 = -0.4;
 
         /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
-        public static final double MOTION_MAGIC_VELOCITY = 5;
-        public static final double MOTION_MAGIC_ACCELERATION = 8;
-        public static final double MOTION_MAGIC_JERK = 20;
+        public static final double MOTION_MAGIC_VELOCITY = 4;
+        public static final double MOTION_MAGIC_ACCELERATION = 6;
+        public static final double MOTION_MAGIC_JERK = 8;
 
         /* the channel of the absolute sensor */
         //public static final int ABSOLUTE_SENSOR_CHANNEL = 22;
@@ -103,7 +103,9 @@ public class ArmConstants {
          * forward limit -> the maximum angle
          */
         //public static final double BASE_ANGLE = 0; //TODO:
-        public static final double BACK_LIMIT = -2.569414874465336;
+        //public static final double BACK_LIMIT = -2.569414874465336;
+        public static final double BACK_LIMIT = -2.5;
+        
         public static final double FWD_LIMIT = 2.569414874465336;
 
         /* The config of the motors based on the constants above */
