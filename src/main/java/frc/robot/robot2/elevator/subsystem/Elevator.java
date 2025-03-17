@@ -93,7 +93,12 @@ public class Elevator extends SubsystemBase {
     if (position < ElevatorLimits.BOTTOM_LIMIT_POSITION) {
       position = ElevatorLimits.BOTTOM_LIMIT_POSITION;
     }
-    motor.setMotionMagic(position);
+
+    if (Math.abs(position - getHeight()) > 0.01) {
+      motor.setMotionMagic(position);
+    } else {
+      motor.stopMotor();
+    }
   }
 
   /*
