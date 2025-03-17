@@ -56,7 +56,6 @@ public class RobotContainer implements Sendable{
   public static RobotContainer robotContainer;
   public static CommandController driverController;
   public static CommandController operatorController;
-  public static CommandController backUpController;
   public static boolean isRed;
   public static boolean isComp = DriverStation.isFMSAttached();
   private static boolean hasRemovedFromLog = false;
@@ -79,7 +78,6 @@ public class RobotContainer implements Sendable{
     new LogManager();
     driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
-    backUpController = new CommandController(OperatorConstants.BACKUP_CONTROLLER_POERT, ControllerType.kXbox);
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
