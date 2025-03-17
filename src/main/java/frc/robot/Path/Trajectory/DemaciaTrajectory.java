@@ -208,9 +208,6 @@ public class DemaciaTrajectory {
 
 
     public boolean isFinishedTrajectory() {
-        if (isAlgae)
-            return chassisPose.getTranslation()
-                    .getDistance(points.get(points.size() - 1).getTranslation()) <= 0.1;
         return ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))
