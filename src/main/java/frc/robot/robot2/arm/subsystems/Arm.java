@@ -430,7 +430,7 @@ public class Arm extends SubsystemBase {
    */
   @Override
   public void periodic() {
-
+/*
     if (getArmAngle() > Math.PI/2) {
       armAngleMotor.changeSlot(2);
     } else if (getArmAngle() < -Math.PI/2) {
@@ -438,6 +438,7 @@ public class Arm extends SubsystemBase {
     } else {
       armAngleMotor.changeSlot(0);
     }
+*/
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */
     // gripperAngleMotor.setPosition(getGripperAngle());
