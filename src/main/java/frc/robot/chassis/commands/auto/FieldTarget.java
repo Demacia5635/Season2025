@@ -34,8 +34,8 @@ public class FieldTarget {
     public static Translation2d l3Left = new Translation2d(0.5, -0.14);
     public static Translation2d l3Right = new Translation2d(0.5, 0.215);
 
-    public static Translation2d l4Left = new Translation2d(0.5, -0.11);
-    public static Translation2d l4Right = new Translation2d(0.5, 0.5);
+    public static Translation2d l4Left = new Translation2d(0.5, 0.09);
+    public static Translation2d l4Right = new Translation2d(0.5, 0.42);
 
 
     public POSITION position;
