@@ -15,6 +15,8 @@ import edu.wpi.first.math.geometry.Translation2d;
  */
 public class VisionConstants {
 
+        public static final double BARGE_HIGHT_CENTER = 0.389;
+
         // Heights of different AprilTag groups from the ground
         private static double BARGE_TAG_HIGHT = inchToMeter(73.54);
         private static double REEF_TAG_HIGHT = inchToMeter(12.13);
