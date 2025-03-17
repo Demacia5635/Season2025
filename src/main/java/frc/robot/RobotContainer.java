@@ -139,9 +139,10 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
-    FieldTarget testTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L4);
-    FieldTarget test2 = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
+    FieldTarget testTarget = new FieldTarget(POSITION.B, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L4);
+    FieldTarget test2 = new FieldTarget(POSITION.B, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L4);
     driverController.leftButton().onTrue(new FollowTrajectory(chassis, testTarget));
+    driverController.downButton().onTrue(new FollowTrajectory(chassis, test2));
     
     operatorController.rightBumper().onTrue(new ClimbUntilSensor(climb));
     operatorController.leftBumper().onTrue(new InstantCommand(()-> {
