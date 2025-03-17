@@ -80,6 +80,7 @@ public class RobotContainer implements Sendable{
     driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
 
+    
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
     LogManager.addEntry("Timer", DriverStation::getMatchTime);
@@ -138,36 +139,9 @@ public class RobotContainer implements Sendable{
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
-    driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
-    // driverController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
-
-    //driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
-    driverController.downButton().onTrue(new FollowTrajectory(chassis, false));
-    driverController.leftButton().onTrue(new FollowTrajectory(chassis, true));
-    // driverController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
-    
-    driverController.leftBumper().onTrue(new InstantCommand(()-> {
-      chassis.stop();
-      arm.stop();
-      gripper.stop();
-      elevator.stop();
-    }, chassis, arm, gripper, elevator).ignoringDisable(true));
-    driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
-    
-    // driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
-    // driverController.povRight().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.FAR));
-    // driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
-    // driverController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
-
-    // driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
-    // driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
-
-    // operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
-    
-    //operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
-    // operatorController.rightButton().onTrue(new InstantCommand((robot2Strip::setCoralStation)).ignoringDisable(true));
-    // operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
-    // operatorController.leftButton().onTrue(new ArmCalibration(arm));
+    FieldTarget testTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L4);
+    FieldTarget test2 = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
+    driverController.leftButton().onTrue(new FollowTrajectory(chassis, testTarget));
     
     operatorController.rightBumper().onTrue(new ClimbUntilSensor(climb));
     operatorController.leftBumper().onTrue(new InstantCommand(()-> {

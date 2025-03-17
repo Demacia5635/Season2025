@@ -34,6 +34,9 @@ public class FieldTarget {
     public static Translation2d l3Left = new Translation2d(0.5, -0.14);
     public static Translation2d l3Right = new Translation2d(0.5, 0.215);
 
+    public static Translation2d l4Left = new Translation2d(0.5, -0.11);
+    public static Translation2d l4Right = new Translation2d(0.5, 0.5);
+
 
     public POSITION position;
     public ELEMENT_POSITION elementPosition;
@@ -97,6 +100,7 @@ public class FieldTarget {
         L1,
         L2,
         L3,
+        L4,
         FEEDER,
         ALGAE_BOTTOM,
         ALGAE_TOP
@@ -191,7 +195,7 @@ public class FieldTarget {
     }
 
     public Translation2d getCalcOffset() {
-        boolean isScoring = level == LEVEL.L2 || level == LEVEL.L3;
+        boolean isScoring = level == LEVEL.L2 || level == LEVEL.L3 || level == LEVEL.L4;
         Translation2d calculatedOffset = new Translation2d();
 
         if(isScoring){
@@ -206,6 +210,13 @@ public class FieldTarget {
                     calculatedOffset = l3Right;
                 } else {
                     calculatedOffset = l3Left;
+                }
+            }else if(level == LEVEL.L4){
+                
+                if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
+                    calculatedOffset = l4Right;
+                } else {
+                    calculatedOffset = l4Left;
                 }
             }
         }

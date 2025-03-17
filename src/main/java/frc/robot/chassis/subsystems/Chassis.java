@@ -199,7 +199,7 @@ public class Chassis extends SubsystemBase {
         return wantedSpeeds;
         
     }
-    private double getAccel(double height){
+    public double getAccel(double height){
         return AccelConstants.mHeight * height + AccelConstants.bHeight;
     }
 
