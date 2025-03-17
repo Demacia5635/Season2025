@@ -66,12 +66,8 @@ public class Arm extends SubsystemBase {
    */
   private final DutyCycleEncoder gripperAngleAbsoluteSensor;
 
-
-  private boolean hasArmAngleReachedTarget;
   private double lastArmAngleTarget;
   private double lastGripperAngleTarget;
-
-  private boolean hasGripperAngleReachedTarget;
 
   /**
    * creates a new Arm, should only be one
@@ -95,10 +91,8 @@ public class Arm extends SubsystemBase {
     /* configure the cancoder */
     armCancoder = new Cancoder(ArmAngleMotorConstants.CANCODER_CONFIG);
 
-    hasArmAngleReachedTarget = false;
     lastArmAngleTarget = Double.MAX_VALUE;
-
-    hasGripperAngleReachedTarget = false;
+    lastGripperAngleTarget = Double.MAX_VALUE;
 
 
     /* add to network tables everything that needed */
@@ -225,16 +219,7 @@ public class Arm extends SubsystemBase {
     }
 
     if (lastArmAngleTarget != targetAngle) {
-      hasArmAngleReachedTarget = false;
       lastArmAngleTarget = targetAngle;
-    }
-
-    if (targetAngle > getArmAngle()) {
-      targetAngle += 2.5*MaxErrors.ARM_ANGLE_DOWN_ERROR;
-    }
-
-    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
-      hasArmAngleReachedTarget = true;
     }
 
     if (targetAngle < ArmAngleMotorConstants.BACK_LIMIT) {
@@ -252,10 +237,6 @@ public class Arm extends SubsystemBase {
     // if (targetAngle > getArmAngle()) {
     //   targetAngle += 2.5*MaxErrors.ARM_ANGLE_DOWN_ERROR;
     // }
-
-    if (Math.abs(targetAngle - getArmAngle()) <= Math.toRadians(1)) {
-      hasArmAngleReachedTarget = true;
-    }
 
     if (targetAngle != lastArmAngleTarget) {
       lastArmAngleTarget = targetAngle;
@@ -392,7 +373,7 @@ public class Arm extends SubsystemBase {
    * @return is the motors at the right angles
    */
   public boolean isReady() {
-    return hasArmAngleReachedTarget && Math.abs(gripperAngleMotor.getCurrentClosedLoopError()) < 0.03;
+    return Math.abs(armAngleMotor.getCurrentClosedLoopError()) < 0.03 && Math.abs(gripperAngleMotor.getCurrentClosedLoopError()) < 0.03;
   }
 
   /**
@@ -450,10 +431,12 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
 
-    if (Math.abs(getArmAngle()) < Math.PI/2) {
-      armAngleMotor.changeSlot(0);
-    } else {
+    if (getArmAngle() > Math.PI/2) {
+      armAngleMotor.changeSlot(2);
+    } else if (getArmAngle() < -Math.PI/2) {
       armAngleMotor.changeSlot(1);
+    } else {
+      armAngleMotor.changeSlot(0);
     }
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */

@@ -56,7 +56,7 @@ public class ArmConstants {
 
         /* the pid and ff constants of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg 
         //Top
-        public static final double KP0 = 3;
+        public static final double KP0 = 1.5;
         public static final double KI0 = 0;
         public static final double KD0 = 0;
         public static final double KS0 = 0.1;
@@ -64,14 +64,21 @@ public class ArmConstants {
         public static final double KA0 = 0.0029824872796242463;
         public static final double KG0 = 0;
         
-        //butom TODO:find right pid
-        public static final double KP1 = 3;
-        public static final double KI1 = 0.1;
-        public static final double KD1 = 0.05;
+        public static final double KP1 = 1.5;
+        public static final double KI1 = 0;
+        public static final double KD1 = 0;
         public static final double KS1 = 0.1;
         public static final double KV1 = 1.4949232212224017;
         public static final double KA1 = 0.0029824872796242463;
-        public static final double KG1 = 0.2;
+        public static final double KG1 = 0.4;
+
+        public static final double KP2 = 1.5;
+        public static final double KI2 = 0;
+        public static final double KD2 = 0;
+        public static final double KS2 = 0.1;
+        public static final double KV2 = 1.4949232212224017;
+        public static final double KA2 = 0.0029824872796242463;
+        public static final double KG2 = -0.4;
 
         /* the motion magic constants of the motor */  //TODO: CHECK IF IT IS WORKING
         public static final double MOTION_MAGIC_VELOCITY = 5;
@@ -103,6 +110,7 @@ public class ArmConstants {
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
                 .withPID(KP0, KI0, KD0, KS0, KV0, KA0, KG0)
                 .withPID1(KP1, KI1, KD1, KS1, KV1, KA1, KG1)
+                .withPID2(KP2, KI2, KD2, KS2, KV2, KA2, KG2)
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)
@@ -125,7 +133,7 @@ public class ArmConstants {
         public static final String NAME = "Gripper Angle Motor";
 
         /* the pid and ff of the motor */ //TODO: find kp ki kd and maybe ks kv ka m kg
-        public static final double KP = 4.5;
+        public static final double KP = 4;
         public static final double KI = 0.5;
         public static final double KD = 0.1;
         public static final double KS = 0.1;
