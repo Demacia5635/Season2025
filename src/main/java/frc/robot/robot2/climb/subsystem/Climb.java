@@ -13,12 +13,12 @@ import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 
 public class Climb extends SubsystemBase {
-  // private TalonMotor climbMotor;
+  private TalonMotor climbMotor;
   private DigitalInput angleLimit;
   public Climb() {
     setName(ClimebConstants.NAME);
 
-    // climbMotor = new TalonMotor(ClimebConstants.MOTOR_CONFIG);
+    climbMotor = new TalonMotor(ClimebConstants.MOTOR_CONFIG);
     angleLimit = new DigitalInput(ClimebConstants.LIMIT_SWITCH_CHANNEL);
 
     // SmartDashboard.putData(getName() + "/" + ClimebConstants.NAME + " Motor", climbMotor);
@@ -30,24 +30,24 @@ public class Climb extends SubsystemBase {
   }
 
   public void setClimbPower(double power){
-    // climbMotor.set(power);
+    climbMotor.set(power);
   }
 
   public void stopClimb(){
-    // climbMotor.stopMotor();
+    climbMotor.stopMotor();
   }
 
   public void breakClimb(){
-    // climbMotor.setNeutralMode(true);
+    climbMotor.setNeutralMode(true);
   }
   
   public void coastClimb(){
-    // climbMotor.setNeutralMode(false);
+    climbMotor.setNeutralMode(false);
   }
 
   public double getArmAngle(){
-    return 0;
-    // return climbMotor.getCurrentPosition();
+    // return 0;
+    return climbMotor.getCurrentPosition();
   }
 
   public boolean getLimit() {
@@ -55,7 +55,7 @@ public class Climb extends SubsystemBase {
   }
 
   public void setAngle(double angle){
-    // climbMotor.setPosition(angle);
+    climbMotor.setPosition(angle);
   }
 
   @Override
