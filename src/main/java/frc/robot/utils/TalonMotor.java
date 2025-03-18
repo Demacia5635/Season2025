@@ -38,10 +38,6 @@ public class TalonMotor extends TalonFX {
   MotionMagicVoltage motionMagicVoltage = new MotionMagicVoltage(0).withSlot(0);
   PositionVoltage positionVoltage = new PositionVoltage(0).withSlot(0);
 
-  LogManager.LogEntry dutyCycleEntry;
-  LogManager.LogEntry velocityEntry;
-  LogManager.LogEntry positionEntry;
-
   StatusSignal<ControlModeValue> controlModeSignal;
   StatusSignal<Double> closedLoopSPSignal;
   StatusSignal<Double> closedLoopErrorSignal;
@@ -151,22 +147,18 @@ public class TalonMotor extends TalonFX {
   }
 
   private void addLog() {    
-    LogManager.addEntry(name + "/Position", positionSignal, 2);
-    LogManager.addEntry(name + "/Velocity", velocitySignal, 2);
-    LogManager.addEntry(name + "/Acceleration", accelerationSignal, 2);
-    LogManager.addEntry(name + "/Voltage", voltageSignal, 2);
+    LogManager.addEntry(name + "/Position", getPosition(), 2);
+    LogManager.addEntry(name + "/Velocity", getVelocity(), 2);
+    LogManager.addEntry(name + "/Acceleration", getAcceleration(), 2);
+    LogManager.addEntry(name + "/Voltage", getMotorVoltage(), 2);
     LogManager.addEntry(name + "/Current", getStatorCurrent(), 2);
-    LogManager.addEntry(name + "/CloseLoopError", closedLoopErrorSignal, 2);
-    LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput(), 1);
-    LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput(), 1);
-    LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput(), 1);
-    LogManager.addEntry(name + "/CloseLoopD", getClosedLoopDerivativeOutput(), 1);
-    LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward(), 1);
-    LogManager.addEntry(name + "/CloseLoopSP", closedLoopSPSignal, 2);
-
-    dutyCycleEntry = LogManager.getEntry(name + "/SetDutyCycle");
-    velocityEntry = LogManager.getEntry(name + "/SetVelocity");
-    positionEntry = LogManager.getEntry(name + "/SetPosition");
+    LogManager.addEntry(name + "/CloseLoopError", getClosedLoopError(), 2);
+    // LogManager.addEntry(name + "/CloseLoopOutput", getClosedLoopOutput(), 1);
+    // LogManager.addEntry(name + "/CloseLoopP", getClosedLoopProportionalOutput(), 1);
+    // LogManager.addEntry(name + "/CloseLoopI", getClosedLoopIntegratedOutput(), 1);
+    // LogManager.addEntry(name + "/CloseLoopD", getClosedLoopDerivativeOutput(), 1);
+    // LogManager.addEntry(name + "/CloseLoopFF", getClosedLoopFeedForward(), 1);
+    LogManager.addEntry(name + "/CloseLoopSP", getClosedLoopReference(), 2);
   }
 
   /**

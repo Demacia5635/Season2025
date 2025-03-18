@@ -22,9 +22,9 @@ public class Climb extends SubsystemBase {
     climbMotor = new TalonMotor(ClimebConstants.MOTOR_CONFIG);
     angleLimit = new DigitalInput(ClimebConstants.LIMIT_SWITCH_CHANNEL);
 
-    SmartDashboard.putData(getName() + "/" + ClimebConstants.NAME + " Motor", climbMotor);
+    // SmartDashboard.putData(getName() + "/" + ClimebConstants.NAME + " Motor", climbMotor);
 
-    LogManager.addEntry(getName() + "/climeb Angle", this::getArmAngle);
+    // LogManager.addEntry(getName() + "/climeb Angle", this::getArmAngle);
     LogManager.addEntry(getName() + "/climeb is on Limit Switch", this::getLimit);
 
     SmartDashboard.putData("Climb", this);

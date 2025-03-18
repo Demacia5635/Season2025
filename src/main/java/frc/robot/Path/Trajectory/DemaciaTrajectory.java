@@ -32,6 +32,7 @@ public class DemaciaTrajectory {
     private double trajectoryLength;
     private double distanceTraveledOnSegment;
     private ArrayList<PathPoint> points;
+    private ArrayList<PathPoint> pointsAfterFix;
     private RoundedPoint[] corners;
     private int segmentIndex;
     private Rotation2d wantedAngle;
@@ -62,12 +63,24 @@ public class DemaciaTrajectory {
         if (isRed)
             points = convertAlliance();
         fixFirstPoint(initialPose);
+
+        this.pointsAfterFix = new ArrayList<PathPoint>();  
             
-        
-       if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
-            LogManager.log("GOING THROUGH");
-            this.points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
+        for(int i = 0; i < points.size() - 1; i++){
+            if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
+                LogManager.log("GOING THROUGH");
+                var temp = AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle);
+                for (PathPoint p : temp) {
+                    pointsAfterFix.add(p);
+                }
+            }
+            else{
+                pointsAfterFix.add(points.get(i));
+            }
         }
+
+        this.points = pointsAfterFix;
+      
 
         initCorners();
 
@@ -76,7 +89,7 @@ public class DemaciaTrajectory {
         trajectoryLength = calcTrajectoryLength();
         distanceLeft = trajectoryLength;
 
-        drivePID = new PIDController(2, 0, 0);
+        
         this.isAlgae = isAlgae;
     }
 
@@ -159,9 +172,12 @@ public class DemaciaTrajectory {
         }
     }
 
-    PIDController drivePID;
+    private double getMaxVel(){
+        return segmentIndex == (segments.size() - 1) ? PathsConstraints.MAX_VELOCITY : PathsConstraints.FINISH_MAX_VELOCITY;
+    }
 
     private double getAccel(double distanceFromLastPoint){
+        if(segmentIndex == segments.size()-1) accel = PathsConstraints.FINISH_MAX_ACCEL;
         if(distanceFromLastPoint < 0.25) accel = 0.55;
         else accel = PathsConstraints.MAX_ACCEL;
         return accel;

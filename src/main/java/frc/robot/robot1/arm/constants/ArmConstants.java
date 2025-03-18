@@ -132,7 +132,7 @@ public class ArmConstants {
          * back limit -> the minimum angle
          * forward limit -> the maximum angle
          */
-        public static final double ENCODER_BASE_ANGLE = -1.6427876268177783170492703118216 + 4.786363960598457 - 4.7123889803846898576939650749193;
+        public static final double ENCODER_BASE_ANGLE = 3.2483987168809145 - 1.5*Math.PI;
         public static final double BACK_LIMIT = 3.7;
         public static final double FWD_LIMIT = 5.46;
 

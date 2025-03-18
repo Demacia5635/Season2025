@@ -15,7 +15,11 @@ public class TrajectoryConstants {
 
     public class PathsConstraints{
         public static final double MAX_VELOCITY = 3;
-        public static final double MAX_ACCEL = 3;
+        public static final double MAX_ACCEL = 8;
+
+        public static final double FINISH_MAX_VELOCITY = 1.5;
+        public static final double FINISH_MAX_ACCEL = 1.5;
+
         
     public static final double MAX_ROTATIONAL_VELOCITY = Math.toRadians(360); //in radians;
     public static final double MAX_ROTATIONAL_ACCEL = Math.toRadians(720); // in radians^2

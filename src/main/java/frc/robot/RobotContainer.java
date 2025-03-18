@@ -49,7 +49,6 @@ import frc.robot.robot1.gripper.commands.GripperDrive;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.leds.Robot1Strip;
 import frc.robot.leds.subsystems.LedManager;
-import frc.robot.practice.AllOffsets;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.Elastic;
 import frc.robot.utils.LogManager;
@@ -70,7 +69,6 @@ public class RobotContainer implements Sendable{
   public static LedManager ledManager;
   public static CommandController driverController;
   public static CommandController operatorController;
-  public static CommandController backUpController;
   public static boolean isRed;
   public static boolean isComp = DriverStation.isFMSAttached();
   private static boolean hasRemovedFromLog = false;
@@ -99,14 +97,13 @@ public class RobotContainer implements Sendable{
     ledManager = new LedManager();
     driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
-    backUpController = new CommandController(OperatorConstants.BACKUP_CONTROLLER_POERT, ControllerType.kXbox);
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
     LogManager.addEntry("Timer", ()-> DriverStation.getMatchTime());
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
-    SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
-    SmartDashboard.putData("Offsets/Practice", new AllOffsets());
+    // SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
+    // SmartDashboard.putData("Offsets/Practice", new AllOffsets());
     Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Start Robot Code", ""));
     
     configureSubsytems();
@@ -138,7 +135,7 @@ public class RobotContainer implements Sendable{
    */
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
-    CameraServer.startAutomaticCapture("POV Cam", 0);
+    // CameraServer.startAutomaticCapture("POV Cam", 0);
 
     chassis = new Chassis();
     arm = new Arm();
@@ -211,32 +208,6 @@ public class RobotContainer implements Sendable{
     
     operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
-
-    backUpController.getLeftStickMove().onTrue(new Drive(chassis, backUpController));
-    backUpController.getRightStickkMove().onTrue(new JoyClimeb(backUpController, climb));
-    backUpController.rightStick().onTrue(new OpenClimber(backUpController, climb));
-    backUpController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
-
-    backUpController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
-    backUpController.downButton().onTrue(new FollowTrajectory(chassis, false));
-    backUpController.leftButton().onTrue(new FollowTrajectory(chassis, true));
-    backUpController.upButton().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.STARTING)).ignoringDisable(true));
-    
-    backUpController.leftBumper().onTrue(new InstantCommand(()-> {
-      chassis.stop();
-      arm.stop();
-      gripper.stop();
-      climb.stopClimb();
-    }, chassis, arm, gripper, climb).ignoringDisable(true));
-    backUpController.rightBumper().onTrue(new GrabOrDrop(gripper));
-    
-    backUpController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
-    backUpController.povRight().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.FAR));
-    backUpController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
-    backUpController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
-
-    backUpController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
-    backUpController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
   }
 
   public static boolean isRed() {

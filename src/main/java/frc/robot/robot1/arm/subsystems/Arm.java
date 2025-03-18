@@ -122,8 +122,8 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
     /* add to smart dashboard the widgets of the talon motor */
-    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
-    SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
+    // SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
+    // SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
     /* add to smart dashboard the coast and brake of both motors */
     SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME + "/arm angle set brake",
@@ -156,7 +156,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putData("Manual Calibration", new InstantCommand(()-> hadCalibrated()).ignoringDisable(true));
 
     /* add the arm itself to the network tables */
-    SmartDashboard.putData(this);
+    // SmartDashboard.putData(this);
   }
 
   /**
