@@ -135,7 +135,7 @@ public class RobotContainer implements Sendable{
    */
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
-    // CameraServer.startAutomaticCapture("POV Cam", 0);
+    // CameraServer.startAutomaticCapture("POV Cam", 0).setResolution(160, 120);
 
     chassis = new Chassis();
     arm = new Arm();
