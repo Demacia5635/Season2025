@@ -23,7 +23,7 @@ public class ElevatorConstants {
         public static final double kP = 50;
         public static final double kI = 6;
         public static final double kD = 0;
-        public static final double kG = 0.225;
+        public static final double kG = 0.3;
         public static final double kV = 16;
         public static final double kS = 0.1;
         public static final double kA = 0.4;

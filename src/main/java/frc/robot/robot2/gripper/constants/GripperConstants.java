@@ -28,13 +28,13 @@ public class GripperConstants {
         // public static final int UP_BACK_SENSOR_CHANNEL = 2;
         public static final Pair<Integer, Integer> DOWN_SENSOR_CHANNEL = new Pair<Integer,Integer>(1, 8);
         public static final Pair<Integer, Integer> UP_SENSOR_CHANNELS = new Pair<Integer, Integer>(3, 6);
-        public static final double CORAL_IN_DOWN_SENSOR = 0.05;
-        public static final double CORAL_IN_UP_SENSOR = 0.064;
+        public static final double CORAL_IN_UP_SENSOR = 0.085;
+        public static final double CORAL_IN_DOWN_SENSOR = 0.04;
     }
 
     /** All the constants for the grab command */
     public static class GrabConstants {
-        public static final double FEED_POWER = 0.4;
+        public static final double FEED_POWER = 0.3;
     }
     
     public static class AlignCoralConstants {

@@ -111,6 +111,7 @@ public class ArmConstants {
 
     public static class ArmFFLookupTable {
         public static final double[][] values = {
+            {-2.5, 0.275, -0.2},
             {-2.204327446948554, 0.275, -0.15},
             {-1.1642884727620881, 0.275, -0.2},
             {-0.05, 0.22, -0.23},

@@ -143,6 +143,8 @@ public class RobotContainer implements Sendable{
     FieldTarget test2 = new FieldTarget(POSITION.B, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L4);
     driverController.leftButton().onTrue(new FollowTrajectory(chassis, testTarget));
     driverController.downButton().onTrue(new FollowTrajectory(chassis, test2));
+
+    driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
     operatorController.rightBumper().onTrue(new ClimbUntilSensor(climb));
     operatorController.leftBumper().onTrue(new InstantCommand(()-> {

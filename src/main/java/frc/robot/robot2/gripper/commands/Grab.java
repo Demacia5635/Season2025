@@ -65,7 +65,7 @@ public class Grab extends Command {
     gripper.stop();
     
     if (!interrupted) {
-      // new AlignCoral(gripper).schedule();
+      new AlignCoral(gripper).schedule();
     }
   }
 

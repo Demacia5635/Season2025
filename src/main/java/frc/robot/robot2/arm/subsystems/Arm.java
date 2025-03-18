@@ -116,7 +116,7 @@ public class Arm extends SubsystemBase {
     LogManager.addEntry(getName() + "/IsReady", this::isReady, 4);
 
     /* add to smart dashboard the widgets of the talon motor */
-    SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
+    // SmartDashboard.putData(getName() + "/" + ArmAngleMotorConstants.NAME, armAngleMotor);
     // SmartDashboard.putData(getName() + "/" + GripperAngleMotorConstants.NAME, gripperAngleMotor);
 
     /* add to smart dashboard the coast and brake of both motors */
@@ -250,7 +250,7 @@ public class Arm extends SubsystemBase {
     }
 
     if (Math.abs(targetAngle - getArmAngle()) >= Math.toRadians(2)) {
-      armAngleMotor.setPositionVoltage(targetAngle, armFFLookupTable.get(getArmAngle())[Math.signum(targetAngle - getArmAngle()) == 1 ? 0 : 1]); // , Math.cos(getArmAngle()) * ArmAngleMotorConstants.KG[slot]);
+      armAngleMotor.setPositionVoltage(targetAngle, armFFLookupTable.get(getArmAngle())[targetAngle - getArmAngle() <= 0 ? 0 : 1]); // , Math.cos(getArmAngle()) * ArmAngleMotorConstants.KG[slot]);
     } else {
       armAngleMotor.stopMotor();
     }
