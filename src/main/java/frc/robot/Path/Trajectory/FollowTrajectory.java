@@ -128,7 +128,7 @@ public class FollowTrajectory extends Command {
       RobotContainer.arm.setState(target.level);
     }
 
-    trajectory.maxVel = TrajectoryConstants.PathsConstraints.MAX_VELOCITY * RobotContainer.arm.getHowMuchReady(3);
+    //trajectory.maxVel = TrajectoryConstants.PathsConstraints.MAX_VELOCITY * RobotContainer.arm.getHowMuchReady(3);
   }
 
   @Override

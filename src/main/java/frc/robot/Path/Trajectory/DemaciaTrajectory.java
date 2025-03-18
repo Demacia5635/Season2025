@@ -43,7 +43,7 @@ public class DemaciaTrajectory {
     
     double accel;
 
-    double maxVel = TrajectoryConstants.PathsConstraints.MAX_VELOCITY;
+    double maxVel;
 
     /*
      * 
@@ -59,27 +59,27 @@ public class DemaciaTrajectory {
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
         this.isAuto = DriverStation.isAutonomous();
+        this.maxVel = PathsConstraints.MAX_VELOCITY;
 
         if (isRed)
             points = convertAlliance();
         fixFirstPoint(initialPose);
 
-        this.pointsAfterFix = new ArrayList<PathPoint>();  
             
-        for(int i = 0; i < points.size() - 1; i++){
-            if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
-                LogManager.log("GOING THROUGH");
-                var temp = AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle);
-                for (PathPoint p : temp) {
-                    pointsAfterFix.add(p);
-                }
-            }
-            else{
-                pointsAfterFix.add(points.get(i));
-            }
-        }
+        // for(int i = 0; i < points.size() - 1; i++){
+        //     if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
+        //         LogManager.log("GOING THROUGH");
+        //         var temp = AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle);
+        //         for (PathPoint p : temp) {
+        //             pointsAfterFix.add(p);
+        //         }
+        //     }
+        //     else{
+        //         pointsAfterFix.add(points.get(i));
+        //     }
+        // }
 
-        this.points = pointsAfterFix;
+        // this.points = pointsAfterFix;
       
 
         initCorners();
@@ -172,12 +172,9 @@ public class DemaciaTrajectory {
         }
     }
 
-    private double getMaxVel(){
-        return segmentIndex == (segments.size() - 1) ? PathsConstraints.MAX_VELOCITY : PathsConstraints.FINISH_MAX_VELOCITY;
-    }
 
     private double getAccel(double distanceFromLastPoint){
-        if(segmentIndex == segments.size()-1) accel = PathsConstraints.FINISH_MAX_ACCEL;
+        //if(segmentIndex == segments.size()-1) accel = PathsConstraints.FINISH_MAX_ACCEL;
         if(distanceFromLastPoint < 0.25) accel = 0.55;
         else accel = PathsConstraints.MAX_ACCEL;
         return accel;
@@ -187,6 +184,16 @@ public class DemaciaTrajectory {
 
         accel = getAccel(distanceFromLastPoint);
         
+        
+       
+        if(distanceFromLastPoint < 0.8){
+            accel = PathsConstraints.FINISH_MAX_ACCEL;
+            maxVel = PathsConstraints.FINISH_MAX_VELOCITY;
+        }
+        else{
+            accel = PathsConstraints.MAX_ACCEL;
+            maxVel = PathsConstraints.MAX_VELOCITY;
+        }
         double v = Math.sqrt((distanceFromLastPoint * 2) / accel) * accel; 
         return Math.min(maxVel,
                 Double.isNaN(v) ? 0 : v);
@@ -207,6 +214,7 @@ public class DemaciaTrajectory {
                 segmentIndex++;
         }
         double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
+        LogManager.log("VEL: " + velocity);
         
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double diffAngle = wantedAngle.minus(chassisPose.getRotation()).getRadians();
@@ -214,6 +222,10 @@ public class DemaciaTrajectory {
         if(Math.abs(diffAngle) > Math.toRadians(10)) wantedOmega = diffAngle * 3;
         else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
         else wantedOmega = diffAngle * 1.4; 
+
+        LogManager.log("DISTANCE: " + chassisPose.getTranslation()
+        .getDistance(points.get(points.size() - 1).getTranslation()));
+
         if ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))
