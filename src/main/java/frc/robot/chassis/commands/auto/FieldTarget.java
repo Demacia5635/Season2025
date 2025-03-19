@@ -206,7 +206,7 @@ public class FieldTarget {
 
     public Translation2d getCalcOffset() {
         boolean isScoring = level == LEVEL.L2 || level == LEVEL.L3;
-        Translation2d calculatedOffset = new Translation2d();
+        Translation2d calculatedOffset = Translation2d.kZero;
 
         if(isScoring){
             if (level == LEVEL.L2) {

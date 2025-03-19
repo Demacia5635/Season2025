@@ -209,7 +209,7 @@ public class DemaciaTrajectory {
         if ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))
-            wantedVelocity = new Translation2d();
+            wantedVelocity = Translation2d.kZero;
 
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
