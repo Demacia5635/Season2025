@@ -113,11 +113,10 @@ public class FollowTrajectory extends Command {
   @Override
   public void execute() {
     chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
-    if (trajectory.distanceLeft <= 1.6 && target != null && chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6) {
+    double disFromReef = chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter);
+    if (target != null && (disFromReef >= 1.4 && disFromReef <= 2 || target.level == LEVEL.FEEDER)) {
       RobotContainer.arm.setState(Arm.levelStateToArmState(target.level));
     }
-
-    //trajectory.maxVel = TrajectoryConstants.PathsConstraints.MAX_VELOCITY * RobotContainer.arm.getHowMuchReady(3);
   }
 
   @Override
