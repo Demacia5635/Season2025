@@ -1,15 +1,10 @@
 package frc.robot.chassis.commands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.chassis.utils.ChassisConstants;
-import frc.robot.robot1.climb.command.OpenClimber;
-import frc.robot.RobotContainer;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.CommandController;
-import frc.robot.utils.Utils;
 
 public class Drive extends Command {
     private Chassis chassis;
@@ -18,14 +13,11 @@ public class Drive extends Command {
     private boolean isRed;
     private ChassisSpeeds speeds;
     private static boolean precisionMode;
-    private boolean hasOpenedClimber;
 
     public Drive(Chassis chassis, CommandController controller) {
         this.chassis = chassis;
         this.controller = controller;
         Drive.precisionMode = false;
-        this.hasOpenedClimber = false;
-        
 
         addRequirements(chassis);
     }

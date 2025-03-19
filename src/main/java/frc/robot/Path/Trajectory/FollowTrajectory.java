@@ -36,6 +36,7 @@ import frc.robot.robot1.arm.constants.ArmConstants;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
+import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.vision.utils.VisionConstants;
 
@@ -49,6 +50,7 @@ public class FollowTrajectory extends Command {
   private boolean isScoring;
   private boolean useElasticTarget;
   private Command grabCommand;
+  private Timer waitToDropTimer = new Timer();
 
   public FollowTrajectory(Chassis chassis, boolean isScoring) {
     this.chassis = chassis;
@@ -100,7 +102,7 @@ public class FollowTrajectory extends Command {
     if (!usePoints) {
       points = new ArrayList<PathPoint>();
       this.wantedAngle = target.getFinishPoint().getRotation();
-      points.add(new PathPoint(new Translation2d(), Rotation2d.kZero));
+      points.add(PathPoint.kZero);
 
       points.add(target.getApproachingPoint());
       // LogManager.log("APPROACH: " + points.get(points.size() - 1));
@@ -117,14 +119,14 @@ public class FollowTrajectory extends Command {
 
     } else
       this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), false);
-    if (this.target != null)
-      RobotContainer.arm.setState(this.target.level);
+    // if (this.target != null)
+    //   RobotContainer.arm.setState(this.target.level);
   }
 
   @Override
   public void execute() {
     chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
-    if (trajectory.distanceLeft <= 1 && target != null) {
+    if (trajectory.distanceLeft <= 1 && target != null && chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6) {
       RobotContainer.arm.setState(target.level);
     }
 
@@ -146,10 +148,11 @@ public class FollowTrajectory extends Command {
         chassis.stop();
         if (DriverStation.isAutonomous()) {
         } else {
-          new WaitUntilCommand(RobotContainer.arm::isReady).andThen(new WaitCommand(0.4))
+          waitToDropTimer.start();
+          new WaitUntilCommand(() -> RobotContainer.arm.isReady() && waitToDropTimer.hasElapsed(0.2))
               .andThen(new Drop(RobotContainer.gripper),
                   new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
-                      .withTimeout(0.2))
+                      .withTimeout(0.2), new InstantCommand(()-> {waitToDropTimer.reset(); waitToDropTimer.reset();}))
               .schedule();
         }
       }
