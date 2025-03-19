@@ -6,13 +6,17 @@ package frc.robot.Path.Trajectory;
 
 import static frc.robot.Path.Trajectory.TrajectoryConstants.*;
 
+import java.nio.file.attribute.AclEntry;
 import java.util.ArrayList;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import frc.robot.Path.Utils.*;
+import frc.robot.utils.LogManager;
+import frc.robot.utils.Utils;
 
 /** Add your docs here. */
 public class DemaciaTrajectory {
@@ -26,7 +30,7 @@ public class DemaciaTrajectory {
     private Rotation2d wantedAngle;
     public double distanceLeft;
     Pose2d chassisPose = new Pose2d();
-    boolean isAlgae;
+    
     
     double accel;
 
@@ -37,8 +41,7 @@ public class DemaciaTrajectory {
      * given points based on blue alliance
      * 
      */
-    public DemaciaTrajectory(ArrayList<PathPoint> points, boolean isRed, Rotation2d wantedAngle, Pose2d initialPose,
-            boolean isAlgae) {
+    public DemaciaTrajectory(ArrayList<PathPoint> points, boolean isRed, Rotation2d wantedAngle, Pose2d initialPose) {
         this.segments = new ArrayList<Segment>();
         this.trajectoryLength = 0;
         this.distanceTraveledOnSegment = 0;
@@ -51,19 +54,20 @@ public class DemaciaTrajectory {
             points = convertAlliance();
         fixFirstPoint(initialPose);
 
-        this.pointsAfterFix = new ArrayList<>();
-        for(int i = 0; i < points.size() - 1; i++) {
-            if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
-                pointsAfterFix.addAll(AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle));
-            } else{
-                pointsAfterFix.add(points.get(i));
-                if (i == points.size() - 2) {
-                    pointsAfterFix.add(points.get(i+1));
-                }
-            }
-        }
+        // this.pointsAfterFix = new ArrayList<>();
+        // for(int i = 0; i < points.size() - 1; i++) {
+        //     if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
+        //         pointsAfterFix.addAll(AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle));
+        //     } else{
+        //         pointsAfterFix.add(points.get(i));
+        //         if (i == points.size() - 2) {
+        //             pointsAfterFix.add(points.get(i+1));
+        //         }
+        //     }
+        // }
 
-        this.points = pointsAfterFix;
+        // this.points = pointsAfterFix;
+
       
 
         initCorners();
@@ -74,7 +78,6 @@ public class DemaciaTrajectory {
         distanceLeft = trajectoryLength;
 
         
-        this.isAlgae = isAlgae;
     }
 
     private void fixFirstPoint(Pose2d initialPose) {
@@ -157,21 +160,15 @@ public class DemaciaTrajectory {
     }
 
 
-    private double getAccel(double distanceFromLastPoint){
-        //if(segmentIndex == segments.size()-1) accel = PathsConstraints.FINISH_MAX_ACCEL;
-        if(distanceFromLastPoint < 0.25) accel = 0.55;
-        else accel = PathsConstraints.MAX_ACCEL;
-        return accel;
-    }
+
 
     private double getVelocity(double distanceFromLastPoint) {
-
-        accel = getAccel(distanceFromLastPoint);
         
-        
-       
-        if(distanceFromLastPoint < 0.8){
-            accel = PathsConstraints.FINISH_MAX_ACCEL;
+        if(distanceFromLastPoint < Utils.distanceToDeaccel(PathsConstraints.FINISH_MAX_VELOCITY, 0, PathsConstraints.FINISH_ACCEL)+ 0.3){
+            accel = 1;
+        }
+        if(distanceFromLastPoint < PathsConstraints.DISTANCE_TO_SLOWER_VELOCITY){
+            
             maxVel = PathsConstraints.FINISH_MAX_VELOCITY;
         }
         else{
@@ -184,8 +181,6 @@ public class DemaciaTrajectory {
     }
 
     double lastDistance = 0;
-    
-
     public ChassisSpeeds calculate(Pose2d chassisPose) {
         this.chassisPose = chassisPose;
 
@@ -202,10 +197,11 @@ public class DemaciaTrajectory {
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double diffAngle = wantedAngle.minus(chassisPose.getRotation()).getRadians();
         double wantedOmega = 0;
-        if(Math.abs(diffAngle) > Math.toRadians(10)) wantedOmega = diffAngle * 3;
+        if(Math.abs(diffAngle) > Math.toRadians(10)) wantedOmega = diffAngle * 2.2;
         else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
         else wantedOmega = diffAngle * 1.4;
 
+        LogManager.log("WANTED VELOICTY: " + wantedVelocity.getNorm());
         if ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))
@@ -216,9 +212,7 @@ public class DemaciaTrajectory {
 
 
     public boolean isFinishedTrajectory() {
-        if (isAlgae)
-            return chassisPose.getTranslation()
-                    .getDistance(points.get(points.size() - 1).getTranslation()) <= 0.1;
+        
         return ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))

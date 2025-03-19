@@ -10,6 +10,7 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.utils.LogManager;
 import frc.robot.vision.Camera;
 import frc.robot.vision.Camera.CameraType;
 
@@ -133,7 +134,7 @@ private NetworkTableEntry pipeEntry;
       alpha = camToTagPitch + camera.getPitch();
       dist = (Math.abs(height - camera.getHeight())) * (Math.tan(Math.toRadians(alpha)));
       dist = dist/Math.cos(Math.toRadians(camToTagYaw));
-      // LogManager.log(camera.getName() + ":" + dist);
+      //LogManager.log(camera.getName() + ":" + dist);
       return Math.abs(dist);
     }
     alpha = camToTagPitch + camera.getPitch();

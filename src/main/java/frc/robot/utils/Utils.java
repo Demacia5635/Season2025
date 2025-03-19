@@ -152,4 +152,7 @@ public class Utils {
   public static double hypot(double x, double y) {
     return Math.sqrt(x*x + y*y);
   }
+  public static double distanceToDeaccel(double currentVelocity, double wantedVelocity, double accel){
+    return (Math.pow(currentVelocity, 2) - Math.pow(wantedVelocity, 2)) / (2 * accel);
+  }
 }

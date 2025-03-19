@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
@@ -27,6 +28,7 @@ import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
+import frc.robot.utils.LogManager;
 
 public class FollowTrajectory extends Command {
   private Chassis chassis;
@@ -93,7 +95,6 @@ public class FollowTrajectory extends Command {
       points.add(PathPoint.kZero);
 
       points.add(target.getApproachingPoint());
-      // LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
       if (target.level == LEVEL.FEEDER) {
@@ -102,22 +103,21 @@ public class FollowTrajectory extends Command {
         grabCommand.schedule();
       }
 
-      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(),
-          target.elementPosition == ELEMENT_POSITION.ALGEA);
+      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
 
     } else
-      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), false);
-    // if (this.target != null)
-    //   RobotContainer.arm.setState(this.target.level);
+      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
+    if (this.target != null)
+      RobotContainer.arm.setState(Arm.levelStateToArmState(target.level));
   }
 
   @Override
   public void execute() {
     chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
-    double disFromReef = chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter);
-    if (target != null && (disFromReef >= 1.4 && disFromReef <= 2 || target.level == LEVEL.FEEDER)) {
-      RobotContainer.arm.setState(Arm.levelStateToArmState(target.level));
-    }
+    // double disFromReef = chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter);
+    // if (target != null && (disFromReef >= 1.4 && disFromReef <= 4 || target.level == LEVEL.FEEDER)) {
+    //   RobotContainer.arm.setState(Arm.levelStateToArmState(target.level));
+    // }
   }
 
   @Override
@@ -145,7 +145,7 @@ public class FollowTrajectory extends Command {
       }
 
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
-        if(!DriverStation.isAutonomous()) AutoUtils.removeAlgae(target.level == LEVEL.ALGAE_TOP).schedule();
+        if(!DriverStation.isAutonomous()) AutoUtils.removeAlgae(target.level == LEVEL.ALGAE_TOP).andThen(new WaitCommand(0.2), new InstantCommand(()-> chassis.stop(), chassis), new FollowTrajectory(chassis, new FieldTarget(target.position, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3))).schedule();
         else chassis.stop();
       }
 

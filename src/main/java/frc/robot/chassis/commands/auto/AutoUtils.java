@@ -76,7 +76,7 @@ public class AutoUtils {
         if (algaeTop)
             return new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_TOP))
                     .andThen(new WaitCommand(0.1).andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
-                            new ChassisSpeeds(-4, 0, 0)), chassis)).withTimeout(0.6));
+                            new ChassisSpeeds(-3, 0, 0)), chassis)).withTimeout(0.6));
 
         return new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
                 .andThen(new WaitCommand(0.3)).andThen(

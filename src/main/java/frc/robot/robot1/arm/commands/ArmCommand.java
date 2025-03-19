@@ -99,7 +99,6 @@ public class ArmCommand extends Command {
       //         - 0.25
       //       , FieldConstants.L2_HEIGHT + 0.05
       //     );
-      //   LogManager.log(wantedAngle);
       //   if (wantedAngle.getFirst().isNaN() || wantedAngle.getSecond().isNaN()) {
       //     wantedAngle = ANGLES.L2;
       //   }

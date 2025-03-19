@@ -88,7 +88,7 @@ public class Chassis extends SubsystemBase {
         
         
         reefRight = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
-            new Camera("right", new Translation3d(0.14310487, -0.28932432, 0.777), 59, 0, CameraType.REEF));
+            new Camera("right", new Translation3d(0.14310487, -0.28932432, 0.777), 90-33, 0, CameraType.REEF));
 
         reefLeft = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
             new Camera("left", new Translation3d(0.1475, 0.291, 0.704),  65, 0, CameraType.REEF));
@@ -192,7 +192,7 @@ public class Chassis extends SubsystemBase {
         return wantedSpeeds;
         
     }
-    
+    double lastAngle = 0;
     private Translation2d calculateVelocity(double wantedSpeedsX, double wantedSpeedsY, double currentSpeedsX, double currentSpeedsY) {
         double wantedSpeedsNorm = Utils.hypot(wantedSpeedsX, wantedSpeedsY);
         double currentSpeedsNorm = Utils.hypot(currentSpeedsX, currentSpeedsY);
@@ -200,24 +200,25 @@ public class Chassis extends SubsystemBase {
         double currentSpeedsAngle = Utils.angleFromTranslation2d(currentSpeedsX, currentSpeedsY);
 
         if(wantedSpeedsNorm == 0 && currentSpeedsNorm == 0) return new Translation2d();
-
+        
         if(currentSpeedsNorm <0.1){
-            // LogManager.log("SMALL VEL");
+           
             double v = MathUtil.clamp(wantedSpeedsNorm, 0, currentSpeedsNorm + AccelConstants.MAX_DELTA_VELOCITY);
             return new Translation2d(v, Rotation2d.fromRadians(wantedSpeedsAngle));
         }
-        if(wantedSpeedsNorm == 0 && currentSpeedsNorm > 0.1) return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm), Rotation2d.fromRadians(currentSpeedsAngle));
-        
+        if(wantedSpeedsNorm == 0 && currentSpeedsNorm > 0.1 && lastAngle != 0){
+            
+            return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm), Rotation2d.fromRadians(lastAngle));
+        }
+        lastAngle = currentSpeedsAngle;
         double angleDiff = MathUtil.angleModulus(wantedSpeedsAngle - currentSpeedsAngle);
         double radius = currentSpeedsNorm / AccelConstants.MAX_OMEGA_VELOCITY;
-        // LogManager.log("RADIUS: " + radius);
         if(Math.abs(angleDiff) < 0.6 || radius < AccelConstants.MAX_RADIUS){
             
             return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm), Rotation2d.fromRadians(wantedSpeedsAngle));
         }
 
         double velocity = Math.min(AccelConstants.MAX_VELOCITY_TO_IGNORE_RADIUS, Math.max(currentSpeedsNorm - (AccelConstants.MAX_DELTA_VELOCITY), AccelConstants.MIN_VELOCITY));
-    //    LogManager.log("NEW VELOCITY: " + velocity);
         double radChange = Math.min(AccelConstants.MAX_OMEGA_VELOCITY, (velocity / AccelConstants.MAX_RADIUS) * CYCLE_DT);
         return new Translation2d(velocity, Rotation2d.fromRadians((radChange * Math.signum(angleDiff)) + currentSpeedsAngle));
         
@@ -425,7 +426,6 @@ public class Chassis extends SubsystemBase {
             double vX = MathUtil.clamp(-drivePID.calculate(diffVector.getX(), 0), -3.2, 3.2);
             double vY = MathUtil.clamp(-drivePID.calculate(diffVector.getY(), 0), -3.2, 3.2);
 
-            // LogManager.log("VX: " + vX + " VY: " + vY);
 
             setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation().getRadians());
         }
