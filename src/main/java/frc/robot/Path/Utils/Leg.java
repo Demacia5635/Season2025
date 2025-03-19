@@ -6,7 +6,6 @@ package frc.robot.Path.Utils;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import frc.robot.utils.LogManager;
 
 /** Add your docs here. */
 

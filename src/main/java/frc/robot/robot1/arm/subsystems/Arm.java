@@ -4,7 +4,6 @@
 
 package frc.robot.robot1.arm.subsystems;
 
-import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -73,9 +72,6 @@ public class Arm extends SubsystemBase {
   private boolean hasArmAngleReachedTarget;
   private double lastArmAngleTarget;
 
-  private boolean hasGripperAngleReachedTarget;
-  private double lastGripperAngleTarget;
-
   /**
    * creates a new Arm, should only be one
    * <br>
@@ -103,9 +99,6 @@ public class Arm extends SubsystemBase {
 
     hasArmAngleReachedTarget = false;
     lastArmAngleTarget = Double.MAX_VALUE;
-
-    hasGripperAngleReachedTarget = false;
-    lastGripperAngleTarget = Double.MAX_VALUE;
 
     /* add to network tables everything that needed */
     addNT();

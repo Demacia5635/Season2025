@@ -13,7 +13,6 @@ import frc.robot.Path.Utils.Segment;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
-import frc.robot.utils.LogManager;
 
 /** Add your docs here. */
 public class AvoidReef {

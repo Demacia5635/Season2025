@@ -16,11 +16,6 @@ import frc.robot.Path.Utils.Segment;
 import static frc.robot.chassis.utils.ChassisConstants.*;
 import static frc.robot.vision.utils.VisionConstants.*;
 
-import java.util.HashMap;
-
-import org.opencv.features2d.FlannBasedMatcher;
-
-import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 

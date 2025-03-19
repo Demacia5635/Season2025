@@ -7,24 +7,12 @@ package frc.robot.Path.Trajectory;
 import static frc.robot.Path.Trajectory.TrajectoryConstants.*;
 
 import java.util.ArrayList;
-import java.util.function.Supplier;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import frc.robot.RobotContainer;
 import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Path.Utils.*;
-import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
-import frc.robot.utils.LogManager;
 
 /** Add your docs here. */
 public class DemaciaTrajectory {
@@ -39,7 +27,6 @@ public class DemaciaTrajectory {
     public double distanceLeft;
     Pose2d chassisPose = new Pose2d();
     boolean isAlgae;
-    private boolean isAuto;
     
     double accel;
 
@@ -58,7 +45,6 @@ public class DemaciaTrajectory {
         this.points = points;
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
-        this.isAuto = DriverStation.isAutonomous();
         this.maxVel = PathsConstraints.MAX_VELOCITY;
 
         if (isRed)

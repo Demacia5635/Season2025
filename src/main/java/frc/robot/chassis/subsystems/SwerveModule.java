@@ -4,12 +4,8 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.Constants;
 import frc.robot.chassis.utils.ChassisConstants.SwerveModuleConfigs;
 import frc.robot.utils.Cancoder;
-import frc.robot.utils.CancoderConfig;
 import frc.robot.utils.TalonMotor;
 
 public class SwerveModule {

@@ -39,7 +39,6 @@ public class TrapezoidNoam {
 
     // Function to calculate the next velocity setpoint, based on remaining distance and current and target velocities
     public double calculate(double remainingDistance, double curentVelocity, double targetVelocity) {
-        double baseCurV = curentVelocity;
         // Case for negative remaining distance
         if(remainingDistance < 0) {
             return  -calculate(-remainingDistance, -curentVelocity, -targetVelocity);

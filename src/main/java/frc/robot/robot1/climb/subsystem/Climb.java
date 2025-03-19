@@ -9,7 +9,6 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.robot1.climb.ClimebConstants;
-import frc.robot.robot1.climb.ClimebConstants.ClimbConstants;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.TalonMotor;
 

@@ -5,41 +5,27 @@
 package frc.robot.Path.Trajectory;
 
 import static frc.robot.vision.utils.VisionConstants.O_TO_TAG;
-import static frc.robot.vision.utils.VisionConstants.TAG_ANGLE;
-
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.function.Supplier;
-
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
-import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.robot1.arm.constants.ArmConstants;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
-import frc.robot.utils.CommandController;
-import frc.robot.utils.LogManager;
-import frc.robot.vision.utils.VisionConstants;
 
 public class FollowTrajectory extends Command {
   private Chassis chassis;

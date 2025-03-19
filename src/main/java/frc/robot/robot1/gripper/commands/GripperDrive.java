@@ -14,8 +14,8 @@ public class GripperDrive extends Command {
     public GripperDrive(Gripper gripper, CommandController controller) {
         this.gripper = gripper;
         this.controller = controller;
-        this.leftBoost = leftBoost;
-        this.rightBoost = rightBoost;
+        this.leftBoost = false;
+        this.rightBoost = false;
         addRequirements(gripper);
     }
 

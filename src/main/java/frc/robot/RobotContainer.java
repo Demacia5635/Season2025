@@ -4,15 +4,11 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.net.WebServer;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -23,13 +19,11 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.PowerDistributionConstants;
 import frc.robot.Path.Trajectory.ChangeReefToClosest;
 import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
-import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AlgaeL3;
@@ -91,6 +85,7 @@ public class RobotContainer implements Sendable{
   public static Command leftAuto;
   public static Command middleAuto;
   public static Command rightAuto;
+  public final Timer timer = new Timer();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -104,7 +99,7 @@ public class RobotContainer implements Sendable{
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
-    LogManager.addEntry("Timer", ()-> DriverStation.getMatchTime());
+    LogManager.addEntry("Timer", ()-> 15-timer.get());
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     // SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     // SmartDashboard.putData("Offsets/Practice", new AllOffsets());
@@ -271,6 +266,7 @@ public class RobotContainer implements Sendable{
       arm.stop();
       gripper.stop();
       climb.stopClimb();
+      timer.stop();
     }, chassis, arm, gripper, climb
     ).withName("initDisableCommand").ignoringDisable(true);
   }
@@ -281,6 +277,8 @@ public class RobotContainer implements Sendable{
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+    timer.reset();
+    timer.start();
     switch (autoChooser.getSelected()) {
       case LEFT:
         return leftAuto;

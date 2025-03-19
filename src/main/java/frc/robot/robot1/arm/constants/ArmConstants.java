@@ -6,7 +6,6 @@ package frc.robot.robot1.arm.constants;
 
 import com.ctre.phoenix6.CANBus;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.Constants.CANBuses;
 import frc.robot.utils.TalonConfig;
 
@@ -201,19 +200,5 @@ public class ArmConstants {
             this.armAngle = armAngle;
             this.gripperAngle = gripperAngle;
         }
-    }
-
-    /**
-     * the field objects used for calculating what angles the arm needs to be even
-     * if its not perfectly in the field objects
-     * TODO: needs to remove this class after class of the field is created
-     */
-    public static class FieldConstants {
-        public static final Translation2d REEF = new Translation2d();
-        public static final Translation2d CORAL_STATION = new Translation2d();
-
-        public static final double L2_HEIGHT = 0.81;
-        public static final double L3_HEIGHT = 1.02;
-        public static final double CORAL_STATION_HEIGHT = 0;
     }
 }

@@ -847,7 +847,7 @@ public class LimelightHelpers {
     
         //System.out.println("Raw Fiducials Details:");
         for (int i = 0; i < pose.rawFiducials.length; i++) {
-            RawFiducial fiducial = pose.rawFiducials[i];
+            // RawFiducial fiducial = pose.rawFiducials[i];
             //System.out.printf(" Fiducial #%d:%n", i + 1);
             //System.out.printf("  ID: %d%n", fiducial.id);
             //System.out.printf("  TXNC: %.2f%n", fiducial.txnc);
