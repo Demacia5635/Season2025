@@ -24,6 +24,7 @@ import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.commands.auto.AlgaeL3;
@@ -87,6 +88,8 @@ public class RobotContainer implements Sendable{
   public static Command rightAuto;
   public final Timer timer = new Timer();
 
+  public static FEEDER_SIDE currentFeederSide;
+
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // WebServer.start(5800, Filesystem.getDeployDirectory().getPath());
@@ -121,6 +124,8 @@ public class RobotContainer implements Sendable{
         new FieldTarget(POSITION.F, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
       }
     ).ignoringDisable(true));
+
+    currentFeederSide = FEEDER_SIDE.MIDDLE;
   }
 
   /**
@@ -169,7 +174,9 @@ public class RobotContainer implements Sendable{
     driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
     driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
+    driverController.povRight().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.FAR));
     driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
+    driverController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
 
     driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
     driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));

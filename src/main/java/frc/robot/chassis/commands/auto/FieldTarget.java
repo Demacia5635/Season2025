@@ -161,8 +161,10 @@ public class FieldTarget {
             return position.getApproachPoint(smartApproachOffset.plus(realLeftReefOffset));
         } else if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
             return position.getApproachPoint(smartApproachOffset.plus(realRightReefOffset));
-        } else if (level == LEVEL.FEEDER) {
-            return position.getApproachPoint(getClosestFeeder());
+        } else if (elementPosition == ELEMENT_POSITION.FEEDER_LEFT) {
+            return position.getApproachPoint(smartApproachOffset.plus(leftIntakeOffset));
+        } else if (elementPosition == ELEMENT_POSITION.FEEDER_RIGHT) {
+            return position.getApproachPoint(smartApproachOffset.plus(rightIntakeOffset));
         } else {
             return position.getApproachPoint(smartApproachOffset);
         }
@@ -223,7 +225,13 @@ public class FieldTarget {
         }
         else{
             if(level == LEVEL.FEEDER){
-                calculatedOffset = getClosestFeeder();
+                if (elementPosition == ELEMENT_POSITION.FEEDER_LEFT) {
+                    calculatedOffset = intakeOffset.plus(leftIntakeOffset);
+                } else if (elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
+                    calculatedOffset = intakeOffset;
+                } else if (elementPosition == ELEMENT_POSITION.FEEDER_RIGHT) {
+                    calculatedOffset = intakeOffset.plus(rightIntakeOffset);
+                }
             }
             else if(level == LEVEL.ALGAE_TOP){
                 calculatedOffset = topAlgaeOffset;

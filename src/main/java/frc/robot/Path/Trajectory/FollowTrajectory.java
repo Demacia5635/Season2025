@@ -19,6 +19,7 @@ import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
+import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
@@ -73,9 +74,9 @@ public class FollowTrajectory extends Command {
     double distanceFromRight = chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()]);
 
     if (distanceFromLeft > distanceFromRight) {
-      return new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER);
+      return new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT), LEVEL.FEEDER);
     } else {
-      return new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER);
+      return new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER);
     }
   }
 
@@ -124,6 +125,7 @@ public class FollowTrajectory extends Command {
     if (!interrupted && !usePoints) {
 
       if (target.level == LEVEL.FEEDER) {
+        RobotContainer.currentFeederSide = FEEDER_SIDE.MIDDLE;
         chassis.stop();
       }
 
