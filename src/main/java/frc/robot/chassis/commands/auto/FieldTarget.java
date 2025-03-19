@@ -136,8 +136,22 @@ public class FieldTarget {
         return getElement(position.getId(), avoidReefOffset);
     }
 
+    public Translation2d getClosestFeeder() {
+        double closestDistance = Double.MAX_VALUE;
+        Translation2d closestOffset = Translation2d.kZero;
+        for (int i = 0; i < 9; i++) {
+            Translation2d offset = intakeOffset.plus(new Translation2d(0, 0.2032 * (i-4)));
+            double dis = RobotContainer.chassis.getPose().getTranslation().getDistance(getElement(position.getId(), offset).getTranslation());
+            if (closestDistance > dis) {
+                closestDistance = dis;
+                closestOffset = offset;
+            }
+        }
+        return closestOffset;
+    }
+
     public PathPoint getApproachingPoint(){
-        if(RobotContainer.chassis == null) return new PathPoint(new Translation2d(), new Rotation2d());
+        if(RobotContainer.chassis == null) return PathPoint.kZero;
         Translation2d smartApproachOffset = getSmartApproachOffset(); 
         if(elementPosition == ELEMENT_POSITION.ALGEA){
             
@@ -147,10 +161,8 @@ public class FieldTarget {
             return position.getApproachPoint(smartApproachOffset.plus(realLeftReefOffset));
         } else if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
             return position.getApproachPoint(smartApproachOffset.plus(realRightReefOffset));
-        } else if (elementPosition == ELEMENT_POSITION.FEEDER_LEFT) {
-            return position.getApproachPoint(smartApproachOffset.plus(leftIntakeOffset));
-        } else if (elementPosition == ELEMENT_POSITION.FEEDER_RIGHT) {
-            return position.getApproachPoint(smartApproachOffset.plus(rightIntakeOffset));
+        } else if (level == LEVEL.FEEDER) {
+            return position.getApproachPoint(getClosestFeeder());
         } else {
             return position.getApproachPoint(smartApproachOffset);
         }
@@ -211,13 +223,7 @@ public class FieldTarget {
         }
         else{
             if(level == LEVEL.FEEDER){
-                if (elementPosition == ELEMENT_POSITION.FEEDER_LEFT) {
-                    calculatedOffset = intakeOffset.plus(leftIntakeOffset);
-                } else if (elementPosition == ELEMENT_POSITION.FEEDER_MIDDLE) {
-                    calculatedOffset = intakeOffset;
-                } else if (elementPosition == ELEMENT_POSITION.FEEDER_RIGHT) {
-                    calculatedOffset = intakeOffset.plus(rightIntakeOffset);
-                }
+                calculatedOffset = getClosestFeeder();
             }
             else if(level == LEVEL.ALGAE_TOP){
                 calculatedOffset = topAlgaeOffset;
@@ -231,7 +237,7 @@ public class FieldTarget {
     }
 
     public static PathPoint getElement(int elementTag){
-        return getElement(elementTag, new Translation2d());
+        return getElement(elementTag, Translation2d.kZero);
     }
     public static PathPoint getElement(int elementTag, Translation2d offset){
         Translation2d originToTag = O_TO_TAG[elementTag];
