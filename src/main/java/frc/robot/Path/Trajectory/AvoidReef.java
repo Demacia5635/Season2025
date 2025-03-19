@@ -38,7 +38,7 @@ public class AvoidReef {
             id = ascending ? id + 1 : id - 1;
             id = normalize(id);
         }
-        pointsList.add(POSITION.values()[leaveId].getApproachPoint(new Translation2d(1.5, 0)));
+        pointsList.add(POSITION.values()[leaveId].getApproachPoint(new Translation2d(1.2, 0)));
         pointsList.add(new PathPoint(point1, wantedAngle));
         return pointsList;
 
