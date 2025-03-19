@@ -41,7 +41,7 @@ public class ArmConstants {
         public static final String NAME = "Arm Angle Motor";
 
         /* the pid and ff constants of the motor */
-        public static final double KP = 20;
+        public static final double KP = 22;
         public static final double KI = 1.0;
         public static final double KD = 0.75;
         public static final double KS = 0;
