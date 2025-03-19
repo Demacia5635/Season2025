@@ -87,7 +87,6 @@ public class AvoidReef {
     public static boolean isGoingThroughReef(Segment segment) {
         for (Segment reefSegment : AutoUtils.REEF_SEGMENTS) {
             boolean intersects = isIntersecting(segment, reefSegment);
-            LogManager.log("IS INTERSECTING: " + intersects);
             if (intersects) {
                 return true;
             }

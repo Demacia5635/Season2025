@@ -209,17 +209,13 @@ public class DemaciaTrajectory {
                 segmentIndex++;
         }
         double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
-        SmartDashboard.putNumber("VEL: ", velocity);
         
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double diffAngle = wantedAngle.minus(chassisPose.getRotation()).getRadians();
         double wantedOmega = 0;
         if(Math.abs(diffAngle) > Math.toRadians(10)) wantedOmega = diffAngle * 3;
         else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
-        else wantedOmega = diffAngle * 1.4; 
-
-        SmartDashboard.putNumber("DISTANCE: ", chassisPose.getTranslation()
-        .getDistance(points.get(points.size() - 1).getTranslation()));
+        else wantedOmega = diffAngle * 1.4;
 
         if ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
