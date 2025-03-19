@@ -179,30 +179,28 @@ public class Arm extends SubsystemBase {
     this.state = state;
   }
 
-  public void setState(LEVEL level) {
+  public static ARM_ANGLE_STATES levelStateToArmState(LEVEL level) {
     switch (level) {
+      case L1:
+        return ARM_ANGLE_STATES.L1;
+      
       case L2:
-        setState(ARM_ANGLE_STATES.L2);
-        break;
+        return ARM_ANGLE_STATES.L2;
       
       case L3:
-        setState(ARM_ANGLE_STATES.L3);
-        break;
+        return ARM_ANGLE_STATES.L3;
       
       case ALGAE_BOTTOM:
-        setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM);
-        break;
+        return ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM;
       
       case ALGAE_TOP:
-        setState(ARM_ANGLE_STATES.PRE_ALGAE_TOP);
-        break;
+        return ARM_ANGLE_STATES.PRE_ALGAE_TOP;
       
       case FEEDER:
-        setState(ARM_ANGLE_STATES.CORAL_STATION);
-        break;
+        return ARM_ANGLE_STATES.CORAL_STATION;
     
       default:
-        break;
+        return ARM_ANGLE_STATES.STARTING;
     }
   }
 

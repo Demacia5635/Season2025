@@ -34,6 +34,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.constants.ArmConstants;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
+import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.utils.CommandController;
@@ -86,9 +87,9 @@ public class FollowTrajectory extends Command {
     double distanceFromRight = chassis.getPose().getTranslation().getDistance(O_TO_TAG[POSITION.FEEDER_RIGHT.getId()]);
 
     if (distanceFromLeft > distanceFromRight) {
-      return new FieldTarget(POSITION.FEEDER_RIGHT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_RIGHT), LEVEL.FEEDER);
+      return new FieldTarget(POSITION.FEEDER_RIGHT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER);
     } else {
-      return new FieldTarget(POSITION.FEEDER_LEFT, FieldTarget.getFeeder(RobotContainer.currentFeederSide, POSITION.FEEDER_LEFT), LEVEL.FEEDER);
+      return new FieldTarget(POSITION.FEEDER_LEFT, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER);
     }
   }
 
@@ -127,7 +128,7 @@ public class FollowTrajectory extends Command {
   public void execute() {
     chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
     if (trajectory.distanceLeft <= 1.6 && target != null && chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6) {
-      RobotContainer.arm.setState(target.level);
+      RobotContainer.arm.setState(Arm.levelStateToArmState(target.level));
     }
 
     //trajectory.maxVel = TrajectoryConstants.PathsConstraints.MAX_VELOCITY * RobotContainer.arm.getHowMuchReady(3);
@@ -138,7 +139,6 @@ public class FollowTrajectory extends Command {
     if (!interrupted && !usePoints) {
 
       if (target.level == LEVEL.FEEDER) {
-        RobotContainer.currentFeederSide = FEEDER_SIDE.MIDDLE;
         chassis.stop();
       }
 
@@ -168,7 +168,8 @@ public class FollowTrajectory extends Command {
 
   @Override
   public boolean isFinished() {
-    return (trajectory.isFinishedTrajectory()) ||
+    return (target == null || RobotContainer.arm.getState().equals(Arm.levelStateToArmState(target.level)))
+      && (trajectory.isFinishedTrajectory()) ||
         (!usePoints
             && (target.level == LEVEL.FEEDER)
             && RobotContainer.gripper.isCoral());

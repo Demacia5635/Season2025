@@ -65,21 +65,16 @@ public class DemaciaTrajectory {
             points = convertAlliance();
         fixFirstPoint(initialPose);
 
-            
-        // for(int i = 0; i < points.size() - 1; i++){
-        //     if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
-        //         LogManager.log("GOING THROUGH");
-        //         var temp = AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle);
-        //         for (PathPoint p : temp) {
-        //             pointsAfterFix.add(p);
-        //         }
-        //     }
-        //     else{
-        //         pointsAfterFix.add(points.get(i));
-        //     }
-        // }
+        this.pointsAfterFix = new ArrayList<>();
+        for(int i = 0; i < points.size() - 1; i++){
+            if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
+                pointsAfterFix.addAll(AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle));
+            } else{
+                pointsAfterFix.add(points.get(i));
+            }
+        }
 
-        // this.points = pointsAfterFix;
+        this.points = pointsAfterFix;
       
 
         initCorners();
@@ -214,7 +209,7 @@ public class DemaciaTrajectory {
                 segmentIndex++;
         }
         double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
-        LogManager.log("VEL: " + velocity);
+        SmartDashboard.putNumber("VEL: ", velocity);
         
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double diffAngle = wantedAngle.minus(chassisPose.getRotation()).getRadians();
@@ -223,7 +218,7 @@ public class DemaciaTrajectory {
         else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
         else wantedOmega = diffAngle * 1.4; 
 
-        LogManager.log("DISTANCE: " + chassisPose.getTranslation()
+        SmartDashboard.putNumber("DISTANCE: ", chassisPose.getTranslation()
         .getDistance(points.get(points.size() - 1).getTranslation()));
 
         if ((chassisPose.getTranslation()

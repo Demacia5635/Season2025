@@ -18,6 +18,7 @@ import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.AlignCoral;
 import frc.robot.robot1.gripper.commands.Drop;
@@ -38,7 +39,7 @@ public class AlgaeL3 extends SequentialCommandGroup {
             AutoUtils.removeAlgae(false)
             .alongWith(new InstantCommand(()-> new AlignCoral(gripper).schedule())),
             new InstantCommand(() -> chassis.stop()),
-            new WaitCommand(0.1).alongWith(new InstantCommand(() -> arm.setState(LEVEL.L3))),
+            new WaitCommand(0.1).alongWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
             new FollowTrajectory(chassis, eCoral),
             new WaitUntilCommand(() -> !gripper.isCoralUpSensor()).alongWith(new InstantCommand(() -> new Drop(gripper).schedule())),
             new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)), chassis).withTimeout(0.3),

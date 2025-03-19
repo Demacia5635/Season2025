@@ -13,7 +13,7 @@ import frc.robot.Path.Utils.PathPoint;
 import frc.robot.vision.utils.VisionConstants;
 
 public class FieldTarget {
-    public static final Translation2d avoidReefOffset = new Translation2d(1.5, 0);
+    public static final Translation2d avoidReefOffset = new Translation2d(2, 0);
 
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);

@@ -12,6 +12,7 @@ import frc.robot.Path.Utils.PathPoint;
 import frc.robot.Path.Utils.Segment;
 import frc.robot.chassis.commands.auto.AutoUtils;
 import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
 import frc.robot.utils.LogManager;
 
 /** Add your docs here. */
@@ -23,40 +24,32 @@ public class AvoidReef {
 
         ArrayList<PathPoint> pointsList = new ArrayList<>();
 
-        LogManager.log("LAST POINT: " + point1);
         PathPoint entryPoint = getClosetPoint(point0);
         PathPoint leavePoint = getClosetPoint(point1);
 
-        LogManager.log("ENTRY: " + entryPoint);
-        LogManager.log("LEAVE: " + leavePoint);
         int id = findIndex(entryPoint);
         int leaveId = findIndex(leavePoint);
         boolean ascending = isPathAscending(id, leaveId);
 
-
-        LogManager.log("ENTRY ID: " + id);
-        LogManager.log("LEAVE ID: " + leaveId);
-        pointsList.add(new PathPoint(point0, new Rotation2d()));
+        pointsList.add(new PathPoint(point0, Rotation2d.kZero));
         pointsList.add(entryPoint);
 
         while (id != leaveId) {
             pointsList.add(FieldTarget.REEF_POINTS[id]);
             id = ascending ? id + 1 : id - 1;
             id = normalize(id);
-            
         }
+        pointsList.add(POSITION.values()[leaveId].getApproachPoint(new Translation2d(1.5, 0)));
         pointsList.add(new PathPoint(point1, wantedAngle));
-        LogManager.log("NEW POINTS: " + pointsList);
         return pointsList;
 
     }
 
     private static PathPoint getClosetPoint(Translation2d startingPos) {
-        double closetDistance = Integer.MAX_VALUE;
+        double closetDistance = Double.MAX_VALUE;
         int index = -1;
         for (int i = 0; i < FieldTarget.REEF_POINTS.length; i++) {
             if (FieldTarget.REEF_POINTS[i].getTranslation().getDistance(startingPos) < closetDistance) {
-                LogManager.log("REEF POINT " + i +": "+ (FieldTarget.REEF_POINTS[i]));
                 index = i;
                 closetDistance = FieldTarget.REEF_POINTS[i].getTranslation().getDistance(startingPos);
             }
@@ -66,7 +59,7 @@ public class AvoidReef {
 
     private static int findIndex(PathPoint point) {
         for (int i = 0; i < FieldTarget.REEF_POINTS.length; i++) {
-            if (point == FieldTarget.REEF_POINTS[i])
+            if (point.equals(FieldTarget.REEF_POINTS[i]))
                 return i;
         }
         return -1;

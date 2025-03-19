@@ -28,7 +28,7 @@ public class GripperConstants {
         // public static final int UP_BACK_SENSOR_CHANNEL = 2;
         public static final int DOWN_SENSOR_CHANNEL = 0;
         public static final Pair<Integer, Integer> UP_SENSOR_CHANNELS = new Pair<Integer, Integer>(2,3);
-        public static final double CORAL_IN_SENSOR = 4.75;
+        public static final double CORAL_IN_SENSOR = 4.2;
     }
 
     /** All the constants for the grab command */
@@ -37,8 +37,8 @@ public class GripperConstants {
     }
     
     public static class AlignCoralConstants {
-        public static final double DOWN_POWER = 0.175;
-        public static final double UP_POWER = -0.215;
+        public static final double DOWN_POWER = 0.225;
+        public static final double UP_POWER = -0.245;
     }
 
     /** All the constants for the drop command */
