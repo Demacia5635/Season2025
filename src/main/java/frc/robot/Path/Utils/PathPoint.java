@@ -14,6 +14,8 @@ import edu.wpi.first.math.geometry.Translation2d;
  *
  */
 public class PathPoint extends Pose2d{
+    public static final PathPoint kZero = new PathPoint(Translation2d.kZero, Rotation2d.kZero);
+
     double radius;
 
     public PathPoint(Translation2d p, Rotation2d r) {
