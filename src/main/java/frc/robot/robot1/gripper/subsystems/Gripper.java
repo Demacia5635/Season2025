@@ -135,7 +135,7 @@ public class Gripper extends SubsystemBase {
    * @return the sensor voltage
    */
   public double getDownSensor() {
-    return downSensor.getVoltage();
+    return downSensor.getAverageVoltage();
   }
 
   public boolean isCoralUpSensor() {
