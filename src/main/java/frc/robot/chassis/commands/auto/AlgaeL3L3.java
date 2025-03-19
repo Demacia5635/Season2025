@@ -36,11 +36,11 @@ import frc.robot.utils.LogManager;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AlgaeL3L3 extends SequentialCommandGroup {
 
-  final double FIELD_LENGTH = 17.54824934;
-  final double FIELD_HEIGHT = 8.05180000;
+    final double FIELD_LENGTH = 17.54824934;
+    final double FIELD_HEIGHT = 8.05180000;
 
-  boolean isRed;
-  boolean isRight;
+    boolean isRed;
+    boolean isRight;
 
   public AlgaeL3L3(Chassis chassis, Arm arm, Gripper gripper, boolean isRed, boolean isRight) {
 
@@ -67,15 +67,23 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
 
     addCommands(
+        new FollowTrajectory(chassis, coralF),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
+        .withTimeout(0.2),
+        
+        new FollowTrajectory(chassis, feeder),
+        new WaitUntilCommand(() -> gripper.isCoral()),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
+            .withTimeout(0.1)
+            .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
+        new InstantCommand(() -> chassis.stop(), chassis),
+
+
         new FollowTrajectory(chassis, aAlgaePoint),
         AutoUtils.removeAlgae(false),
         new InstantCommand(() -> chassis.stop(), chassis),
         new WaitCommand(0.2),
 
-        new FollowTrajectory(chassis, coralLeft)
-            .until(() -> chassis.isSeeTag(coralRight.position.getId(), 0, 10)
-            || chassis.isSeeTag(coralRight.position.getId(), 3, 10)),
-        new InstantCommand(()-> chassis.stop(), chassis),
         new FollowTrajectory(chassis, coralLeft),
         (new WaitUntilCommand(() -> !gripper.isCoral())
             .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
@@ -84,24 +92,14 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
             .withTimeout(0.3),
             
             
-            new FollowTrajectory(chassis, feeder)
+        new FollowTrajectory(chassis, feeder)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
-            new WaitUntilCommand(() -> gripper.isCoral()),
-            new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
+        new WaitUntilCommand(() -> gripper.isCoral()),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
             .withTimeout(0.1)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
-            new InstantCommand(()-> chassis.stop(), chassis),
+        new InstantCommand(()-> chassis.stop(), chassis),
             
-        (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
-            {
-                add(dummyPoint);
-                add(infrontReef);
-            }
-        }, correctRotation(-120))
-        .alongWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))))
-        .until(() -> chassis.isSeeTag(coralRight.position.getId(), 0, 10)
-            || chassis.isSeeTag(coralRight.position.getId(), 3, 10)),
-
         new FollowTrajectory(chassis, coralRight),
         !(gripper.getCurrentCommand() instanceof Drop) ? new InstantCommand(() -> new Drop(gripper).schedule())
             : new InstantCommand(),
@@ -121,22 +119,22 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)), chassis));
   }
 
-  private Pose2d correctPose(double x, double y, double angle) {
-    return new Pose2d(
-        isRed ? FIELD_LENGTH - x : x,
-        isRight ? isRed ? FIELD_HEIGHT - y : y : isRed ? y : FIELD_HEIGHT - y,
-        Rotation2d.fromDegrees(
-            isRight ? isRed ? -angle : angle : isRed ? angle : -angle));
-  }
+    private Pose2d correctPose(double x, double y, double angle) {
+        return new Pose2d(
+                isRed ? FIELD_LENGTH - x : x,
+                isRight ? isRed ? FIELD_HEIGHT - y : y : isRed ? y : FIELD_HEIGHT - y,
+                Rotation2d.fromDegrees(
+                        isRight ? isRed ? -angle : angle : isRed ? angle : -angle));
+    }
 
-  private Translation2d correctTranslation(double x, double y) {
-    return new Translation2d(
-        isRed ? FIELD_LENGTH - x : x,
-        isRight ? isRed ? FIELD_HEIGHT - y : y : isRed ? y : FIELD_HEIGHT - y);
-  }
+    private Translation2d correctTranslation(double x, double y) {
+        return new Translation2d(
+                isRed ? FIELD_LENGTH - x : x,
+                isRight ? isRed ? FIELD_HEIGHT - y : y : isRed ? y : FIELD_HEIGHT - y);
+    }
 
-  private Rotation2d correctRotation(double angle) {
-    return Rotation2d.fromDegrees(
-        isRight ? isRed ? -angle : angle : isRed ? angle : -angle);
-  }
+    private Rotation2d correctRotation(double angle) {
+        return Rotation2d.fromDegrees(
+                isRight ? isRed ? -angle : angle : isRed ? angle : -angle);
+    }
 }
