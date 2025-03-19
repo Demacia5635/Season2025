@@ -52,11 +52,14 @@ public class DemaciaTrajectory {
         fixFirstPoint(initialPose);
 
         this.pointsAfterFix = new ArrayList<>();
-        for(int i = 0; i < points.size() - 1; i++){
+        for(int i = 0; i < points.size() - 1; i++) {
             if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
                 pointsAfterFix.addAll(AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle));
             } else{
                 pointsAfterFix.add(points.get(i));
+                if (i == points.size() - 2) {
+                    pointsAfterFix.add(points.get(i+1));
+                }
             }
         }
 
