@@ -134,7 +134,7 @@ public class ArmConstants {
          */
         public static final double ENCODER_BASE_ANGLE = 3.2483987168809145 - 1.5*Math.PI;
         public static final double BACK_LIMIT = 3.7;
-        public static final double FWD_LIMIT = 5.46;
+        public static final double FWD_LIMIT = 5.4;
 
         /* The config of the motor based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
