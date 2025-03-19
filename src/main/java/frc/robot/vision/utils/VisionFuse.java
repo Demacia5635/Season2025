@@ -108,6 +108,16 @@ public class VisionFuse {
             return null; // If the tags array is not correctly initialized, return null.
         }
     }
+
+    public void set3D(boolean is3D){
+        for (Tag tag : tags) {
+            tag.set3D(is3D);
+        }
+    }
+
+    public double get3Dangle(){
+        return getBestCamera() != null ? tags[getBestCamera()].getAngle() : null;
+    }
     
     
 }

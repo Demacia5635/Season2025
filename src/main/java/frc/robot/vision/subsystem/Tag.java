@@ -111,9 +111,13 @@ private NetworkTableEntry pipeEntry;
     }
 
     if(wantedPip != Table.getEntry("getpipe").getDouble(0.0)){
-      pipeEntry.setDouble(wantedPip);
+      //pipeEntry.setDouble(wantedPip);
     }
 
+  }
+
+  public void set3D(boolean is3D){
+    pipeEntry.setDouble(is3D ? 1 : 0);
   }
 
   public int getTagId(){
