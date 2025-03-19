@@ -21,10 +21,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
 import frc.robot.Path.Trajectory.ChangeReefToClosest;
 import frc.robot.Path.Trajectory.FollowTrajectory;
+import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.FEEDER_SIDE;
@@ -69,9 +71,10 @@ public class RobotContainer implements Sendable{
   public static LedManager ledManager;
   public static CommandController driverController;
   public static CommandController operatorController;
-  public static boolean isRed;
   public static boolean isComp = DriverStation.isFMSAttached();
   private static boolean hasRemovedFromLog = false;
+  public static boolean isRed;
+  public static Trigger allianceTrigger;
 
   public static Chassis chassis;  
   public static Arm arm;
@@ -81,7 +84,7 @@ public class RobotContainer implements Sendable{
   
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
 
-  public final SendableChooser<AutoMode> autoChooser;
+  public SendableChooser<AutoMode> autoChooser;
   public enum AutoMode {
     LEFT, MIDDLE, RIGHT
   }
@@ -97,6 +100,7 @@ public class RobotContainer implements Sendable{
     ledManager = new LedManager();
     driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
+    allianceTrigger = new Trigger(() -> isRed);
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
@@ -110,22 +114,18 @@ public class RobotContainer implements Sendable{
     new AutoUtils();
     configureDefaultCommands();
     configureBindings();
+    configureAuto();
 
-    autoChooser = new SendableChooser<>();
-    autoChooser.setDefaultOption("LEFT", AutoMode.LEFT);
-    autoChooser.addOption("MIDDLE", AutoMode.MIDDLE);
-    autoChooser.addOption("RIGHT", AutoMode.RIGHT);
-    SmartDashboard.putData("AutoChooser", autoChooser);
-    leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
-    middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
-    rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
-    SmartDashboard.putData("Render Auto", new InstantCommand(() -> {
-      RobotContainer.leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, RobotContainer.isRed(), false));
-      RobotContainer.middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
-      RobotContainer.rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, RobotContainer.isRed(), true));
-    }).ignoringDisable(true));
-
-    currentFeederSide = FEEDER_SIDE.MIDDLE;
+    allianceTrigger.onChange(new InstantCommand(() ->
+      FieldTarget.REEF_POINTS = new PathPoint[]{
+        new FieldTarget(POSITION.A, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.B, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.C, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.D, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.E, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+        new FieldTarget(POSITION.F, ELEMENT_POSITION.FEEDER_MIDDLE, LEVEL.FEEDER).getReefAvoidPoint(),
+      }
+    ).ignoringDisable(true));
   }
 
   /**
@@ -154,8 +154,6 @@ public class RobotContainer implements Sendable{
     arm.setDefaultCommand(new ArmCommand(arm));
   }
 
-  public static FEEDER_SIDE currentFeederSide;
-
   private void configureBindings() {
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
@@ -176,9 +174,7 @@ public class RobotContainer implements Sendable{
     driverController.rightBumper().onTrue(new GrabOrDrop(gripper));
     
     driverController.povUp().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L3)).ignoringDisable(true));
-    driverController.povRight().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.FAR));
     driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
-    driverController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
 
     driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
     driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
@@ -208,6 +204,23 @@ public class RobotContainer implements Sendable{
     
     operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
+  }
+
+  private void configureAuto() {
+    autoChooser = new SendableChooser<>();
+    autoChooser.setDefaultOption("LEFT", AutoMode.LEFT);
+    autoChooser.addOption("MIDDLE", AutoMode.MIDDLE);
+    autoChooser.addOption("RIGHT", AutoMode.RIGHT);
+    SmartDashboard.putData("AutoChooser", autoChooser);
+    leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
+    middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
+    rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
+
+    allianceTrigger.onChange(new InstantCommand(() -> {
+      RobotContainer.leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, RobotContainer.isRed(), false));
+      RobotContainer.middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
+      RobotContainer.rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, RobotContainer.isRed(), true));
+    }).ignoringDisable(true));
   }
 
   public static boolean isRed() {
