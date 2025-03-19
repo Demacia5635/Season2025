@@ -126,7 +126,7 @@ public class FollowTrajectory extends Command {
   @Override
   public void execute() {
     chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
-    if (trajectory.distanceLeft <= 1 && target != null && chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6) {
+    if (trajectory.distanceLeft <= 1.6 && target != null && chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter) >= 1.6) {
       RobotContainer.arm.setState(target.level);
     }
 
