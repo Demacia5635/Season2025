@@ -148,7 +148,9 @@ public class FollowTrajectory extends Command {
       }
 
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
-        if(!DriverStation.isAutonomous()) AutoUtils.removeAlgae(target.level == LEVEL.ALGAE_TOP).andThen(new WaitCommand(0.2), new InstantCommand(()-> chassis.stop(), chassis), new FollowTrajectory(chassis, new FieldTarget(target.position, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3))).schedule();
+        if(!DriverStation.isAutonomous()) 
+          AutoUtils.removeAlgae(target.level == LEVEL.ALGAE_TOP).andThen(new WaitCommand(0.2), 
+          new FollowTrajectory(chassis, new FieldTarget(target.position, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3))).schedule();
         else chassis.stop();
       }
 
