@@ -198,7 +198,7 @@ public class Chassis extends SubsystemBase {
         double wantedSpeedsAngle = Utils.angleFromTranslation2d(wantedSpeedsX, wantedSpeedsY);
         double currentSpeedsAngle = Utils.angleFromTranslation2d(currentSpeedsX, currentSpeedsY);
 
-        if(wantedSpeedsNorm == 0 && currentSpeedsNorm == 0) return new Translation2d();
+        if(wantedSpeedsNorm == 0 && currentSpeedsNorm == 0) return Translation2d.kZero;
 
         if(currentSpeedsNorm <0.1){
             // LogManager.log("SMALL VEL");
