@@ -18,6 +18,9 @@ public class PathPoint extends Pose2d{
 
     double radius;
 
+    public PathPoint(Pose2d pose2d) {
+      this(pose2d.getTranslation(), pose2d.getRotation());
+    }
     public PathPoint(Translation2d p, Rotation2d r) {
       this(p.getX(),p.getY(),r,0);
     }
