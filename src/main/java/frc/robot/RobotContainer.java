@@ -46,6 +46,7 @@ import frc.robot.robot1.gripper.commands.GripperDrive;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 import frc.robot.leds.Robot1Strip;
 import frc.robot.leds.subsystems.LedManager;
+import frc.robot.practice.AllOffsets;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.Elastic;
 import frc.robot.utils.LogManager;
@@ -105,7 +106,7 @@ public class RobotContainer implements Sendable{
     LogManager.addEntry("Timer", ()-> 15-timer.get());
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     // SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
-    // SmartDashboard.putData("Offsets/Practice", new AllOffsets());
+    SmartDashboard.putData("Offsets/Practice", new AllOffsets().ignoringDisable(true));
     Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Start Robot Code", ""));
     
     configureSubsytems();

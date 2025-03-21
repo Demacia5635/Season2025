@@ -21,12 +21,11 @@ public class L3Right extends Command {
 
         this.lastX = 0;
         this.lastY = 0;
-        
-        SmartDashboard.putData("Offsets/L3 Right", this);
     }
-
+    
     @Override
     public void initialize() {
+        SmartDashboard.putData("Offsets/L3 Right", this);
         x = FieldTarget.l3Right.getX();
         y = FieldTarget.l3Right.getY();
 

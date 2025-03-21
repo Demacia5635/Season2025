@@ -21,12 +21,11 @@ public class L2Right extends Command {
 
         this.lastX = 0;
         this.lastY = 0;
-        
-        SmartDashboard.putData("Offsets/L2 Right", this);
     }
-
+    
     @Override
     public void initialize() {
+        SmartDashboard.putData("Offsets/L2 Right", this);
         x = FieldTarget.l2Right.getX();
         y = FieldTarget.l2Right.getY();
 

@@ -21,12 +21,11 @@ public class AlgaeBottom extends Command {
 
         this.lastX = 0;
         this.lastY = 0;
-        
-        SmartDashboard.putData("Offsets/Algae Bottom", this);
     }
-
+    
     @Override
     public void initialize() {
+        SmartDashboard.putData("Offsets/Algae Bottom", this);
         x = FieldTarget.bottomAlgaeOffset.getX();
         y = FieldTarget.bottomAlgaeOffset.getY();
 
