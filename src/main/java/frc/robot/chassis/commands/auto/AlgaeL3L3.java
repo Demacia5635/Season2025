@@ -4,6 +4,11 @@
 
 package frc.robot.chassis.commands.auto;
 
+import java.util.ArrayList;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -11,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Path.Trajectory.FollowTrajectory;
+import frc.robot.Path.Utils.PathPoint;
 import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
 import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
@@ -36,6 +42,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     this.isRed = isRed;
     this.isRight = isRight;
 
+    PathPoint dummyPoint = PathPoint.kZero;
     // PathPoint infrontReef = new PathPoint(correctTranslation(3.3, FIELD_HEIGHT - 6), correctRotation(-120));
     // FieldTarget fAlgaeTarget = new FieldTarget(isRight ? POSITION.D : POSITION.F, ELEMENT_POSITION.ALGEA,
     //     LEVEL.ALGAE_TOP);
@@ -54,32 +61,44 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     FieldTarget backupCoral = new FieldTarget(POSITION.B,
         isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
 
+
     addCommands(
         new FollowTrajectory(chassis, coralF),
         (new WaitUntilCommand(() -> !gripper.isCoral())
             .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
             .withTimeout(0.7),
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
-        .withTimeout(0.2),
+        .withTimeout(0.05),
         
+        // (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
+        //     {
+        //         add(dummyPoint);
+        //         add(new PathPoint(chassis.getPose()));
+        //     }
+        // }, feederAngle)),
+        new FollowTrajectory(chassis, new ArrayList<PathPoint>(){
+            {
+                add(dummyPoint);
+                add(new PathPoint(correctPose(1.7, 1.77, -60)));
+            }
+        }, correctRotation(-60))
+        .raceWith(new RunCommand(()->arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
+
         new FollowTrajectory(chassis, feeder),
         new WaitUntilCommand(() -> gripper.isCoral()),
-        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
-            .withTimeout(0.1),
-        new InstantCommand(() -> chassis.stop(), chassis),
-
-        new FollowTrajectory(chassis, aAlgaePoint),
+        new WaitCommand(0.1),
+        new FollowTrajectory(chassis, aAlgaePoint)
+            .raceWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM))),
         AutoUtils.removeAlgae(false),
-        new InstantCommand(() -> chassis.stop(), chassis),
-        new WaitCommand(0.2),
+        new WaitCommand(0.1),
 
-        new FollowTrajectory(chassis, coralLeft),
+        new FollowTrajectory(chassis, coralLeft)
+            .raceWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
         (new WaitUntilCommand(() -> !gripper.isCoral())
             .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
             .withTimeout(0.7),
         new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
-            .withTimeout(0.3),
-            
+            .withTimeout(0.1),
             
         new FollowTrajectory(chassis, feeder)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
@@ -88,8 +107,9 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
             .withTimeout(0.1)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
         new InstantCommand(()-> chassis.stop(), chassis),
-            
-        new FollowTrajectory(chassis, coralRight),
+
+        new FollowTrajectory(chassis, coralRight)
+            .raceWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
         !(gripper.getCurrentCommand() instanceof Drop) ? new InstantCommand(() -> new Drop(gripper).schedule())
             : new InstantCommand(),
         new WaitUntilCommand(() -> !gripper.isCoralUpSensor())
@@ -114,22 +134,22 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     );
   }
 
-    // private Pose2d correctPose(double x, double y, double angle) {
-    //     return new Pose2d(
-    //             isRed ? FIELD_LENGTH - x : x,
-    //             isRight ? isRed ? FIELD_HEIGHT - y : y : isRed ? y : FIELD_HEIGHT - y,
-    //             Rotation2d.fromDegrees(
-    //                     isRight ? isRed ? -angle : angle : isRed ? angle : -angle));
-    // }
+    private Pose2d correctPose(double x, double y, double angle) {
+        return new Pose2d(
+                isRed ? FIELD_LENGTH - x : x,
+                isRight ? isRed ? FIELD_HEIGHT - y : y : isRed ? y : FIELD_HEIGHT - y,
+                Rotation2d.fromDegrees(
+                        isRight ? isRed ? -angle : angle : isRed ? angle : -angle));
+    }
 
-    // private Translation2d correctTranslation(double x, double y) {
-    //     return new Translation2d(
-    //             isRed ? FIELD_LENGTH - x : x,
-    //             isRight ? isRed ? FIELD_HEIGHT - y : y : isRed ? y : FIELD_HEIGHT - y);
-    // }
+    private Translation2d correctTranslation(double x, double y) {
+        return new Translation2d(
+                isRed ? FIELD_LENGTH - x : x,
+                isRight ? isRed ? FIELD_HEIGHT - y : y : isRed ? y : FIELD_HEIGHT - y);
+    }
 
-    // private Rotation2d correctRotation(double angle) {
-    //     return Rotation2d.fromDegrees(
-    //             isRight ? isRed ? -angle : angle : isRed ? angle : -angle);
-    // }
+    private Rotation2d correctRotation(double angle) {
+        return Rotation2d.fromDegrees(
+                isRight ? isRed ? -angle : angle : isRed ? angle : -angle);
+    }
 }
