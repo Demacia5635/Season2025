@@ -135,6 +135,6 @@ public class LedStrip extends SubsystemBase{
   public void initSendable(SendableBuilder builder) {
     super.initSendable(builder);
     
-    builder.addStringArrayProperty("Colors", this::getColorsAsHex, null);
+    // builder.addStringArrayProperty("Colors", this::getColorsAsHex, null);
   }
 }
