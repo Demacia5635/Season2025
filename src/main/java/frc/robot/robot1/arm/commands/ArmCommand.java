@@ -132,7 +132,7 @@ public class ArmCommand extends Command {
    */
   @Override
   public void initSendable(SendableBuilder builder) {
-    super.initSendable(builder);
+    // super.initSendable(builder);
 
     builder.addDoubleProperty("Test Arm Angle", () -> testArmAngle, value -> testArmAngle = value);
     builder.addDoubleProperty("Test Gripper Angle", () -> testGripperAngle, value -> testGripperAngle = value);

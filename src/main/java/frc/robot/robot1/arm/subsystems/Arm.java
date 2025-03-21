@@ -7,6 +7,7 @@ package frc.robot.robot1.arm.subsystems;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -363,9 +364,9 @@ public class Arm extends SubsystemBase {
       LogManager.log("gripper target Angle is NaN", AlertType.kError);
       return;
     }
-    if (!gripperAngleAbsoluteSensor.isConnected()) {
-      return;
-    }
+    // if (!gripperAngleAbsoluteSensor.isConnected()) {
+    //   return;
+    // }
 
     // if (lastGripperAngleTarget != targetAngle) {
     //   hasGripperAngleReachedTarget = false;
@@ -502,8 +503,10 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     /* check if the gripper angle absolute sensor is connected */
-    if (!gripperAngleAbsoluteSensor.isConnected()) {
-      LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
+    if (Timer.getFPGATimestamp() % 5 == 0) {
+      if (!gripperAngleAbsoluteSensor.isConnected()) {
+        LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
+      }
     }
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */

@@ -82,10 +82,10 @@ public class Gripper extends SubsystemBase {
     LogManager.addEntry(getName() + "/Is Coral", this::isCoral, 4);
 
     /* put function to put the motor at brake and coast */
-    SmartDashboard.putData(getName() + "/Motor" + "/set Brake",
-        new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
-    SmartDashboard.putData(getName() + "/Motor" + "/set Coast",
-        new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
+    // SmartDashboard.putData(getName() + "/Motor" + "/set Brake",
+    //     new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
+    // SmartDashboard.putData(getName() + "/Motor" + "/set Coast",
+    //     new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
 
     /* put the gripper itself in the smart dashboard */
     // SmartDashboard.putData(this);
@@ -140,13 +140,13 @@ public class Gripper extends SubsystemBase {
 
   public boolean isCoralUpSensor() {
     // return true;
-    return getUpSensor() < 0.1;
+    return getUpSensor() < SensorConstants.CORAL_IN_UP_SENSOR;
     // return getUpFrontSensor() < SensorConstants.CORAL_IN_SENSOR 
     // || getUpBackSensor() < SensorConstants.CORAL_IN_SENSOR;
   }
 
   public boolean isCoralDownSensor() {
-    return getDownSensor() < SensorConstants.CORAL_IN_SENSOR;
+    return getDownSensor() < SensorConstants.CORAL_IN_DOWN_SENSOR;
   }
 
   /**
