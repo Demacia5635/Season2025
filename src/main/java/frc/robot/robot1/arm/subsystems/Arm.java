@@ -291,7 +291,7 @@ public class Arm extends SubsystemBase {
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
     if (!isCalibrated) {
-      LogManager.log("Can not move motor before calibration", AlertType.kError);
+      // LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
     }
     if (Double.isNaN(targetAngle)) {
@@ -356,7 +356,7 @@ public class Arm extends SubsystemBase {
    */
   public void gripperAngleMotorSetPositionVoltage(double targetAngle) {
     if (!isCalibrated) {
-      LogManager.log("Can not move motor before calibration", AlertType.kError);
+      // LogManager.log("Can not move motor before calibration", AlertType.kError);
       return;
     }
     if (Double.isNaN(targetAngle)) {

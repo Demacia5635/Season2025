@@ -25,6 +25,7 @@ import edu.wpi.first.util.datalog.DataLog;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
 import edu.wpi.first.wpilibj.DataLogManager;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Alert.AlertType;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
@@ -55,6 +56,7 @@ public class LogManager extends SubsystemBase {
     DoublePublisher ntPublisherDouble; // network table punlisher
     BooleanPublisher ntPublisherBoolean;
     double lastValue = Double.MAX_VALUE; // last value - only logging when value changes
+    Timer timer;
 
     /*
      * the log levels are this:
@@ -95,6 +97,8 @@ public class LogManager extends SubsystemBase {
         ntPublisherDouble = null;
         ntPublisherBoolean = null;
       }
+      timer = new Timer();
+      timer.start();
     }
 
     /*
@@ -102,25 +106,28 @@ public class LogManager extends SubsystemBase {
      * get the data from the getters and call the actual log
      */
     void log() {
-      double v;
-      long time = 0;
-
-      if (phoenix6Status != null) {
-        var st = phoenix6Status.refresh();
-        if (st.getStatus() == StatusCode.OK) {
-          v = st.getValueAsDouble();
+      if (timer.hasElapsed(0.02 * 15)) {
+        timer.reset();
+        double v;
+        long time = 0;
+        
+        if (phoenix6Status != null) {
+          var st = phoenix6Status.refresh();
+          if (st.getStatus() == StatusCode.OK) {
+            v = st.getValueAsDouble();
           time = (long) (st.getTimestamp().getTime() * 1000);
         } else {
           v = 1000000 + st.getStatus().value;
         }
-      } else if (getterBoolean != null) {
-        v = getterBoolean.getAsBoolean() ? 1 : 0;
-        time = 0;
-      } else {
-        v = getterDouble.getAsDouble();
-        time = 0;
+        } else if (getterBoolean != null) {
+          v = getterBoolean.getAsBoolean() ? 1 : 0;
+          time = 0;
+        } else {
+          v = getterDouble.getAsDouble();
+          time = 0;
+        }
+        log(v, time);
       }
-      log(v, time);
     }
 
     /*

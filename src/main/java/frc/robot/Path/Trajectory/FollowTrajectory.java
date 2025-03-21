@@ -7,6 +7,7 @@ package frc.robot.Path.Trajectory;
 import static frc.robot.vision.utils.VisionConstants.O_TO_TAG;
 import java.util.ArrayList;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -95,6 +96,7 @@ public class FollowTrajectory extends Command {
       points.add(PathPoint.kZero);
 
       points.add(target.getApproachingPoint());
+      // LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
       if (target.level == LEVEL.FEEDER) {
@@ -113,7 +115,8 @@ public class FollowTrajectory extends Command {
 
   @Override
   public void execute() {
-    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
+    ChassisSpeeds speeds = chassis.getChassisSpeedsFieldRel();
+    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose(), new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond).getNorm()));
     // double disFromReef = chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter);
     // if (target != null && (disFromReef >= 1.4 && disFromReef <= 4 || target.level == LEVEL.FEEDER)) {
     //   RobotContainer.arm.setState(Arm.levelStateToArmState(target.level));

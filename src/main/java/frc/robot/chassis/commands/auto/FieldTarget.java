@@ -20,7 +20,7 @@ public class FieldTarget {
     public static Translation2d topAlgaeOffset = new Translation2d(0.5, -0.18);
     public static Translation2d bottomAlgaeOffset = new Translation2d(0.5, -0.18);
 
-    public static Translation2d intakeOffset = new Translation2d(0.76, 0);
+    public static Translation2d intakeOffset = new Translation2d(1.76, 0);
     public static Translation2d rightIntakeOffset = new Translation2d(0, 0.75);
     public static Translation2d leftIntakeOffset = new Translation2d(0, -0.75);
 
@@ -161,13 +161,19 @@ public class FieldTarget {
             return position.getApproachPoint(smartApproachOffset.plus(realLeftReefOffset));
         } else if (elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
             return position.getApproachPoint(smartApproachOffset.plus(realRightReefOffset));
-        } else if (elementPosition == ELEMENT_POSITION.FEEDER_LEFT) {
-            return position.getApproachPoint(smartApproachOffset.plus(leftIntakeOffset));
-        } else if (elementPosition == ELEMENT_POSITION.FEEDER_RIGHT) {
-            return position.getApproachPoint(smartApproachOffset.plus(rightIntakeOffset));
-        } else {
-            return position.getApproachPoint(smartApproachOffset);
+        } else if (level == LEVEL.FEEDER){
+            if(elementPosition == ELEMENT_POSITION.FEEDER_LEFT){
+                position.getApproachPoint(intakeOffset.plus(leftIntakeOffset));
+            }
+            else if(elementPosition == ELEMENT_POSITION.FEEDER_LEFT){
+                position.getApproachPoint(intakeOffset.plus(leftIntakeOffset));
+            }
+            else 
+                position.getApproachPoint(intakeOffset);
+            
         }
+        return position.getApproachPoint(smartApproachOffset);
+        
     }
 
     public Translation2d getSmartApproachOffset(){

@@ -17,13 +17,13 @@ public class TrajectoryConstants {
 
 
     public class PathsConstraints {
-        public static final double MAX_VELOCITY = 3;
+        public static final double MAX_VELOCITY = 3.6;
         public static final double MAX_ACCEL = 8;
-        public static final double FINISH_MAX_VELOCITY = 1;
+        public static final double FINISH_MAX_VELOCITY = 2;
         public static final double FINISH_ACCEL = 2;
 
 
-        public static final double DISTANCE_TO_SLOWER_VELOCITY = Utils.distanceToDeaccel(MAX_VELOCITY, FINISH_MAX_VELOCITY, MAX_ACCEL) + Utils.distanceToDeaccel(FINISH_MAX_VELOCITY, 0, FINISH_ACCEL);
+        public static final double DISTANCE_TO_SLOWER_VELOCITY = Utils.distanceToDeaccel(MAX_VELOCITY, FINISH_MAX_VELOCITY, FINISH_ACCEL) + Utils.distanceToDeaccel(FINISH_MAX_VELOCITY, 0, FINISH_ACCEL);
         public static final double MAX_ROTATIONAL_VELOCITY = Math.toRadians(360); // in radians;
         public static final double MAX_ROTATIONAL_ACCEL = Math.toRadians(720); // in radians^2
 

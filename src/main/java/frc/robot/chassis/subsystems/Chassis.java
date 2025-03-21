@@ -112,8 +112,7 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("field", field);
         // SmartDashboard.putData("ultfielf", fieldTag);
         // SmartDashboard.putData("fieldTest", fieldTest);
-        // LogManager.addEntry("VELOCITY NORM: ", () -> new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
-        //         getChassisSpeedsRobotRel().vyMetersPerSecond).getNorm());
+        LogManager.addEntry("VELOCITY NORM: ", () -> Utils.hypot(getChassisSpeedsRobotRel().vxMetersPerSecond, getChassisSpeedsRobotRel().vyMetersPerSecond));
         // LogManager.addEntry("Chassis/vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
         // LogManager.addEntry("Chassis/vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
         SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
@@ -200,25 +199,25 @@ public class Chassis extends SubsystemBase {
         double currentSpeedsAngle = Utils.angleFromTranslation2d(currentSpeedsX, currentSpeedsY);
 
         if(wantedSpeedsNorm == 0 && currentSpeedsNorm == 0) return new Translation2d();
-        
+
         if(currentSpeedsNorm <0.1){
-           
+            // LogManager.log("SMALL VEL");
             double v = MathUtil.clamp(wantedSpeedsNorm, 0, currentSpeedsNorm + AccelConstants.MAX_DELTA_VELOCITY);
             return new Translation2d(v, Rotation2d.fromRadians(wantedSpeedsAngle));
         }
-        if(wantedSpeedsNorm == 0 && currentSpeedsNorm > 0.1 && lastAngle != 0){
-            
-            return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm), Rotation2d.fromRadians(lastAngle));
-        }
+
+        if(wantedSpeedsNorm == 0 && currentSpeedsNorm > 0.1) return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm), Rotation2d.fromRadians(lastAngle));
         lastAngle = currentSpeedsAngle;
         double angleDiff = MathUtil.angleModulus(wantedSpeedsAngle - currentSpeedsAngle);
         double radius = currentSpeedsNorm / AccelConstants.MAX_OMEGA_VELOCITY;
+        // LogManager.log("RADIUS: " + radius);
         if(Math.abs(angleDiff) < 0.6 || radius < AccelConstants.MAX_RADIUS){
             
             return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm), Rotation2d.fromRadians(wantedSpeedsAngle));
         }
 
         double velocity = Math.min(AccelConstants.MAX_VELOCITY_TO_IGNORE_RADIUS, Math.max(currentSpeedsNorm - (AccelConstants.MAX_DELTA_VELOCITY), AccelConstants.MIN_VELOCITY));
+    //    LogManager.log("NEW VELOCITY: " + velocity);
         double radChange = Math.min(AccelConstants.MAX_OMEGA_VELOCITY, (velocity / AccelConstants.MAX_RADIUS) * CYCLE_DT);
         return new Translation2d(velocity, Rotation2d.fromRadians((radChange * Math.signum(angleDiff)) + currentSpeedsAngle));
         
@@ -334,18 +333,20 @@ public class Chassis extends SubsystemBase {
 
 
     Pose2d visionFusePoseEstimation;
+    Rotation2d gyroAngle;
 
     @Override
     public void periodic() {
         visionFusePoseEstimation = visionFuse.getPoseEstemation();
+        gyroAngle = getGyroAngle();
         if (visionFusePoseEstimation != null) {
-            updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(), getGyroAngle()));
+            updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(), gyroAngle));
             // fieldTag.setRobotPose(visionFusePoseEstimation);
             // if (visionFuse.get2dAngle() != null){
             //     fieldTest.setRobotPose(new Pose2d(visionFusePoseEstimation.getTranslation(), visionFuse.get2dAngle()));
             // }
         }
-        poseEstimator.update(getGyroAngle(), getModulePositions());
+        poseEstimator.update(gyroAngle, getModulePositions());
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
 
