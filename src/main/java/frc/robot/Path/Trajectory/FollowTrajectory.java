@@ -142,7 +142,7 @@ public class FollowTrajectory extends Command {
           new WaitUntilCommand(() -> RobotContainer.arm.isReady() && waitToDropTimer.hasElapsed(0.2))
               .andThen(new Drop(RobotContainer.gripper),
                   new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
-                      .withTimeout(0.2), new InstantCommand(()-> {waitToDropTimer.reset(); waitToDropTimer.reset();}))
+                      .withTimeout(0.2), new InstantCommand(()-> {waitToDropTimer.reset(); waitToDropTimer.stop();}))
               .schedule();
         }
       }
