@@ -102,10 +102,6 @@ public class Robot1Strip extends LedStrip {
                 }
             }
         }
-
-        if (RobotContainer.robotContainer.getEnableInitCommand().isScheduled()) {
-            setSolidGay();
-        }
             
         if (!autoPathTimer.hasElapsed(1) && autoPathTimer.get() != 0) {
             setBlink(Color.kRed);
