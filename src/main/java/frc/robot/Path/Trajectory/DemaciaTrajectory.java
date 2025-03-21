@@ -200,7 +200,7 @@ public class DemaciaTrajectory {
         else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
         else wantedOmega = diffAngle * 1.4;
 
-        SmartDashboard.putNumber("wanted velocity", wantedVelocity.getNorm());
+        // SmartDashboard.putNumber("wanted velocity", wantedVelocity.getNorm());
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
 
