@@ -109,8 +109,8 @@ public class VisionFuse {
         }
     }
 
-    public double get3Dangle(){
-        return getBestCamera() != null ? tags[getBestCamera()].getAngle() : null;
+    public double get3DAngle(){
+        return getBestCamera() != null ? tags[getBestCamera()].getAngle() : 0;
     }
     
     

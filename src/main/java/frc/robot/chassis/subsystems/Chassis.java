@@ -105,7 +105,7 @@ public class Chassis extends SubsystemBase {
         SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("reset gyro 180", new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(() -> setYaw(
-                Rotation2d.fromDegrees(visionFuse.get3Dangle()))).ignoringDisable(true));
+                Rotation2d.fromDegrees(visionFuse.get3DAngle()))).ignoringDisable(true));
         SmartDashboard.putData("set cam to 3D", new InstantCommand(() -> visionFuse.set3D(true)).ignoringDisable(true));
         SmartDashboard.putData("set cam to 2D", new InstantCommand(() -> visionFuse.set3D(false)).ignoringDisable(true));
         LogManager.addEntry("gyro", () -> getGyroAngle().getRadians());
