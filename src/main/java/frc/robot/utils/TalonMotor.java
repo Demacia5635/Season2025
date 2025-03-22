@@ -116,17 +116,17 @@ public class TalonMotor extends TalonFX {
 		cfg.MotionMagic.MotionMagicCruiseVelocity = config.motionMagicVelocity;
 		cfg.MotionMagic.MotionMagicJerk = config.motionMagicJerk;
 
-		dutyCycle.UpdateFreqHz = 200;
-    voltageOut.UpdateFreqHz = 200;
-		velocityVoltage.UpdateFreqHz = 200;
-		motionMagicVoltage.UpdateFreqHz = 200;
-    positionVoltage.UpdateFreqHz = 200;
+		// dutyCycle.UpdateFreqHz = 200;
+    // voltageOut.UpdateFreqHz = 200;
+		// velocityVoltage.UpdateFreqHz = 200;
+		// motionMagicVoltage.UpdateFreqHz = 200;
+    // positionVoltage.UpdateFreqHz = 200;
 
 		getConfigurator().apply(cfg);
-		getPosition().setUpdateFrequency(200);
-		getVelocity().setUpdateFrequency(200);
-		getAcceleration().setUpdateFrequency(200);
-		getMotorVoltage().setUpdateFrequency(200);
+		// getPosition().setUpdateFrequency(200);
+		// getVelocity().setUpdateFrequency(200);
+		// getAcceleration().setUpdateFrequency(200);
+		// getMotorVoltage().setUpdateFrequency(200);
   }
 
   private void setSignals() {
