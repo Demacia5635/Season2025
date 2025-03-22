@@ -105,25 +105,24 @@ public class FollowTrajectory extends Command {
       // LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
-      LogManager.log("FINISH: " + points.get(points.size() - 1));
       if (target.level == LEVEL.FEEDER) {
         grabCommand = new Grab(RobotContainer.gripper)
             .andThen(new InstantCommand(() -> RobotContainer.robotState = DemaciaRobotState.STARTING));
         grabCommand.schedule();
       }
 
-      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(),
-          target.elementPosition == ELEMENT_POSITION.ALGEA);
+      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
 
     } else
-      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose(), false);
+      this.trajectory = new DemaciaTrajectory(points, false, wantedAngle, chassis.getPose());
     // if (this.target != null)
     //   RobotContainer.robotState = DemaciaRobotState.getStateBasedOnLevel(target.level);
   }
 
   @Override
   public void execute() {
-    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose()));
+    ChassisSpeeds speeds = chassis.getChassisSpeedsFieldRel();
+    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose(), Math.hypot(Math.abs(speeds.vxMetersPerSecond), Math.abs(speeds.vyMetersPerSecond))));
     if (trajectory.distanceLeft <= 1 && target != null) {
       // RobotContainer.arm.setState(target.level);
     }

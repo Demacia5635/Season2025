@@ -6,25 +6,17 @@ package frc.robot.Path.Trajectory;
 
 import static frc.robot.Path.Trajectory.TrajectoryConstants.*;
 
+import java.nio.file.attribute.AclEntry;
 import java.util.ArrayList;
-import java.util.function.Supplier;
-
-import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import frc.robot.RobotContainer;
-import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Path.Trajectory.TrajectoryConstants.PathsConstraints;
 import frc.robot.Path.Utils.*;
-import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
 import frc.robot.utils.LogManager;
+import frc.robot.utils.Utils;
 
 /** Add your docs here. */
 public class DemaciaTrajectory {
@@ -32,42 +24,51 @@ public class DemaciaTrajectory {
     private double trajectoryLength;
     private double distanceTraveledOnSegment;
     private ArrayList<PathPoint> points;
+    private ArrayList<PathPoint> pointsAfterFix;
     private RoundedPoint[] corners;
     private int segmentIndex;
     private Rotation2d wantedAngle;
     public double distanceLeft;
     Pose2d chassisPose = new Pose2d();
-    boolean isAlgae;
-    private boolean isAuto;
+    
     
     double accel;
 
-    double maxVel = TrajectoryConstants.PathsConstraints.MAX_VELOCITY;
+    double maxVel;
 
     /*
      * 
      * given points based on blue alliance
      * 
      */
-    public DemaciaTrajectory(ArrayList<PathPoint> points, boolean isRed, Rotation2d wantedAngle, Pose2d initialPose,
-            boolean isAlgae) {
+    public DemaciaTrajectory(ArrayList<PathPoint> points, boolean isRed, Rotation2d wantedAngle, Pose2d initialPose) {
         this.segments = new ArrayList<Segment>();
         this.trajectoryLength = 0;
         this.distanceTraveledOnSegment = 0;
         this.points = points;
         this.segmentIndex = 0;
         this.wantedAngle = wantedAngle;
-        this.isAuto = DriverStation.isAutonomous();
+        this.maxVel = PathsConstraints.MAX_VELOCITY;
 
         if (isRed)
             points = convertAlliance();
         fixFirstPoint(initialPose);
-            
-        
-       if (AvoidReef.isGoingThroughReef(new Segment(points.get(0).getTranslation(), points.get(1).getTranslation()))) {
-            // LogManager.log("GOING THROUGH");
-            this.points = AvoidReef.fixPoints(points.get(0).getTranslation(), points.get(1).getTranslation(), wantedAngle);
+
+        this.pointsAfterFix = new ArrayList<>();
+        for(int i = 0; i < points.size() - 1; i++) {
+            if (AvoidReef.isGoingThroughReef(new Segment(points.get(i).getTranslation(), points.get(i+1).getTranslation()))) {
+                pointsAfterFix.addAll(AvoidReef.fixPoints(points.get(i).getTranslation(), points.get(i+1).getTranslation(), wantedAngle));
+            } else{
+                pointsAfterFix.add(points.get(i));
+                if (i == points.size() - 2) {
+                    pointsAfterFix.add(points.get(i+1));
+                }
+            }
         }
+
+        this.points = pointsAfterFix;
+
+      
 
         initCorners();
 
@@ -76,8 +77,7 @@ public class DemaciaTrajectory {
         trajectoryLength = calcTrajectoryLength();
         distanceLeft = trajectoryLength;
 
-        drivePID = new PIDController(2, 0, 0);
-        this.isAlgae = isAlgae;
+        
     }
 
     private void fixFirstPoint(Pose2d initialPose) {
@@ -122,8 +122,8 @@ public class DemaciaTrajectory {
             for (int i = 0; i < corners.length - 1; i++) {
 
                 Arc arc = corners[i].getArc();
-                if (arc.getPoints()[0].getDistance(arc.getPoints()[1]) >= 0.1)
-                    segments.add(arc);
+                
+                //segments.add(arc);
                 segments.add(new Leg(corners[i].getCurveEnd(), corners[i + 1].getCurveStart()));
             }
 
@@ -148,9 +148,6 @@ public class DemaciaTrajectory {
                 : (segments.get(segmentIndex) instanceof Leg ? segments.get(segmentIndex).getPoints()[1]
                         : segments.get(segmentIndex + 1).getPoints()[0]);
 
-
-
-
         if (segmentIndex == segments.size() - 1)
             return chassisPose.getTranslation().getDistance(currentLastPoint) <= MAX__POSITION_THRESHOLD;
 
@@ -161,18 +158,14 @@ public class DemaciaTrajectory {
         }
     }
 
-    PIDController drivePID;
+    
 
-    private double getAccel(double distanceFromLastPoint){
-        if(distanceFromLastPoint < 0.25) accel = 0.55;
-        else accel = PathsConstraints.MAX_ACCEL;
+
+    private double getVelocity(double distanceFromLastPoint, double currentVelocity) {
         
-        return accel;
-    }
-
-    private double getVelocity(double distanceFromLastPoint) {
-
-        accel = getAccel(distanceFromLastPoint);
+        if(distanceFromLastPoint < PathsConstraints.DISTANCE_TO_SLOWER_VELOCITY){
+            return Math.max(PathsConstraints.FINISH_MAX_VELOCITY, PathsConstraints.FINISH_PID.calculate(distanceFromLastPoint, 0));
+        }
         
         double v = Math.sqrt((distanceFromLastPoint * 2) / accel) * accel; 
         return Math.min(maxVel,
@@ -180,9 +173,7 @@ public class DemaciaTrajectory {
     }
 
     double lastDistance = 0;
-    
-
-    public ChassisSpeeds calculate(Pose2d chassisPose) {
+    public ChassisSpeeds calculate(Pose2d chassisPose, double currentVelocity) {
         this.chassisPose = chassisPose;
 
         distanceTraveledOnSegment = segments.get(segmentIndex).distancePassed(chassisPose.getTranslation());
@@ -193,22 +184,23 @@ public class DemaciaTrajectory {
             if (segmentIndex != segments.size() - 1)
                 segmentIndex++;
         }
-        double velocity = getVelocity(chassisPose.getTranslation().getDistance(segments.get(segments.size() - 1).getPoints()[1]));
+        double velocity = getVelocity(chassisPose.getTranslation().getDistance(points.get(points.size() -1).getTranslation()), currentVelocity);
+        
         Translation2d wantedVelocity = segments.get(segmentIndex).calcVector(chassisPose.getTranslation(), velocity);
         double diffAngle = wantedAngle.minus(chassisPose.getRotation()).getRadians();
         double wantedOmega = 0;
-        if(Math.abs(diffAngle) > Math.toRadians(10)) wantedOmega = diffAngle * 3;
+        
+        if(Math.abs(diffAngle) > Math.toRadians(10)) wantedOmega = diffAngle * 2.2;
         else if(Math.abs(diffAngle) < MAX_ROTATION_THRESHOLD) wantedOmega = 0;
-        else wantedOmega = diffAngle * 1.4; 
-        if ((chassisPose.getTranslation()
-                .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
-                && segmentIndex == segments.size() - 1))
-            wantedVelocity = new Translation2d();
+        else wantedOmega = diffAngle * 1.4;
+
+        // SmartDashboard.putNumber("wanted velocity", wantedVelocity.getNorm());
         return new ChassisSpeeds(wantedVelocity.getX(), wantedVelocity.getY(), wantedOmega);
     }
 
 
     public boolean isFinishedTrajectory() {
+        
         return ((chassisPose.getTranslation()
                 .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
                 && segmentIndex == segments.size() - 1))
