@@ -153,24 +153,18 @@ public class DemaciaTrajectory {
 
         else {
 
-            return chassisPose.getTranslation().getDistance(currentLastPoint) < PathsConstraints.DISTANCE_TO_SLOWER_VELOCITY;
+            return chassisPose.getTranslation().getDistance(currentLastPoint) < 1;
 
         }
     }
 
-
+    
 
 
     private double getVelocity(double distanceFromLastPoint, double currentVelocity) {
-        // LogManager.log("DISTANCE FROM LAST POINT: " + distanceFromLastPoint);
-        // LogManager.log("DISTANCE TO DEACCEL: " + Utils.distanceToDeaccel(PathsConstraints.FINISH_MAX_VELOCITY, 0, PathsConstraints.FINISH_ACCEL));
-        if(distanceFromLastPoint < Utils.distanceToDeaccel(currentVelocity, 0, PathsConstraints.FINISH_ACCEL)){
-            accel = PathsConstraints.FINISH_ACCEL;
-            maxVel = PathsConstraints.FINISH_MAX_VELOCITY;
-        }
-        else{
-            accel = PathsConstraints.MAX_ACCEL;
-            maxVel = PathsConstraints.MAX_VELOCITY;
+        
+        if(distanceFromLastPoint < PathsConstraints.DISTANCE_TO_SLOWER_VELOCITY){
+            return Math.max(PathsConstraints.FINISH_MAX_VELOCITY, PathsConstraints.FINISH_PID.calculate(distanceFromLastPoint, 0));
         }
         
         double v = Math.sqrt((distanceFromLastPoint * 2) / accel) * accel; 
