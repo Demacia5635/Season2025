@@ -153,6 +153,10 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putData(this);
   }
 
+  public void changeGripperMotorSlot(int slot) {
+    gripperAngleMotor.changeSlot(slot);
+  }
+
   /**
    * set the arm to calibrated
    * <br>

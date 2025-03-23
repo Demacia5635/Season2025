@@ -138,6 +138,7 @@ public class ArmConstants {
         /* The config of the motor based on the constants above */
         public static final TalonConfig CONFIG = new TalonConfig(ID, CAN_BUS, NAME)
                 .withPID(KP, KI, KD, KS, KV, KA, KG)
+                .withPID1(KP*3, KI, KD, KS, KV, KA, KG)
                 .withMotionMagic(MOTION_MAGIC_VELOCITY, MOTION_MAGIC_ACCELERATION, MOTION_MAGIC_JERK)
                 .withBrake(IS_BRAKE)
                 .withInvert(IS_INVERTED)

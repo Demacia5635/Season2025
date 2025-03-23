@@ -8,6 +8,7 @@ import static frc.robot.vision.utils.VisionConstants.TAG_ANGLE;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import frc.robot.utils.LogManager;
 import frc.robot.vision.subsystem.Tag;
 
 /** Add your docs here. */
@@ -15,12 +16,12 @@ public class VisionFuse {
 
     private Tag[] tags = new Tag[4];
 
-    public VisionFuse(Tag reefTag, Tag fiderTag, Tag bargeTag, Tag backTag) {
+    public VisionFuse(Tag right, Tag feeder, Tag barge, Tag left) {
 
-        this.tags[0] = reefTag;
-        this.tags[1] = fiderTag;
-        this.tags[2] = bargeTag;
-        this.tags[3] = backTag;
+        this.tags[0] = right;
+        this.tags[1] = feeder;
+        this.tags[2] = barge;
+        this.tags[3] = left;
 
     }
 

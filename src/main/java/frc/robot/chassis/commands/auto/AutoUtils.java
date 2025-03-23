@@ -4,6 +4,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -81,7 +82,7 @@ public class AutoUtils {
 
         return new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
                 .andThen(new WaitCommand(0.3)).andThen(
-                        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)),
+                        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, DriverStation.isAutonomous() ? 4 : 0)),
                                 chassis).withTimeout(0.4),
                                 new InstantCommand(() -> chassis.stop(), chassis));
     }

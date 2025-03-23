@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
@@ -106,7 +107,7 @@ public class RobotContainer implements Sendable{
 
     SmartDashboard.putData("Command Scheduler", CommandScheduler.getInstance());
     SmartDashboard.putData("RC", this);
-    LogManager.addEntry("Timer", ()-> 15-timer.get());
+    LogManager.addEntry("Timer", ()-> DriverStation.getMatchTime());
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     // SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     SmartDashboard.putData("Offsets/Practice", new AllOffsets().ignoringDisable(true));
@@ -139,7 +140,7 @@ public class RobotContainer implements Sendable{
    */
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
-    // CameraServer.startAutomaticCapture("POV Cam", 0).setResolution(160, 120);
+    CameraServer.startAutomaticCapture("POV Cam", 0).setResolution(160, 120);
 
     chassis = new Chassis();
     arm = new Arm();

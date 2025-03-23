@@ -61,7 +61,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
     FieldTarget coralRight = new FieldTarget(isRight ? POSITION.C : POSITION.A,
         isRight ? ELEMENT_POSITION.CORAL_LEFT : ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
-    FieldTarget backupCoral = new FieldTarget(POSITION.B,
+    FieldTarget backupCoral = new FieldTarget(isRight ? POSITION.C : POSITION.A,
         isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
 
     addCommands(

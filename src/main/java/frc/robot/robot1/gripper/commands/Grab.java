@@ -6,6 +6,7 @@ package frc.robot.robot1.gripper.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
+import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.gripper.constants.GripperConstants.GrabConstants;
 import frc.robot.robot1.gripper.subsystems.Gripper;
 
@@ -54,6 +55,9 @@ public class Grab extends Command {
   @Override
   public void execute() {
     gripper.setPower(GrabConstants.FEED_POWER);
+    if (RobotContainer.arm.getState().equals(ARM_ANGLE_STATES.CORAL_STATION)) {
+      RobotContainer.arm.changeGripperMotorSlot(1);
+    }
   }
 
   /**
@@ -65,6 +69,7 @@ public class Grab extends Command {
   @Override
   public void end(boolean interrupted) {
     gripper.stop();
+    RobotContainer.arm.changeGripperMotorSlot(0);
     
     if (!interrupted) {
       new AlignCoral(gripper).schedule();
