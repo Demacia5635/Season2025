@@ -30,6 +30,7 @@ import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.commands.Drop;
 import frc.robot.robot1.gripper.commands.Grab;
 import frc.robot.utils.LogManager;
+import frc.robot.utils.Utils;
 
 public class FollowTrajectory extends Command {
   private Chassis chassis;
@@ -95,7 +96,7 @@ public class FollowTrajectory extends Command {
       this.wantedAngle = target.getFinishPoint().getRotation();
       points.add(PathPoint.kZero);
 
-      points.add(target.getApproachingPoint());
+      if(!target.isInRange() || target.level.equals(FieldTarget.LEVEL.FEEDER)) points.add(target.getApproachingPoint());
       // LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
@@ -116,7 +117,8 @@ public class FollowTrajectory extends Command {
   @Override
   public void execute() {
     ChassisSpeeds speeds = chassis.getChassisSpeedsFieldRel();
-    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose(), new Translation2d(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond).getNorm()));
+    chassis.setVelocitiesWithAccel(trajectory.calculate(chassis.getPose(), Utils.hypot(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond)));
+    if (this.target != null) RobotContainer.arm.setState(Arm.levelStateToArmState(target.level));
     // double disFromReef = chassis.getPose().getTranslation().getDistance(RobotContainer.isRed() ? AutoUtils.redReefCenter : AutoUtils.blueReefCenter);
     // if (target != null && (disFromReef >= 1.4 && disFromReef <= 4 || target.level == LEVEL.FEEDER)) {
     //   RobotContainer.arm.setState(Arm.levelStateToArmState(target.level));
@@ -141,8 +143,8 @@ public class FollowTrajectory extends Command {
           waitToDropTimer.start();
           new WaitUntilCommand(() -> RobotContainer.arm.isReady() && waitToDropTimer.hasElapsed(0.2))
               .andThen(new Drop(RobotContainer.gripper),
-                  new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
-                      .withTimeout(0.2), new InstantCommand(()-> {waitToDropTimer.reset(); waitToDropTimer.stop();}))
+                  new RunCommand(() -> chassis.setRobotRelSpeedsWithAccel(new ChassisSpeeds(-3, 0, 0)), chassis)
+                      .withTimeout(0.3), new InstantCommand(()-> {waitToDropTimer.reset(); waitToDropTimer.stop();}))
               .schedule();
         }
       }

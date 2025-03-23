@@ -18,7 +18,7 @@ public class Segment {
         this.p2 = p2;
     }
     
-    public Translation2d calcVector(Translation2d position, double velocity) {return new Translation2d();}
+    public Translation2d calcVector(Translation2d position, double velocity) {return Translation2d.kZero;}
     public double distancePassed(Translation2d position) {return 0;}
     public double getLength() {return 0;}
     public Translation2d[] getPoints() {

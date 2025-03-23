@@ -5,10 +5,13 @@ import com.ctre.phoenix6.StatusSignal;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Pair;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.util.datalog.DoubleLogEntry;
+import frc.robot.chassis.commands.auto.FieldTarget;
+import frc.robot.vision.utils.VisionConstants;
 
 public class Utils {
     
@@ -153,6 +156,7 @@ public class Utils {
     return Math.sqrt(x*x + y*y);
   }
   public static double distanceToDeaccel(double currentVelocity, double wantedVelocity, double accel){
-    return (Math.pow(currentVelocity, 2) - Math.pow(wantedVelocity, 2)) / (2 * accel);
+    double t = (wantedVelocity - currentVelocity) / accel;
+    return 0.5 * accel * t * t;
   }
 }

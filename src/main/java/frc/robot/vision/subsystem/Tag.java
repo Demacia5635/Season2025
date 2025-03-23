@@ -272,6 +272,9 @@ private void crop() {
   public boolean isSeeTag(int id, double distance) {
     return Table.getEntry("tid").getDouble(0.0) == id && getRobotToTagRR().getNorm() <= distance;
   }
+  public boolean isSeeTag(){
+    return Table.getEntry("tid").getDouble(0.0) > 0;
+  }
 
   public double getAngle() {
     return Yaw3d = Table.getEntry("botpose").getDoubleArray(new double[] { 0, 0, 0, 0, 0, 0 })[5];

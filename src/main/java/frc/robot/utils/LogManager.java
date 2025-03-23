@@ -106,7 +106,7 @@ public class LogManager extends SubsystemBase {
      * get the data from the getters and call the actual log
      */
     void log() {
-      if (timer.hasElapsed(0.02 * 20)) {
+      if (timer.hasElapsed(0.02 * 10)) {
         timer.reset();
         double v;
         long time = 0;

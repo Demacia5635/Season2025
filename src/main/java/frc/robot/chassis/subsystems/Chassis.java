@@ -44,6 +44,7 @@ import frc.robot.utils.Utils;
 import frc.robot.vision.Camera;
 import frc.robot.vision.Camera.CameraType;
 import frc.robot.vision.subsystem.Tag;
+import frc.robot.vision.utils.VisionConstants;
 import frc.robot.vision.utils.VisionFuse;
 
 public class Chassis extends SubsystemBase {
@@ -166,7 +167,7 @@ public class Chassis extends SubsystemBase {
 
     Translation2d lastWantedSpeeds = new Translation2d();
     public void setVelocitiesWithAccel(ChassisSpeeds wantedSpeeds){
-        ChassisSpeeds currentSpeeds = getChassisSpeedsRobotRel();
+        ChassisSpeeds currentSpeeds = getChassisSpeedsFieldRel();
         Translation2d limitedVelocitiesVector = calculateVelocity(wantedSpeeds.vxMetersPerSecond, wantedSpeeds.vyMetersPerSecond, currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);//lastWantedSpeeds);
         ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocitiesVector.getX(), limitedVelocitiesVector.getY(), wantedSpeeds.omegaRadiansPerSecond);
         lastWantedSpeeds = limitedVelocitiesVector;
@@ -191,6 +192,16 @@ public class Chassis extends SubsystemBase {
         return wantedSpeeds;
         
     }
+
+    public void setRobotRelSpeedsWithAccel(ChassisSpeeds speeds){
+        ChassisSpeeds currentSpeeds = getChassisSpeedsRobotRel();
+
+        Translation2d limitedVelocitiesVector = calculateVelocity(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);//lastWantedSpeeds);
+        ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocitiesVector.getX(), limitedVelocitiesVector.getY(), speeds.omegaRadiansPerSecond);
+        
+        setRobotRelVelocities(limitedVelocities);
+    }
+
     double lastAngle = 0;
     private Translation2d calculateVelocity(double wantedSpeedsX, double wantedSpeedsY, double currentSpeedsX, double currentSpeedsY) {
         double wantedSpeedsNorm = Utils.hypot(wantedSpeedsX, wantedSpeedsY);
@@ -438,7 +449,11 @@ public class Chassis extends SubsystemBase {
             i.stop();
         }
     }
+    public boolean isSeeTag(int cameraID){
+        Tag[] tags = { reefRight, feeder, barge, reefLeft };
 
+        return tags[cameraID].isSeeTag();
+    }
     public boolean isSeeTag(int id, int cameraId, double distance) {
         Tag[] tags = { reefRight, feeder, barge, reefLeft };
 

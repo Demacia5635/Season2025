@@ -4,8 +4,10 @@
 
 package frc.robot.Path.Trajectory;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.utils.Utils;
 
 /** Add your docs here. */
@@ -20,15 +22,16 @@ public class TrajectoryConstants {
 
 
     public class PathsConstraints {
-        public static final double MAX_VELOCITY = 3.6;
-        public static final double MAX_ACCEL = 8;
-        public static final double FINISH_MAX_VELOCITY = 2;
-        public static final double FINISH_ACCEL = 2;
+        public static final double MAX_VELOCITY = 3;
+        public static final double MAX_ACCEL = 6;
 
-        public static final ProfiledPIDController FINISH_PID = new ProfiledPIDController(0.9, 0, 0, new Constraints(FINISH_MAX_VELOCITY, FINISH_ACCEL));
+        public static final double FINISH_MAX_VELOCITY = 1;
+        public static final double FINISH_ACCEL = 1;
 
+        public static final double APPROACH_MAX_VEL = 1.5;
+        public static final double APPROACH_ACCEL = 3;
 
-        public static final double DISTANCE_TO_SLOWER_VELOCITY = 0.5; // Utils.distanceToDeaccel(MAX_VELOCITY, FINISH_MAX_VELOCITY, FINISH_ACCEL);
+        public static final double DISTANCE_TO_SLOWER_VELOCITY = 1;
         public static final double MAX_ROTATIONAL_VELOCITY = Math.toRadians(360); // in radians;
         public static final double MAX_ROTATIONAL_ACCEL = Math.toRadians(720); // in radians^2
 

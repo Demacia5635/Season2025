@@ -6,10 +6,12 @@ package frc.robot.chassis.commands.auto;
 import static frc.robot.vision.utils.VisionConstants.O_TO_TAG;
 import static frc.robot.vision.utils.VisionConstants.TAG_ANGLE;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
+import frc.robot.utils.Utils;
 import frc.robot.vision.utils.VisionConstants;
 
 public class FieldTarget {
@@ -17,20 +19,18 @@ public class FieldTarget {
 
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);
-    public static Translation2d topAlgaeOffset = new Translation2d(0.5, -0.18);
-    public static Translation2d bottomAlgaeOffset = new Translation2d(0.5, -0.18);
+    public static Translation2d topAlgaeOffset = new Translation2d(0.54, -0.18);
+    public static Translation2d bottomAlgaeOffset = new Translation2d(0.54, -0.18);
 
     public static Translation2d intakeOffset = new Translation2d(0.81, 0);
     public static Translation2d rightIntakeOffset = new Translation2d(0, 0.75);
     public static Translation2d leftIntakeOffset = new Translation2d(0, -0.75);
 
-    public static final Translation2d l2Offset = new Translation2d(0.64, 0);
-    public static final Translation2d l3Offset = new Translation2d(0.5, 0);
     public static final Translation2d realLeftReefOffset = new Translation2d(-0.05,-0.16);
     public static final Translation2d realRightReefOffset = new Translation2d(-0.05,0.16);
 
-    public static Translation2d l2Left = new Translation2d(0.615, -0.12);
-    public static Translation2d l2Right = new Translation2d(0.615, 0.24);
+    public static Translation2d l2Left = new Translation2d(0.64, -0.12);
+    public static Translation2d l2Right = new Translation2d(0.64, 0.24);
     public static Translation2d l3Left = new Translation2d(0.5, -0.12);
     public static Translation2d l3Right = new Translation2d(0.5, 0.22);
 
@@ -153,6 +153,8 @@ public class FieldTarget {
     public PathPoint getApproachingPoint(){
         if(RobotContainer.chassis == null) return PathPoint.kZero;
         Translation2d smartApproachOffset = getSmartApproachOffset(); 
+
+    
         if(elementPosition == ELEMENT_POSITION.ALGEA){
             
                 return position.getApproachPoint(new Translation2d(smartApproachOffset.getX(), smartApproachOffset.getY() + topAlgaeOffset.getY()));
@@ -165,8 +167,8 @@ public class FieldTarget {
             if(elementPosition == ELEMENT_POSITION.FEEDER_LEFT){
                 position.getApproachPoint(intakeOffset.plus(leftIntakeOffset));
             }
-            else if(elementPosition == ELEMENT_POSITION.FEEDER_LEFT){
-                position.getApproachPoint(intakeOffset.plus(leftIntakeOffset));
+            else if(elementPosition == ELEMENT_POSITION.FEEDER_RIGHT){
+                position.getApproachPoint(intakeOffset.plus(rightIntakeOffset));
             }
             else 
                 position.getApproachPoint(intakeOffset);
@@ -176,15 +178,22 @@ public class FieldTarget {
         
     }
 
+    public boolean isInRange(){
+        Translation2d robotToTag = RobotContainer.chassis.getPose().getTranslation().minus(getFinishPoint().getTranslation()).rotateBy(VisionConstants.TAG_ANGLE[position.getId()].unaryMinus());
+        double robotToTagAngle = Utils.angleFromTranslation2d(robotToTag);
+        
+        return Math.abs(robotToTagAngle) <= Math.toRadians(40);
+    }
+
     public Translation2d getSmartApproachOffset(){
         Translation2d robotToTag = RobotContainer.chassis.getPose().getTranslation().minus(getFinishPoint().getTranslation()).rotateBy(VisionConstants.TAG_ANGLE[position.getId()].unaryMinus());
         
-        double minDistance = 0.7;
-        double maxDistance = 1.2;
+        double minDistance = 1;
+        double maxDistance = 1.5;
         double algaeMinDistance = 1.2;
         double algaeMaxDistance = 1.6;
         
-        
+
         if(elementPosition == ELEMENT_POSITION.ALGEA){
             if (robotToTag.getX() > algaeMinDistance && robotToTag.getX() < algaeMaxDistance) {
                 return new Translation2d(robotToTag.getX(), 0);
