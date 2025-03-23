@@ -44,6 +44,6 @@ public class GripperConstants {
 
     /** All the constants for the drop command */
     public static class DropConstants {
-        public static final double DROP_POWER = 0.9;
+        public static final double DROP_POWER = 0.6;
     }
 }
