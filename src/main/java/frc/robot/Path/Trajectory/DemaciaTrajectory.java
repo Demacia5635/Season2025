@@ -58,23 +58,25 @@ public class DemaciaTrajectory {
         if (isRed)
             points = convertAlliance();
         fixFirstPoint(initialPose);
-
-        this.pointsAfterFix = new ArrayList<>();
-        for (int i = 0; i < points.size() - 1; i++) {
-            if (AvoidReef.isGoingThroughReef(
+        
+        if (!isAuto) {
+            this.pointsAfterFix = new ArrayList<>();
+            for (int i = 0; i < points.size() - 1; i++) {
+                if (AvoidReef.isGoingThroughReef(
                     new Segment(points.get(i).getTranslation(), points.get(i + 1).getTranslation()))) {
-                pointsAfterFix.addAll(AvoidReef.fixPoints(points.get(i).getTranslation(),
-                        points.get(i + 1).getTranslation(), wantedAngle));
-            } else {
-                pointsAfterFix.add(points.get(i));
-                if (i == points.size() - 2) {
-                    pointsAfterFix.add(points.get(i + 1));
+                    pointsAfterFix.addAll(AvoidReef.fixPoints(points.get(i).getTranslation(),
+                    points.get(i + 1).getTranslation(), wantedAngle));
+                } else {
+                    pointsAfterFix.add(points.get(i));
+                    if (i == points.size() - 2) {
+                            pointsAfterFix.add(points.get(i + 1));
+                    }
                 }
             }
+                
+            this.points = pointsAfterFix;
         }
-
-        this.points = pointsAfterFix;
-
+                
         initCorners();
 
         createSegments();
@@ -215,13 +217,12 @@ public class DemaciaTrajectory {
                 }
 
             } else {
-                if (distanceFromLastPoint < currentVelocity * 0.6) {
-                    accel = PathsConstraints.FINISH_ACCEL;
-                    maxVel = PathsConstraints.FINISH_MAX_VELOCITY;
+                if (distanceFromLastPoint < currentVelocity * 0.5) {
+                    accel = 1.9;
+                    maxVel = 2;
                 } else {
-
-                    accel = 6.4;
-                    maxVel = 3.2;
+                    accel = 8;
+                    maxVel = 4;
                 }
             }
         }
@@ -264,10 +265,10 @@ public class DemaciaTrajectory {
     public boolean isFinishedTrajectory() {
 
         return ((chassisPose.getTranslation()
-                .getDistance(points.get(points.size() - 1).getTranslation()) <= MAX__POSITION_THRESHOLD
+                .getDistance(points.get(points.size() - 1).getTranslation()) <= (isAuto ? 0.05 : MAX__POSITION_THRESHOLD)
                 && segmentIndex == segments.size() - 1))
 
-                && wantedAngle.minus(chassisPose.getRotation()).getRadians() <= MAX_ROTATION_THRESHOLD;
+                && wantedAngle.minus(chassisPose.getRotation()).getRadians() <= (isAuto ? Math.toRadians(1.1) : MAX_ROTATION_THRESHOLD);
     }
 
 }

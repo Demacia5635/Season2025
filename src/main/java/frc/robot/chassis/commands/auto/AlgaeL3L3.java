@@ -65,18 +65,20 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
 
     addCommands(
-        // new FollowTrajectory(chassis, coralF),
-        // (new WaitUntilCommand(() -> !gripper.isCoral())
-        //     .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
-        //     .withTimeout(0.7),
-        // // new FollowTrajectory(chassis, fAlgaePoint),
-        // AutoUtils.removeAlgae(true),
-        // new WaitCommand(0.1),
-        
+        new FollowTrajectory(chassis, coralF, true),
+        (new WaitUntilCommand(() -> !gripper.isCoral())
+            .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
+            .withTimeout(0.7),
+        // new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(2, 0, 0)), chassis)
+        //     .withTimeout(0.05),
+        new FollowTrajectory(chassis, fAlgaePoint, false)
+            .withTimeout(0.05),
+        AutoUtils.removeAlgae(true),
 
-        // new FollowTrajectory(chassis, feeder),
-        // new WaitUntilCommand(() -> gripper.isCoral()),
-        // new WaitCommand(0.1),
+        new FollowTrajectory(chassis, feeder, false),
+        new InstantCommand(() -> chassis.stop(), chassis),
+        // new WaitUntilCommand(() -> gripper.isCoralDownSensor()),
+        new WaitCommand(0.4),
 
         
         // (new FollowTrajectory(chassis, new ArrayList<PathPoint>() {
@@ -87,49 +89,56 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         //     }
         // }, correctRotation(125))).until(()->chassis.isSeeTag(0) || chassis.isSeeTag(3)),
         
-        new FollowTrajectory(chassis, aAlgaePoint)
+        new FollowTrajectory(chassis, aAlgaePoint, true)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM))),
         AutoUtils.removeAlgae(false),
-        new WaitCommand(0.1),
         
-        new FollowTrajectory(chassis, coralRight)
+        new FollowTrajectory(chassis, coralLeft, true)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
+        new InstantCommand(() -> chassis.stop(), chassis),
+        (new WaitUntilCommand(() -> !gripper.isCoral())
+            .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
+            .withTimeout(0.7),
+        new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
+            .withTimeout(0.1),
+        
+        new FollowTrajectory(chassis, feeder, false)
+            .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
+        new InstantCommand(() -> chassis.stop(), chassis),
+        // new WaitUntilCommand(() -> gripper.isCoralDownSensor()),
+        new WaitCommand(0.4),
+        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
+            .withTimeout(0.1)
+            .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
+        new InstantCommand(()-> chassis.stop(), chassis),
+
+        new FollowTrajectory(chassis, coralRight, true)
+            .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
+        new InstantCommand(() -> chassis.stop(), chassis),
         (new WaitUntilCommand(() -> !gripper.isCoral())
             .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
             .withTimeout(0.7),
         new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
             .withTimeout(0.2),
         
-            
-        new FollowTrajectory(chassis, feeder)
+        new FollowTrajectory(chassis, feeder, false)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
-        new WaitUntilCommand(() -> gripper.isCoral()),
+        new WaitUntilCommand(() -> gripper.isCoralDownSensor()),
         new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
             .withTimeout(0.1)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
         new InstantCommand(()-> chassis.stop(), chassis),
 
-        new FollowTrajectory(chassis, coralLeft)
-            .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
-        !(gripper.getCurrentCommand() instanceof Drop) ? new InstantCommand(() -> new Drop(gripper).schedule())
-            : new InstantCommand(),
-        new WaitUntilCommand(() -> !gripper.isCoralUpSensor())
-            .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())),
-        new WaitCommand(0.1),
-        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.2),
-
-        new FollowTrajectory(chassis, feeder)
-            .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.CORAL_STATION))),
-        new WaitUntilCommand(() -> gripper.isCoral()),
-        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, 0)), chassis)
-            .withTimeout(0.1)
+        new FollowTrajectory(chassis, backupCoral, true)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.L2))),
-
-        new FollowTrajectory(chassis, backupCoral),
-        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis)
-            .withTimeout(0.2),
+        new InstantCommand(() -> chassis.stop(), chassis),
+        (new WaitUntilCommand(() -> !gripper.isCoral())
+            .alongWith(new InstantCommand(() -> new Drop(gripper).schedule())))
+            .withTimeout(0.7),
+        AutoUtils.removeAlgae(true),
             
-        new FollowTrajectory(chassis, feeder),
+        new FollowTrajectory(chassis, feeder, false),
+        new InstantCommand(() -> chassis.stop(), chassis),
         new WaitUntilCommand(()-> gripper.isCoral()),
         new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)), chassis)
     );
