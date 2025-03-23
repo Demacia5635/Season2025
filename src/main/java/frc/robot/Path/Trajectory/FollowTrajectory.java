@@ -43,7 +43,6 @@ public class FollowTrajectory extends Command {
   private boolean useElasticTarget;
   private Command grabCommand;
   private Timer waitToDropTimer = new Timer();
-  private boolean isWithApproach;
 
   public FollowTrajectory(Chassis chassis, boolean isScoring) {
     this.chassis = chassis;
@@ -55,12 +54,11 @@ public class FollowTrajectory extends Command {
     // this.points.add(target.getFinishPoint());
   }
 
-  public FollowTrajectory(Chassis chassis, FieldTarget newTarget, boolean isWithApproach) {
+  public FollowTrajectory(Chassis chassis, FieldTarget newTarget) {
     this.chassis = chassis;
     this.target = newTarget;
     this.useElasticTarget = false;
     this.usePoints = false;
-    this.isWithApproach = isWithApproach;
     addRequirements(chassis);
   }
 
@@ -97,11 +95,8 @@ public class FollowTrajectory extends Command {
       points = new ArrayList<PathPoint>();
       this.wantedAngle = target.getFinishPoint().getRotation();
       points.add(PathPoint.kZero);
-      if (isWithApproach) {
-        if(!target.isInRange() || (target.level.equals(FieldTarget.LEVEL.FEEDER) && !DriverStation.isAutonomous())) {
-          points.add(target.getApproachingPoint());
-        }
-      }
+
+      if(!target.isInRange() || target.level.equals(FieldTarget.LEVEL.FEEDER)) points.add(target.getApproachingPoint());
       // LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
@@ -136,16 +131,15 @@ public class FollowTrajectory extends Command {
 
       if (target.level == LEVEL.FEEDER) {
         RobotContainer.currentFeederSide = FEEDER_SIDE.MIDDLE;
-        if (!DriverStation.isAutonomous()) {
-          chassis.stop();
-        }
+        chassis.stop();
       }
 
       if (target.elementPosition == ELEMENT_POSITION.CORAL_LEFT
           || target.elementPosition == ELEMENT_POSITION.CORAL_RIGHT) {
 
-        if (!DriverStation.isAutonomous()) {
-          chassis.stop();
+        chassis.stop();
+        if (DriverStation.isAutonomous()) {
+        } else {
           waitToDropTimer.start();
           new WaitUntilCommand(() -> RobotContainer.arm.isReady() && waitToDropTimer.hasElapsed(0.2))
               .andThen(new Drop(RobotContainer.gripper),
@@ -158,7 +152,8 @@ public class FollowTrajectory extends Command {
       if (target.elementPosition == ELEMENT_POSITION.ALGEA) {
         if(!DriverStation.isAutonomous()) 
           AutoUtils.removeAlgae(target.level == LEVEL.ALGAE_TOP).andThen(new WaitCommand(0.2), 
-          new FollowTrajectory(chassis, new FieldTarget(target.position, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3), true)).schedule();
+          new FollowTrajectory(chassis, new FieldTarget(target.position, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3))).schedule();
+        else chassis.stop();
       }
 
     } else if (!DriverStation.isAutonomous())

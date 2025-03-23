@@ -19,8 +19,8 @@ public class FieldTarget {
 
     public static final Translation2d reefOffsetLeft = new Translation2d(0, -0.11);
     public static final Translation2d reefOffsetRight = new Translation2d(0, 0.25);
-    public static Translation2d topAlgaeOffset = new Translation2d(0.57, -0.18);
-    public static Translation2d bottomAlgaeOffset = new Translation2d(0.57, -0.18);
+    public static Translation2d topAlgaeOffset = new Translation2d(0.54, -0.18);
+    public static Translation2d bottomAlgaeOffset = new Translation2d(0.54, -0.18);
 
     public static Translation2d intakeOffset = new Translation2d(0.81, 0);
     public static Translation2d rightIntakeOffset = new Translation2d(0, 0.75);

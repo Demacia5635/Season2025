@@ -21,19 +21,18 @@ public class AlgaeL3 extends SequentialCommandGroup {
     
     public AlgaeL3(Chassis chassis, Arm arm, Gripper gripper) {
         FieldTarget eAlgae = new FieldTarget(POSITION.E, ELEMENT_POSITION.ALGEA, LEVEL.ALGAE_BOTTOM);
-        FieldTarget eCoral = new FieldTarget(POSITION.E, ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
+        FieldTarget eCoral = new FieldTarget(POSITION.E, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
 
         addCommands(
-            new FollowTrajectory(chassis, eAlgae, true),
+            new FollowTrajectory(chassis, eAlgae),
             new WaitCommand(0.08),
             AutoUtils.removeAlgae(false)
             .alongWith(new InstantCommand(()-> new AlignCoral(gripper).schedule())),
             new InstantCommand(() -> chassis.stop()),
             new WaitCommand(0.1).alongWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),
-
-            new FollowTrajectory(chassis, eCoral, true),
+            new FollowTrajectory(chassis, eCoral),
             new WaitUntilCommand(() -> !gripper.isCoralUpSensor()).alongWith(new InstantCommand(() -> new Drop(gripper).schedule())),
-            new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-2, 0, 0)), chassis).withTimeout(0.5),
+            new RunCommand(()-> chassis.setRobotRelVelocities(new ChassisSpeeds(-1, 0, 0)), chassis).withTimeout(0.3),
             new InstantCommand(() -> chassis.stop())
 
         );
