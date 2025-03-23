@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
@@ -34,6 +35,7 @@ import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmDrive;
+import frc.robot.robot1.RobotCoastOrBrake;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
@@ -79,6 +81,7 @@ public class RobotContainer implements Sendable{
   public static Robot1Strip robot1Strip;
   
   public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
+  public static FEEDER_SIDE currentFeederSide;
 
   public SendableChooser<AutoMode> autoChooser;
   public enum AutoMode {
@@ -89,7 +92,7 @@ public class RobotContainer implements Sendable{
   public static Command rightAuto;
   public final Timer timer = new Timer();
 
-  public static FEEDER_SIDE currentFeederSide;
+  private Trigger userButtonTrigger;
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
@@ -156,6 +159,9 @@ public class RobotContainer implements Sendable{
   }
 
   private void configureBindings() {
+    userButtonTrigger = new Trigger(() -> HALUtil.getFPGAButton() && !DriverStation.isEnabled());
+    userButtonTrigger.onTrue(new RobotCoastOrBrake(chassis, arm));
+
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
     driverController.rightStick().onTrue(new OpenClimber(driverController, climb));

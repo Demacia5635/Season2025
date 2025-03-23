@@ -22,6 +22,7 @@ public class Robot1Strip extends LedStrip {
     private final Timer dropTimer;
     private final Timer autoPathTimer;
     private final Timer coralStationTimer;
+    private final Timer userButtonTimer;
 
     public boolean isManual;
     
@@ -36,6 +37,7 @@ public class Robot1Strip extends LedStrip {
         this.dropTimer = new Timer();
         this.autoPathTimer = new Timer();
         this.coralStationTimer = new Timer();
+        this.userButtonTimer = new Timer();
 
         this.isManual = false;
     }
@@ -54,6 +56,10 @@ public class Robot1Strip extends LedStrip {
 
     public void setGrab() {
         grabTimer.start();
+    }
+    
+    public void setUserButton() {
+        userButtonTimer.start();
     }
 
     public void setManualOrAuto() {
@@ -108,6 +114,13 @@ public class Robot1Strip extends LedStrip {
         } else if (autoPathTimer.hasElapsed(1)) {
             autoPathTimer.stop();
             autoPathTimer.reset();
+        }
+
+        if (!userButtonTimer.hasElapsed(0.5) && userButtonTimer.get() != 0) {
+            setBlink(Color.kOrangeRed);
+        } else if (userButtonTimer.hasElapsed(0.5)) {
+            userButtonTimer.stop();
+            userButtonTimer.reset();
         }
 
         if (!coralStationTimer.hasElapsed(0.75) && coralStationTimer.get() != 0) {
