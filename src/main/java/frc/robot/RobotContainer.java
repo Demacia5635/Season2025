@@ -4,12 +4,12 @@
 
 package frc.robot;
 
-import edu.wpi.first.hal.HALUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.Ultrasonic;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -159,7 +159,7 @@ public class RobotContainer implements Sendable{
   }
 
   private void configureBindings() {
-    userButtonTrigger = new Trigger(() -> HALUtil.getFPGAButton() && !DriverStation.isEnabled());
+    userButtonTrigger = new Trigger(() -> RobotController.getUserButton() && !DriverStation.isEnabled());
     userButtonTrigger.onTrue(new RobotCoastOrBrake(chassis, arm));
 
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
