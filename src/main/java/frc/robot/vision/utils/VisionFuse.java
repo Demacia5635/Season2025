@@ -74,7 +74,7 @@ public class VisionFuse {
         for (int i = 0; i < tags.length; i++) {
             double currentConfidence = tags[i].getPoseEstemationConfidence();
 
-            if (currentConfidence > highestConfidence && currentConfidence > 0.1) {
+            if (currentConfidence > highestConfidence && (currentConfidence > 0.1 || tags[i].is3D)) {
                 highestConfidence = currentConfidence;
                 bestCamera = i;
             }
@@ -110,8 +110,9 @@ public class VisionFuse {
         }
     }
 
-    public double get3DAngle(){
-        return getBestCamera() != null ? tags[getBestCamera()].getAngle() : 0;
+    public double get3DAngle() {
+        Integer bestCamera = getBestCamera();
+        return bestCamera != null ? tags[bestCamera].getAngle() : 0;
     }
     
     

@@ -8,6 +8,7 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.utils.LogManager;
@@ -45,8 +46,8 @@ public class Tag extends SubsystemBase {
   private Translation2d robotToTagRR;
   public Pose2d pose;
 
-private NetworkTableEntry cropEntry;
-private NetworkTableEntry pipeEntry;
+  private NetworkTableEntry cropEntry;
+  private NetworkTableEntry pipeEntry;
 
   private Supplier<Rotation2d> getRobotAngle;
   private Supplier<ChassisSpeeds> speeds;
@@ -64,6 +65,8 @@ private NetworkTableEntry pipeEntry;
 
   private double confidence = 0;
 
+  public boolean is3D;
+
   /**
    * Creates a new Tag subsystem
    * 
@@ -79,6 +82,7 @@ private NetworkTableEntry pipeEntry;
 
     field = new Field2d();
     latency = 0;
+    is3D = Table.getEntry("pipeline").getInteger(0) == 1;
     // SmartDashboard.putData("Tag" + cameraId, this);
     // SmartDashboard.putData("field-tag" + camera.getName(), field);
   }
@@ -117,6 +121,7 @@ private NetworkTableEntry pipeEntry;
 
   public void set3D(boolean is3D){
     pipeEntry.setDouble(is3D ? 1 : 0);
+    this.is3D = is3D;
   }
 
   public int getTagId(){
@@ -252,7 +257,7 @@ private void crop() {
     double currentDist = GetDistFromCamera();
 
     // If we're too far, return 0 confidence
-    if (currentDist > WORST_RELIABLE_DISTANCE) {
+    if (currentDist > (is3D ? 20 : WORST_RELIABLE_DISTANCE)) {
       return 0.0;
     }
 
