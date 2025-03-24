@@ -182,13 +182,13 @@ public class ArmConstants {
     /** the arm angle states */
     public static enum ARM_ANGLE_STATES {
         L1(Math.toRadians(37.3), 4.6),
-        L2(1.8, 4.4),
-        L3(2.5, 4.6),
+        L2(1.8, 4.3),
+        L3(2.53, 4.6),
         PRE_ALGAE_BOTTOM(2.4, 2.5),
         PRE_ALGAE_TOP(1.8, 3.7),
         AFTER_ALGAE_BOTTOM(1.6, 2.5),
         AFTER_ALGAE_TOP(2.5, 4.6),
-        CORAL_STATION(1.58, 5.3),
+        CORAL_STATION(1.53, 5.3),
         CLIMB(2.8 ,5.45),
         TESTING(0,0),
         STARTING(Math.toRadians(33.7), 3.64),
