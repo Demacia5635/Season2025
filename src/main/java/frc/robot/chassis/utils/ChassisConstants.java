@@ -15,7 +15,7 @@ public class ChassisConstants {
 
 
     public static class AccelConstants{
-        public static final double MAX_LINEAR_ACCEL = 8;
+        public static final double MAX_LINEAR_ACCEL = 10;
         
         public static final double MAX_OMEGA_VELOCITY = Math.toRadians(540);
         public static final double MAX_RADIAL_ACCEL = 6;
