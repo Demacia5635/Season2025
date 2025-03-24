@@ -9,6 +9,7 @@ import static frc.robot.vision.utils.VisionConstants.TAG_ANGLE;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import frc.robot.RobotContainer;
 import frc.robot.Path.Utils.PathPoint;
 import frc.robot.utils.Utils;
@@ -179,10 +180,10 @@ public class FieldTarget {
     }
 
     public boolean isInRange(){
-        Translation2d robotToTag = RobotContainer.chassis.getPose().getTranslation().minus(getFinishPoint().getTranslation()).rotateBy(VisionConstants.TAG_ANGLE[position.getId()].unaryMinus());
-        double robotToTagAngle = Utils.angleFromTranslation2d(robotToTag);
+        Translation2d tagToRobot = RobotContainer.chassis.getPose().getTranslation().minus(getFinishPoint().getTranslation()).rotateBy(VisionConstants.TAG_ANGLE[position.getId()].unaryMinus());
+        double tagToRobotAngle = Utils.angleFromTranslation2d(tagToRobot);
         
-        return Math.abs(robotToTagAngle) <= Math.toRadians(40);
+        return Math.abs(tagToRobotAngle) <= Math.toRadians(30);
     }
 
     public Translation2d getSmartApproachOffset(){
