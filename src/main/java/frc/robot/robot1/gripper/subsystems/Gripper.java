@@ -139,6 +139,8 @@ public class Gripper extends SubsystemBase {
   }
 
   public boolean isCoralUpSensor() {
+    if (getUpSensor() == 0) return false;
+    if (getUpSensor() > 1) return true;
     // return true;
     return getUpSensor() < SensorConstants.CORAL_IN_UP_SENSOR;
     // return getUpFrontSensor() < SensorConstants.CORAL_IN_SENSOR 
