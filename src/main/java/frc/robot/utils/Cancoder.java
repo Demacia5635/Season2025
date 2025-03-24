@@ -51,7 +51,7 @@ public class Cancoder extends CANcoder {
 
     private void addLog() {
         // LogManager.addEntry(name + "/Position", positionSignal, 2);
-        LogManager.addEntry(name + "/Absolute position", this::getCurrentAbsPosition, 3);
+        LogManager.addEntry(name + "/Absolute position", this::getCurrentAbsPosition, 2);
         // LogManager.addEntry(name + "/Velocity", velocitySignal, 2);
         // LogManager.addEntry(name + "/Acceleration", this::getCurrentAcceleration, 2);
     }
