@@ -190,8 +190,8 @@ public class FieldTarget {
         
         double minDistance = 1;
         double maxDistance = 1.5;
-        double algaeMinDistance = 1.2;
-        double algaeMaxDistance = 1.6;
+        double algaeMinDistance = DriverStation.isAutonomous() ? 1.8 : 1.2;
+        double algaeMaxDistance = DriverStation.isAutonomous() ? 2.2 : 1.6;
         
 
         if(elementPosition == ELEMENT_POSITION.ALGEA){
