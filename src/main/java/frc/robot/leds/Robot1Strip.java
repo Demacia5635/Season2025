@@ -143,10 +143,14 @@ public class Robot1Strip extends LedStrip {
         }
 
         if (!coralStationTimer.hasElapsed(0.75) && coralStationTimer.get() != 0) {
-            setBlink(Color.kBlue);
+            setBlink(Color.kChocolate);
         } else if (coralStationTimer.hasElapsed(0.75)) {
             coralStationTimer.stop();
             coralStationTimer.reset();
+        }
+
+        if (DriverStation.getMatchTime() <= 30 && DriverStation.getMatchTime() > 28 && !DriverStation.isAutonomous()) {
+            setBlink(Color.kBlue);
         }
     }
 
