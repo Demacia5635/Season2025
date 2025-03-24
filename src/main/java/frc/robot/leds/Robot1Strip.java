@@ -1,9 +1,11 @@
 package frc.robot.leds;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
 import frc.robot.RobotContainer;
+import frc.robot.chassis.commands.Drive;
 import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.leds.subsystems.LedStrip;
@@ -23,6 +25,7 @@ public class Robot1Strip extends LedStrip {
     private final Timer autoPathTimer;
     private final Timer coralStationTimer;
     private final Timer userButtonTimer;
+    private final Timer notPrecisionModeTimer;
 
     public boolean isManual;
     
@@ -38,6 +41,7 @@ public class Robot1Strip extends LedStrip {
         this.autoPathTimer = new Timer();
         this.coralStationTimer = new Timer();
         this.userButtonTimer = new Timer();
+        this.notPrecisionModeTimer = new Timer();
 
         this.isManual = false;
     }
@@ -60,6 +64,10 @@ public class Robot1Strip extends LedStrip {
     
     public void setUserButton() {
         userButtonTimer.start();
+    }
+
+    public void setNotPrecisionMode() {
+        notPrecisionModeTimer.start();
     }
 
     public void setManualOrAuto() {
@@ -107,6 +115,17 @@ public class Robot1Strip extends LedStrip {
                     setColor(setColorSides(Color.kRed, new Color(0, robotToTag.getNorm(), 0)));
                 }
             }
+        }
+
+        if (Drive.getPrecisionMode()) {
+            setBlink(Color.kGreen);
+        }
+
+        if (!notPrecisionModeTimer.hasElapsed(0.75) && notPrecisionModeTimer.get() != 0) {
+            setBlink(Color.kWhite);
+        } else if (notPrecisionModeTimer.hasElapsed(0.75)) {
+            notPrecisionModeTimer.stop();
+            notPrecisionModeTimer.reset();
         }
             
         if (!autoPathTimer.hasElapsed(1) && autoPathTimer.get() != 0) {

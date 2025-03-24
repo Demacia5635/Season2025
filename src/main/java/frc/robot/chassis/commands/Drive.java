@@ -3,6 +3,7 @@ package frc.robot.chassis.commands;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.chassis.utils.ChassisConstants;
+import frc.robot.RobotContainer;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.utils.CommandController;
 
@@ -23,11 +24,18 @@ public class Drive extends Command {
     }
 
     public static void invertPrecisionMode() {
-        precisionMode = !precisionMode;
+        setPrecisionMode(!precisionMode);
     }
-    public static  void setPrecisionMode(boolean precisionMode) {
+    public static void setPrecisionMode(boolean precisionMode) {
         Drive.precisionMode = precisionMode;
+        if (!precisionMode) {
+            RobotContainer.robot1Strip.setNotPrecisionMode();
+        }
     }
+    public static boolean getPrecisionMode() {
+        return precisionMode;
+    }
+
     @Override
     public void execute() {
         isRed = chassis.isRed();
@@ -41,12 +49,6 @@ public class Drive extends Command {
         double velX = Math.pow(joyX, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyX);
         double velY = Math.pow(joyY, 2) * ChassisConstants.MAX_DRIVE_VELOCITY * Math.signum(joyY);
         double velRot = Math.pow(rot, 2) * ChassisConstants.MAX_ROTATIONAL_VELOCITY * Math.signum(rot);
-
-        if (precisionMode) {
-            velX /= 4d;
-            velY /= 4d;
-            velRot /= 4d;
-        }
         
         speeds = new ChassisSpeeds(velX, velY,velRot);
  
