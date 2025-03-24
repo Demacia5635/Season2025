@@ -120,7 +120,7 @@ public class ArmConstants {
         /* all the basic configs of the motor */
         public static final boolean IS_BRAKE = true;
         public static final boolean IS_INVERTED = false;
-        public static final double GEAR_RATIO = 36.0 * (25.0 / 18.0) * (49.0 / 83.0);
+        public static final double GEAR_RATIO = 36.0 * (47.0 / 20.0);
 
         /* the ramp time of the motor */
         public static final double RAMP_TIME = 0.5;
