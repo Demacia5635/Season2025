@@ -21,11 +21,12 @@ public class AlgaeTop extends Command {
 
         this.lastX = 0;
         this.lastY = 0;
+        
+        SmartDashboard.putData("Offsets/Algae Top", this);
     }
     
     @Override
     public void initialize() {
-        SmartDashboard.putData("Offsets/Algae Top", this);
         x = FieldTarget.topAlgaeOffset.getX();
         y = FieldTarget.topAlgaeOffset.getY();
 
@@ -50,7 +51,7 @@ public class AlgaeTop extends Command {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
+        // super.initSendable(builder);
 
         builder.addDoubleProperty("x", () -> x, value -> x = value);
         builder.addDoubleProperty("y", () -> y, value -> y = value);

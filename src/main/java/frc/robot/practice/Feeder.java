@@ -21,11 +21,12 @@ public class Feeder extends Command {
 
         this.lastX = 0;
         this.lastY = 0;
+        
+        SmartDashboard.putData("Offsets/Feeder", this);
     }
     
     @Override
     public void initialize() {
-        SmartDashboard.putData("Offsets/Feeder", this);
         x = FieldTarget.intakeOffset.getX();
         y = FieldTarget.intakeOffset.getY();
 
@@ -50,7 +51,7 @@ public class Feeder extends Command {
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
+        // super.initSendable(builder);
 
         builder.addDoubleProperty("x", () -> x, value -> x = value);
         builder.addDoubleProperty("y", () -> y, value -> y = value);

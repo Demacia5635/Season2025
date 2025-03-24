@@ -21,11 +21,12 @@ public class L2Right extends Command {
 
         this.lastX = 0;
         this.lastY = 0;
+        
+        SmartDashboard.putData("Offsets/L2 Right", this);
     }
     
     @Override
     public void initialize() {
-        SmartDashboard.putData("Offsets/L2 Right", this);
         x = FieldTarget.l2Right.getX();
         y = FieldTarget.l2Right.getY();
 
@@ -45,12 +46,12 @@ public class L2Right extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        LogManager.log("Offset: L3Left x: " + x + "y: " + y);
+        LogManager.log("Offset: L2Right x: " + x + "y: " + y);
     }
 
     @Override
     public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
+        // super.initSendable(builder);
 
         builder.addDoubleProperty("x", () -> x, value -> x = value);
         builder.addDoubleProperty("y", () -> y, value -> y = value);
