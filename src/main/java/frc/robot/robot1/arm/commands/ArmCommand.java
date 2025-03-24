@@ -24,12 +24,15 @@ public class ArmCommand extends Command {
   /*
    * test arm angle for the testing state (take variables out of network tables)
    */
-  private double testArmAngle;
+  private static double testArmAngle;
   /*
    * test gripper angle for the testing state (take variables out of network
    * tables)
    */
-  private double testGripperAngle;
+  private static double testGripperAngle;
+
+  private static boolean isPutInNT = false;
+
   /* the wanted angles */
 
   /* current position later will be set from the chassis */
@@ -51,8 +54,11 @@ public class ArmCommand extends Command {
     testGripperAngle = arm.getGripperAngle();
 
     // this.currentPos = currentPos;
-
-    SmartDashboard.putData(this);
+    if (!isPutInNT) {
+      SmartDashboard.putData(this);
+      isPutInNT = true;
+    }
+    
     addRequirements(arm);
   }
 
