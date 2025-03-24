@@ -96,7 +96,7 @@ public class FollowTrajectory extends Command {
       this.wantedAngle = target.getFinishPoint().getRotation();
       points.add(PathPoint.kZero);
 
-      if(!target.isInRange() || target.level.equals(FieldTarget.LEVEL.FEEDER)) points.add(target.getApproachingPoint());
+      if(!target.isInRange() || (target.level.equals(FieldTarget.LEVEL.FEEDER) && !DriverStation.isAutonomous())) points.add(target.getApproachingPoint());
       // LogManager.log("APPROACH: " + points.get(points.size() - 1));
 
       points.add(target.getFinishPoint());
@@ -141,7 +141,7 @@ public class FollowTrajectory extends Command {
         if (DriverStation.isAutonomous()) {
         } else {
           waitToDropTimer.start();
-          new WaitUntilCommand(() -> RobotContainer.arm.isReady() && waitToDropTimer.hasElapsed(0.2))
+          new WaitUntilCommand(() -> RobotContainer.arm.isReady() && waitToDropTimer.hasElapsed(0.3))
               .andThen(new Drop(RobotContainer.gripper),
                   new RunCommand(() -> chassis.setRobotRelSpeedsWithAccel(new ChassisSpeeds(-3, 0, 0)), chassis)
                       .withTimeout(0.3), new InstantCommand(()-> {waitToDropTimer.reset(); waitToDropTimer.stop();}))
