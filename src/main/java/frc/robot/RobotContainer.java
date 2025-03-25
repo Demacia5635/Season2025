@@ -5,6 +5,7 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.util.sendable.Sendable;
@@ -142,7 +143,9 @@ public class RobotContainer implements Sendable{
    */
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
-    CameraServer.startAutomaticCapture("POV Cam", 0).setResolution(160, 120);
+    UsbCamera povCam = CameraServer.startAutomaticCapture("POV Cam", 0);
+    povCam.setResolution(80, 60);
+    povCam.setFPS(24);
 
     chassis = new Chassis();
     arm = new Arm();
