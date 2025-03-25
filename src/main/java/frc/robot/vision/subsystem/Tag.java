@@ -268,7 +268,7 @@ private void crop() {
 
     // Calculate how far we are into the falloff range (0 to 1)
     double normalizedDist = (currentDist - BEST_RELIABLE_DISTANCE)
-        / (WORST_RELIABLE_DISTANCE - BEST_RELIABLE_DISTANCE);
+        / ((is3D ? 20 : WORST_RELIABLE_DISTANCE) - BEST_RELIABLE_DISTANCE);
 
     // Apply cubic falloff function
     return Math.pow(1 - normalizedDist, 3);
