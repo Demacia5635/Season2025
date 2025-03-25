@@ -222,14 +222,14 @@ public class RobotContainer implements Sendable{
     autoChooser.addOption("MIDDLE", AutoMode.MIDDLE);
     autoChooser.addOption("RIGHT", AutoMode.RIGHT);
     SmartDashboard.putData("AutoChooser", autoChooser);
-    leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false));
-    middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
-    rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true));
+    leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false)).finallyDo((boolean interrupted) -> Elastic.selectTab("Teleoperated")).withName("Left Auto");
+    middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper)).finallyDo((boolean interrupted) -> Elastic.selectTab("Teleoperated")).withName("Middle Auto");
+    rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true)).finallyDo((boolean interrupted) -> Elastic.selectTab("Teleoperated")).withName("Right Auto");
 
     allianceTrigger.onChange(new InstantCommand(() -> {
-      RobotContainer.leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, RobotContainer.isRed(), false));
-      RobotContainer.middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper));
-      RobotContainer.rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, RobotContainer.isRed(), true));
+      leftAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, false)).finallyDo((boolean interrupted) -> Elastic.selectTab("Teleoperated")).withName("Left Auto");
+      middleAuto = new ArmCommand(arm).alongWith(new AlgaeL3(chassis, arm, gripper)).finallyDo((boolean interrupted) -> Elastic.selectTab("Teleoperated")).withName("Middle Auto");
+      rightAuto = new ArmCommand(arm).alongWith(new AlgaeL3L3(chassis, arm, gripper, isRed, true)).finallyDo((boolean interrupted) -> Elastic.selectTab("Teleoperated")).withName("Right Auto");
     }).ignoringDisable(true));
   }
 

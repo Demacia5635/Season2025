@@ -84,9 +84,9 @@ public class Robot extends TimedRobot {
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }
-    if (RobotContainer.isComp()) {
-      Elastic.selectTab("Teleoperated");
-    }
+    // if (RobotContainer.isComp()) {
+    //   Elastic.selectTab("Teleoperated");
+    // }
   }
 
   /** This function is called periodically during operator control. */
