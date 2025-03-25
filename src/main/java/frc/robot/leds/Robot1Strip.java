@@ -12,6 +12,7 @@ import frc.robot.leds.subsystems.LedStrip;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot1.arm.subsystems.Arm;
 import frc.robot.robot1.gripper.subsystems.Gripper;
+import frc.robot.utils.LogManager;
 import frc.robot.vision.utils.VisionConstants;
 
 public class Robot1Strip extends LedStrip {
@@ -48,6 +49,7 @@ public class Robot1Strip extends LedStrip {
 
     public void setCoralStation() {
         coralStationTimer.start();
+        LogManager.log("Scoring to: " + RobotContainer.scoringTarget.toString() + " Arm Angle: " + arm.getArmAngle() + " Gripper Angle: " + arm.getGripperAngle());
     }
 
     public void setAutoPath() {
