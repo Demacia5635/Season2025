@@ -49,6 +49,12 @@ public class Cancoder extends CANcoder {
         lastVelocity = velocitySignal.getValueAsDouble();
     }
 
+    public void checkElectronics() {
+        if (getFaultField().getValue() != 0) {
+            LogManager.log(name + " have a fault: " + getFaultField().getValue());
+        }
+    }
+
     private void addLog() {
         // LogManager.addEntry(name + "/Position", positionSignal, 2);
         LogManager.addEntry(name + "/Absolute position", this::getCurrentAbsPosition, 2);

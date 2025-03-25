@@ -26,6 +26,12 @@ public class SwerveModule {
         // SmartDashboard.putData(configs.STEER_CONFIG.name, steerMotor);
     }
 
+    public void checkElectronics() {
+        driveMotor.checkElectronics();
+        steerMotor.checkElectronics();
+        cancoder.checkElectronics();
+    }
+
     public void setNeutralMode(boolean isBrake) {
         driveMotor.setNeutralMode(isBrake);
         steerMotor.setNeutralMode(isBrake);

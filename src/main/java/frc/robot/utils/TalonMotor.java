@@ -161,6 +161,12 @@ public class TalonMotor extends TalonFX {
     LogManager.addEntry(name + "/CloseLoopSP", getClosedLoopReference(), 2);
   }
 
+  public void checkElectronics() {
+    if (getFaultField().getValue() != 0) {
+      LogManager.log(name + " have fualt num: " + getFaultField().getValue(), AlertType.kError);
+    }
+  }
+
   /**
    * change the slot of the pid and feed forward.
    * will not work if the slot is null

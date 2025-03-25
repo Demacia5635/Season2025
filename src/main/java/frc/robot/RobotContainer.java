@@ -36,6 +36,7 @@ import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
 import frc.robot.robot1.arm.commands.ArmCommand;
 import frc.robot.robot1.arm.commands.ArmDrive;
+import frc.robot.robot1.CheckElectronicsRobot;
 import frc.robot.robot1.RobotCoastOrBrake;
 import frc.robot.robot1.arm.commands.ArmCalibration;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
@@ -111,6 +112,7 @@ public class RobotContainer implements Sendable{
     SmartDashboard.putData("Reef", ReefWidget.getInstance());
     // SmartDashboard.putData("PDH", new PowerDistribution(PowerDistributionConstants.POWER_DISTRIBUTION_ID, PowerDistributionConstants.MODULE_TYPE));
     SmartDashboard.putData("Offsets/Practice", new AllOffsets().ignoringDisable(true));
+    SmartDashboard.putData("Check Electronics", new CheckElectronicsRobot());
     Elastic.sendNotification(new Notification(NotificationLevel.INFO, "Start Robot Code", ""));
     
     configureSubsytems();

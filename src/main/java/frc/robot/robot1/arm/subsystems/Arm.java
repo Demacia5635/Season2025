@@ -153,6 +153,15 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putData(this);
   }
 
+  public void checkElectronics() {
+    armAngleMotor.checkElectronics();
+    gripperAngleMotor.checkElectronics();
+    
+    if (!gripperAngleAbsoluteSensor.isConnected()) {
+      LogManager.log("Gripper Angle abs sensor is not connected", AlertType.kError);
+    }
+  }
+
   public void changeGripperMotorSlot(int slot) {
     gripperAngleMotor.changeSlot(slot);
   }
@@ -506,12 +515,6 @@ public class Arm extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    /* check if the gripper angle absolute sensor is connected */
-    if (Timer.getFPGATimestamp() % 5 == 0) {
-      if (!gripperAngleAbsoluteSensor.isConnected()) {
-        LogManager.log("Gripper Angle Encoder is not connected", AlertType.kError);
-      }
-    }
 
     /* set the gripper angle motor position to the gripper angle absolute sensor */
     // gripperAngleMotor.setPosition(getGripperAngle());
