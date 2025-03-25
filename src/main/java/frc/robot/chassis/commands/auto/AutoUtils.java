@@ -73,7 +73,7 @@ public class AutoUtils {
         return goTo(wantedPose, threshold, new int[0], new int[0]);
     }
 
-    public static Command removeAlgae(boolean algaeTop) {
+    public static Command removeAlgae(boolean algaeTop, boolean isRight) {
         if (algaeTop)
             return new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_TOP))
                     .andThen(new WaitCommand(0.1).andThen(new RunCommand(() -> chassis.setRobotRelVelocities(
@@ -82,7 +82,7 @@ public class AutoUtils {
 
         return new InstantCommand(() -> RobotContainer.arm.setState(ARM_ANGLE_STATES.AFTER_ALGAE_BOTTOM))
                 .andThen(new WaitCommand(0.3)).andThen(
-                        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, DriverStation.isAutonomous() ? 4 : 0)),
+                        new RunCommand(() -> chassis.setRobotRelVelocities(new ChassisSpeeds(-3, 0, DriverStation.isAutonomous() ? isRight ? -4 : 4 : 0)),
                                 chassis).withTimeout(0.5),
                                 new InstantCommand(() -> chassis.stop(), chassis));
     }

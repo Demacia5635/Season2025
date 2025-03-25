@@ -49,7 +49,7 @@ public class Robot1Strip extends LedStrip {
 
     public void setCoralStation() {
         coralStationTimer.start();
-        LogManager.log("Scoring to: " + RobotContainer.scoringTarget.toString() + " Arm Angle: " + arm.getArmAngle() + " Gripper Angle: " + arm.getGripperAngle());
+        // LogManager.log("Scoring to: " + RobotContainer.scoringTarget.toString() + " Arm Angle: " + arm.getArmAngle() + " Gripper Angle: " + arm.getGripperAngle());
     }
 
     public void setAutoPath() {

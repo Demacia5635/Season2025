@@ -26,7 +26,7 @@ public class AlgaeL3 extends SequentialCommandGroup {
         addCommands(
             new FollowTrajectory(chassis, eAlgae),
             new WaitCommand(0.08),
-            AutoUtils.removeAlgae(false)
+            AutoUtils.removeAlgae(false, false)
             .alongWith(new InstantCommand(()-> new AlignCoral(gripper).schedule())),
             new InstantCommand(() -> chassis.stop()),
             new WaitCommand(0.1).alongWith(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L3))),

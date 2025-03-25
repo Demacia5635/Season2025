@@ -58,11 +58,11 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
     FieldTarget coralF = new FieldTarget(isRight ? POSITION.D : POSITION.F,
         isRight ? ELEMENT_POSITION.CORAL_LEFT : ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L2);
     FieldTarget coralLeft = new FieldTarget(isRight ? POSITION.C : POSITION.A,
-        isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
-    FieldTarget coralRight = new FieldTarget(isRight ? POSITION.C : POSITION.A,
         isRight ? ELEMENT_POSITION.CORAL_LEFT : ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L3);
+    FieldTarget coralRight = new FieldTarget(isRight ? POSITION.C : POSITION.A,
+        isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
     FieldTarget backupCoral = new FieldTarget(isRight ? POSITION.C : POSITION.A,
-        isRight ? ELEMENT_POSITION.CORAL_RIGHT : ELEMENT_POSITION.CORAL_LEFT, LEVEL.L2);
+        isRight ? ELEMENT_POSITION.CORAL_LEFT : ELEMENT_POSITION.CORAL_RIGHT, LEVEL.L2);
 
     addCommands(
         // new FollowTrajectory(chassis, coralF),
@@ -89,7 +89,7 @@ public class AlgaeL3L3 extends SequentialCommandGroup {
         
         new FollowTrajectory(chassis, aAlgaePoint)
             .raceWith(new RunCommand(() -> arm.setState(ARM_ANGLE_STATES.PRE_ALGAE_BOTTOM))),
-        AutoUtils.removeAlgae(false),
+        AutoUtils.removeAlgae(false, isRight),
         new WaitCommand(0.1),
         
         new FollowTrajectory(chassis, coralRight)
