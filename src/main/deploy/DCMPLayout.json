@@ -66,19 +66,6 @@
             }
           },
           {
-            "title": "set gyro to 3D tag",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/set gyro to 3D tag",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "title": "AutoChooser",
             "x": 768.0,
             "y": 0.0,
@@ -143,6 +130,71 @@
             }
           },
           {
+            "title": "limelight-feeder",
+            "x": 768.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-feeder",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-left",
+            "x": 768.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 1024.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "POV Cam",
+            "x": 1024.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "change camera dimension",
+            "x": 1280.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/change camera dimension",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
             "title": "Console",
             "x": 1280.0,
             "y": 384.0,
@@ -155,81 +207,28 @@
             }
           },
           {
-            "title": "limelight-bottom",
-            "x": 768.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-front",
+            "title": "set gyro to 3D tag",
             "x": 1024.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-backup",
-            "x": 768.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-back",
-            "x": 1024.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "POV Cam",
-            "x": 1280.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/POV Cam",
-              "period": 0.06,
-              "rotation_turns": 2
-            }
-          },
-          {
-            "title": "Render Auto",
-            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
             "properties": {
-              "topic": "/SmartDashboard/Render Auto",
+              "topic": "/SmartDashboard/set gyro to 3D tag",
               "period": 0.06,
               "show_type": true
+            }
+          },
+          {
+            "title": "Command Scheduler",
+            "x": 1280.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Scheduler",
+            "properties": {
+              "topic": "/SmartDashboard/Command Scheduler",
+              "period": 0.06
             }
           }
         ]
@@ -255,7 +254,7 @@
               "robot_length": 0.85,
               "show_other_objects": true,
               "show_trajectories": true,
-              "field_rotation": 90.0,
+              "field_rotation": -90.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
             }
@@ -290,72 +289,10 @@
             }
           },
           {
-            "title": "state",
-            "x": 128.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Arm/state",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Is Coral Up",
-            "x": 128.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Up",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Is Coral Down",
-            "x": 256.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Down",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Swerve Drive",
-            "x": 384.0,
-            "y": 0.0,
-            "width": 384.0,
-            "height": 384.0,
-            "type": "SwerveDrive",
-            "properties": {
-              "topic": "/SmartDashboard/Chassis/Swerve Drive",
-              "period": 0.06,
-              "show_robot_rotation": true,
-              "rotation_unit": "Radians"
-            }
-          },
-          {
             "title": "Timer",
             "x": 0.0,
             "y": 128.0,
-            "width": 128.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Match Time",
             "properties": {
@@ -389,68 +326,67 @@
             }
           },
           {
-            "title": "limelight-back",
-            "x": 1024.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-front",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-bottom",
+            "title": "limelight-feeder",
             "x": 768.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
+              "topic": "/CameraPublisher/limelight-feeder",
               "period": 0.06,
               "rotation_turns": 0
             }
           },
           {
-            "title": "limelight-backup",
+            "title": "limelight-left",
             "x": 768.0,
             "y": 256.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/limelight-backup",
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 1024.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
               "period": 0.06,
               "rotation_turns": 0
             }
           },
           {
             "title": "POV Cam",
-            "x": 512.0,
-            "y": 384.0,
+            "x": 1024.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Camera Stream",
             "properties": {
               "topic": "/CameraPublisher/POV Cam",
               "period": 0.06,
-              "rotation_turns": 2
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "Console",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/Console",
+              "period": 0.06
             }
           }
         ]
@@ -488,7 +424,7 @@
               "robot_length": 0.85,
               "show_other_objects": true,
               "show_trajectories": true,
-              "field_rotation": 90.0,
+              "field_rotation": -90.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
             }
@@ -503,40 +439,6 @@
             "properties": {
               "topic": "/SmartDashboard/Command Scheduler",
               "period": 0.06
-            }
-          },
-          {
-            "title": "Is Coral Up",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Up",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Is Coral Down",
-            "x": 128.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Down",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
             }
           },
           {
@@ -557,37 +459,9 @@
             }
           },
           {
-            "title": "Arm State",
-            "x": 0.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Arm/state",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Swerve Drive",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "SwerveDrive",
-            "properties": {
-              "topic": "/SmartDashboard/Chassis/Swerve Drive",
-              "period": 0.06,
-              "show_robot_rotation": true,
-              "rotation_unit": "Radians"
-            }
-          },
-          {
             "title": "Timer",
-            "x": 256.0,
-            "y": 512.0,
+            "x": 1024.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Match Time",
@@ -601,60 +475,47 @@
             }
           },
           {
-            "title": "limelight-front",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-bottom",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-back",
+            "title": "limelight-feeder",
             "x": 512.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/limelight-back",
+              "topic": "/CameraPublisher/limelight-feeder",
               "period": 0.06,
               "rotation_turns": 0
             }
           },
           {
-            "title": "limelight-backup",
-            "x": 768.0,
+            "title": "limelight-left",
+            "x": 0.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Camera Stream",
             "properties": {
-              "topic": "/CameraPublisher/limelight-backup",
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
               "period": 0.06,
               "rotation_turns": 0
             }
           },
           {
             "title": "POV Cam",
-            "x": 1024.0,
+            "x": 768.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -662,7 +523,47 @@
             "properties": {
               "topic": "/CameraPublisher/POV Cam",
               "period": 0.06,
-              "rotation_turns": 2
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "get down sensor",
+            "x": 128.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Log/Gripper/get down sensor",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "get up sensor",
+            "x": 128.0,
+            "y": 256.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Log/Gripper/get up sensor",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Console",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 384.0,
+            "type": "Alerts",
+            "properties": {
+              "topic": "/SmartDashboard/Console",
+              "period": 0.06
             }
           }
         ]
@@ -674,22 +575,9 @@
         "layouts": [],
         "containers": [
           {
-            "title": "POV Cam",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 640.0,
-            "height": 640.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/POV Cam",
-              "period": 0.06,
-              "rotation_turns": 2
-            }
-          },
-          {
             "title": "Command Scheduler",
-            "x": 1280.0,
-            "y": 256.0,
+            "x": 1152.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 256.0,
             "type": "Scheduler",
@@ -716,7 +604,7 @@
           },
           {
             "title": "Reef",
-            "x": 768.0,
+            "x": 640.0,
             "y": 256.0,
             "width": 512.0,
             "height": 384.0,
@@ -727,17 +615,71 @@
             }
           },
           {
-            "title": "Swerve Drive",
-            "x": 1152.0,
+            "title": "POV Cam",
+            "x": 0.0,
             "y": 0.0,
+            "width": 640.0,
+            "height": 640.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 2
+            }
+          },
+          {
+            "title": "Arm State Chooser",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 896.0,
+            "height": 128.0,
+            "type": "Split Button Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Arm/Arm State Chooser",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "Arm Angle",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Log/Arm/Arm Angle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Console",
+            "x": 1152.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 256.0,
-            "type": "SwerveDrive",
+            "type": "Alerts",
             "properties": {
-              "topic": "/SmartDashboard/Chassis/Swerve Drive",
+              "topic": "/SmartDashboard/Console",
+              "period": 0.06
+            }
+          },
+          {
+            "title": "climeb is on Limit Switch",
+            "x": 1408.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/Log/Climb/climeb is on Limit Switch",
               "period": 0.06,
-              "show_robot_rotation": true,
-              "rotation_unit": "Radians"
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
             }
           }
         ]
@@ -809,7 +751,7 @@
             "title": "Arm State Chooser",
             "x": 0.0,
             "y": 512.0,
-            "width": 512.0,
+            "width": 768.0,
             "height": 128.0,
             "type": "Split Button Chooser",
             "properties": {
@@ -820,8 +762,8 @@
           {
             "title": "Test Arm Angle",
             "x": 512.0,
-            "y": 384.0,
-            "width": 128.0,
+            "y": 128.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -834,8 +776,8 @@
           {
             "title": "Test Gripper Angle",
             "x": 512.0,
-            "y": 512.0,
-            "width": 128.0,
+            "y": 384.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -847,9 +789,9 @@
           },
           {
             "title": "Arm Angle",
-            "x": 640.0,
-            "y": 384.0,
-            "width": 128.0,
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -861,9 +803,9 @@
           },
           {
             "title": "Gripper Angle",
-            "x": 640.0,
-            "y": 512.0,
-            "width": 128.0,
+            "x": 512.0,
+            "y": 256.0,
+            "width": 256.0,
             "height": 128.0,
             "type": "Text Display",
             "properties": {
@@ -875,8 +817,8 @@
           },
           {
             "title": "get down sensor",
-            "x": 1280.0,
-            "y": 128.0,
+            "x": 1408.0,
+            "y": 0.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -902,74 +844,9 @@
             }
           },
           {
-            "title": "Is Coral Down",
-            "x": 1408.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Down",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Is Coral Up",
-            "x": 1408.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Up",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "climeb Angle",
-            "x": 512.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Log/Climb/climeb Angle",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "climeb is on Limit Switch",
-            "x": 640.0,
-            "y": 256.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Climb/climeb is on Limit Switch",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
             "title": "set gyro to 3D tag",
             "x": 1280.0,
-            "y": 256.0,
+            "y": 128.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -977,58 +854,6 @@
               "topic": "/SmartDashboard/set gyro to 3D tag",
               "period": 0.06,
               "show_type": true
-            }
-          },
-          {
-            "title": "limelight-bottom",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-front",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-back",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-backup",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06,
-              "rotation_turns": 0
             }
           },
           {
@@ -1046,7 +871,7 @@
           },
           {
             "title": "POV Cam",
-            "x": 512.0,
+            "x": 256.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -1055,6 +880,58 @@
               "topic": "/CameraPublisher/POV Cam",
               "period": 0.06,
               "rotation_turns": 2
+            }
+          },
+          {
+            "title": "limelight-feeder",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-feeder",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-left",
+            "x": 0.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 256.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "change camera dimension",
+            "x": 1280.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/change camera dimension",
+              "period": 0.06,
+              "show_type": true
             }
           }
         ]
@@ -1095,45 +972,6 @@
               "field_rotation": 90.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
-            }
-          },
-          {
-            "title": "limelight-bottom",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-backup",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-front",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06,
-              "rotation_turns": 0
             }
           },
           {
@@ -1430,6 +1268,45 @@
             }
           },
           {
+            "title": "limelight-feeder",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-feeder",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-left",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
             "title": "Practice",
             "x": 0.0,
             "y": 0.0,
@@ -1451,43 +1328,9 @@
         "layouts": [],
         "containers": [
           {
-            "title": "Is Coral Up",
-            "x": 1280.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Up",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Is Coral Down",
-            "x": 1408.0,
-            "y": 512.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Down",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
             "title": "get down sensor",
-            "x": 1152.0,
-            "y": 512.0,
+            "x": 768.0,
+            "y": 384.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -1500,8 +1343,8 @@
           },
           {
             "title": "get up sensor",
-            "x": 1024.0,
-            "y": 512.0,
+            "x": 768.0,
+            "y": 256.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -1513,37 +1356,9 @@
             }
           },
           {
-            "title": "Swerve Drive",
-            "x": 768.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "SwerveDrive",
-            "properties": {
-              "topic": "/SmartDashboard/Chassis/Swerve Drive",
-              "period": 0.06,
-              "show_robot_rotation": true,
-              "rotation_unit": "Radians"
-            }
-          },
-          {
-            "title": "state",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Arm/state",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
-            }
-          },
-          {
             "title": "Arm Angle",
-            "x": 256.0,
-            "y": 0.0,
+            "x": 384.0,
+            "y": 128.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -1556,8 +1371,8 @@
           },
           {
             "title": "Gripper Angle",
-            "x": 384.0,
-            "y": 0.0,
+            "x": 512.0,
+            "y": 128.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -1570,8 +1385,8 @@
           },
           {
             "title": "IsReady",
-            "x": 512.0,
-            "y": 0.0,
+            "x": 256.0,
+            "y": 128.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Boolean Box",
@@ -1606,18 +1421,6 @@
             "type": "Scheduler",
             "properties": {
               "topic": "/SmartDashboard/Command Scheduler",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "AutoChooser",
-            "x": 768.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Split Button Chooser",
-            "properties": {
-              "topic": "/SmartDashboard/AutoChooser",
               "period": 0.06
             }
           },
@@ -1671,9 +1474,9 @@
           },
           {
             "title": "Arm State Chooser",
-            "x": 256.0,
-            "y": 128.0,
-            "width": 512.0,
+            "x": 0.0,
+            "y": 0.0,
+            "width": 1024.0,
             "height": 128.0,
             "type": "Split Button Chooser",
             "properties": {
@@ -1682,60 +1485,8 @@
             }
           },
           {
-            "title": "limelight-back",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-bottom",
-            "x": 1280.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-front",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-backup",
-            "x": 1024.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
             "title": "POV Cam",
-            "x": 768.0,
+            "x": 1280.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -1744,6 +1495,73 @@
               "topic": "/CameraPublisher/POV Cam",
               "period": 0.06,
               "rotation_turns": 2
+            }
+          },
+          {
+            "title": "limelight-feeder",
+            "x": 1024.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-feeder",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-left",
+            "x": 1024.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 1280.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "Test Arm Angle",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/ArmCommand/Test Arm Angle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Test Gripper Angle",
+            "x": 768.0,
+            "y": 128.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/ArmCommand/Test Gripper Angle",
+              "period": 0.06,
+              "data_type": "double",
+              "show_submit_button": true
             }
           }
         ]
@@ -1843,15 +1661,55 @@
             }
           },
           {
-            "title": "PDH",
-            "x": 384.0,
+            "title": "limelight-feeder",
+            "x": 768.0,
             "y": 0.0,
-            "width": 384.0,
-            "height": 512.0,
-            "type": "PowerDistribution",
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
             "properties": {
-              "topic": "/SmartDashboard/PDH",
-              "period": 0.06
+              "topic": "/CameraPublisher/limelight-feeder",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-left",
+            "x": 512.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "POV Cam",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 256.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/POV Cam",
+              "period": 0.06,
+              "rotation_turns": 0
             }
           }
         ]
@@ -1866,7 +1724,7 @@
             "title": "field",
             "x": 0.0,
             "y": 0.0,
-            "width": 256.0,
+            "width": 384.0,
             "height": 640.0,
             "type": "Field",
             "properties": {
@@ -1883,102 +1741,9 @@
             }
           },
           {
-            "title": "field-tag0",
-            "x": 512.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/field-tag0",
-              "period": 0.06,
-              "field_game": "Reefscape",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": -90.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295
-            }
-          },
-          {
-            "title": "field-tag1",
-            "x": 768.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/field-tag1",
-              "period": 0.06,
-              "field_game": "Reefscape",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": -90.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295
-            }
-          },
-          {
-            "title": "field-tag2",
-            "x": 1024.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/field-tag2",
-              "period": 0.06,
-              "field_game": "Reefscape",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": -90.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295
-            }
-          },
-          {
-            "title": "field-tag3",
-            "x": 1280.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 384.0,
-            "type": "Field",
-            "properties": {
-              "topic": "/SmartDashboard/field-tag3",
-              "period": 0.06,
-              "field_game": "Reefscape",
-              "robot_width": 0.85,
-              "robot_length": 0.85,
-              "show_other_objects": true,
-              "show_trajectories": true,
-              "field_rotation": -90.0,
-              "robot_color": 4294198070,
-              "trajectory_color": 4294967295
-            }
-          },
-          {
-            "title": "reset gyro",
-            "x": 256.0,
-            "y": 384.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/reset gyro",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "title": "set gyro to 3D tag",
-            "x": 256.0,
-            "y": 256.0,
+            "x": 896.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -1989,73 +1754,8 @@
             }
           },
           {
-            "title": "limelight-front",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-front",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-bottom",
-            "x": 512.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-bottom",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-back",
-            "x": 1024.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-back",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "limelight-backup",
-            "x": 1280.0,
-            "y": 0.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "Camera Stream",
-            "properties": {
-              "topic": "/CameraPublisher/limelight-backup",
-              "period": 0.06,
-              "rotation_turns": 0
-            }
-          },
-          {
-            "title": "reset gyro 180",
-            "x": 256.0,
-            "y": 512.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/reset gyro 180",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "title": "POV Cam",
-            "x": 256.0,
+            "x": 384.0,
             "y": 0.0,
             "width": 256.0,
             "height": 256.0,
@@ -2064,6 +1764,84 @@
               "topic": "/CameraPublisher/POV Cam",
               "period": 0.06,
               "rotation_turns": 2
+            }
+          },
+          {
+            "title": "limelight-right",
+            "x": 1152.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 384.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-right",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-feeder",
+            "x": 384.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 384.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-feeder",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "limelight-left",
+            "x": 768.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 384.0,
+            "type": "Camera Stream",
+            "properties": {
+              "topic": "/CameraPublisher/limelight-left",
+              "period": 0.06,
+              "rotation_turns": 0
+            }
+          },
+          {
+            "title": "change camera dimension",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/change camera dimension",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "reset gyro",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/reset gyro",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "reset gyro 180",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/reset gyro 180",
+              "period": 0.06,
+              "show_type": true
             }
           }
         ]
@@ -2074,20 +1852,6 @@
       "grid_layout": {
         "layouts": [],
         "containers": [
-          {
-            "title": "Swerve Drive",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 384.0,
-            "height": 384.0,
-            "type": "SwerveDrive",
-            "properties": {
-              "topic": "/SmartDashboard/Chassis/Swerve Drive",
-              "period": 0.06,
-              "show_robot_rotation": true,
-              "rotation_unit": "Radians"
-            }
-          },
           {
             "title": "set brake",
             "x": 384.0,
@@ -2115,51 +1879,30 @@
             }
           },
           {
-            "title": "Chassis vX",
-            "x": 640.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Log/Chassis vX",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
-            "title": "Chassis vY",
-            "x": 768.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Log/Chassis vY",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
             "title": "VELOCITY NORM: ",
-            "x": 640.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 384.0,
+            "type": "Radial Gauge",
             "properties": {
               "topic": "/Log/VELOCITY NORM: ",
               "period": 0.06,
               "data_type": "double",
-              "show_submit_button": false
+              "start_angle": -140.0,
+              "end_angle": 140.0,
+              "min_value": 0.0,
+              "max_value": 4.0,
+              "number_of_labels": 8,
+              "wrap_value": false,
+              "show_pointer": true,
+              "show_ticks": true
             }
           },
           {
             "title": "gyro",
-            "x": 384.0,
-            "y": 256.0,
+            "x": 256.0,
+            "y": 512.0,
             "width": 128.0,
             "height": 128.0,
             "type": "Text Display",
@@ -2172,8 +1915,8 @@
           },
           {
             "title": "reset gyro",
-            "x": 640.0,
-            "y": 256.0,
+            "x": 384.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -2184,22 +1927,9 @@
             }
           },
           {
-            "title": "reset gyro 180",
-            "x": 896.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
-            "properties": {
-              "topic": "/SmartDashboard/reset gyro 180",
-              "period": 0.06,
-              "show_type": true
-            }
-          },
-          {
             "title": "Chassis",
-            "x": 896.0,
-            "y": 128.0,
+            "x": 768.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Subsystem",
@@ -2223,9 +1953,49 @@
               "robot_length": 0.85,
               "show_other_objects": true,
               "show_trajectories": true,
-              "field_rotation": -90.0,
+              "field_rotation": 90.0,
               "robot_color": 4294198070,
               "trajectory_color": 4294967295
+            }
+          },
+          {
+            "title": "reset gyro 180",
+            "x": 128.0,
+            "y": 384.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/reset gyro 180",
+              "period": 0.06,
+              "show_type": true
+            }
+          },
+          {
+            "title": "isRed",
+            "x": 1024.0,
+            "y": 384.0,
+            "width": 128.0,
+            "height": 128.0,
+            "type": "Toggle Switch",
+            "properties": {
+              "topic": "/SmartDashboard/RC/isRed",
+              "period": 0.06,
+              "data_type": "boolean"
+            }
+          },
+          {
+            "title": "Robot",
+            "x": 768.0,
+            "y": 512.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/SmartDashboard/field/Robot",
+              "period": 0.06,
+              "data_type": "double[]",
+              "show_submit_button": false
             }
           }
         ]
@@ -2299,34 +2069,10 @@
             }
           },
           {
-            "title": "Arm Angle Motor",
-            "x": 0.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "TalonMotor",
-            "properties": {
-              "topic": "/SmartDashboard/Arm/Arm Angle Motor",
-              "period": 0.06
-            }
-          },
-          {
-            "title": "Gripper Angle Motor",
-            "x": 256.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "TalonMotor",
-            "properties": {
-              "topic": "/SmartDashboard/Arm/Gripper Angle Motor",
-              "period": 0.06
-            }
-          },
-          {
             "title": "Arm State Chooser",
             "x": 0.0,
             "y": 128.0,
-            "width": 1152.0,
+            "width": 1280.0,
             "height": 128.0,
             "type": "Split Button Chooser",
             "properties": {
@@ -2364,8 +2110,8 @@
           },
           {
             "title": "arm angle set brake",
-            "x": 512.0,
-            "y": 256.0,
+            "x": 0.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -2377,8 +2123,8 @@
           },
           {
             "title": "arm angle set coast",
-            "x": 512.0,
-            "y": 384.0,
+            "x": 0.0,
+            "y": 512.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -2390,8 +2136,8 @@
           },
           {
             "title": "gripper angle set brake",
-            "x": 768.0,
-            "y": 256.0,
+            "x": 256.0,
+            "y": 384.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -2403,8 +2149,8 @@
           },
           {
             "title": "gripper angle set coast",
-            "x": 768.0,
-            "y": 384.0,
+            "x": 256.0,
+            "y": 512.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Command",
@@ -2417,27 +2163,13 @@
           {
             "title": "Arm",
             "x": 1024.0,
-            "y": 384.0,
+            "y": 256.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Subsystem",
             "properties": {
               "topic": "/SmartDashboard/Arm",
               "period": 0.06
-            }
-          },
-          {
-            "title": "state",
-            "x": 1024.0,
-            "y": 256.0,
-            "width": 256.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/SmartDashboard/Arm/state",
-              "period": 0.06,
-              "data_type": "string",
-              "show_submit_button": false
             }
           },
           {
@@ -2451,6 +2183,19 @@
               "topic": "/SmartDashboard/Console",
               "period": 0.06
             }
+          },
+          {
+            "title": "Manual Calibration",
+            "x": 1024.0,
+            "y": 512.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Command",
+            "properties": {
+              "topic": "/SmartDashboard/Manual Calibration",
+              "period": 0.06,
+              "show_type": true
+            }
           }
         ]
       }
@@ -2460,57 +2205,6 @@
       "grid_layout": {
         "layouts": [],
         "containers": [
-          {
-            "title": "Is Coral",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Is Coral Up",
-            "x": 256.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Up",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
-          {
-            "title": "Is Coral Down",
-            "x": 256.0,
-            "y": 128.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Boolean Box",
-            "properties": {
-              "topic": "/Log/Gripper/Is Coral Down",
-              "period": 0.06,
-              "data_type": "boolean",
-              "true_color": 4283215696,
-              "false_color": 4294198070,
-              "true_icon": "None",
-              "false_icon": "None"
-            }
-          },
           {
             "title": "get down sensor",
             "x": 384.0,
@@ -2542,7 +2236,7 @@
           {
             "title": "Gripper",
             "x": 0.0,
-            "y": 128.0,
+            "y": 0.0,
             "width": 256.0,
             "height": 128.0,
             "type": "Subsystem",
@@ -2552,29 +2246,32 @@
             }
           },
           {
-            "title": "set Brake",
-            "x": 0.0,
-            "y": 256.0,
+            "title": "Console",
+            "x": 768.0,
+            "y": 0.0,
             "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
+            "height": 384.0,
+            "type": "Alerts",
             "properties": {
-              "topic": "/SmartDashboard/Gripper/Motor/set Brake",
-              "period": 0.06,
-              "show_type": true
+              "topic": "/SmartDashboard/Console",
+              "period": 0.06
             }
           },
           {
-            "title": "set Coast",
-            "x": 256.0,
-            "y": 256.0,
+            "title": "Is Coral",
+            "x": 1024.0,
+            "y": 0.0,
             "width": 256.0,
-            "height": 128.0,
-            "type": "Command",
+            "height": 256.0,
+            "type": "Boolean Box",
             "properties": {
-              "topic": "/SmartDashboard/Gripper/Motor/set Coast",
+              "topic": "/Log/Gripper/Is Coral",
               "period": 0.06,
-              "show_type": true
+              "data_type": "boolean",
+              "true_color": 4283215696,
+              "false_color": 4294198070,
+              "true_icon": "None",
+              "false_icon": "None"
             }
           }
         ]
@@ -2586,22 +2283,8 @@
         "layouts": [],
         "containers": [
           {
-            "title": "climeb Angle",
-            "x": 0.0,
-            "y": 0.0,
-            "width": 128.0,
-            "height": 128.0,
-            "type": "Text Display",
-            "properties": {
-              "topic": "/Log/Climb/climeb Angle",
-              "period": 0.06,
-              "data_type": "double",
-              "show_submit_button": false
-            }
-          },
-          {
             "title": "climeb is on Limit Switch",
-            "x": 128.0,
+            "x": 0.0,
             "y": 0.0,
             "width": 128.0,
             "height": 128.0,
@@ -2614,18 +2297,6 @@
               "false_color": 4294198070,
               "true_icon": "None",
               "false_icon": "None"
-            }
-          },
-          {
-            "title": "Climb Motor",
-            "x": 0.0,
-            "y": 128.0,
-            "width": 256.0,
-            "height": 256.0,
-            "type": "TalonMotor",
-            "properties": {
-              "topic": "/SmartDashboard/Climb/Climb Motor",
-              "period": 0.06
             }
           },
           {
@@ -2662,16 +2333,15 @@
         "layouts": [],
         "containers": [
           {
-            "title": "Arm State Chooser",
-            "x": 1152.0,
+            "title": "FMSInfo",
+            "x": 0.0,
             "y": 0.0,
-            "width": 128.0,
+            "width": 384.0,
             "height": 128.0,
-            "type": "ComboBox Chooser",
+            "type": "FMSInfo",
             "properties": {
-              "topic": "/SmartDashboard/Arm/Arm State Chooser",
-              "period": 0.06,
-              "sort_options": false
+              "topic": "/FMSInfo",
+              "period": 0.06
             }
           }
         ]
