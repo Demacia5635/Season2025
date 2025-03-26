@@ -4,6 +4,7 @@
 
 package frc.robot.robot1.climb.command;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
@@ -16,9 +17,11 @@ import frc.robot.utils.Elastic;
 public class OpenClimber extends Command {
 
   private Climb climb;
+  private Timer moveLittileMoreTimer;
 
   public OpenClimber(CommandController controller, Climb climb) {
     this.climb = climb;
+    this.moveLittileMoreTimer = new Timer();
     addRequirements(climb);
   }
 
@@ -32,15 +35,20 @@ public class OpenClimber extends Command {
   public void execute() {
     climb.setClimbPower(ClimebConstants.ClimbConstants.prepareClimbPower);
     RobotContainer.arm.setState(ARM_ANGLE_STATES.CLIMB);
+    if (climb.getLimit()) {
+      moveLittileMoreTimer.start();
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
     climb.stopClimb();
+    moveLittileMoreTimer.stop();
+    moveLittileMoreTimer.reset();
   }
 
   @Override
   public boolean isFinished() {
-    return climb.getLimit();
+    return moveLittileMoreTimer.hasElapsed(0.2);
   }
 }

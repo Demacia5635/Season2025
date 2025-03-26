@@ -103,7 +103,7 @@ public class RobotContainer implements Sendable{
     robotContainer = this;
     new LogManager();
     ledManager = new LedManager();
-    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kPS5);
+    driverController = new CommandController(OperatorConstants.DRIVER_CONTROLLER_PORT, ControllerType.kXbox);
     operatorController = new CommandController(OperatorConstants.OPERATOR_CONTROLLER_PORT, ControllerType.kXbox);
     allianceTrigger = new Trigger(() -> isRed);
 
@@ -170,7 +170,7 @@ public class RobotContainer implements Sendable{
 
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
-    driverController.rightStick().onTrue(new OpenClimber(driverController, climb));
+    driverController.rightSetting().onTrue(new OpenClimber(driverController, climb));
     driverController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
 
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
@@ -191,8 +191,8 @@ public class RobotContainer implements Sendable{
     driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
     driverController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
 
-    driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
-    driverController.rightSetting().onTrue(new ChangeReefToClosest(chassis));
+    // driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
+    driverController.leftSettings().onTrue(new ChangeReefToClosest(chassis));
 
     operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
     
