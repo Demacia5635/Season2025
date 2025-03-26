@@ -145,7 +145,7 @@ public class RobotContainer implements Sendable{
     Ultrasonic.setAutomaticMode(true);
     UsbCamera povCam = CameraServer.startAutomaticCapture("POV Cam", 0);
     povCam.setResolution(80, 60);
-    povCam.setFPS(24);
+    povCam.setFPS(30);
 
     chassis = new Chassis();
     arm = new Arm();
