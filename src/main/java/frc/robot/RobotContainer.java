@@ -170,7 +170,6 @@ public class RobotContainer implements Sendable{
 
     driverController.getLeftStickMove().onTrue(new Drive(chassis, driverController));
     driverController.getRightStickkMove().onTrue(new JoyClimeb(driverController, climb));
-    driverController.rightSetting().onTrue(new OpenClimber(driverController, climb));
     driverController.leftStick().onTrue(new InstantCommand(() -> arm.setState(ARM_ANGLE_STATES.L1)));
 
     driverController.rightButton().onTrue(new InstantCommand(()-> Drive.invertPrecisionMode()));
@@ -191,12 +190,12 @@ public class RobotContainer implements Sendable{
     driverController.povDown().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.L2)).ignoringDisable(true));
     driverController.povLeft().onTrue(new InstantCommand(()-> currentFeederSide = FEEDER_SIDE.CLOSE));
 
-    // driverController.leftSettings().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
+    driverController.rightSetting().onTrue(new InstantCommand(()-> arm.setState(ARM_ANGLE_STATES.CORAL_STATION)).ignoringDisable(true));
     driverController.leftSettings().onTrue(new ChangeReefToClosest(chassis));
 
     operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
     
-    operatorController.upButton().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kZero)).ignoringDisable(true));
+    operatorController.upButton().onTrue(new OpenClimber(driverController, climb));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
     operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
     operatorController.leftButton().onTrue(new ArmCalibration(arm));
