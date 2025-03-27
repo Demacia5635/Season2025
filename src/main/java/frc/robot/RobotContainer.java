@@ -195,6 +195,7 @@ public class RobotContainer implements Sendable{
 
     operatorController.leftStick().onTrue(new ArmDrive(arm, operatorController));
     
+    SmartDashboard.putData("Open Climb", new OpenClimber(driverController, climb));
     operatorController.upButton().onTrue(new OpenClimber(driverController, climb));
     operatorController.rightButton().onTrue(new InstantCommand((robot1Strip::setCoralStation)).ignoringDisable(true));
     operatorController.downButton().whileTrue(new GripperDrive(gripper, operatorController));
