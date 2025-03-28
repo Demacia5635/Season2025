@@ -22,7 +22,13 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.chassis.Drive;
+import frc.robot.chassis.GoToReef;
 import frc.robot.chassis.subsystems.Chassis;
+import frc.robot.chassis.utils.FieldTarget;
+import frc.robot.chassis.utils.FieldTarget.ELEMENT_POSITION;
+import frc.robot.chassis.utils.FieldTarget.LEVEL;
+import frc.robot.chassis.utils.FieldTarget.POSITION;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.Elastic;
 import frc.robot.utils.CommandController.ControllerType;
@@ -38,16 +44,23 @@ import frc.robot.utils.Elastic.Notification.NotificationLevel;
  */
 public class RobotContainer{
 
+  public static boolean isRed = true;
   public static RobotContainer robotContainer;
   public static CommandController driverController;
-  public static CommandController operatorController;
   
   public static Chassis chassis;  
 
   public RobotContainer() {
     chassis = new Chassis();
-  
+    driverController = new CommandController(0, ControllerType.kXbox);
+    
+    chassis.setDefaultCommand(new Drive(chassis, driverController));
+    FieldTarget test = new FieldTarget(POSITION.F, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
+    driverController.leftButton().onTrue(new GoToReef(chassis, test.getFinishPoint().getTranslation(), test.getFinishPoint().getRotation().rotateBy(Rotation2d.k180deg)));
+
    }
+
+
 
 
   /**

@@ -167,6 +167,9 @@ public class Chassis extends SubsystemBase {
         setModuleStates(states);
     }
 
+    public void setVelocities(Translation2d velocities, double omega){
+        setVelocities(new ChassisSpeeds(velocities.getX(), velocities.getY(), omega));
+    }
     private double calculateLinearVelocity(double wantedSpeeds, double currentSpeeds) {
         double deltaV = wantedSpeeds - currentSpeeds;
         double maxDelta = AccelConstants.MAX_LINEAR_ACCEL * CYCLE_DT;
@@ -398,12 +401,12 @@ public class Chassis extends SubsystemBase {
         setVelocitiesWithAccel(speeds);
     }
 
-    PIDController drivePID = new PIDController(2, 0, 0);
 
+
+    PIDController drivePID = new PIDController(2, 0, 0);
     public void goTo(Pose2d pose, double threshold, boolean stopWhenFinished) {
 
         Translation2d diffVector = pose.getTranslation().minus(getPose().getTranslation());
-
         double distance = diffVector.getNorm();
         if (distance <= threshold) {
             if (stopWhenFinished)
@@ -428,30 +431,5 @@ public class Chassis extends SubsystemBase {
         for (SwerveModule i : modules) {
             i.stop();
         }
-    }
-
-    public boolean isSeeTag(int cameraID) {
-        Tag[] tags = { reefRight, feeder, barge, reefLeft };
-
-        return tags[cameraID].isSeeTag();
-    }
-
-    public boolean isSeeTag(int id, int cameraId, double distance) {
-        Tag[] tags = { reefRight, feeder, barge, reefLeft };
-
-        return tags[cameraId].isSeeTag(id, distance);
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
-    }
-
-    public Trajectory vector(Translation2d start, Translation2d end) {
-        return TrajectoryGenerator.generateTrajectory(
-                List.of(
-                        new Pose2d(start, end.getAngle().minus(start.getAngle())),
-                        new Pose2d(end, end.getAngle().minus(start.getAngle()))),
-                new TrajectoryConfig(4.0, 4.0));
     }
 }
