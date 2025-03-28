@@ -35,12 +35,10 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
-import frc.robot.chassis.commands.auto.FieldTarget;
 import static frc.robot.chassis.utils.ChassisConstants.*;
 
 import frc.robot.chassis.utils.ChassisConstants.AccelConstants;
 import frc.robot.chassis.utils.SwerveKinematics;
-import frc.robot.utils.LogManager;
 import frc.robot.utils.Utils;
 import frc.robot.vision.Camera;
 import frc.robot.vision.Camera.CameraType;
@@ -87,85 +85,47 @@ public class Chassis extends SubsystemBase {
         poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
         field = new Field2d();
 
-        
-        
-        reefRight = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
-            new Camera("right", new Translation3d(0.14310487, -0.28932432, 0.777), 90-33, 0, CameraType.REEF));
+        reefRight = new Tag(() -> getGyroAngle(), () -> getChassisSpeedsRobotRel(),
+                new Camera("right", new Translation3d(0.14310487, -0.28932432, 0.777), 90 - 33, 0, CameraType.REEF));
 
-        reefLeft = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
-            new Camera("left", new Translation3d(0.1475, 0.291, 0.704),  65, 0, CameraType.REEF));
-       
-        feeder = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(),
-            new Camera("feeder", new Translation3d(0.11, -0.285, 0.91), 20, 0, CameraType.FEEDER));
+        reefLeft = new Tag(() -> getGyroAngle(), () -> getChassisSpeedsRobotRel(),
+                new Camera("left", new Translation3d(0.1475, 0.291, 0.704), 65, 0, CameraType.REEF));
 
-        barge = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 
-            new Camera("barge", new Translation3d(0.13, 0.284, 0.89), 53, 180, CameraType.BARGE));
-            
+        feeder = new Tag(() -> getGyroAngle(), () -> getChassisSpeedsRobotRel(),
+                new Camera("feeder", new Translation3d(0.11, -0.285, 0.91), 20, 0, CameraType.FEEDER));
+
+        barge = new Tag(() -> getGyroAngle(), () -> getChassisSpeedsRobotRel(),
+                new Camera("barge", new Translation3d(0.13, 0.284, 0.89), 53, 180, CameraType.BARGE));
+
         visionFuse = new VisionFuse(reefRight, feeder, barge, reefLeft);
 
-
         SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
-        SmartDashboard.putData("reset gyro 180", new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
+        SmartDashboard.putData("reset gyro 180",
+                new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
         SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(() -> setYaw(
                 Rotation2d.fromDegrees(visionFuse.get3DAngle()))).ignoringDisable(true));
         SmartDashboard.putData("set gyro to left camera", new InstantCommand(() -> setYaw(
-            Rotation2d.fromDegrees(reefLeft.getAngle())
-        )).ignoringDisable(true));
+                Rotation2d.fromDegrees(reefLeft.getAngle()))).ignoringDisable(true));
         SmartDashboard.putData("set gyro to right camera", new InstantCommand(() -> setYaw(
-            Rotation2d.fromDegrees(reefRight.getAngle())
-        )).ignoringDisable(true));
+                Rotation2d.fromDegrees(reefRight.getAngle()))).ignoringDisable(true));
         SmartDashboard.putData("change camera dimension", new Command() {
             private static boolean is3d = false;
-            
+
             public void initialize() {
                 visionFuse.set3D(!is3d);
                 is3d = !is3d;
             };
-            
-            public boolean isFinished() {return true;}
-            public boolean runsWhenDisabled() {return true;};
+
+            public boolean isFinished() {
+                return true;
+            }
+
+            public boolean runsWhenDisabled() {
+                return true;
+            };
         });
-        LogManager.addEntry("gyro", () -> getGyroAngle().getRadians());
-        SmartDashboard.putData("field", field);
-        // SmartDashboard.putData("ultfielf", fieldTag);
-        // SmartDashboard.putData("fieldTest", fieldTest);
-        LogManager.addEntry("VELOCITY NORM: ", () -> Utils.hypot(getChassisSpeedsRobotRel().vxMetersPerSecond, getChassisSpeedsRobotRel().vyMetersPerSecond));
-        // LogManager.addEntry("Chassis/vX", () -> getChassisSpeedsRobotRel().vxMetersPerSecond);
-        // LogManager.addEntry("Chassis/vY", () -> getChassisSpeedsRobotRel().vyMetersPerSecond);
-        SmartDashboard.putData("Chassis/set coast", new InstantCommand(() -> setNeutralMode(false)).ignoringDisable(true));
-        SmartDashboard.putData("Chassis/set brake", new InstantCommand(() -> setNeutralMode(true)).ignoringDisable(true));
-        // SmartDashboard.putData(getName() + "/Swerve Drive", getChassisWidget());
-        // SmartDashboard.putData("Chassis", this);
+
     }
-
-    public void checkElectronics() {
-        for (SwerveModule module : modules) {
-            module.checkElectronics();
-        }
-    }
-
-    // private Sendable getChassisWidget() {
-    //     return new Sendable() {
-    //         @Override
-    //         public void initSendable(SendableBuilder builder) {
-    //             builder.setSmartDashboardType("SwerveDrive");
-
-    //             builder.addDoubleProperty("Front Left Angle", () -> modules[0].getAbsoluteAngle(), null);
-    //             builder.addDoubleProperty("Front Left Velocity", () -> modules[0].getDriveVel(), null);
-
-    //             builder.addDoubleProperty("Front Right Angle", () -> modules[1].getAbsoluteAngle(), null);
-    //             builder.addDoubleProperty("Front Right Velocity", () -> modules[1].getDriveVel(), null);
-
-    //             builder.addDoubleProperty("Back Left Angle", () -> modules[2].getAbsoluteAngle(), null);
-    //             builder.addDoubleProperty("Back Left Velocity", () -> modules[2].getDriveVel(), null);
-
-    //             builder.addDoubleProperty("Back Right Angle", () -> modules[3].getAbsoluteAngle(), null);
-    //             builder.addDoubleProperty("Back Right Velocity", () -> modules[3].getDriveVel(), null);
-
-    //             builder.addDoubleProperty("Robot Angle", () -> getGyroAngle().getRadians(), null);
-    //         }
-    //     };
-    // }
 
     public void setNeutralMode(boolean isBrake) {
         for (SwerveModule module : modules) {
@@ -185,13 +145,15 @@ public class Chassis extends SubsystemBase {
     public Pose2d getPose() {
         return poseEstimator.getEstimatedPosition();
     }
-    
 
     Translation2d lastWantedSpeeds = new Translation2d();
-    public void setVelocitiesWithAccel(ChassisSpeeds wantedSpeeds){
+
+    public void setVelocitiesWithAccel(ChassisSpeeds wantedSpeeds) {
         ChassisSpeeds currentSpeeds = getChassisSpeedsFieldRel();
-        Translation2d limitedVelocitiesVector = calculateVelocity(wantedSpeeds.vxMetersPerSecond, wantedSpeeds.vyMetersPerSecond, currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);//lastWantedSpeeds);
-        ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocitiesVector.getX(), limitedVelocitiesVector.getY(), wantedSpeeds.omegaRadiansPerSecond);
+        Translation2d limitedVelocitiesVector = calculateVelocity(wantedSpeeds.vxMetersPerSecond,
+                wantedSpeeds.vyMetersPerSecond, currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);// lastWantedSpeeds);
+        ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocitiesVector.getX(),
+                limitedVelocitiesVector.getY(), wantedSpeeds.omegaRadiansPerSecond);
         lastWantedSpeeds = limitedVelocitiesVector;
         setVelocities(limitedVelocities);
 
@@ -200,7 +162,7 @@ public class Chassis extends SubsystemBase {
     public void setVelocities(ChassisSpeeds speeds) {
         speeds = ChassisSpeeds.fromFieldRelativeSpeeds(speeds, getGyroAngle());
         speeds = ChassisSpeeds.discretize(speeds, CYCLE_DT);
-        
+
         SwerveModuleState[] states = kinematicsFix.toSwerveModuleStates(speeds);
         setModuleStates(states);
     }
@@ -208,52 +170,63 @@ public class Chassis extends SubsystemBase {
     private double calculateLinearVelocity(double wantedSpeeds, double currentSpeeds) {
         double deltaV = wantedSpeeds - currentSpeeds;
         double maxDelta = AccelConstants.MAX_LINEAR_ACCEL * CYCLE_DT;
-        if(Math.abs(deltaV) > maxDelta){
+        if (Math.abs(deltaV) > maxDelta) {
             return currentSpeeds + (maxDelta * Math.signum(deltaV));
         }
         return wantedSpeeds;
-        
+
     }
 
-    public void setRobotRelSpeedsWithAccel(ChassisSpeeds speeds){
+    public void setRobotRelSpeedsWithAccel(ChassisSpeeds speeds) {
         ChassisSpeeds currentSpeeds = getChassisSpeedsRobotRel();
 
-        Translation2d limitedVelocitiesVector = calculateVelocity(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond, currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);//lastWantedSpeeds);
-        ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocitiesVector.getX(), limitedVelocitiesVector.getY(), speeds.omegaRadiansPerSecond);
-        
+        Translation2d limitedVelocitiesVector = calculateVelocity(speeds.vxMetersPerSecond, speeds.vyMetersPerSecond,
+                currentSpeeds.vxMetersPerSecond, currentSpeeds.vyMetersPerSecond);// lastWantedSpeeds);
+        ChassisSpeeds limitedVelocities = new ChassisSpeeds(limitedVelocitiesVector.getX(),
+                limitedVelocitiesVector.getY(), speeds.omegaRadiansPerSecond);
+
         setRobotRelVelocities(limitedVelocities);
     }
 
     double lastAngle = 0;
-    private Translation2d calculateVelocity(double wantedSpeedsX, double wantedSpeedsY, double currentSpeedsX, double currentSpeedsY) {
+
+    private Translation2d calculateVelocity(double wantedSpeedsX, double wantedSpeedsY, double currentSpeedsX,
+            double currentSpeedsY) {
         double wantedSpeedsNorm = Utils.hypot(wantedSpeedsX, wantedSpeedsY);
         double currentSpeedsNorm = Utils.hypot(currentSpeedsX, currentSpeedsY);
         double wantedSpeedsAngle = Utils.angleFromTranslation2d(wantedSpeedsX, wantedSpeedsY);
         double currentSpeedsAngle = Utils.angleFromTranslation2d(currentSpeedsX, currentSpeedsY);
 
-        if(wantedSpeedsNorm == 0 && currentSpeedsNorm == 0) return Translation2d.kZero;
+        if (wantedSpeedsNorm == 0 && currentSpeedsNorm == 0)
+            return Translation2d.kZero;
 
-        if(currentSpeedsNorm <0.1){
+        if (currentSpeedsNorm < 0.1) {
             // LogManager.log("SMALL VEL");
             double v = MathUtil.clamp(wantedSpeedsNorm, 0, currentSpeedsNorm + AccelConstants.MAX_DELTA_VELOCITY);
             return new Translation2d(v, Rotation2d.fromRadians(wantedSpeedsAngle));
         }
 
-        if(wantedSpeedsNorm == 0 && currentSpeedsNorm > 0.1) return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm), Rotation2d.fromRadians(lastAngle));
+        if (wantedSpeedsNorm == 0 && currentSpeedsNorm > 0.1)
+            return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm),
+                    Rotation2d.fromRadians(lastAngle));
         lastAngle = currentSpeedsAngle;
         double angleDiff = MathUtil.angleModulus(wantedSpeedsAngle - currentSpeedsAngle);
         double radius = currentSpeedsNorm / AccelConstants.MAX_OMEGA_VELOCITY;
         // LogManager.log("RADIUS: " + radius);
-        if(Math.abs(angleDiff) < 0.6 || radius < AccelConstants.MAX_RADIUS){
-            
-            return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm), Rotation2d.fromRadians(wantedSpeedsAngle));
+        if (Math.abs(angleDiff) < 0.6 || radius < AccelConstants.MAX_RADIUS) {
+
+            return new Translation2d(calculateLinearVelocity(wantedSpeedsNorm, currentSpeedsNorm),
+                    Rotation2d.fromRadians(wantedSpeedsAngle));
         }
 
-        double velocity = Math.min(AccelConstants.MAX_VELOCITY_TO_IGNORE_RADIUS, Math.max(currentSpeedsNorm - (AccelConstants.MAX_DELTA_VELOCITY), AccelConstants.MIN_VELOCITY));
-    //    LogManager.log("NEW VELOCITY: " + velocity);
-        double radChange = Math.min(AccelConstants.MAX_OMEGA_VELOCITY, (velocity / AccelConstants.MAX_RADIUS) * CYCLE_DT);
-        return new Translation2d(velocity, Rotation2d.fromRadians((radChange * Math.signum(angleDiff)) + currentSpeedsAngle));
-        
+        double velocity = Math.min(AccelConstants.MAX_VELOCITY_TO_IGNORE_RADIUS,
+                Math.max(currentSpeedsNorm - (AccelConstants.MAX_DELTA_VELOCITY), AccelConstants.MIN_VELOCITY));
+        // LogManager.log("NEW VELOCITY: " + velocity);
+        double radChange = Math.min(AccelConstants.MAX_OMEGA_VELOCITY,
+                (velocity / AccelConstants.MAX_RADIUS) * CYCLE_DT);
+        return new Translation2d(velocity,
+                Rotation2d.fromRadians((radChange * Math.signum(angleDiff)) + currentSpeedsAngle));
+
     }
 
     public void setSteerPositions(double[] positions) {
@@ -364,7 +337,6 @@ public class Chassis extends SubsystemBase {
         return new Matrix<N3, N1>(new SimpleMatrix(new double[] { x, y, theta }));
     }
 
-
     Pose2d visionFusePoseEstimation;
     Rotation2d gyroAngle;
 
@@ -376,17 +348,14 @@ public class Chassis extends SubsystemBase {
             updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(), gyroAngle));
             // fieldTag.setRobotPose(visionFusePoseEstimation);
             // if (visionFuse.get2dAngle() != null){
-            //     fieldTest.setRobotPose(new Pose2d(visionFusePoseEstimation.getTranslation(), visionFuse.get2dAngle()));
+            // fieldTest.setRobotPose(new Pose2d(visionFusePoseEstimation.getTranslation(),
+            // visionFuse.get2dAngle()));
             // }
         }
         poseEstimator.update(gyroAngle, getModulePositions());
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
 
-    }
-
-    public boolean isRed() {
-        return RobotContainer.isRed();
     }
 
     public ChassisSpeeds getChassisSpeedsRobotRel() {
@@ -429,16 +398,6 @@ public class Chassis extends SubsystemBase {
         setVelocitiesWithAccel(speeds);
     }
 
-    public void setVelocitiesRotateToTarget(ChassisSpeeds speeds, FieldTarget target) {
-        Translation2d robotToTarget = target.getReefPole().getTranslation().minus(getPose().getTranslation());
-        double angleError = robotToTarget.getAngle().minus(getGyroAngle()).getRadians();
-        double angleErrorabs = Math.abs(angleError);
-        if (angleErrorabs > Math.toRadians(1.5)) {
-            speeds.omegaRadiansPerSecond = angleError * 2;
-        }
-        setVelocities(speeds);
-    }
-
     PIDController drivePID = new PIDController(2, 0, 0);
 
     public void goTo(Pose2d pose, double threshold, boolean stopWhenFinished) {
@@ -460,7 +419,6 @@ public class Chassis extends SubsystemBase {
             double vX = MathUtil.clamp(-drivePID.calculate(diffVector.getX(), 0), -3.2, 3.2);
             double vY = MathUtil.clamp(-drivePID.calculate(diffVector.getY(), 0), -3.2, 3.2);
 
-
             setVelocitiesRotateToAngleOld(new ChassisSpeeds(vX, vY, 0), pose.getRotation().getRadians());
         }
 
@@ -471,11 +429,13 @@ public class Chassis extends SubsystemBase {
             i.stop();
         }
     }
-    public boolean isSeeTag(int cameraID){
+
+    public boolean isSeeTag(int cameraID) {
         Tag[] tags = { reefRight, feeder, barge, reefLeft };
 
         return tags[cameraID].isSeeTag();
     }
+
     public boolean isSeeTag(int id, int cameraId, double distance) {
         Tag[] tags = { reefRight, feeder, barge, reefLeft };
 
@@ -487,11 +447,11 @@ public class Chassis extends SubsystemBase {
         super.initSendable(builder);
     }
 
-    public Trajectory vector(Translation2d start, Translation2d end){
-      return TrajectoryGenerator.generateTrajectory(
-            List.of(
-              new Pose2d(start, end.getAngle().minus(start.getAngle())),
-              new Pose2d(end, end.getAngle().minus(start.getAngle()))),
-            new TrajectoryConfig(4.0, 4.0));
+    public Trajectory vector(Translation2d start, Translation2d end) {
+        return TrajectoryGenerator.generateTrajectory(
+                List.of(
+                        new Pose2d(start, end.getAngle().minus(start.getAngle())),
+                        new Pose2d(end, end.getAngle().minus(start.getAngle()))),
+                new TrajectoryConfig(4.0, 4.0));
     }
 }

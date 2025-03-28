@@ -8,7 +8,6 @@ import static frc.robot.vision.utils.VisionConstants.TAG_ANGLE;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import frc.robot.utils.LogManager;
 import frc.robot.vision.subsystem.Tag;
 
 /** Add your docs here. */
