@@ -443,7 +443,7 @@ public class Arm extends SubsystemBase {
    * @return if the arm is at the limit
    */
   public boolean isLimit(){
-    return (CalibrationConstants.ARM_ANGLE_LIMIT - getArmAngle()) >= CalibrationConstants.MAX_ERROR;
+    return (CalibrationConstants.ARM_ANGLE_LIMIT - getArmAngle()) <= CalibrationConstants.MAX_LIMIT_ERROR;
   }
 
   /**Calibrates the arm motor and sets its position to base

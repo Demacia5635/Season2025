@@ -205,7 +205,7 @@ public class ArmConstants {
 
         public static final double L2_HEIGHT = 0.81;
         public static final double L3_HEIGHT = 1.02;
-        public static final double L4_HEIGHT = 1.82866;//TODO:find hight
+        public static final double L4_HEIGHT = 1.82866;
         public static final double CORAL_STATION_HEIGHT = 0.95098;
     }
 
@@ -213,7 +213,7 @@ public class ArmConstants {
     public static class CalibrationConstants{
         public static double ARM_ANGLE_START_POW = -1;
         public static double ARM_ANGLE_LIMIT = -1;
-        public static double MAX_ERROR = -1;
+        public static double MAX_LIMIT_ERROR = -1;
         public static double CALIBRATED_ANGLE = -1;
     }
 }
