@@ -17,6 +17,7 @@ import frc.robot.Constants;
 import frc.robot.robot2.arm.constants.ArmConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.ARM_ANGLE_STATES;
 import frc.robot.robot2.arm.constants.ArmConstants.ArmAngleMotorConstants;
+import frc.robot.robot2.arm.constants.ArmConstants.CalibrationConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.GripperAngleMotorConstants;
 import frc.robot.robot2.arm.constants.ArmConstants.MaxErrors;
 import frc.robot.utils.Cancoder;
@@ -74,6 +75,8 @@ public class Arm extends SubsystemBase {
    * to go
    */
   public ARM_ANGLE_STATES state;
+  
+  public boolean isCalibrated;
 
   private boolean hasArmAngleReachedTarget;
   private double lastArmAngleTarget;
@@ -110,6 +113,7 @@ public class Arm extends SubsystemBase {
     /* make the default state to idle */
     state = ARM_ANGLE_STATES.IDLE;
 
+    isCalibrated = false;
     hasArmAngleReachedTarget = false;
     lastArmAngleTarget = Double.MAX_VALUE;
 
@@ -251,6 +255,10 @@ public class Arm extends SubsystemBase {
    *      automaticly be the forward limit
    */
   public void armAngleMotorSetPositionVoltage(double targetAngle) {
+    if(!isCalibrated){
+      return;
+    }
+
     if (Double.isNaN(targetAngle)) {
       LogManager.log("arm target Angle is NaN", AlertType.kError);
       return;
@@ -303,6 +311,10 @@ public class Arm extends SubsystemBase {
    *      to go to the back limit
    */
   public void gripperAngleMotorSetPositionVoltage(double targetAngle) {
+    if(!isCalibrated){
+      return;
+    }
+
     if (Double.isNaN(targetAngle)) {
       LogManager.log("gripper target Angle is NaN", AlertType.kError);
       return;
@@ -426,7 +438,21 @@ public class Arm extends SubsystemBase {
     return (gripperAngleAbsoluteSensor.get() * 2 * Math.PI) - GripperAngleMotorConstants.Angle_OFFSET;
   }
 
+  /**
+   * 
+   * @return if the arm is at the limit
+   */
+  public boolean isLimit(){
+    return (CalibrationConstants.ARM_ANGLE_LIMIT - getArmAngle()) >= CalibrationConstants.MAX_ERROR;
+  }
 
+  /**Calibrates the arm motor and sets its position to base
+   * 
+   */
+  public void hasCalibrated(){
+    isCalibrated = true;
+    armAngleMotor.setPosition(CalibrationConstants.CALIBRATED_ANGLE);
+  }
 
   /**
    * the init sendable of the command
