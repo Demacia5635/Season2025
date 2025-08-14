@@ -1,6 +1,5 @@
 package frc.robot.chassis.subsystems;
 
-import static frc.robot.vision.utils.VisionConstants.*;
 
 import org.ejml.simple.SimpleMatrix;
 
@@ -35,8 +34,6 @@ import static frc.robot.chassis.utils.ChassisConstants.*;
 import frc.robot.chassis.utils.ChassisConstants.AccelConstants;
 import frc.robot.chassis.utils.SwerveKinematics;
 import frc.robot.utils.LogManager;
-import frc.robot.vision.subsystem.Tag;
-import frc.robot.vision.utils.VisionFuse;
 
 public class Chassis extends SubsystemBase {
     private SwerveModule[] modules;
@@ -45,11 +42,6 @@ public class Chassis extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator;
     private Field2d field;
     private Field2d fieldTag;
-    public Tag reefTag;
-    public Tag fiderTag;
-    public Tag bargeTag;
-    public Tag backTag;
-    public VisionFuse visionFuse;
 
     private StatusSignal<Angle> gyroYawStatus;
     private Rotation2d lastGyroYaw;
@@ -76,20 +68,11 @@ public class Chassis extends SubsystemBase {
         poseEstimator.setVisionMeasurementStdDevs(new Matrix<>(std));
         field = new Field2d();
         fieldTag = new Field2d();
-        reefTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 0);
-        fiderTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 1);
-        bargeTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 2);
-        backTag = new Tag(()->getGyroAngle(), ()->getChassisSpeedsRobotRel(), 3);
-        visionFuse = new VisionFuse(reefTag, fiderTag, bargeTag, backTag);
 
 
         SmartDashboard.putData("reset gyro", new InstantCommand(() -> setYaw(Rotation2d.kZero)).ignoringDisable(true));
         SmartDashboard.putData("reset gyro 180", new InstantCommand(() -> setYaw(Rotation2d.kPi)).ignoringDisable(true));
-        SmartDashboard.putData("set gyro to 3D tag", new InstantCommand(() -> setYaw(
-                Rotation2d.fromDegrees(RobotContainer.robotContainer.autoChooser.getSelected() == AutoMode.MIDDLE
-                        ? reefTag.getAngle()
-                        : backTag.getAngle())))
-                .ignoringDisable(true));
+        
         LogManager.addEntry("gyro", () -> gyro.getYaw().getValueAsDouble());
         SmartDashboard.putData("field", field);
         SmartDashboard.putData("ultfielf", fieldTag);
@@ -175,15 +158,11 @@ public class Chassis extends SubsystemBase {
         return wantedSpeeds.getNorm();
         
     }
-    private double getAccel(double height){
-        return AccelConstants.aHEIGHT * Math.pow(height, 2) + AccelConstants.bHEIGHT * height + AccelConstants.cHEIGHT;
-    }
+    
+    double accel = 8;
     private Translation2d calculateVelocity(Translation2d wantedSpeeds, Translation2d currentSpeeds){
         if(wantedSpeeds.getNorm() == 0 && currentSpeeds.getNorm() == 0) return new Translation2d();
         
-        double accel = getAccel(RobotContainer.elevator.getHeight());
-        LogManager.log("HEIGHT: " + RobotContainer.elevator.getHeight());
-        LogManager.log("ACCEL: " + accel);
         double maxDeltaV = accel * CYCLE_DT;
         double curNorm = currentSpeeds.getNorm();
         if(curNorm <0.1){
@@ -273,68 +252,10 @@ public class Chassis extends SubsystemBase {
         }
     }
 
-    private void updateVision(Pose2d pose) {
-        poseEstimator.setVisionMeasurementStdDevs(getSTD());
-        poseEstimator.addVisionMeasurement(pose, Timer.getFPGATimestamp() - 0.05);
-    }
 
-    private Matrix<N3, N1> getSTD() {
-        double x = 0.05;
-        double y = 0.05;
-        double theta = 0.03;
-
-        Translation2d velocityVector = new Translation2d(getChassisSpeedsRobotRel().vxMetersPerSecond,
-                getChassisSpeedsRobotRel().vyMetersPerSecond);
-        double speed = velocityVector.getNorm();
-
-        // Vision confidence adjustment
-        if (visionFuse.getVisionConfidence() < 0.3) {
-            x += 0.3;
-            y += 0.3;
-        }
-
-        // Speed-based confidence calculation
-        if (speed > WORST_RELIABLE_SPEED) {
-            // Maximum uncertainty for high speeds
-            x += 0.02;
-            y += 0.02;
-        } else if (speed <= BEST_RELIABLE_SPEED) {
-            // Minimum uncertainty for low speeds
-            x -= 0.02;
-            y -= 0.02;
-        } else {
-            // Calculate normalized speed for the falloff range
-            double normalizedSpeed = (speed - BEST_RELIABLE_SPEED)
-                    / (WORST_RELIABLE_SPEED - BEST_RELIABLE_SPEED);
-
-            // Apply exponential falloff to calculate additional uncertainty
-            double speedConfidence = Math.exp(-3 * normalizedSpeed);
-
-            // Scale the uncertainty adjustment based on confidence
-            double adjustment = 0.02 * (1 - speedConfidence);
-            x += adjustment;
-            y += adjustment;
-        }
-
-        return new Matrix<N3, N1>(new SimpleMatrix(new double[] { x, y, theta }));
-    }
-
-    private boolean isSeeScoringTag() {
-        return false;
-        // return isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5)
-        //         || isSeeTag(RobotContainer.scoringTarget.position.getId(), 0, 3.5);
-
-    }
-
-    Pose2d visionFusePoseEstimation;
-
+   
     @Override
     public void periodic() {
-        visionFusePoseEstimation = visionFuse.getPoseEstemation();
-        if (visionFusePoseEstimation != null) {
-            updateVision(new Pose2d(visionFusePoseEstimation.getTranslation(), getGyroAngle()));
-            // fieldTag.setRobotPose(visionFusePoseEstimation);
-        }
         poseEstimator.update(getGyroAngle(), getModulePositions());
 
         field.setRobotPose(poseEstimator.getEstimatedPosition());
@@ -428,11 +349,6 @@ public class Chassis extends SubsystemBase {
         }
     }
 
-    public boolean isSeeTag(int id, int cameraId, double distance) {
-        Tag[] tags = { reefTag, fiderTag, bargeTag, backTag };
-
-        return tags[cameraId].isSeeTag(id, distance);
-    }
 
     @Override
     public void initSendable(SendableBuilder builder) {

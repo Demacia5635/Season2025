@@ -20,7 +20,7 @@ public final class Constants {
 
   public static final class CANBuses {
     public static final CANBus ARM_CAN_BUS = new CANBus("rio");
-    public static final CANBus CHASSIS_CAN_BUS = new CANBus("canivore");
+    public static final CANBus CHASSIS_CAN_BUS = new CANBus("rio");
   }
 
   public static final class PowerDistributionConstants {

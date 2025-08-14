@@ -20,35 +20,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PowerDistributionConstants;
-// import frc.robot.Path.Trajectory.ChangeReefToClosest;
-// import frc.robot.Path.Trajectory.FollowTrajectory;
 import frc.robot.chassis.commands.Drive;
-// import frc.robot.chassis.commands.auto.FieldTarget.ELEMENT_POSITION;
-// import frc.robot.chassis.commands.auto.FieldTarget.LEVEL;
-// import frc.robot.chassis.commands.auto.FieldTarget.POSITION;
-// import frc.robot.chassis.commands.auto.AlgaeL3;
-// import frc.robot.chassis.commands.auto.AlgaeL3L3;
-// import frc.robot.chassis.commands.auto.AutoUtils;
-// import frc.robot.chassis.commands.auto.FieldTarget;
 import frc.robot.chassis.subsystems.Chassis;
-import frc.robot.robot2.elevator.ElevatorConstants.ELEVATOR_STATE;
-import frc.robot.robot2.elevator.commands.ElevatorCalibration;
-import frc.robot.robot2.elevator.commands.ElevatorCommand;
-import frc.robot.robot2.elevator.subsystem.Elevator;
-// import frc.robot.robot1.arm.commands.ArmCommand;
-// import frc.robot.robot1.arm.commands.ArmDrive;
-// import frc.robot.robot1.arm.commands.ArmCalibration;
-// import frc.robot.robot1.arm.constants.ArmConstants.ARM_ANGLE_STATES;
-// import frc.robot.robot1.arm.subsystems.Arm;
-// import frc.robot.robot1.climb.command.JoyClimeb;
-// import frc.robot.robot1.climb.command.OpenClimber;
-// import frc.robot.robot1.climb.subsystem.Climb;
-// import frc.robot.robot1.gripper.commands.GrabOrDrop;
-// import frc.robot.robot1.gripper.commands.GripperDrive;
-// import frc.robot.robot1.gripper.subsystems.Gripper;
-// import frc.robot.leds.Robot1Strip;
-// import frc.robot.leds.subsystems.LedManager;
-// import frc.robot.practice.AllOffsets;
 import frc.robot.utils.CommandController;
 import frc.robot.utils.LogManager;
 import frc.robot.utils.CommandController.ControllerType;
@@ -70,13 +43,6 @@ public class RobotContainer implements Sendable{
   private static boolean hasRemovedFromLog = false;
 
   public static Chassis chassis;  
-  // public static Arm arm;
-  // public static Gripper gripper;
-  // public static Climb climb;
-  public static Elevator elevator;
-  // public static Robot1Strip robot1Strip;
-  
-  // public static FieldTarget scoringTarget = new FieldTarget(POSITION.A, ELEMENT_POSITION.CORAL_LEFT, LEVEL.L3);
 
   public final SendableChooser<AutoMode> autoChooser;
   public enum AutoMode {
@@ -119,11 +85,6 @@ public class RobotContainer implements Sendable{
   private void configureSubsytems() {
     Ultrasonic.setAutomaticMode(true);
     chassis = new Chassis();
-    // arm = new Arm();
-    // gripper = new Gripper();
-    // climb = new Climb();
-    elevator = new Elevator();
-    // robot1Strip = new Robot1Strip(chassis, arm, gripper);
   }
 
   /**
@@ -133,7 +94,6 @@ public class RobotContainer implements Sendable{
    */
   private void configureDefaultCommands() {
     chassis.setDefaultCommand(new Drive(chassis, driverController));
-    elevator.setDefaultCommand(new ElevatorCommand(elevator));
     // arm.setDefaultCommand(new ArmCommand(arm));
   }
 
@@ -188,8 +148,6 @@ public class RobotContainer implements Sendable{
     
     // operatorController.rightSetting().onTrue(new InstantCommand(robot1Strip::setManualOrAuto).ignoringDisable(true));
     operatorController.leftSettings().onTrue(new InstantCommand(()-> chassis.setYaw(Rotation2d.kPi)).ignoringDisable(true));
-    driverController.upButton().onTrue(new ElevatorCalibration(elevator));
-    driverController.leftButton().onTrue(new InstantCommand(()->elevator.setState(ELEVATOR_STATE.L4)));
   }
 
   public static boolean isRed() {
@@ -225,8 +183,7 @@ public class RobotContainer implements Sendable{
    */
   public Command getEnableInitCommand() {
     // return null;
-    return new ElevatorCalibration(elevator);
-    // return new ArmCalibration(arm);
+    return new InstantCommand();
   }
 
   /**
